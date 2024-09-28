@@ -1,0 +1,38 @@
+/* .main-content {
+    background-color: var(--clr-white);
+    flex: 1;
+    padding: 32px;
+  } */
+
+  .main-content {
+    /* margin-left: 260px;  */
+    background-color: var(--clr-white);
+    padding: 32px;
+    flex: 1;
+    height: 100vh; /* Full viewport height */
+    overflow-y: auto; /* Allows scrolling for content */
+  }
+  .main-content1 {
+    /* margin-left: 50px;  */
+    background-color: var(--clr-white);
+    padding: 32px;
+    flex: 1;
+    height: 100vh;
+    overflow-y: auto; 
+  }
+  
+  @media screen and (max-width: 1400px) {
+    .main-content {
+      padding-left: 20px;
+      padding-right: 20px;
+    }
+    
+  }
+  
+
+  @media screen and (max-width: 1200px) {
+    .main-content {
+      padding-right: 16px;
+      padding-left: 16px;
+    }
+  }
