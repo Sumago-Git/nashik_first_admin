@@ -1,0 +1,558 @@
+{
+  "login": [
+    {
+      "email": "abc@test.com",
+      "password": "12345678",
+      "key": "true",
+      "id": "0d35"
+    },
+    {
+      "id": "6b7f",
+      "email": "abc@test.com",
+      "password": "12345678"
+    },
+    {
+      "id": "d5cd",
+      "email": "abc@test.com",
+      "password": "12345678"
+    }
+  ],
+  "leadership": [
+    {
+      "name": "qqq",
+      "title": "qqq",
+      "description": "qqq",
+      "imageupload": "C:\\fakepath\\Screenshot 2023-09-20 112531.png",
+      "facebook": "http://localhost:5173/leadership?",
+      "instagram": "http://localhost:5173/leadership?",
+      "linkedin": "http://localhost:5173/leadership?",
+      "id": "3609"
+    },
+    {
+      "id": "2e0e",
+      "name": "n",
+      "title": "n",
+      "description": "n",
+      "imageupload": "C:\\fakepath\\Screenshot 2023-08-20 151526.png",
+      "facebook": "http://localhost:5173/leadership",
+      "instagram": "http://localhost:5173/leadership",
+      "linkedin": "http://localhost:5173/leadership"
+    },
+    {
+      "id": "ef81",
+      "name": "a",
+      "title": "a",
+      "description": "a",
+      "imageupload": "C:\\fakepath\\Screenshot 2023-09-20 101806.png",
+      "facebook": "http://localhost:5173/leadership",
+      "instagram": "http://localhost:5173/leadership",
+      "linkedin": "http://localhost:5173/leadership"
+    },
+    {
+      "id": "4724",
+      "name": "a",
+      "title": "a",
+      "imageupload": "C:\\fakepath\\Screenshot 2023-09-18 133445.png",
+      "facebook": "http://localhost:5173/leadership",
+      "instagram": "http://localhost:5173/leadership",
+      "linkedin": "http://localhost:5173/leadership",
+      "description": "a"
+    }
+  ],
+  "ourstory": [
+    {
+      "image": "C:\\fakepath\\Screenshot 2023-09-21 134221.png",
+      "name": "zz",
+      "description": "zz",
+      "id": "e9fb"
+    },
+    {
+      "id": "88b3",
+      "image": "C:\\fakepath\\Screenshot 2023-09-20 101806.png",
+      "name": "aaa",
+      "description": "aa"
+    },
+    {
+      "id": "57f0",
+      "image": "C:\\fakepath\\Screenshot 2023-09-18 133445.png",
+      "name": "zzz",
+      "description": "zz"
+    },
+    {
+      "id": "e9a4",
+      "image": "C:\\fakepath\\Screenshot 2023-09-20 112531.png",
+      "name": "aa",
+      "description": "aa"
+    },
+    {
+      "id": "aa5d",
+      "image": "C:\\fakepath\\Screenshot 2023-09-20 101806.png",
+      "name": "Name",
+      "description": "Name"
+    }
+  ],
+  "ourteam": [
+    {
+      "name": "zzzz",
+      "email": "",
+      "mobile": "",
+      "message": "",
+      "image": "C:\\fakepath\\Screenshot 2023-09-20 101806.png",
+      "designation": "zzzz",
+      "description": "zzzz",
+      "id": "2ca4"
+    },
+    {
+      "id": "0770",
+      "image": "C:\\fakepath\\Screenshot 2023-09-18 133445.png",
+      "name": "aa",
+      "description": "aa"
+    }
+  ],
+  "newsevents": [
+    {
+      "id": "b214",
+      "image": "C:\\fakepath\\Screenshot 2023-09-20 101806.png",
+      "shortdescription": "t",
+      "longdescription": "t"
+    }
+  ],
+  "headercontact": [
+    {
+      "imageupload1": "C:\\fakepath\\Screenshot 2023-09-20 101806.png",
+      "title": "zzzzzzzzzzzzzz",
+      "description": "zzzzzzzzzzzzz",
+      "id": "2fab"
+    },
+    {
+      "id": "482b",
+      "imageupload1": "C:\\fakepath\\Screenshot 2023-09-20 112531.png",
+      "title": "itle",
+      "description": "itle"
+    }
+  ],
+  "heroform": [
+    {
+      "id": "93f0",
+      "name": "a",
+      "email": "abc@test.com",
+      "mobile": "8484848484",
+      "message": "a"
+    },
+    {
+      "id": "eb82",
+      "name": "qaz",
+      "email": "abc@test.com",
+      "mobile": "8484848484",
+      "message": "a1a1a1a1"
+    },
+    {
+      "id": "c349",
+      "name": "zzzz",
+      "email": "hac@json.com",
+      "mobile": "8484848484",
+      "message": "ddld"
+    },
+    {
+      "id": "7031",
+      "name": "a",
+      "email": "abc@test.ocm",
+      "mobile": "8484884848",
+      "message": "msg"
+    },
+    {
+      "id": "c514",
+      "name": "a",
+      "email": "abc@test.ocm",
+      "mobile": "8484884848",
+      "message": "msg"
+    },
+    {
+      "id": "38fa",
+      "name": "a",
+      "email": "abc@test.ocm",
+      "mobile": "8484884848",
+      "message": "msg"
+    },
+    {
+      "id": "38d9",
+      "name": "a",
+      "email": "abc@test.ocm",
+      "mobile": "8484884848",
+      "message": "msg"
+    },
+    {
+      "id": "ec23",
+      "name": "a",
+      "email": "abc@test.ocm",
+      "mobile": "8484884848",
+      "message": "msg"
+    },
+    {
+      "id": "50df",
+      "name": "a",
+      "email": "abc@test.ocm",
+      "mobile": "8484884848",
+      "message": "msg"
+    },
+    {
+      "id": "92b8",
+      "name": "a",
+      "email": "abc@test.ocm",
+      "mobile": "8484884848",
+      "message": "msg"
+    },
+    {
+      "id": "e92b",
+      "name": "a",
+      "email": "abc@test.ocm",
+      "mobile": "8484884848",
+      "message": "msg"
+    },
+    {
+      "id": "38cb",
+      "name": "a",
+      "email": "abc@test.ocm",
+      "mobile": "8484884848",
+      "message": "msg"
+    },
+    {
+      "id": "935f",
+      "name": "a",
+      "email": "abc@test.ocm",
+      "mobile": "8484884848",
+      "message": "msg"
+    },
+    {
+      "id": "49cc",
+      "name": "hj asiox test",
+      "email": "hj@abc.com",
+      "mobile": "8885558885",
+      "message": "asiox test"
+    }
+  ],
+  "slider": [
+    {
+      "id": "1",
+      "imageupload": "C:\\fakepath\\Screenshot 2023-09-20 101806.png"
+    }
+  ],
+  "carousal": [
+    {
+      "id": "5a8e",
+      "title": "1",
+      "description": "<p>a</p>",
+      "imageupload1": "C:\\fakepath\\Screenshot 2023-09-18 133445.png"
+    },
+    {
+      "id": "e45f",
+      "title": "2",
+      "description": "<p>b</p>",
+      "imageupload1": "C:\\fakepath\\Screenshot 2023-09-18 133445.png"
+    },
+    {
+      "id": "fdcb",
+      "title": "3",
+      "description": "<p>c</p>",
+      "imageupload1": "C:\\fakepath\\Screenshot 2023-09-18 133445.png"
+    },
+    {
+      "id": "9db2",
+      "title": "4",
+      "description": "<p>d</p>",
+      "imageupload1": "C:\\fakepath\\Screenshot 2023-09-18 133445.png"
+    },
+    {
+      "id": "3594",
+      "title": "5",
+      "description": "<p>e</p>",
+      "imageupload1": "C:\\fakepath\\Screenshot 2023-09-18 133445.png"
+    },
+    {
+      "id": "e5d1",
+      "title": "6",
+      "description": "<p>f</p>",
+      "imageupload1": "C:\\fakepath\\Screenshot 2023-09-18 133445.png"
+    },
+    {
+      "id": "c9b7",
+      "title": "7",
+      "description": "<p>g</p>",
+      "imageupload1": "C:\\fakepath\\Screenshot 2023-09-18 133445.png"
+    },
+    {
+      "id": "00c0",
+      "title": "8",
+      "description": "<p>h</p>",
+      "imageupload1": "C:\\fakepath\\Screenshot 2023-09-18 133445.png"
+    },
+    {
+      "id": "2e2f",
+      "title": "9",
+      "description": "<p>i</p>",
+      "imageupload1": "C:\\fakepath\\Screenshot 2023-09-18 133445.png"
+    },
+    {
+      "id": "ceb9",
+      "title": "10",
+      "description": "<p>j</p>",
+      "imageupload1": "C:\\fakepath\\Screenshot 2023-09-18 133445.png"
+    },
+    {
+      "id": "339a",
+      "title": "11",
+      "description": "<p>k</p>",
+      "imageupload1": "C:\\fakepath\\Screenshot 2023-09-18 133445.png"
+    },
+    {
+      "id": "1ca2",
+      "title": "12",
+      "description": "<p>l</p>",
+      "imageupload1": "C:\\fakepath\\Screenshot 2023-09-18 133445.png"
+    },
+    {
+      "id": "9a21",
+      "title": "13",
+      "description": "<p>m</p>",
+      "imageupload1": "C:\\fakepath\\Screenshot 2023-09-18 133445.png"
+    },
+    {
+      "id": "d6eb",
+      "title": "14",
+      "description": "<p>n</p>",
+      "imageupload1": "C:\\fakepath\\Screenshot 2023-09-18 133445.png"
+    },
+    {
+      "id": "fde4",
+      "title": "15",
+      "description": "<p>o</p>",
+      "imageupload1": "C:\\fakepath\\Screenshot 2023-09-18 133445.png"
+    },
+    {
+      "id": "4989",
+      "title": "16",
+      "description": "<p>p</p>",
+      "imageupload1": "C:\\fakepath\\Screenshot 2023-09-18 133445.png"
+    },
+    {
+      "id": "859f",
+      "title": "17",
+      "description": "<p>q</p>",
+      "imageupload1": "C:\\fakepath\\Screenshot 2023-09-18 133445.png"
+    },
+    {
+      "id": "8033",
+      "title": "18",
+      "description": "<p>s</p>",
+      "imageupload1": "C:\\fakepath\\Screenshot 2023-09-18 133445.png"
+    },
+    {
+      "id": "1ab6",
+      "title": "19",
+      "description": "<p>t</p>",
+      "imageupload1": "C:\\fakepath\\Screenshot 2023-09-18 133445.png"
+    },
+    {
+      "id": "e985",
+      "title": "20",
+      "description": "<p>u</p>",
+      "imageupload1": "C:\\fakepath\\Screenshot 2023-09-18 133445.png"
+    },
+    {
+      "id": "1f01",
+      "title": "21",
+      "description": "<p>a</p>",
+      "imageupload1": "C:\\fakepath\\Screenshot 2023-09-18 133445.png"
+    },
+    {
+      "id": "6d4f",
+      "title": "22",
+      "description": "<p>22</p>",
+      "imageupload1": "C:\\fakepath\\Screenshot 2023-09-18 133445.png"
+    },
+    {
+      "id": "1d94",
+      "title": "23",
+      "description": "<p>23</p>",
+      "imageupload1": "C:\\fakepath\\Screenshot 2023-09-18 133445.png"
+    },
+    {
+      "id": "d0b6",
+      "title": "24",
+      "description": "<p>24</p>",
+      "imageupload1": "C:\\fakepath\\Screenshot 2023-09-18 133445.png"
+    },
+    {
+      "id": "4a07",
+      "title": "25",
+      "description": "<p>25</p>",
+      "imageupload1": "C:\\fakepath\\Screenshot 2023-09-18 133445.png"
+    },
+    {
+      "id": "35c9",
+      "title": "26",
+      "description": "<p>26</p>",
+      "imageupload1": "C:\\fakepath\\Screenshot 2023-09-18 133445.png"
+    },
+    {
+      "id": "9f77",
+      "title": "27",
+      "description": "<p>27</p>",
+      "imageupload1": "C:\\fakepath\\Screenshot 2023-09-18 133445.png"
+    },
+    {
+      "id": "d0f6",
+      "title": "28",
+      "description": "<p>28</p>",
+      "imageupload1": "C:\\fakepath\\Screenshot 2023-09-18 133445.png"
+    },
+    {
+      "id": "0aeb",
+      "title": "29",
+      "description": "<p>29</p>",
+      "imageupload1": "C:\\fakepath\\Screenshot 2023-09-18 133445.png"
+    },
+    {
+      "id": "1838",
+      "title": "30",
+      "description": "<p>30</p>",
+      "imageupload1": "C:\\fakepath\\Screenshot 2023-09-18 133445.png"
+    },
+    {
+      "id": "7e02",
+      "title": "31",
+      "description": "<p>31</p>",
+      "imageupload1": "C:\\fakepath\\Screenshot 2023-09-18 133445.png"
+    },
+    {
+      "id": "6d8f",
+      "title": "a",
+      "description": "<p>a</p>",
+      "imageupload1": "C:\\fakepath\\Screenshot 2023-09-18 133445.png"
+    }
+  ],
+  "testemonial": [
+    {
+      "id": "f240",
+      "star": "5",
+      "title": "aa",
+      "review": "aaa",
+      "imageupload": "C:\\fakepath\\Screenshot 2023-09-18 133445.png"
+    },
+    {
+      "star": "5",
+      "title": "aaaaaaa",
+      "review": "aaaaaaaaa",
+      "imageupload": "C:\\fakepath\\Screenshot 2023-09-20 101806.png",
+      "id": "53ac"
+    },
+    {
+      "id": "408d",
+      "imageupload": "C:\\fakepath\\Screenshot 2023-09-20 101806.png",
+      "title": "aa",
+      "review": "aa",
+      "star": "5"
+    },
+    {
+      "imageupload": "C:\\fakepath\\Screenshot 2023-09-20 101806.png",
+      "title": "sk",
+      "review": "15",
+      "star": "15",
+      "id": "8dd0"
+    },
+    {
+      "id": "f476",
+      "star": "3.5",
+      "review": "a",
+      "imageupload": "C:\\fakepath\\Screenshot 2023-09-20 101806.png",
+      "title": "aa"
+    },
+    {
+      "id": "fb2b",
+      "review": "<p><strong><em><u>newviw</u></em></strong></p>",
+      "imageupload": "C:\\fakepath\\Screenshot 2023-09-18 133445.png",
+      "title": "aa",
+      "star": "5"
+    },
+    {
+      "id": "c257",
+      "imageupload": "C:\\fakepath\\Screenshot 2023-09-20 101806.png",
+      "title": "a",
+      "review": "<p>a</p>",
+      "star": "5"
+    },
+    {
+      "star": "3",
+      "imageupload": "C:\\fakepath\\Screenshot 2023-09-18 133445.png",
+      "review": "<p>22</p>",
+      "title": "22",
+      "id": "4398"
+    }
+  ],
+  "bgvideoform": [
+    {
+      "id": "1f65",
+      "imageupload1": "C:\\fakepath\\Screenshot 2023-09-20 101806.png",
+      "title": "aa",
+      "description": "aaa"
+    },
+    {
+      "id": "d5fd",
+      "imageupload1": "C:\\fakepath\\Screenshot 2023-09-20 101806.png",
+      "title": "zzzzzzzzzzzzzz",
+      "description": "zzzzzzzzzzzz"
+    },
+    {
+      "id": "aa66",
+      "imageupload1": "C:\\fakepath\\Screenshot 2023-09-20 101806.png",
+      "title": "yy",
+      "description": "<p>yy</p>"
+    }
+  ],
+  "bloglist": [
+    {
+      "id": "4f7f",
+      "imageupload1": "C:\\fakepath\\Screenshot 2023-08-28 115005.png",
+      "title": "aaaaaaaa",
+      "description": "aaaaaaaaaaa"
+    },
+    {
+      "id": "c6a2",
+      "description": "<p><strong style=\"font-size: 34px;\">Heoor<span style=\"font-family: Helvetica, sans-serif;\"></span></strong></p>",
+      "imageupload1": "C:\\fakepath\\Screenshot 2023-09-18 133445.png",
+      "title": "aa"
+    },
+    {
+      "description": "<p>aaa</p>",
+      "imageupload1": "C:\\fakepath\\Screenshot 2023-09-20 101806.png",
+      "title": "aaa",
+      "id": "efc8"
+    },
+    {
+      "id": "acd1",
+      "imageupload1": "C:\\fakepath\\Screenshot 2023-09-18 133445.png",
+      "title": "aaa",
+      "description": "<p>aa</p>"
+    },
+    {
+      "id": "cc96",
+      "imageupload1": "C:\\fakepath\\Screenshot 2023-09-18 133445.png",
+      "title": "aa",
+      "description": "<p>aa</p>"
+    }
+  ],
+  "blogdetails": [
+    {
+      "imageupload1": "C:\\fakepath\\Screenshot 2023-09-18 133445.png",
+      "title": "aa",
+      "description": "<p>aaa</p>",
+      "id": "4f7f"
+    },
+    {
+      "imageupload1": "C:\\fakepath\\Screenshot 2023-09-20 101806.png",
+      "title": "zzz",
+      "description": "<p>zzzz</p>",
+      "id": "c320"
+    }
+  ]
+}
