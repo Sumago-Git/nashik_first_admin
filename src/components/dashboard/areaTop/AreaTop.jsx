@@ -78,9 +78,11 @@ const AreaTop = ({ buttonValue, tableView }) => {
     "/leadership",
     "/about",
     "/annualreport",
+    "/annualreturn",
     "/contactinfo",
     "/holiday",
     "/slots",
+    "/trafficawarenessvideo"
   ];
   const isHiddenPath = hiddenPaths.includes(location.pathname);
 
@@ -103,7 +105,11 @@ const AreaTop = ({ buttonValue, tableView }) => {
       setHeader("Our Team");
     } else if (window.location.pathname == "/annualreport") {
       setHeader("Annual Report");
-    } else if (window.location.pathname == "/social-contact") {
+    }
+    else if (window.location.pathname == "/annualreturn") {
+      setHeader("Annual Return");
+    }
+    else if (window.location.pathname == "/social-contact") {
       setHeader("Social Contacts");
     } else if (window.location.pathname == "/productname") {
       setHeader("Product Name");
@@ -147,6 +153,9 @@ const AreaTop = ({ buttonValue, tableView }) => {
       setHeader("Application Data");
     } else if (window.location.pathname == "/productimages") {
       setHeader("Product Images");
+    }
+    else if (window.location.pathname == "/trafficawarenessvideo") {
+      setHeader("Traffic Awareness Video");
     }
 
   }, [window.location.pathname]);

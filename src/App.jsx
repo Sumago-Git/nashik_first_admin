@@ -21,6 +21,7 @@ import AnnualReturn from "./screens/submenus/AnnualReturn";
 import ContactInfo from "./screens/submenus/ContactInfo";
 import Holiday from "./screens/Masters/Holiday";
 import Slots from "./screens/Masters/Slots";
+import TrafficAwarenessVideo from "./screens/submenus/TrafficAwarenessVideo";
 
 function App() {
   return (
@@ -65,6 +66,10 @@ function App() {
           <Route
             path="/office"
             element={<ProtectedRoutes Component={Office} />}
+          />
+          <Route
+            path="/trafficawarenessvideo"
+            element={<ProtectedRoutes Component={TrafficAwarenessVideo} />}
           />
           <Route
             path="/holiday"

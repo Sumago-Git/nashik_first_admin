@@ -54,6 +54,19 @@ const SidebarMenu = [
     ],
   },
   {
+    menu: "Traffic Awareness Video",
+    url: "/tav",
+    mainIcon: <RiTeamFill size={24} />,
+    subMenu: [
+      {
+        subMenus: "Our Video",
+        url: "/trafficawarenessvideo",
+        icon: <FiUsers style={{ color: "red" }} size={24} />,
+      },
+
+    ],
+  },
+  {
     menu: "Reports",
     url: "/report",
     mainIcon: <RiTeamFill size={24} />,

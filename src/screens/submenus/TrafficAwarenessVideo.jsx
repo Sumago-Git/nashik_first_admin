@@ -25,7 +25,7 @@ import { ThreeDots } from 'react-loader-spinner';
 
 import "../../App.scss";
 
-const AnnualReturn = () => {
+const TrafficAwarenessVideo = () => {
   const { searchQuery, handleSearch, handleExport, setData, filteredData } =
     useSearchExport();
 
@@ -158,7 +158,7 @@ const AnnualReturn = () => {
     let isValid = true;
 
     if (!formData.img) {
-      errors.img = "PDF is required";
+      errors.img = "video is required";
       isValid = false;
     } else if (formData.img instanceof File) {
       const fileType = formData.img.type;
@@ -193,9 +193,10 @@ const AnnualReturn = () => {
   };
 
   const handleSubmit = async (e) => {
-    console.log("Form Data",formData)
+    console.log("Form data ",formData)
     e.preventDefault();
     setShowTable(true);
+    
     if (validateForm(formData)) {
       setLoading(true);
       const accessToken = localStorage.getItem("accessToken"); // Retrieve access token
@@ -358,10 +359,10 @@ const AnnualReturn = () => {
                     </Col>
                     <Col md={6}>
                       <Form.Group controlId="img">
-                        <Form.Label>Upload PDF</Form.Label>
+                        <Form.Label>Upload Video</Form.Label>
                         <Form.Control
                           type="file"
-                          accept=".pdf" // Only allow PDF files
+                          accept="video/*" // Allow all video file types
                           onChange={(e) => handleChange("img", e.target.files[0])}
                           isInvalid={!!errors.img}
                         />
@@ -388,4 +389,4 @@ const AnnualReturn = () => {
   );
 };
 
-export default AnnualReturn;
+export default TrafficAwarenessVideo;
