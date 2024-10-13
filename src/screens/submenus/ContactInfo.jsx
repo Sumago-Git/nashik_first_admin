@@ -85,7 +85,7 @@ const ContactInfo = () => {
     setLoading(true);
     const accessToken = localStorage.getItem("accessToken");
     try {
-      const response = await instance.get("header-contact/findheaderContacts", {
+      const response = await instance.get("contact-detail/get-contactdetails", {
         headers: {
           Authorization: "Bearer " + accessToken,
           "Content-Type": "application/json",
