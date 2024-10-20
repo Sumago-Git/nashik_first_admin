@@ -54,6 +54,23 @@ const SidebarMenu = [
     ],
   },
   {
+    menu: "Events",
+    url: "/masters",
+    mainIcon: <MdOutlinePermContactCalendar size={24} />,
+    subMenu: [
+      {
+        subMenus: "Past Event",
+        url: "/pastevents",
+        icon: <BsBuilding style={{ color: "red" }} size={24} />,
+      },
+      {
+        subMenus: "Upcomming Events",
+        url: "/upcommingevents",
+        icon: <BsBuilding style={{ color: "red" }} size={24} />,
+      },
+    ],
+  },
+  {
     menu: "Traffic Awareness Video",
     url: "/tav",
     mainIcon: <RiTeamFill size={24} />,

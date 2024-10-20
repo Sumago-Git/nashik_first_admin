@@ -81,6 +81,8 @@ const AreaTop = ({ buttonValue, tableView }) => {
     "/annualreturn",
     "/contactinfo",
     "/holiday",
+    "/pastevents",
+    "/upcommingevents",
     "/slots",
     "/trafficawarenessvideo"
   ];
@@ -133,7 +135,14 @@ const AreaTop = ({ buttonValue, tableView }) => {
       setHeader("Our Offices");
     } else if (window.location.pathname == "/carousalform") {
       setHeader("User Data List");
-    } else if (window.location.pathname == "/requestcallbackform") {
+    }
+    else if (window.location.pathname == "/pastevents") {
+      setHeader("Past Events");
+    }
+    else if (window.location.pathname == "/upcommingevents") {
+      setHeader("Upcomming Events");
+    }
+     else if (window.location.pathname == "/requestcallbackform") {
       setHeader("Request Callback Form");
     } else if (window.location.pathname == "/office") {
       setHeader("Our Offices");

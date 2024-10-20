@@ -22,6 +22,8 @@ import ContactInfo from "./screens/submenus/ContactInfo";
 import Holiday from "./screens/Masters/Holiday";
 import Slots from "./screens/Masters/Slots";
 import TrafficAwarenessVideo from "./screens/submenus/TrafficAwarenessVideo";
+import UpcommingEvents from "./screens/submenus/UpcommingEvents";
+import PastEvents from "./screens/submenus/PastEvents";
 
 function App() {
   return (
@@ -62,6 +64,14 @@ function App() {
           <Route
             path="/social-contact"
             element={<ProtectedRoutes Component={SocialContact} />}
+          />
+          <Route
+            path="/pastevents"
+            element={<ProtectedRoutes Component={PastEvents} />}
+          />
+          <Route
+            path="/upcommingevents"
+            element={<ProtectedRoutes Component={UpcommingEvents} />}
           />
           <Route
             path="/office"
