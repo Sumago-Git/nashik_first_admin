@@ -82,6 +82,8 @@ const AreaTop = ({ buttonValue, tableView }) => {
     "/contactinfo",
     "/holiday",
     "/slots",
+    "/bookings",
+    "/seat",
     "/trafficawarenessvideo"
   ];
   const isHiddenPath = hiddenPaths.includes(location.pathname);
@@ -137,6 +139,8 @@ const AreaTop = ({ buttonValue, tableView }) => {
       setHeader("Request Callback Form");
     } else if (window.location.pathname == "/office") {
       setHeader("Our Offices");
+    } else if (window.location.pathname == "/bookings") {
+      setHeader("Bookings");
     } else if (window.location.pathname == "/contactinfo") {
       setHeader("Contact Details");
     } else if (window.location.pathname == "/getintouch") {
@@ -149,13 +153,17 @@ const AreaTop = ({ buttonValue, tableView }) => {
       setHeader("Holiday");
     } else if (window.location.pathname == "/slots") {
       setHeader("Slots");
+    } else if (window.location.pathname == "/session") {
+      setHeader("Sessions");
+    } else if (window.location.pathname == "/seat") {
+      setHeader("Seat Availability");
     } else if (window.location.pathname == "/applicationdata") {
       setHeader("Application Data");
     } else if (window.location.pathname == "/productimages") {
       setHeader("Product Images");
     }
     else if (window.location.pathname == "/trafficawarenessvideo") {
-      setHeader("Traffic Awareness Video");
+      setHeader("Video");
     }
 
   }, [window.location.pathname]);

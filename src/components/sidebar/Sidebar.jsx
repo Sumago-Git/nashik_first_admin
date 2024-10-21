@@ -54,7 +54,7 @@ const SidebarMenu = [
     ],
   },
   {
-    menu: "Traffic Awareness Video",
+    menu: "Video",
     url: "/tav",
     mainIcon: <RiTeamFill size={24} />,
     subMenu: [
@@ -102,6 +102,18 @@ const SidebarMenu = [
     ],
   },
   {
+    menu: "Training",
+    url: "/training",
+    mainIcon: <MdOutlinePermContactCalendar size={24} />,
+    subMenu: [
+      {
+        subMenus: "Bookings",
+        url: "/bookings",
+        icon: <BsBuilding style={{ color: "red" }} size={24} />,
+      },
+    ],
+  },
+  {
     menu: "Masters",
     url: "/masters",
     mainIcon: <MdOutlinePermContactCalendar size={24} />,
@@ -112,8 +124,18 @@ const SidebarMenu = [
         icon: <BsBuilding style={{ color: "red" }} size={24} />,
       },
       {
-        subMenus: "Slot",
+        subMenus: "Slots",
         url: "/slots",
+        icon: <BsBuilding style={{ color: "red" }} size={24} />,
+      },
+      {
+        subMenus: "Sessions",
+        url: "/session",
+        icon: <BsBuilding style={{ color: "red" }} size={24} />,
+      },
+      {
+        subMenus: "Seat Availability",
+        url: "/seat",
         icon: <BsBuilding style={{ color: "red" }} size={24} />,
       },
     ],

@@ -20,8 +20,11 @@ import AnnualReport from "./screens/submenus/AnnualReport";
 import AnnualReturn from "./screens/submenus/AnnualReturn";
 import ContactInfo from "./screens/submenus/ContactInfo";
 import Holiday from "./screens/Masters/Holiday";
-import Slots from "./screens/Masters/Slots";
 import TrafficAwarenessVideo from "./screens/submenus/TrafficAwarenessVideo";
+import Bookings from "./screens/submenus/Bookings";
+import Session from "./screens/Masters/Session";
+import Slots from "./screens/submenus/Slots";
+import Seats from "./screens/submenus/Seats";
 
 function App() {
   return (
@@ -42,6 +45,18 @@ function App() {
           <Route
             path="/slots"
             element={<ProtectedRoutes Component={Slots} />}
+          />
+          <Route
+            path="/session"
+            element={<ProtectedRoutes Component={Session} />}
+          />
+          <Route
+            path="/seat"
+            element={<ProtectedRoutes Component={Seats} />}
+          />
+          <Route
+            path="/bookings"
+            element={<ProtectedRoutes Component={Bookings} />}
           />
           <Route
             path="/leadership"

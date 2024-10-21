@@ -24,7 +24,7 @@ import "react-confirm-alert/src/react-confirm-alert.css";
 import { ThreeDots } from 'react-loader-spinner';
 
 import "../../App.scss";
-const Slots = () => {
+const Session = () => {
   const { searchQuery, handleSearch, handleExport, setData, filteredData } =
     useSearchExport();
 
@@ -54,11 +54,11 @@ const Slots = () => {
     },
 
     {
-      name: <CustomHeader name="Slot Time" />,
+      name: <CustomHeader name="Session Time" />,
       cell: (row) => <span>{row.time}</span>,
     },
     {
-      name: <CustomHeader name="Slot Session" />,
+      name: <CustomHeader name="Session" />,
       cell: (row) => <span>{row.sessions}</span>,
     },
     {
@@ -509,4 +509,4 @@ const Slots = () => {
   );
 };
 
-export default Slots;
+export default Session;
