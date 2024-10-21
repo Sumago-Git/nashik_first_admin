@@ -25,6 +25,8 @@ import Bookings from "./screens/submenus/Bookings";
 import Session from "./screens/Masters/Session";
 import Slots from "./screens/submenus/Slots";
 import Seats from "./screens/submenus/Seats";
+import UpcommingEvents from "./screens/submenus/UpcommingEvents";
+import PastEvents from "./screens/submenus/PastEvents";
 
 function App() {
   return (
@@ -77,6 +79,14 @@ function App() {
           <Route
             path="/social-contact"
             element={<ProtectedRoutes Component={SocialContact} />}
+          />
+          <Route
+            path="/pastevents"
+            element={<ProtectedRoutes Component={PastEvents} />}
+          />
+          <Route
+            path="/upcommingevents"
+            element={<ProtectedRoutes Component={UpcommingEvents} />}
           />
           <Route
             path="/office"
