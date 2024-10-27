@@ -28,11 +28,11 @@ const SidebarMenu = [
     url: "/dashboard",
     mainIcon: <MdHome size={24} />,
     subMenu: [
-      {
-        subMenus: "Header Contact",
-        url: "/headercontact",
-        icon: <RiContactsBookLine style={{ color: "red" }} size={24} />,
-      },
+      // {
+      //   subMenus: "Header Contact",
+      //   url: "/headercontact",
+      //   icon: <RiContactsBookLine style={{ color: "red" }} size={24} />,
+      // },
       {
         subMenus: "Social Contacts",
         url: "/social-contact",
@@ -81,6 +81,18 @@ const SidebarMenu = [
         icon: <FiUsers style={{ color: "red" }} size={24} />,
       },
 
+    ],
+  },
+  {
+    menu: "Booking Calender",
+    url: "/report",
+    mainIcon: <RiTeamFill size={24} />,
+    subMenu: [
+      {
+        subMenus: "Calender",
+        url: "/calender",
+        icon: <FiUsers style={{ color: "red" }} size={24} />,
+      },
     ],
   },
   {

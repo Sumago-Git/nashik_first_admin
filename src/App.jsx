@@ -27,6 +27,7 @@ import Slots from "./screens/submenus/Slots";
 import Seats from "./screens/submenus/Seats";
 import UpcommingEvents from "./screens/submenus/UpcommingEvents";
 import PastEvents from "./screens/submenus/PastEvents";
+import Calender from "./screens/submenus/Booking/Calender";
 
 function App() {
   return (
@@ -67,6 +68,10 @@ function App() {
           <Route
             path="/headercontact"
             element={<ProtectedRoutes Component={HeaderContact} />}
+          />
+          <Route
+            path="/calender"
+            element={<ProtectedRoutes Component={Calender} />}
           />
           <Route
             path="/annualreport"

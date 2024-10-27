@@ -86,7 +86,8 @@ const AreaTop = ({ buttonValue, tableView }) => {
     "/slots",
     "/bookings",
     "/seat",
-    "/trafficawarenessvideo"
+    "/trafficawarenessvideo",
+    "/calender"
   ];
   const isHiddenPath = hiddenPaths.includes(location.pathname);
 
@@ -148,6 +149,8 @@ const AreaTop = ({ buttonValue, tableView }) => {
       setHeader("Request Callback Form");
     } else if (window.location.pathname == "/office") {
       setHeader("Our Offices");
+    } else if (window.location.pathname == "/calender") {
+      setHeader("Calender");
     } else if (window.location.pathname == "/bookings") {
       setHeader("Bookings");
     } else if (window.location.pathname == "/contactinfo") {
