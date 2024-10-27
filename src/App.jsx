@@ -28,6 +28,7 @@ import Seats from "./screens/submenus/Seats";
 import UpcommingEvents from "./screens/submenus/UpcommingEvents";
 import PastEvents from "./screens/submenus/PastEvents";
 import Calender from "./screens/submenus/Booking/Calender";
+import Bookpackages from "./screens/Booking Packages/Bookpackages";
 
 function App() {
   return (
@@ -92,6 +93,10 @@ function App() {
           <Route
             path="/upcommingevents"
             element={<ProtectedRoutes Component={UpcommingEvents} />}
+          />
+          <Route
+            path="/bookpackg"
+            element={<ProtectedRoutes Component={Bookpackages} />}
           />
           <Route
             path="/office"

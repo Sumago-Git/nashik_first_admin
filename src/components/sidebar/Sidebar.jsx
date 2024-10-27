@@ -143,6 +143,19 @@ const SidebarMenu = [
     ],
   },
   {
+    menu: "Booking Package",
+    url: "/bookpackg",
+    mainIcon: <MdOutlinePermContactCalendar size={24} />,
+    subMenu: [
+      {
+        subMenus: "Booking Package",
+        url: "/bookpackg",
+        icon: <BsBuilding style={{ color: "red" }} size={24} />,
+      },
+    ],
+  },
+  
+  {
     menu: "Masters",
     url: "/masters",
     mainIcon: <MdOutlinePermContactCalendar size={24} />,

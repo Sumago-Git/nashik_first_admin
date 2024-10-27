@@ -1,0 +1,30 @@
+.calender {
+    width: 100%; /* Make the calendar full width */
+}
+
+.table td {
+    padding: 10px; /* Add space between date cells */
+    border: 1px solid #ddd; /* Optional: Add border to cells for better visibility */
+}
+
+.table {
+    width: 100%; /* Ensure the table takes the full width */
+}
+
+.table th {
+    background-color: #f8f9fa; /* Optional: Background for header */
+    text-align: center; /* Center align header text */
+}
+
+.full-width-modal .modal-dialog {
+    margin: 0;
+    width: 100%; /* Ensure the modal takes full width */
+}
+
+.full-width-modal .modal-content {
+    width: 100%; /* Ensure content takes full width */
+    height: 100%; /* Ensure content takes full height */
+    border-radius: 0; /* Optional: remove border radius for a more angular look */
+}
+
+
