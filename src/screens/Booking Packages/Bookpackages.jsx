@@ -5,6 +5,9 @@ import Chip from '@mui/material/Chip';
 import Button from 'react-bootstrap/Button';
 import './bookingpckg.css';
 
+import leftarrow from "../../assets/Holiday/leftarrow.png";
+ import rightarrow from "../../assets/Holiday/rightarrow.png";
+
 
 
 import Row from 'react-bootstrap/Row';
@@ -304,7 +307,7 @@ const Bookingpackages = () => {
         <>
             <Container fluid className="slotbg pb-5 mb-4">
                 <Container className="calender ">
-                    <Col lg={12} className="mt-4 d-flex justify-content-between align-items-center">
+                    {/* <Col lg={12} className="mt-4 d-flex justify-content-between align-items-center">
                         <button className="btn" onClick={() => changeMonth('prev')} disabled={isCurrentMonth}>
                             <FaArrowLeft />
                         </button>
@@ -316,10 +319,21 @@ const Bookingpackages = () => {
                         <button className="btn" onClick={() => changeMonth('next')}>
                             <FaArrowRight />
                         </button>
+                    </Col> */}
+                    <Col lg={12} className="d-flex justify-content-center align-items-center bg-white">
+                        <button className="btn ms-1" onClick={() => changeMonth('prev')}>
+                            <img src={leftarrow} className="w-75 arrowimg" alt="Previous" />
+                        </button>
+                        <h3 className="calenderheadline mx-4">
+                            {monthNames[currentMonth]} {currentYear}
+                        </h3>
+                        <button className="btn ms-1" onClick={() => changeMonth('next')}>
+                            <img src={rightarrow} className="w-75 arrowimg" alt="Next" />
+                        </button>
                     </Col>
 
                     <Container className="mt-4">
-                        <Table bordered responsive style={{ tableLayout: 'fixed', borderCollapse: 'collapse', width: '100%' }}>
+                        <Table  responsive style={{ tableLayout: 'fixed', borderCollapse: 'collapse', width: '100%' }}>
                             <thead>
                                 <tr className="text-start">
                                     {daysOfWeek.map((day) => (
