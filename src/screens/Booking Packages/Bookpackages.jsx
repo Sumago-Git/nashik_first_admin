@@ -6,7 +6,9 @@ import Button from 'react-bootstrap/Button';
 import './bookingpckg.css';
 
 import leftarrow from "../../assets/Holiday/leftarrow.png";
- import rightarrow from "../../assets/Holiday/rightarrow.png";
+import rightarrow from "../../assets/Holiday/rightarrow.png";
+
+import Card from 'react-bootstrap/Card';
 
 
 
@@ -333,7 +335,10 @@ const Bookingpackages = () => {
                     </Col>
 
                     <Container className="mt-4">
-                        <Table  responsive style={{ tableLayout: 'fixed', borderCollapse: 'collapse', width: '100%' }}>
+                        {/* <Card>
+                            <Card.Body>This is some text within a card body.</Card.Body>
+                        </Card> */}
+                        <Table responsive style={{ tableLayout: 'fixed', borderCollapse: 'collapse', width: '100%' }}>
                             <thead>
                                 <tr className="text-start">
                                     {daysOfWeek.map((day) => (
