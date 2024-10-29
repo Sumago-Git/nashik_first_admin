@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Container, Table, Col, Modal, Nav } from "react-bootstrap";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
-import Chip from '@mui/material/Chip';
+
 import Button from 'react-bootstrap/Button';
 import './bookingpckg.css';
 
