@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { Container, Table, Col, Row } from "react-bootstrap";
-import React, { useState } from "react";
-import { Container, Table, Col, Modal, Nav } from "react-bootstrap";
+
+
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 
-import Button from 'react-bootstrap/Button';
+
 import './bookingpckg.css';
 
 import leftarrow from "../../assets/Holiday/leftarrow.png";
