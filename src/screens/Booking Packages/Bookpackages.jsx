@@ -24,11 +24,24 @@ const Bookpackages = ({ tabKey }) => {
     const [selectedDay, setSelectedDay] = useState("");
 
     const [lgShow, setLgShow] = useState(false);
+    const [rowModal, setRowModal] = useState(false);
+    const [selectedRowData, setSelectedRowData] = useState(null);
 
     const [show2, setShow2] = useState(false);
 
     const handleClose2 = () => setShow1(false);
     const handleShow2 = () => setShow2(true);
+
+
+    // const handleRowClick = (rowData) => {
+    //     setSelectedRowData(rowData);
+    //     setRowModal(true);
+    // };
+
+    const handleApprovedButtonClick = (event) => {
+        event.stopPropagation(); // Prevent row click event from firing
+        setLgShow(true);
+    };
 
 
     const [selectedBooking, setSelectedBooking] = useState(null); // New state for selected booking
@@ -306,7 +319,9 @@ const Bookpackages = ({ tabKey }) => {
                                                     <tr onClick={() => { handleRowClick(a) }}>
                                                         <td>{a.time}</td>
                                                         <td>{a.id}</td>
-                                                        <td><Button variant="primary" className="w-100" onClick={() => setLgShow(true)}>APPROVED</Button></td>
+                                                        <td> <Button variant="primary" onClick={(event) => handleApprovedButtonClick(event)} className="w-100">
+                                                            Approved
+                                                        </Button></td>
                                                         <td>{a.fname}</td>
                                                         <td>{a.lname}</td>
                                                         <td>{a.l_license}</td>
@@ -473,7 +488,28 @@ const Bookpackages = ({ tabKey }) => {
                 </Modal.Footer>
             </Modal>
 
-            <Modal
+
+            <Modal size="lg" show={lgShow} onHide={() => setLgShow(false)}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Change Status</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <Row>
+                        <Col lg={12} md={12} sm={12}>
+                            <Button variant="danger" className="w-100 m-2">PENDING </Button>
+                            <Button variant="warning" className="w-100 m-2">CANCELED</Button>
+                            <Button variant="secondary" className="w-100 m-2">CLOSE</Button>
+                        </Col>
+                    </Row>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={() => setLgShow(false)}>
+                        Close
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+
+            {/* <Modal
                 size="lg"
                 show={lgShow}
                 onHide={() => setLgShow(false)}
@@ -494,7 +530,7 @@ const Bookpackages = ({ tabKey }) => {
                     </Row>
 
                 </Modal.Body>
-            </Modal>
+            </Modal> */}
 
 
         </>
