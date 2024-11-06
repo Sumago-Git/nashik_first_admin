@@ -50,21 +50,21 @@ const SocialContact = () => {
       name: <CustomHeader name="Instagram" />,
       cell: (row) => <span>{row.instagram}</span>,
     },
+    // {
+    //   name: <CustomHeader name="Email" />,
+    //   cell: (row) => <span>{row.email}</span>,
+    // },
     {
-      name: <CustomHeader name="Email" />,
-      cell: (row) => <span>{row.email}</span>,
-    },
-    {
-      name: <CustomHeader name="Whatsapp" />,
+      name: <CustomHeader name="Youtube" />,
       cell: (row) => <span>{row.whatsapp}</span>,
     },
-    {
-      name: <CustomHeader name="Linkedin" />,
-      cell: (row) => <span>{row.linkedin}</span>,
-    },
+    // {
+    //   name: <CustomHeader name="Linkedin" />,
+    //   cell: (row) => <span>{row.linkedin}</span>,
+    // },
     {
       name: <CustomHeader name="Twitter" />,
-      cell: (row) => <span>{row.twitter}</span>,
+      cell: (row) => <span>{row.linkedin}</span>,
     },
     {
       name: <CustomHeader name="Actions" />,
@@ -276,7 +276,7 @@ const SocialContact = () => {
                         error={errors.instagram}
                       />
                     </Col>
-                    <Col md={6}>
+                    {/* <Col md={6}>
                       <NewResuableForm
                         label={"Email Id"}
                         placeholder={"Enter Email Id "}
@@ -286,11 +286,11 @@ const SocialContact = () => {
                         initialData={formData}
                         error={errors.email}
                       />
-                    </Col>
+                    </Col> */}
                     <Col md={6}>
                       <NewResuableForm
-                        label={"Whatsapp"}
-                        placeholder={"Enter Whatsapp Number "}
+                        label={"Youtube"}
+                        placeholder={"Enter Youtube Link "}
                         type={"text"}
                         name={"whatsapp"}
                         onChange={handleChange}
@@ -298,7 +298,7 @@ const SocialContact = () => {
                         error={errors.whatsapp}
                       />
                     </Col>
-                    <Col md={6}>
+                    {/* <Col md={6}>
                       <NewResuableForm
                         label={"LinkedIn"}
                         placeholder={"Enter LinkedIn Link "}
@@ -308,16 +308,16 @@ const SocialContact = () => {
                         initialData={formData}
                         error={errors.linkedin}
                       />
-                    </Col>
+                    </Col> */}
                     <Col md={6}>
                       <NewResuableForm
                         label={"Twitter"}
                         placeholder={"Enter Twitter Link "}
                         type={"text"}
-                        name={"twitter"}
+                        name={"linkedin"}
                         onChange={handleChange}
                         initialData={formData}
-                        error={errors.twitter}
+                        error={errors.linkedin}
                       />
                     </Col>
                   </Row>
