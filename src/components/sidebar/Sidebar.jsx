@@ -154,6 +154,18 @@ const SidebarMenu = [
       },
     ],
   },
+  {
+    menu: "Trinner",
+    url: "/trinner",
+    mainIcon: <MdOutlinePermContactCalendar size={24} />,
+    subMenu: [
+      {
+        subMenus: "Trinner",
+        url: "/trinner",
+        icon: <BsBuilding style={{ color: "red" }} size={24} />,
+      },
+    ],
+  },
   
   {
     menu: "Masters",

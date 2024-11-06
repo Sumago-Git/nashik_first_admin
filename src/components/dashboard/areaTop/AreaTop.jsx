@@ -112,6 +112,9 @@ const AreaTop = ({ buttonValue, tableView }) => {
     } else if (window.location.pathname == "/annualreport") {
       setHeader("Annual Report");
     }
+    else if (window.location.pathname == "/trinner") {
+      setHeader("Trinner");
+    }
     else if (window.location.pathname == "/annualreturn") {
       setHeader("Annual Return");
     }

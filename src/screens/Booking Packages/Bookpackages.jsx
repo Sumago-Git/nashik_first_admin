@@ -1,94 +1,114 @@
-import React, { useState } from "react";
-import { Container, Table, Col, Modal, Nav } from "react-bootstrap";
-import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
-import Chip from '@mui/material/Chip';
-import Button from 'react-bootstrap/Button';
-import './bookingpckg.css';
-
+import React, { useState, useEffect } from "react";
+import { Container, Table, Col, Row } from "react-bootstrap";
 import leftarrow from "../../assets/Holiday/leftarrow.png";
 import rightarrow from "../../assets/Holiday/rightarrow.png";
+import { confirmAlert } from "react-confirm-alert";
+import Button from 'react-bootstrap/Button';
+import Modal from 'react-bootstrap/Modal';
+import Tab from 'react-bootstrap/Tab';
+import Tabs from 'react-bootstrap/Tabs';
+import { jsPDF } from "jspdf"; // Import jsPDF
 
-import Card from 'react-bootstrap/Card';
+import cirtificate from '../../assets/Holiday/cirtificate.png'
 
+const Bookpackages = ({ tabKey }) => {
+    const [show, setShow] = useState(false);
+    const [selectedDate, setSelectedDate] = useState("");
+    const [selectedDay, setSelectedDay] = useState("");
 
-
-import Row from 'react-bootstrap/Row';
-
-
-
-const eventData = [
-    { date: '2024-09-05', text: 'Holiday' },
-    { date: '2024-09-15', text: 'Available' },
-    { date: '2024-09-25', text: 'Meeting' },
-];
-
-const Bookingpackages = () => {
-
-    const [smShow, setSmShow] = useState(false);
     const [lgShow, setLgShow] = useState(false);
 
+    const [show2, setShow2] = useState(false);
 
-    const [showModal, setShowModal] = useState(false);
-    const [selectedCustomer, setSelectedCustomer] = useState(null);
-    const handleShowModal = (customer) => {
-        setSelectedCustomer(customer); // Set the selected customer
-        setShowModal(true); // Show the modal
+    const handleClose2 = () => setShow1(false);
+    const handleShow2 = () => setShow2(true);
+
+
+    const [selectedBooking, setSelectedBooking] = useState(null); // New state for selected booking
+
+    const [isEditing, setIsEditing] = useState(false); // State for edit mode
+
+    const handleEdit = () => {
+        setIsEditing(true); // Enable edit mode
+    };
+
+    const handleSave = () => {
+        // Here you can add logic to save changes to your state or backend
+        setIsEditing(false); // Disable edit mode
     };
 
 
-    const [isEditing, setIsEditing] = useState(false); // Track if in edit mode
-    const [firstName, setFirstName] = useState(''); // Initial first name
-    const [lastName, setLastName] = useState(''); // Initial last name
 
-    // Toggle between editing and view mode
-    const handleEditClick = () => {
-        setIsEditing(!isEditing);
-    };
-
-    // Save changes and exit editing mode
-    const handleSaveClick = () => {
-        setIsEditing(false);
-        // You can also handle any save logic here (e.g., API call)
-    };
-
-    const [show, setShow] = useState(false);
-    const [selectedDate, setSelectedDate] = useState(null);
-    const [currentDate, setCurrentDate] = useState(new Date());
-    const [key, setKey] = useState('details'); // Set initial tab to 'details'
-
-    const [showHelloModal, setShowHelloModal] = useState(false);
     const handleClose = () => setShow(false);
-    const handleShow = () => {
-        setKey('details'); // Reset to 'details' when the modal opens
-        setShow(true);
-    };
+    const handleShow = () => setShow(true);
 
-    const handleCloseHelloModal = () => setShowHelloModal(false);
-    const handleShowHelloModal = () => setShowHelloModal(true);
-    const handleCloseModal = () => {
-        setShowModal(false);
-        setSelectedCustomer(null); // Clear selected customer when closing modal
-    };
+    const handleShow1 = () => setShow1(true);
+    const [show1, setShow1] = useState(false);
+    const handleClose1 = () => setShow1(false);
 
+    const [currentDate, setCurrentDate] = useState(new Date());
+    const [loading, setLoading] = useState(false);
+    const [isMobileView, setIsMobileView] = useState(window.innerWidth <= 768);
+
+    const specialDates = [
+        { date: 18, label: "Holiday", style: { backgroundColor: "#742929", color: "#ecc2c2" } },
+        { date: 15, label: "Closed", style: { backgroundColor: "#ffd4d4", color: "red" } },
+        { date: 22, label: "Available", style: { backgroundColor: "#d4ffd4", color: "green" } },
+    ];
+
+    useEffect(() => {
+        const handleResize = () => {
+            setIsMobileView(window.innerWidth <= 768);
+        };
+
+        window.addEventListener("resize", handleResize);
+        return () => {
+            window.removeEventListener("resize", handleResize);
+        };
+    }, []);
 
     const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-    const getDaysInMonth = (month, year) => new Date(year, month + 1, 0).getDate();
-    const getFirstDayOfMonth = (month, year) => new Date(year, month, 1).getDay();
+    const monthNames = [
+        "January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December"
+    ];
 
     const changeMonth = (direction) => {
-        setCurrentDate(prevDate => {
+        setCurrentDate((prevDate) => {
             const newDate = new Date(prevDate);
             newDate.setMonth(direction === 'prev' ? newDate.getMonth() - 1 : newDate.getMonth() + 1);
             return newDate;
         });
     };
 
-    const currentMonth = currentDate.getMonth();
-    const currentYear = currentDate.getFullYear();
-    const daysInMonth = getDaysInMonth(currentMonth, currentYear);
+    const isPastDate = (day) => {
+        const selectedDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        return selectedDate < today;
+    };
+
+    const getSpecialDateLabel = (day) => {
+        return specialDates.find(dateObj => dateObj.date === day);
+    };
+
+    const handleDayClick = (day) => {
+        if (day && !isPastDate(day)) {
+            const clickedDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
+            const dayOfWeek = daysOfWeek[clickedDate.getDay()];
+            const formattedDate = clickedDate.toLocaleDateString();
+            setSelectedDate(formattedDate);
+            setSelectedDay(dayOfWeek);
+            handleShow();
+        }
+    };
+
+    const daysInMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).getDate();
+    const startingDay = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1).getDay();
+
     const daysArray = Array.from({ length: daysInMonth }, (_, index) => index + 1);
-    const startingDay = getFirstDayOfMonth(currentMonth, currentYear);
     const firstWeek = Array(startingDay).fill(null).concat(daysArray.slice(0, 7 - startingDay));
+
     const chunkArray = (arr, size) => {
         const result = [];
         for (let i = 0; i < arr.length; i += size) {
@@ -96,282 +116,157 @@ const Bookingpackages = () => {
         }
         return result;
     };
+
     const weeks = chunkArray(daysArray.slice(7 - startingDay), 7);
     weeks.unshift(firstWeek);
+
     const lastWeek = weeks[weeks.length - 1];
-    const remainingCells = 7 - lastWeek.length;
-    const nextMonthDays = Array.from({ length: remainingCells }, (_, index) => index + 1);
-    lastWeek.push(...nextMonthDays.map(day => ({ day, isNextMonth: true })));
+    lastWeek.push(...Array(7 - lastWeek.length).fill(null));
 
-    const monthNames = [
-        "January", "February", "March", "April", "May", "June",
-        "July", "August", "September", "October", "November", "December"
-    ];
-
-    const today = new Date();
-    const isCurrentMonth = currentMonth === today.getMonth() && currentYear === today.getFullYear();
-
-    const handleDateClick = (day) => {
-        if (day) {
-            const clickedDate = new Date(currentYear, currentMonth, day);
-            setSelectedDate(clickedDate);
-            handleShow();
+    const bookingpack_data = [
+        {
+            time: "03:00 pm",
+            id: 6231,
+            fname: 'Amit',
+            lname: 'Patil',
+            l_license: "Leraning License",
+            fees: 75418,
+            status: "Not Confirmed"
+        },
+        {
+            time: "03:00 pm",
+            id: 6512,
+            fname: 'Mohit',
+            lname: 'Patil',
+            l_license: "Leraning License",
+            fees: 74185,
+            status: "Attended"
+        },
+        {
+            time: "03:00 pm",
+            id: 6254,
+            fname: 'Karan',
+            lname: 'Panjwani',
+            l_license: "Leraning License",
+            fees: 79541,
+            status: "Attended"
+        },
+        {
+            time: "03:00 pm",
+            id: 6325,
+            fname: 'kaif',
+            lname: 'Shaikh',
+            l_license: "Leraning License",
+            fees: 78415,
+            status: "Attended"
         }
-    };
-
-    const isPastDate = (day) => {
-        const dateToCheck = new Date(currentYear, currentMonth, day);
-        return dateToCheck < today.setHours(0, 0, 0, 0);
-    };
-
-    const renderButtonsForDate = (day) => {
-        if (day && !isPastDate(day) && (day === 15 || day === 29)) {
-            return (
-                <div
-                    style={{
-                        maxHeight: '50px',
-                        overflowY: 'auto',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        gap: '3px',
-                    }}
-                >
-                    <Chip
-                        label="Available"
-                        onClick={handleClick}
-                        style={{
-                            backgroundColor: 'green',
-                            color: 'white',
-                            fontSize: '8px',
-                            height: '16px',
-                            padding: '0 4px',
-                        }}
-                    />
-                    <Chip
-                        label="Holiday"
-                        onClick={handleClick}
-                        style={{
-                            backgroundColor: 'orange',
-                            color: 'black',
-                            fontSize: '8px',
-                            height: '16px',
-                            padding: '0 4px',
-                        }}
-                    />
-                    <Chip
-                        label="Close"
-                        onClick={handleClick}
-                        style={{
-                            backgroundColor: 'red',
-                            color: 'white',
-                            fontSize: '8px',
-                            height: '16px',
-                            padding: '0 4px',
-                        }}
-                    />
-                </div>
-            );
-        }
-        return null;
-    };
-
-    const handleClick = () => {
-        console.info('You clicked the Chip.');
-    };
-
-
-    const customer_table = [
-        {
-            time: "03:00 p.m",
-            count: 62514,
-
-            fname: "Amit",
-            lname: "Patil",
-            category: "Learning Licence",
-            fees: 7512,
-            active: "Not Confirmed"
-        },
-        {
-            time: "03:00 p.m",
-            count: 62315,
-
-            fname: "Mohit",
-            lname: "Patil",
-            category: "Learining Licence",
-            fees: 7945,
-            active: "Attended"
-        },
-        {
-            time: "03:00 p.m",
-            count: 65214,
-
-            fname: "Raju",
-            lname: "Rao",
-            category: "Learining Licence",
-            fees: 9564,
-            active: "Attended"
-        },
-        {
-            time: "03:00 p.m",
-            count: 75415,
-
-            fname: "Prathamesh",
-            lname: "Patil",
-            category: "Learining Licence",
-            fees: 6534,
-            active: "Attended"
-        },
-        {
-            time: "03:00 p.m",
-            count: 75486,
-
-            fname: "Ketan",
-            lname: "Patil",
-            category: "Learining Licence",
-            fees: 5124,
-            active: "Attended"
-        },
-        {
-            time: "03:00 p.m",
-            count: 79458,
-
-            fname: "Tejas",
-            lname: "Patil",
-            category: "Learining Licence",
-            fees: 6213,
-            active: "Attended"
-        },
-        {
-            time: "03:00 p.m",
-            count: 74581,
-
-            fname: "Raje",
-            lname: "Gaikwad",
-            category: "Learining Licence",
-            fees: 6213,
-            active: "Attended"
-        },
-        {
-            time: "03:00 p.m",
-            count: 76235,
-
-            fname: "pk",
-            lname: "rao",
-            category: "Learining Licence",
-            fees: 5213,
-            active: "Attended"
-        },
-        {
-            time: "03:00 p.m",
-            count: 79458,
-
-            fname: "Tejas",
-            lname: "Patil",
-            category: "Learining Licence",
-            fees: 6213,
-            active: "Attended"
-        },
-        {
-            time: "03:00 p.m",
-            count: 74581,
-
-            fname: "Raje",
-            lname: "Gaikwad",
-            category: "Learining Licence",
-            fees: 6213,
-            active: "Attended"
-        },
-        {
-            time: "03:00 p.m",
-            count: 79458,
-
-            fname: "Tejas",
-            lname: "Patil",
-            category: "Learining Licence",
-            fees: 6213,
-            active: "Attended"
-        },
-        {
-            time: "03:00 p.m",
-            count: 74581,
-
-            fname: "Raje",
-            lname: "Gaikwad",
-            category: "Learining Licence",
-            fees: 6213,
-            active: "Attended"
-        },
     ]
 
+    const handleDownloadCertificate = async () => {
+        const doc = new jsPDF();
+
+        // Add the certificate background image
+        const image = await import('../../assets/Holiday/cirt.jpg'); // Make sure the path is correct
+        const imgData = image.default; // Get the image data
+
+        // Add the background image to the PDF
+        doc.addImage(imgData, 'PNG', 0, 0, 210, 297); // Adjust width and height as necessary
+
+        // Set font for the user's name
+        doc.setFont("cursive");
+        doc.setFontSize(36);
+        doc.setTextColor("#4e4e95");
+
+        // Prepare user's name
+        const nameText = `${selectedBooking.fname} ${selectedBooking.lname}`;
+        const nameWidth = doc.getTextWidth(nameText); // Get the width of the name text
+
+        // Calculate position for centered text
+        const xPosition = (250 - nameWidth) / 2; // Centering in a A4 size PDF
+        const yPosition = 140; // Adjust as needed for vertical positioning
+
+        // Draw user's name
+        doc.text(nameText, xPosition, yPosition);
+
+        // Optional: Draw additional details (if needed)
+        doc.setFontSize(24); // Font size for additional details
+        doc.setFont("Arial"); // Font for additional details
+        doc.setTextColor("#000"); // Color for additional text
+
+
+
+        // Save the PDF
+        doc.save(`${selectedBooking.fname}_certificate.pdf`); // Save the PDF with the user's name
+    };
+
+
+
+    const handleRowClick = (a) => {
+        setSelectedBooking(a); // Set the selected booking data
+        handleShow1();
+    };
 
     return (
         <>
-            <Container fluid className="slotbg pb-5 mb-4">
-                <Container className="calender ">
-                    {/* <Col lg={12} className="mt-4 d-flex justify-content-between align-items-center">
-                        <button className="btn" onClick={() => changeMonth('prev')} disabled={isCurrentMonth}>
-                            <FaArrowLeft />
-                        </button>
-                        <div className="d-flex flex-grow-1 justify-content-center">
-                            <h3 className="calenderheadline mx-4" style={{ margin: '0', textAlign: 'center' }}>
-                                {monthNames[currentMonth]} {currentYear}
-                            </h3>
-                        </div>
-                        <button className="btn" onClick={() => changeMonth('next')}>
-                            <FaArrowRight />
-                        </button>
-                    </Col> */}
+            <Container fluid className="slotbg mt-4">
+                <Container className="calender">
                     <Col lg={12} className="d-flex justify-content-center align-items-center bg-white">
                         <button className="btn ms-1" onClick={() => changeMonth('prev')}>
                             <img src={leftarrow} className="w-75 arrowimg" alt="Previous" />
                         </button>
                         <h3 className="calenderheadline mx-4">
-                            {monthNames[currentMonth]} {currentYear}
+                            {monthNames[currentDate.getMonth()]} {currentDate.getFullYear()}
                         </h3>
                         <button className="btn ms-1" onClick={() => changeMonth('next')}>
                             <img src={rightarrow} className="w-75 arrowimg" alt="Next" />
                         </button>
                     </Col>
 
-                    <Container className="mt-4">
-                        {/* <Card>
-                            <Card.Body>This is some text within a card body.</Card.Body>
-                        </Card> */}
-                        <Table responsive style={{ tableLayout: 'fixed', borderCollapse: 'collapse', width: '100%' }}>
+                    <Container className="mt-4 card py-4">
+                        <Table responsive style={{ tableLayout: 'fixed', borderCollapse: 'collapse' }}>
                             <thead>
                                 <tr className="text-start">
-                                    {daysOfWeek.map((day) => (
-                                        <th key={day}>{day}</th>
-                                    ))}
+                                    {daysOfWeek.map((day) => <th key={day}>{day}</th>)}
                                 </tr>
                             </thead>
                             <tbody>
                                 {weeks.map((week, weekIndex) => (
-                                    <tr key={weekIndex} style={{ cursor: 'default' }}>
-                                        {week.map((day, dayIndex) => {
-                                            const disabled = day && isPastDate(day);
-
-                                            return (
-                                                <td
-                                                    key={dayIndex}
-                                                    onClick={() => !disabled && handleDateClick(day)}
-                                                    style={{
-                                                        height: "100px",
-                                                        textAlign: "end",
-                                                        verticalAlign: "middle",
-                                                        backgroundColor: day && (day.isNextMonth ? "#f0f0f0" : (disabled ? "#f9f9f9" : "white")),
-                                                        color: day && (day.isNextMonth ? "#ccc" : disabled ? "#999" : "black"),
-                                                        pointerEvents: day && (disabled ? "none" : "auto"),
-                                                        fontFamily: "Poppins",
-                                                        fontWeight: "600",
-                                                    }}
-                                                >
-                                                    {day && (day.isNextMonth ? day.day : day || "")}
-                                                    {renderButtonsForDate(day)}
-                                                </td>
-                                            );
-                                        })}
+                                    <tr key={weekIndex}>
+                                        {week.map((day, dayIndex) => (
+                                            <td
+                                                key={dayIndex}
+                                                onClick={() => handleDayClick(day)}
+                                                style={{
+                                                    height: "100px",
+                                                    textAlign: "end",
+                                                    verticalAlign: "middle",
+                                                    backgroundColor: day ? (isPastDate(day) ? "#f7f7f7" : "white") : "#f0f0f0",
+                                                    color: day ? (isPastDate(day) ? "black" : "black") : "transparent",
+                                                    cursor: day && !isPastDate(day) ? "pointer" : "default",
+                                                    fontFamily: "Poppins",
+                                                    fontWeight: "600",
+                                                    opacity: isPastDate(day) ? 0.5 : 1,
+                                                    borderLeft: "1px solid #ddd",
+                                                }}
+                                            >
+                                                <div style={{ textAlign: "end" }}>{day || ""}</div>
+                                                <br />
+                                                {day && !isPastDate(day) && getSpecialDateLabel(day) && (
+                                                    <div style={{
+                                                        fontSize: "0.8rem",
+                                                        padding: "4px 8px",
+                                                        borderRadius: "12px",
+                                                        ...getSpecialDateLabel(day).style,
+                                                        width: "70px",
+                                                        textAlign: "center",
+                                                        whiteSpace: "nowrap",
+                                                        margin: "0 auto",
+                                                    }}>
+                                                        {isMobileView ? getSpecialDateLabel(day).label.charAt(0) : getSpecialDateLabel(day).label}
+                                                    </div>
+                                                )}
+                                            </td>
+                                        ))}
                                     </tr>
                                 ))}
                             </tbody>
@@ -380,68 +275,50 @@ const Bookingpackages = () => {
                 </Container>
             </Container>
 
-            <Modal show={show} onHide={handleClose} fullscreen>
+            <Modal
+                show={show}
+                onHide={handleClose}
+                backdrop="static"
+                keyboard={false}
+                fullscreen
+            >
                 <Modal.Header closeButton>
                     <Modal.Title>
-                        {selectedDate
-                            ? ` ${selectedDate.toLocaleString('default', { weekday: 'long' })}, ${selectedDate.toLocaleDateString()}`
-                            : 'No date selected'}
+                        ({selectedDay}) {selectedDate}
                     </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <Nav variant="tabs" activeKey={key} onSelect={(k) => setKey(k)}>
-                        <Nav.Item>
-                            <Nav.Link eventKey="details">Customer</Nav.Link>
-                        </Nav.Item>
-                        <Nav.Item>
-                            <Nav.Link eventKey="events">Booking</Nav.Link>
-                        </Nav.Item>
-
-                    </Nav>
-                    {key === 'details' && (
-                        <div className="mt-2">
+                    <Tabs defaultActiveKey="tab1" id="modal-tabs" className="mb-3">
+                        <Tab eventKey="tab1" title="Customer">
                             <Table striped bordered hover responsive="sm">
                                 <tbody>
                                     {
-                                        customer_table.map((a) => {
+                                        bookingpack_data.map((a) => {
                                             return (
                                                 <>
-                                                    <tr>
+                                                    <tr onClick={() => { handleRowClick(a) }}>
                                                         <td>{a.time}</td>
-                                                        <td>{a.count}</td>
-                                                        <td >
-                                                            <Button
-                                                                variant="success"
-                                                                onClick={() => handleShowModal(a)} // Pass customer data
-                                                            >
-                                                                APPROVED
-                                                            </Button>
-                                                        </td>
+                                                        <td>{a.id}</td>
+                                                        <td><Button variant="primary" className="w-100" onClick={() => setLgShow(true)}>APPROVED</Button></td>
                                                         <td>{a.fname}</td>
                                                         <td>{a.lname}</td>
-                                                        <td>{a.category}</td>
+                                                        <td>{a.l_license}</td>
                                                         <td>{a.fees}</td>
-                                                        <td>{a.active}</td>
+                                                        <td>{a.status}</td>
                                                     </tr>
                                                 </>
                                             )
                                         })
                                     }
 
-
-
                                 </tbody>
                             </Table>
+                        </Tab>
+                        <Tab eventKey="tab2" title="Booking">
+                            <h1>Hii Tab 2</h1>
 
-                        </div>
-                    )}
-                    {key === 'events' && (
-                        <div>
-                            <h5>Events</h5>
-
-                        </div>
-                    )}
-
+                        </Tab>
+                    </Tabs>
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={handleClose}>
@@ -450,107 +327,144 @@ const Bookingpackages = () => {
                 </Modal.Footer>
             </Modal>
 
-            <Modal show={showModal} onHide={handleCloseModal} size="lg">
+
+
+            {/* 
+            <Button variant="primary" onClick={handleShow}>
+                Launch demo modal
+            </Button> */}
+
+            <Modal show={show1} onHide={handleClose1} size="lg" className="modaldetail">
                 <Modal.Header closeButton>
                     <Modal.Title>Customer Details</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <Container fluid>
-                        <Row>
-                            {selectedCustomer ? (
-                                <>
-                                    <Col lg={6} md={6} sm={12}>
-                                        <b>ID :</b><br /><span> 6231</span>
-                                    </Col>
-                                    <Col lg={6} md={6} sm={12} className="pb-2">
-                                        <Button variant="primary" className="w-100" onClick={() => setLgShow(true)}>Approved</Button>
-                                    </Col>
-                                    <hr></hr>
-                                    <Col lg={6} md={6} sm={12}>
-                                        <b>Booking Date </b><br /> 17/2/2024
-                                    </Col>
-                                    <Col lg={6} md={6} sm={12} className="pb-2">
-                                        <b>Payment Method  </b><br />I will pay Locally
-                                    </Col>
-                                    <hr></hr>
-                                    <Col lg={6} md={6} sm={12}>
-                                        <b>Submission Date </b><br /> 17/2/2024
-                                    </Col>
-                                    <Col lg={6} md={6} sm={12} className="pb-2">
-                                        <b>First Name  </b><br />
-                                        {isEditing ? (
-                                            <input
-                                                type="text"
-                                                value={firstName}
-                                                onChange={(e) => setFirstName(e.target.value)}
-                                            />
-                                        ) : (
-                                            <span>{selectedCustomer.fname}</span>
-                                        )}
-                                    </Col>
-                                    <hr></hr>
-                                    <Col lg={6} md={6} sm={12}>
-                                        <b>Last Name </b><br />
-                                        {/* {selectedCustomer.lname} */}
-                                        {isEditing ? (
-                                            <input
-                                                type="text"
-                                                value={lastName}
-                                                onChange={(e) => setLastName(e.target.value)}
-                                            />
-                                        ) : (
-                                            <span>{selectedCustomer.lname}</span>
-                                        )}
-                                    </Col>
-                                    <Col lg={6} md={6} sm={12} className="pb-2">
-                                        <b>Tranning For  </b><br />{selectedCustomer.category}
-                                    </Col>
-                                    <hr></hr>
-                                    <Col lg={6} md={6} sm={12}>
-                                        <b>Cirtificate Number </b><br />9561254187
-                                    </Col>
-                                    <Col lg={6} md={6} sm={12} className="pb-2">
-                                        <b>Tranning Status </b><br />Attended
-                                    </Col>
-                                    <hr></hr>
-                                    <Col lg={6} md={6} sm={12}>
-                                        <b>Learining Licenice Number </b> <br />MH15AB2154
-                                    </Col>
-                                    <Col lg={6} md={6} sm={12} className="pb-2">
-                                        <b>Emial  </b><br />sdjhghv@gmail.com
-                                    </Col>
-                                    <hr></hr>
-                                    <Col lg={6} md={6} sm={12}>
-                                        <b>Phone No </b><br />7451254189
-                                    </Col>
-                                    <Col lg={6} md={6} sm={12} className="pb-2">
-                                        <b>Vehicle type  </b><br />2 wheelar
-                                    </Col>
-                                    <hr></hr>
-                                    <Col lg={6} md={6} sm={12} className="pb-2">
-                                        <b>Print </b>
-                                        <Button variant="outline-danger m-3">Print Cirtificate</Button>
-                                    </Col>
+                    {selectedBooking && (
+                        <div>
+                            <Row>
+                                <Col lg={6} md={6} sm={12} className="pb-4">
+                                    <b>ID</b><br />
+                                    {selectedBooking.id}<br />
+                                </Col>
+                                <Col lg={6} md={6} sm={12}>
+                                    <b>Status</b><br />
+                                    <Button variant="success" className="w-100">Approved</Button>
+                                </Col>
+                                <hr></hr>
 
-                                    <hr></hr>
+                                <Col lg={6} md={6} sm={12} className="pb-4">
+                                    <b>Booking Date</b><br />
+                                    Monday 17/10/2024 , 03:00 PM - Session 2
+                                </Col>
+                                <Col lg={6} md={6} sm={12}>
+                                    <b>Payment Method</b><br />
+                                    I Will pay Locally
+                                </Col>
+                                <hr></hr>
 
+                                <Col lg={6} md={6} sm={12} className="pb-4">
+                                    <b>Submission Date</b><br />
+                                    Tuesday 18/10/2024 , 03:00 PM<br />
+                                </Col>
+                                <Col lg={6} md={6} sm={12}>
+                                    <b>First Name:</b><br />
+                                    {isEditing ? (
+                                        <input
+                                            type="text"
+                                            defaultValue={selectedBooking.fname}
+                                            onChange={(e) => setSelectedBooking({ ...selectedBooking, fname: e.target.value })}
+                                        />
+                                    ) : (
+                                        selectedBooking.fname
+                                    )}
+                                </Col>
+                                <hr></hr>
 
-                                </>
-                            ) : (
-                                <p>No customer selected.</p>
-                            )}
+                                <Col lg={6} md={6} sm={12} className="pb-4">
+                                    <b>Last Name</b><br />
+                                    {isEditing ? (
+                                        <input
+                                            type="text"
+                                            defaultValue={selectedBooking.lname}
+                                            onChange={(e) => setSelectedBooking({ ...selectedBooking, lname: e.target.value })}
+                                        />
+                                    ) : (
+                                        selectedBooking.lname
+                                    )}
+                                </Col>
+                                <Col lg={6} md={6} sm={12}>
+                                    <b>Training For</b><br />
+                                    {isEditing ? (
+                                        <input
+                                            type="text"
+                                            defaultValue={selectedBooking.l_license}
+                                            onChange={(e) => setSelectedBooking({ ...selectedBooking, l_license: e.target.value })}
+                                        />
+                                    ) : (
+                                        selectedBooking.l_license
+                                    )}
 
-                        </Row>
-                    </Container>
+                                </Col>
+                                <hr></hr>
 
+                                <Col lg={6} md={6} sm={12} className="pb-4">
+                                    <b>Cirtificate Number</b><br />
+                                    {selectedBooking.fees}
+                                </Col>
+                                <Col lg={6} md={6} sm={12}>
+                                    <b>Tranning Status</b><br />
+                                    {selectedBooking.status}
+                                </Col>
+                                <hr></hr>
+
+                                <Col lg={6} md={6} sm={12} className="pb-4">
+                                    <b>Learinning Licenses Number</b><br />
+                                    MH 15 AB 7541
+                                </Col>
+                                <Col lg={6} md={6} sm={12}>
+                                    <b>Email</b><br />
+                                    dcdc@gmail.com
+                                </Col>
+                                <hr></hr>
+
+                                <Col lg={6} md={6} sm={12} className="pb-4">
+                                    <b>Phone Number</b><br />
+                                    9512475846
+                                </Col>
+                                <Col lg={6} md={6} sm={12}>
+                                    <b>Vehical Type</b><br />
+                                    2 Wheeler , 4 wheeler light
+                                </Col>
+                                <hr></hr>
+
+                                <Col lg={6} md={6} sm={12} className="pb-4">
+                                    <b>Print </b><br />
+                                    <Button variant="danger" onClick={handleDownloadCertificate}>Print Cirtificate</Button>
+                                </Col>
+
+                                <Col lg={12} className="text-end">
+
+                                </Col>
+                            </Row>
+                        </div>
+                    )}
                 </Modal.Body>
-                <Modal.Footer>
 
-                    <Button variant="danger">Delete</Button>
-                    <Button variant="success" onClick={isEditing ? handleSaveClick : handleEditClick} >{isEditing ? 'Save' : 'Edit'}</Button>
+                <Modal.Footer>
+                    <Button variant="danger" >
+                        Delete
+                    </Button>
+                    {isEditing ? (
+                        <Button variant="primary" onClick={handleSave}>
+                            Save
+                        </Button>
+                    ) : (
+                        <Button variant="secondary" onClick={handleEdit}>
+                            Edit
+                        </Button>
+                    )}
                 </Modal.Footer>
             </Modal>
-
 
             <Modal
                 size="lg"
@@ -563,14 +477,21 @@ const Bookingpackages = () => {
                         Change Status
                     </Modal.Title>
                 </Modal.Header>
-                <Modal.Body>
-                    <Button variant="danger" className="w-100 mb-2">PENDING</Button>
-                    <Button variant="warning" className="w-100 mb-2">CANCELED</Button>
-                    <Button variant="secondary" className="w-100 mb-2">CLOSE</Button>
+                <Modal.Body >
+                    <Row>
+                        <Col lg={12} md={12} sm={12}>
+                            <Button variant="danger" className="w-100 m-2">PENDING </Button>
+                            <Button variant="warning" className="w-100 m-2">CANCELED</Button>
+                            <Button variant="secondary" className="w-100 m-2">CLOSE</Button>
+                        </Col>
+                    </Row>
+
                 </Modal.Body>
             </Modal>
+
+
         </>
     );
 };
 
-export default Bookingpackages;
+export default Bookpackages;

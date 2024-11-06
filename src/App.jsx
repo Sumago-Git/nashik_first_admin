@@ -29,6 +29,7 @@ import UpcommingEvents from "./screens/submenus/UpcommingEvents";
 import PastEvents from "./screens/submenus/PastEvents";
 import Calender from "./screens/submenus/Booking/Calender";
 import Bookpackages from "./screens/Booking Packages/Bookpackages";
+import Trainer from "./components/Trainer/Trainer";
 
 function App() {
   return (
@@ -77,6 +78,10 @@ function App() {
           <Route
             path="/annualreport"
             element={<ProtectedRoutes Component={AnnualReport} />}
+          />
+          <Route
+            path="/trinner"
+            element={<ProtectedRoutes Component={Trainer} />}
           />
           <Route
             path="/annualreturn"
