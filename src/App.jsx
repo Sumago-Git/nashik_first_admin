@@ -30,6 +30,7 @@ import PastEvents from "./screens/submenus/PastEvents";
 import Calender from "./screens/submenus/Booking/Calender";
 import Bookpackages from "./screens/Booking Packages/Bookpackages";
 import Trainer from "./components/Trainer/Trainer";
+import Thanksto from "./components/ThanksTo/Thanksto";
 
 function App() {
   return (
@@ -94,6 +95,10 @@ function App() {
           <Route
             path="/pastevents"
             element={<ProtectedRoutes Component={PastEvents} />}
+          />
+          <Route
+            path="/thanksto"
+            element={<ProtectedRoutes Component={Thanksto} />}
           />
           <Route
             path="/upcommingevents"

@@ -181,6 +181,9 @@ const AreaTop = ({ buttonValue, tableView }) => {
     } else if (window.location.pathname == "/productimages") {
       setHeader("Product Images");
     }
+    else if (window.location.pathname == "/thanksto") {
+      setHeader("Thanks To ");
+    }
     else if (window.location.pathname == "/trafficawarenessvideo") {
       setHeader("Video");
     }

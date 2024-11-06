@@ -155,13 +155,25 @@ const SidebarMenu = [
     ],
   },
   {
-    menu: "Trinner",
+    menu: "Trainer",
     url: "/trinner",
     mainIcon: <MdOutlinePermContactCalendar size={24} />,
     subMenu: [
       {
-        subMenus: "Trinner",
+        subMenus: "Trainer",
         url: "/trinner",
+        icon: <BsBuilding style={{ color: "red" }} size={24} />,
+      },
+    ],
+  },
+  {
+    menu: "Thanks To ",
+    url: "/thanksto",
+    mainIcon: <MdOutlinePermContactCalendar size={24} />,
+    subMenu: [
+      {
+        subMenus: "Thanks To",
+        url: "/thanksto",
         icon: <BsBuilding style={{ color: "red" }} size={24} />,
       },
     ],

@@ -178,6 +178,8 @@ const PastEvents = () => {
     const handleChange = (name, value) => {
         if (name === "img" && value instanceof File) {
             setFormData((prevFormData) => ({ ...prevFormData, [name]: value }));
+            console.log("name : " , value);
+            
             setErrors((prevErrors) => ({ ...prevErrors, img: "" }));
         } else if (name === "img" && value) {
             const fileType = value.type;
