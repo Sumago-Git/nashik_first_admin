@@ -160,7 +160,10 @@ const Holiday = () => {
             const clickedDate = new Date(currentYear, currentMonth, day);
             console.log(`Selected Date: ${clickedDate.toLocaleDateString()}`);
             alertBox(clickedDate.toLocaleDateString())
+            console.log("Date : ", clickedDate);
         }
+
+        
     };
 
     return (

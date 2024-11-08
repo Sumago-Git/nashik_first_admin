@@ -89,7 +89,15 @@ const AreaTop = ({ buttonValue, tableView }) => {
     "/trafficawarenessvideo",
     "/calender",
     "/bookpackg",
-    "/thanksto"
+    "/thanksto",
+    "/homebanner",
+    "/objective-of-anf",
+    "/photo-gallary",
+    "/home-counter",
+    "/directors",
+    "/follow-on-us",
+    "/news",
+    "/home-videos"
   ];
   const isHiddenPath = hiddenPaths.includes(location.pathname);
 
@@ -100,7 +108,32 @@ const AreaTop = ({ buttonValue, tableView }) => {
       setHeader("Header Contact");
     } else if (window.location.pathname == "/homeslider") {
       setHeader("Image Slider");
-    } else if (window.location.pathname == "/carousal") {
+    } 
+    else if (window.location.pathname == "/news") {
+      setHeader("News");
+    }
+    else if (window.location.pathname == "/home-videos") {
+      setHeader("Home Video");
+    }
+    else if (window.location.pathname == "/homebanner") {
+      setHeader("Home Banner");
+    }
+    else if (window.location.pathname == "/home-counter") {
+      setHeader("Home Counter");
+    }
+    else if (window.location.pathname == "/directors") {
+      setHeader("Directors");
+    }
+    else if (window.location.pathname == "/follow-on-us") {
+      setHeader("Follow on Us");
+    }
+    else if (window.location.pathname == "/photo-gallary") {
+      setHeader("Photo Gallary");
+    }
+    else if (window.location.pathname == "/objective-of-anf") {
+      setHeader("Objective Of ANF");
+    }
+    else if (window.location.pathname == "/carousal") {
       setHeader("Home Sliding Media");
     } else if (window.location.pathname == "/leadership") {
       setHeader("Leadership");
@@ -114,7 +147,7 @@ const AreaTop = ({ buttonValue, tableView }) => {
       setHeader("Annual Report");
     }
     else if (window.location.pathname == "/trinner") {
-      setHeader("Trinner");
+      setHeader("Trainer");
     }
     else if (window.location.pathname == "/annualreturn") {
       setHeader("Annual Return");
@@ -186,7 +219,7 @@ const AreaTop = ({ buttonValue, tableView }) => {
       setHeader("Thanks To ");
     }
     else if (window.location.pathname == "/trafficawarenessvideo") {
-      setHeader("Video");
+      setHeader("Our Video");
     }
 
   }, [window.location.pathname]);

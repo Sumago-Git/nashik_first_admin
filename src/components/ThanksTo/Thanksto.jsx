@@ -13,6 +13,8 @@ import instance from '../../api/AxiosInstance';
 
 import { confirmAlert } from "react-confirm-alert";
 import "react-confirm-alert/src/react-confirm-alert.css";
+import { useSearchExport } from '../../context/SearchExportContext';
+import SearchInput from '../search/SearchInput';
 
 function Thanksto() {
     const [title, setTitle] = useState("");
@@ -24,6 +26,9 @@ function Thanksto() {
     const [editMode, setEditMode] = useState(false);
     const [editId, setEditId] = useState(null);
     const [activeStatus, setActiveStatus] = useState({}); // Track isActive status
+
+    const { searchQuery, handleSearch, handleExport, setData, filteredData } =
+        useSearchExport();
 
     const validateForm = () => {
         let errors = {};
@@ -173,8 +178,12 @@ function Thanksto() {
                     </Button>
                 </Card.Header>
                 <Card.Body>
+                   
                     {showAdd ? (
+                       
                         getadmin_data.length > 0 ? (
+                            <>
+                            <SearchInput value={searchQuery} onChange={handleSearch} />
                             <Table striped bordered hover responsive="sm">
                                 <thead>
                                     <tr>
@@ -221,6 +230,7 @@ function Thanksto() {
                                     ))}
                                 </tbody>
                             </Table>
+                            </>
                         ) : (
                             <Alert variant="warning" className="text-center">
                                 No data found

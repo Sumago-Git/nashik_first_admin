@@ -14,18 +14,14 @@ import instance from '../../api/AxiosInstance';
 import { confirmAlert } from "react-confirm-alert";
 import "react-confirm-alert/src/react-confirm-alert.css";
 import { useSearchExport } from '../../context/SearchExportContext';
-import SearchInput from '../../components/search/SearchInput';
+import SearchInput from '../search/SearchInput';
 
-
-function TrafficAwarenessVideo() {
-    // const [instagram, setinstgram] = useState("");
-    // const [facebook, setfacebook] = useState("");
-    // const [email, setemail] = useState("");
-    // const [whatsapp, setwhatsapp] = useState("");
-    // const [linkedin, setlinkedin] = useState("");
-
-    const [title, settitle] = useState("");
-    const [mediaurl, setmediaurl] = useState("");
+function FollowonUs() {
+    const [instagram, setinstgram] = useState("");
+    const [facebook, setfacebook] = useState("");
+    const [email, setemail] = useState("");
+    const [whatsapp, setwhatsapp] = useState("");
+    const [linkedin, setlinkedin] = useState("");
 
     const [errors, setErrors] = useState({});
     const [showAdd, setShowAdd] = useState(true);
@@ -40,9 +36,11 @@ function TrafficAwarenessVideo() {
         let errors = {};
         let isValid = true;
 
-        if (!title.trim()) errors.title = 'title is required';
-        if (!mediaurl.trim()) errors.mediaurl = 'mediaurl is required';
-
+        if (!instagram.trim()) errors.instagram = 'Instagram link is required';
+        if (!facebook.trim()) errors.facebook = 'Facebook link is required';
+        if (!email.trim() || !/\S+@\S+\.\S+/.test(email)) errors.email = 'Valid email is required';
+        if (!whatsapp.trim()) errors.whatsapp = 'WhatsApp link is required';
+        if (!linkedin.trim()) errors.linkedin = 'LinkedIn link is required';
 
         setErrors(errors);
         return isValid && Object.keys(errors).length === 0;
@@ -51,13 +49,13 @@ function TrafficAwarenessVideo() {
     const handleForm = async (e) => {
         e.preventDefault();
         if (validateForm()) {
-            const formData = { title, mediaurl };
+            const formData = { instagram, facebook, email, whatsapp, linkedin };
             try {
                 if (editMode && editId) {
-                    await instance.put(`Videos/update-Videos/${editId}`, formData);
+                    await instance.put(`social-contact/socialcontact/${editId}`, formData);
                     alert('Data updated successfully!');
                 } else {
-                    await instance.post('Videos/create-Videos', formData);
+                    await instance.post('social-contact/create-socialcontact', formData);
                     alert('Data submitted successfully!');
                 }
                 clearForm();
@@ -70,8 +68,11 @@ function TrafficAwarenessVideo() {
     };
 
     const clearForm = () => {
-        settitle("");
-        setmediaurl("");
+        setinstgram("");
+        setfacebook("");
+        setemail("");
+        setwhatsapp("");
+        setlinkedin("");
         setErrors({});
         setEditMode(false);
         setEditId(null);
@@ -83,7 +84,7 @@ function TrafficAwarenessVideo() {
     };
 
     const getdata_admin = () => {
-        instance.get('Videos/find-Videos')
+        instance.get('social-contact/find-socialcontacts')
             .then((res) => {
                 setadmin_data(res.data.responseData || []);
                 const initialStatus = {};
@@ -102,8 +103,11 @@ function TrafficAwarenessVideo() {
     const edit = (id) => {
         const item = getadmin_data.find((a) => a.id === id);
         if (item) {
-            settitle(item.title);
-            setmediaurl(title.mediaurl);
+            setinstgram(item.instagram);
+            setfacebook(item.facebook);
+            setemail(item.email);
+            setwhatsapp(item.whatsapp);
+            setlinkedin(item.linkedin);
             setEditMode(true);
             setEditId(id);
             setShowAdd(false);
@@ -119,7 +123,7 @@ function TrafficAwarenessVideo() {
                     label: 'Yes',
                     onClick: async () => {
                         try {
-                            await instance.delete(`Videos/Videos-delete/${id}`);
+                            await instance.delete(`social-contact/isdelete-social/${id}`);
                             getdata_admin();
                         } catch (error) {
                             console.error("Error deleting data:", error);
@@ -133,7 +137,7 @@ function TrafficAwarenessVideo() {
 
     const toggleActiveStatus = async (id) => {
         try {
-            const response = await instance.put(`Videos/Videos-status/${id}`);
+            const response = await instance.put(`social-contact/isactive-social/${id}`);
             if (response.data) {
                 setActiveStatus(prev => ({
                     ...prev,
@@ -162,8 +166,11 @@ function TrafficAwarenessVideo() {
                                     <thead>
                                         <tr className="text-center">
                                             <th>Sr. No</th>
-                                            <th>Title</th>
-                                            <th>Media URL</th>
+                                            <th>Instagram</th>
+                                            <th>Facebook</th>
+                                            <th>Email</th>
+                                            <th>WhatsApp</th>
+                                            <th>LinkedIn</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
@@ -171,8 +178,11 @@ function TrafficAwarenessVideo() {
                                         {getadmin_data.map((a, index) => (
                                             <tr key={index} className="text-center">
                                                 <td>{index + 1}</td>
-                                                <td className="text-truncate" style={{ maxWidth: '120px' }}>{a.title}</td>
-                                                <td className="text-truncate" style={{ maxWidth: '120px' }}>{a.mediaurl}</td>
+                                                <td className="text-truncate" style={{ maxWidth: '120px' }}>{a.instagram}</td>
+                                                <td className="text-truncate" style={{ maxWidth: '120px' }}>{a.facebook}</td>
+                                                <td className="text-truncate" style={{ maxWidth: '150px' }}>{a.email}</td>
+                                                <td className="text-truncate" style={{ maxWidth: '120px' }}>{a.whatsapp}</td>
+                                                <td className="text-truncate" style={{ maxWidth: '120px' }}>{a.linkedin}</td>
                                                 <td>
                                                     <Button variant="primary" className="m-1" onClick={() => edit(a.id)}>
                                                         <FaEdit />
@@ -204,29 +214,64 @@ function TrafficAwarenessVideo() {
 
                                 <Col lg={6} md={6} sm={12}>
                                     <Form.Group className="mb-3" controlId="formBasicName">
-                                        <Form.Label>Enter Title</Form.Label>
+                                        <Form.Label>Enter Instagram Links</Form.Label>
                                         <Form.Control
                                             type="text"
                                             placeholder="Enter instagram link"
-                                            value={title}
-                                            onChange={(e) => settitle(e.target.value)}
+                                            value={instagram}
+                                            onChange={(e) => setinstgram(e.target.value)}
                                         />
-                                        {errors.title && <span className="error text-danger">{errors.title}</span>}
+                                        {errors.instagram && <span className="error text-danger">{errors.instagram}</span>}
                                     </Form.Group>
                                 </Col>
                                 <Col lg={6} md={6} sm={12}>
                                     <Form.Group className="mb-3" controlId="formBasicName">
-                                        <Form.Label>Enter Media URL</Form.Label>
+                                        <Form.Label>Enter FaceBook Links</Form.Label>
                                         <Form.Control
                                             type="text"
                                             placeholder="Enter instagram link"
-                                            value={mediaurl}
-                                            onChange={(e) => setmediaurl(e.target.value)}
+                                            value={facebook}
+                                            onChange={(e) => setfacebook(e.target.value)}
                                         />
-                                        {errors.mediaurl && <span className="error text-danger">{errors.mediaurl}</span>}
+                                        {errors.facebook && <span className="error text-danger">{errors.facebook}</span>}
                                     </Form.Group>
                                 </Col>
-                                
+                                <Col lg={6} md={6} sm={12}>
+                                    <Form.Group className="mb-3" controlId="formBasicName">
+                                        <Form.Label>Enter Email Links</Form.Label>
+                                        <Form.Control
+                                            type="text"
+                                            placeholder="Enter email"
+                                            value={email}
+                                            onChange={(e) => setemail(e.target.value)}
+                                        />
+                                        {errors.email && <span className="error text-danger">{errors.email}</span>}
+                                    </Form.Group>
+                                </Col>
+                                <Col lg={6} md={6} sm={12}>
+                                    <Form.Group className="mb-3" controlId="formBasicName">
+                                        <Form.Label>Enter Whatsapp Links</Form.Label>
+                                        <Form.Control
+                                            type="text"
+                                            placeholder="Enter whatsapp"
+                                            value={whatsapp}
+                                            onChange={(e) => setwhatsapp(e.target.value)}
+                                        />
+                                        {errors.whatsapp && <span className="error text-danger">{errors.whatsapp}</span>}
+                                    </Form.Group>
+                                </Col>
+                                <Col lg={6} md={6} sm={12}>
+                                    <Form.Group className="mb-3" controlId="formBasicName">
+                                        <Form.Label>Enter Linkdin Links</Form.Label>
+                                        <Form.Control
+                                            type="text"
+                                            placeholder="Enter whatsapp"
+                                            value={linkedin}
+                                            onChange={(e) => setlinkedin(e.target.value)}
+                                        />
+                                        {errors.linkedin && <span className="error text-danger">{errors.linkedin}</span>}
+                                    </Form.Group>
+                                </Col>
                             </Row>
                             <Button variant={editMode ? "primary" : "success"} type="submit">
                                 {editMode ? 'Update' : 'Submit'}
@@ -239,6 +284,6 @@ function TrafficAwarenessVideo() {
     );
 }
 
-export default TrafficAwarenessVideo;
+export default FollowonUs;
 
 
