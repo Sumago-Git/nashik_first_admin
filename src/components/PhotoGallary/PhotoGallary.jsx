@@ -10,23 +10,25 @@ import Alert from 'react-bootstrap/Alert';
 import { FaEdit, FaEye, FaEyeSlash, FaRegEye } from 'react-icons/fa';
 import { MdDelete } from 'react-icons/md';
 import instance from '../../api/AxiosInstance';
+
 import { confirmAlert } from "react-confirm-alert";
 import "react-confirm-alert/src/react-confirm-alert.css";
 import { useSearchExport } from '../../context/SearchExportContext';
-import SearchInput from '../../components/search/SearchInput';
+import SearchInput from '../search/SearchInput';
 
-function AnnualReport() {
+function Thanksto() {
     const [title, setTitle] = useState("");
-    const [pdf, setPdf] = useState(null);
+    const [img, setImage] = useState(null);
     const [preview, setPreview] = useState(null);
     const [errors, setErrors] = useState({});
     const [showAdd, setShowAdd] = useState(true);
     const [getadmin_data, setadmin_data] = useState([]);
     const [editMode, setEditMode] = useState(false);
     const [editId, setEditId] = useState(null);
-    const [activeStatus, setActiveStatus] = useState({}); 
+    const [activeStatus, setActiveStatus] = useState({}); // Track isActive status
 
-    const { searchQuery, handleSearch, handleExport, setData, filteredData } = useSearchExport();
+    const { searchQuery, handleSearch, handleExport, setData, filteredData } =
+        useSearchExport();
 
     const validateForm = () => {
         let errors = {};
@@ -36,11 +38,8 @@ function AnnualReport() {
             errors.title = 'Title is required';
             isValid = false;
         }
-        if (!pdf && !editMode) { // Only validate PDF in add mode
-            errors.pdf = 'PDF file is required';
-            isValid = false;
-        } else if (pdf && pdf.type !== 'application/pdf') {
-            errors.pdf = 'Only PDF files are allowed';
+        if (!img && !editMode) { // Only validate image in add mode
+            errors.img = 'Image is required';
             isValid = false;
         }
 
@@ -54,24 +53,21 @@ function AnnualReport() {
         if (validateForm()) {
             const formData = new FormData();
             formData.append('title', title);
-            if (pdf) formData.append('pdf', pdf);
-
-            // Debug: Log the FormData content
-            console.log("Form Data Title:", title);
-            console.log("Form Data PDF:", pdf);
+            if (img) formData.append('img', img);
 
             try {
                 if (editMode && editId) {
-                    await instance.put(`thanksto/update-ThanksTo/${editId}`, formData);
+                    await instance.put(`gallery/update-photoGallery/${editId}`, formData);
                     alert('Data updated successfully!');
                 } else {
-                    await instance.post('thanksto/create-ThanksTo', formData); // No need for explicit Content-Type header
+                    await instance.post('gallery/create-photoGallery', formData, {
+                        headers: { 'Content-Type': 'multipart/form-data' }
+                    });
                     alert('Data submitted successfully!');
                 }
 
-                // Clear form and reset state after successful submission
                 setTitle("");
-                setPdf(null);
+                setImage(null);
                 setPreview(null);
                 setErrors({});
                 setEditMode(false);
@@ -79,20 +75,20 @@ function AnnualReport() {
                 getdata_admin();
                 setShowAdd(true); // Show table after form submission
             } catch (error) {
-                console.error("Error uploading data:", error.response ? error.response.data : error.message);
+                console.error("Error uploading image:", error);
             }
         }
     };
 
-    const handlePdfChange = (e) => {
+    const handleImageChange = (e) => {
         const file = e.target.files[0];
-        if (file && file.type === "application/pdf") {
-            setPdf(file);
-            setPreview(URL.createObjectURL(file)); // Set preview for PDF (showing file name)
+        if (file && file.type.startsWith("image/")) {
+            setImage(file);
+            setPreview(URL.createObjectURL(file));
             setErrors({});
         } else {
-            setErrors({ pdf: "Only PDF files are allowed." });
-            setPdf(null);
+            setErrors({ img: "Only image files are allowed." });
+            setImage(null);
             setPreview(null);
         }
     };
@@ -101,24 +97,22 @@ function AnnualReport() {
         setShowAdd(!showAdd);
         setEditMode(false);
         setTitle("");
-        setPdf(null);
+        setImage(null);
         setPreview(null);
         setErrors({});
     };
 
     const getdata_admin = () => {
-        instance.get('thanksto/find-ThanksTo')
+        instance.get('gallery/find-photoGalleries')
             .then((res) => {
                 setadmin_data(res.data.responseData || []);
                 const initialStatus = {};
                 res.data.responseData.forEach(item => {
-                    initialStatus[item.id] = item.isActive; // Set initial active status
+                    initialStatus[item.id] = item.isActive; // Set the initial status for each item
                 });
-                setActiveStatus(initialStatus);
+                setActiveStatus(initialStatus); // Set active status state
             })
-            .catch((err) => {
-                console.error("Error fetching admin data:", err.response ? err.response.data : err.message);
-            });
+            .catch((err) => console.log(err));
     };
 
     useEffect(() => {
@@ -129,7 +123,7 @@ function AnnualReport() {
         const item = getadmin_data.find((a) => a.id === id);
         if (item) {
             setTitle(item.title);
-            setPreview(item.pdf); // Assuming 'pdf' contains the file URL or name for preview
+            setPreview(item.img); // Assuming 'img' contains the URL for preview
             setEditMode(true);
             setEditId(id);
             setShowAdd(false); // Show form for editing
@@ -145,17 +139,17 @@ function AnnualReport() {
                     label: 'Yes',
                     onClick: async () => {
                         try {
-                            await instance.delete(`thanksto/ThanksTo-delete/${id}`);
+                            await instance.delete(`gallery/photoGallery-delete/${id}`);
                             getdata_admin(); // Refresh the data after deletion
                         } catch (error) {
-                            console.error("Error deleting data:", error.response ? error.response.data : error.message);
+                            console.error("Error deleting data:", error);
                             alert("There was an error deleting the data.");
                         }
                     }
                 },
                 {
                     label: 'No',
-                    onClick: () => {} // Do nothing if user clicks "No"
+                    onClick: () => { } // Do nothing if user clicks "No"
                 }
             ]
         });
@@ -163,7 +157,7 @@ function AnnualReport() {
 
     const toggleActiveStatus = async (id) => {
         try {
-            const response = await instance.put(`thanksto/ThanksTo-status/${id}`);
+            const response = await instance.put(`gallery/photoGallery-status/${id}`);
             if (response.data) {
                 setActiveStatus(prevStatus => ({
                     ...prevStatus,
@@ -171,7 +165,7 @@ function AnnualReport() {
                 }));
             }
         } catch (error) {
-            console.error("Error updating status:", error.response ? error.response.data : error.message);
+            console.error("Error updating status:", error);
         }
     };
 
@@ -184,50 +178,58 @@ function AnnualReport() {
                     </Button>
                 </Card.Header>
                 <Card.Body>
+                   
                     {showAdd ? (
+                       
                         getadmin_data.length > 0 ? (
                             <>
-                                <SearchInput value={searchQuery} onChange={handleSearch} />
-                                <Table striped bordered hover responsive="sm">
-                                    <thead>
-                                        <tr>
-                                            <th>Sr. No</th>
-                                            <th>Title</th>
-                                            <th>PDF</th>
-                                            <th>Action</th>
+                            <SearchInput value={searchQuery} onChange={handleSearch} />
+                            <Table striped bordered hover responsive="sm">
+                                <thead>
+                                    <tr>
+                                        <th>Sr. No</th>
+                                        <th>Title</th>
+                                        <th>Image</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {getadmin_data.map((a, index) => (
+                                        <tr key={index}>
+                                            <td>{index + 1}</td>
+                                            <td>{a.title}</td>
+                                            <td>
+                                                <img
+                                                    src={a.img}
+                                                    className="trademark img-fluid"
+                                                    alt={a.title}
+                                                    height="40"
+                                                    width="120"
+                                                />
+                                            </td>
+                                            <td className="p-2">
+                                                <Button variant="primary" className="m-2" onClick={() => edit(a.id)}>
+                                                    <FaEdit />
+                                                </Button>
+                                                <Button variant="danger" className="m-2" onClick={() => delete_data(a.id)}><MdDelete /></Button>
+                                                <Button
+                                                    variant={activeStatus[a.id] ? "success" : "warning"} // Button color based on isActive
+                                                    className="m-2"
+                                                    onClick={() => toggleActiveStatus(a.id)}
+                                                >
+                                                    {/* Conditionally render the icon based on isActive status */}
+                                                    {activeStatus[a.id] ? (
+                                                        <FaRegEye color="white" />  // Green Eye when isActive is true
+                                                    ) : (
+                                                        <FaEyeSlash color="white" />  // Red Eye-slash when isActive is false
+                                                    )}
+                                                </Button>
+
+                                            </td>
                                         </tr>
-                                    </thead>
-                                    <tbody>
-                                        {getadmin_data.map((a, index) => (
-                                            <tr key={index}>
-                                                <td>{index + 1}</td>
-                                                <td>{a.title}</td>
-                                                <td>
-                                                    <a href={a.pdf} target="_blank" rel="noopener noreferrer">
-                                                        View PDF
-                                                    </a>
-                                                </td>
-                                                <td className="p-2">
-                                                    <Button variant="primary" className="m-2" onClick={() => edit(a.id)}>
-                                                        <FaEdit />
-                                                    </Button>
-                                                    <Button variant="danger" className="m-2" onClick={() => delete_data(a.id)}><MdDelete /></Button>
-                                                    <Button
-                                                        variant={activeStatus[a.id] ? "success" : "warning"}
-                                                        className="m-2"
-                                                        onClick={() => toggleActiveStatus(a.id)}
-                                                    >
-                                                        {activeStatus[a.id] ? (
-                                                            <FaRegEye color="white" />
-                                                        ) : (
-                                                            <FaEyeSlash color="white" />
-                                                        )}
-                                                    </Button>
-                                                </td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </Table>
+                                    ))}
+                                </tbody>
+                            </Table>
                             </>
                         ) : (
                             <Alert variant="warning" className="text-center">
@@ -239,10 +241,10 @@ function AnnualReport() {
                             <Row>
                                 <Col lg={6} md={6} sm={12}>
                                     <Form.Group className="mb-3" controlId="formBasicName">
-                                        <Form.Label>Enter Title</Form.Label>
+                                        <Form.Label>Enter Paragraph</Form.Label>
                                         <Form.Control
                                             type="text"
-                                            placeholder="Enter Name"
+                                            placeholder="Enter paragraph"
                                             value={title}
                                             onChange={(e) => setTitle(e.target.value)}
                                         />
@@ -250,20 +252,19 @@ function AnnualReport() {
                                     </Form.Group>
                                 </Col>
                                 <Col lg={6} md={6} sm={12}>
-                                    <Form.Group className="mb-3" controlId="formBasicPdf">
-                                        <Form.Label>Upload PDF</Form.Label>
+                                    <Form.Group className="mb-3" controlId="formBasicImage">
+                                        <Form.Label>Upload Image</Form.Label>
                                         <Form.Control
                                             type="file"
-                                            accept="application/pdf"
-                                            onChange={handlePdfChange}
+                                            accept="image/*"
+                                            onChange={handleImageChange}
                                         />
-                                        {preview && <span>{pdf.name}</span>}
-                                        {errors.pdf && <span className="error text-danger">{errors.pdf}</span>}
+                                        {errors.img && <span className="error text-danger">{errors.img}</span>}
                                     </Form.Group>
                                 </Col>
                             </Row>
                             <Button variant={editMode ? "primary" : "success"} type="submit">
-                                {editMode ? "Update" : "Submit"} 
+                                {editMode ? 'Update' : 'Submit'}
                             </Button>
                         </Form>
                     )}
@@ -273,4 +274,4 @@ function AnnualReport() {
     );
 }
 
-export default AnnualReport;
+export default Thanksto;

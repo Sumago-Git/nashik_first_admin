@@ -7,118 +7,91 @@ import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import Table from 'react-bootstrap/Table';
 import Alert from 'react-bootstrap/Alert';
-import { FaEdit, FaEye, FaEyeSlash, FaRegEye } from 'react-icons/fa';
+import { FaEdit, FaEyeSlash, FaRegEye } from 'react-icons/fa';
 import { MdDelete } from 'react-icons/md';
 import instance from '../../api/AxiosInstance';
+
 import { confirmAlert } from "react-confirm-alert";
 import "react-confirm-alert/src/react-confirm-alert.css";
 import { useSearchExport } from '../../context/SearchExportContext';
-import SearchInput from '../../components/search/SearchInput';
+import SearchInput from '../search/SearchInput';
 
-function AnnualReport() {
-    const [title, setTitle] = useState("");
-    const [pdf, setPdf] = useState(null);
-    const [preview, setPreview] = useState(null);
+function HomeVideos() {
+    // const [instagram, setinstgram] = useState("");
+    // const [facebook, setfacebook] = useState("");
+    // const [email, setemail] = useState("");
+    // const [whatsapp, setwhatsapp] = useState("");
+    // const [linkedin, setlinkedin] = useState("");
+
+    const [title, settitle] = useState("");
+    const [mediaurl, setmediaurl] = useState("");
+
     const [errors, setErrors] = useState({});
     const [showAdd, setShowAdd] = useState(true);
     const [getadmin_data, setadmin_data] = useState([]);
     const [editMode, setEditMode] = useState(false);
     const [editId, setEditId] = useState(null);
-    const [activeStatus, setActiveStatus] = useState({}); 
+    const [activeStatus, setActiveStatus] = useState({});
 
-    const { searchQuery, handleSearch, handleExport, setData, filteredData } = useSearchExport();
+    const { searchQuery, handleSearch } = useSearchExport();
 
     const validateForm = () => {
         let errors = {};
         let isValid = true;
 
-        if (!title.trim()) {
-            errors.title = 'Title is required';
-            isValid = false;
-        }
-        if (!pdf && !editMode) { // Only validate PDF in add mode
-            errors.pdf = 'PDF file is required';
-            isValid = false;
-        } else if (pdf && pdf.type !== 'application/pdf') {
-            errors.pdf = 'Only PDF files are allowed';
-            isValid = false;
-        }
+        if (!title.trim()) errors.title = 'title is required';
+        if (!mediaurl.trim()) errors.mediaurl = 'mediaurl is required';
+
 
         setErrors(errors);
-        return isValid;
+        return isValid && Object.keys(errors).length === 0;
     };
 
     const handleForm = async (e) => {
         e.preventDefault();
-
         if (validateForm()) {
-            const formData = new FormData();
-            formData.append('title', title);
-            if (pdf) formData.append('pdf', pdf);
-
-            // Debug: Log the FormData content
-            console.log("Form Data Title:", title);
-            console.log("Form Data PDF:", pdf);
-
+            const formData = { title, mediaurl };
             try {
                 if (editMode && editId) {
-                    await instance.put(`thanksto/update-ThanksTo/${editId}`, formData);
+                    await instance.put(`homeyoutube/update-homeyoutube/${editId}`, formData);
                     alert('Data updated successfully!');
                 } else {
-                    await instance.post('thanksto/create-ThanksTo', formData); // No need for explicit Content-Type header
+                    await instance.post('homeyoutube/create-homeyoutube', formData);
                     alert('Data submitted successfully!');
                 }
-
-                // Clear form and reset state after successful submission
-                setTitle("");
-                setPdf(null);
-                setPreview(null);
-                setErrors({});
-                setEditMode(false);
-                setEditId(null);
+                clearForm();
                 getdata_admin();
-                setShowAdd(true); // Show table after form submission
+                setShowAdd(true);
             } catch (error) {
-                console.error("Error uploading data:", error.response ? error.response.data : error.message);
+                console.error("Error submitting data:", error);
             }
         }
     };
 
-    const handlePdfChange = (e) => {
-        const file = e.target.files[0];
-        if (file && file.type === "application/pdf") {
-            setPdf(file);
-            setPreview(URL.createObjectURL(file)); // Set preview for PDF (showing file name)
-            setErrors({});
-        } else {
-            setErrors({ pdf: "Only PDF files are allowed." });
-            setPdf(null);
-            setPreview(null);
-        }
+    const clearForm = () => {
+        settitle("");
+        setmediaurl("");
+        setErrors({});
+        setEditMode(false);
+        setEditId(null);
     };
 
     const handleToggle = () => {
         setShowAdd(!showAdd);
-        setEditMode(false);
-        setTitle("");
-        setPdf(null);
-        setPreview(null);
-        setErrors({});
+        clearForm();
     };
 
     const getdata_admin = () => {
-        instance.get('thanksto/find-ThanksTo')
+        instance.get('homeyoutube/find-homeyoutube')
             .then((res) => {
                 setadmin_data(res.data.responseData || []);
                 const initialStatus = {};
                 res.data.responseData.forEach(item => {
-                    initialStatus[item.id] = item.isActive; // Set initial active status
+                    initialStatus[item.id] = item.isActive;
                 });
                 setActiveStatus(initialStatus);
             })
-            .catch((err) => {
-                console.error("Error fetching admin data:", err.response ? err.response.data : err.message);
-            });
+            .catch((err) => console.log(err));
     };
 
     useEffect(() => {
@@ -128,11 +101,11 @@ function AnnualReport() {
     const edit = (id) => {
         const item = getadmin_data.find((a) => a.id === id);
         if (item) {
-            setTitle(item.title);
-            setPreview(item.pdf); // Assuming 'pdf' contains the file URL or name for preview
+            settitle(item.title);
+            setmediaurl(title.mediaurl);
             setEditMode(true);
             setEditId(id);
-            setShowAdd(false); // Show form for editing
+            setShowAdd(false);
         }
     };
 
@@ -145,35 +118,31 @@ function AnnualReport() {
                     label: 'Yes',
                     onClick: async () => {
                         try {
-                            await instance.delete(`thanksto/ThanksTo-delete/${id}`);
-                            getdata_admin(); // Refresh the data after deletion
+                            await instance.delete(`homeyoutube/delete-homeyoutube/${id}`);
+                            getdata_admin();
                         } catch (error) {
-                            console.error("Error deleting data:", error.response ? error.response.data : error.message);
-                            alert("There was an error deleting the data.");
+                            console.error("Error deleting data:", error);
                         }
                     }
                 },
-                {
-                    label: 'No',
-                    onClick: () => {} // Do nothing if user clicks "No"
-                }
+                { label: 'No' }
             ]
         });
     };
 
-    const toggleActiveStatus = async (id) => {
-        try {
-            const response = await instance.put(`thanksto/ThanksTo-status/${id}`);
-            if (response.data) {
-                setActiveStatus(prevStatus => ({
-                    ...prevStatus,
-                    [id]: !prevStatus[id] // Toggle the isActive status
-                }));
-            }
-        } catch (error) {
-            console.error("Error updating status:", error.response ? error.response.data : error.message);
-        }
-    };
+    // const toggleActiveStatus = async (id) => {
+    //     try {
+    //         const response = await instance.put(`social-contact/isactive-social/${id}`);
+    //         if (response.data) {
+    //             setActiveStatus(prev => ({
+    //                 ...prev,
+    //                 [id]: !prev[id]
+    //             }));
+    //         }
+    //     } catch (error) {
+    //         console.error("Error updating status:", error);
+    //     }
+    // };
 
     return (
         <Container>
@@ -190,38 +159,32 @@ function AnnualReport() {
                                 <SearchInput value={searchQuery} onChange={handleSearch} />
                                 <Table striped bordered hover responsive="sm">
                                     <thead>
-                                        <tr>
+                                        <tr className="text-center">
                                             <th>Sr. No</th>
                                             <th>Title</th>
-                                            <th>PDF</th>
+                                            <th>Media URL</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         {getadmin_data.map((a, index) => (
-                                            <tr key={index}>
+                                            <tr key={index} className="text-center">
                                                 <td>{index + 1}</td>
-                                                <td>{a.title}</td>
+                                                <td className="text-truncate" style={{ maxWidth: '120px' }}>{a.title}</td>
+                                                <td className="text-truncate" style={{ maxWidth: '120px' }}>{a.mediaurl}</td>
                                                 <td>
-                                                    <a href={a.pdf} target="_blank" rel="noopener noreferrer">
-                                                        View PDF
-                                                    </a>
-                                                </td>
-                                                <td className="p-2">
-                                                    <Button variant="primary" className="m-2" onClick={() => edit(a.id)}>
+                                                    <Button variant="primary" className="m-1" onClick={() => edit(a.id)}>
                                                         <FaEdit />
                                                     </Button>
-                                                    <Button variant="danger" className="m-2" onClick={() => delete_data(a.id)}><MdDelete /></Button>
+                                                    <Button variant="danger" className="m-1" onClick={() => delete_data(a.id)}>
+                                                        <MdDelete />
+                                                    </Button>
                                                     <Button
                                                         variant={activeStatus[a.id] ? "success" : "warning"}
-                                                        className="m-2"
+                                                        className="m-1"
                                                         onClick={() => toggleActiveStatus(a.id)}
                                                     >
-                                                        {activeStatus[a.id] ? (
-                                                            <FaRegEye color="white" />
-                                                        ) : (
-                                                            <FaEyeSlash color="white" />
-                                                        )}
+                                                        {activeStatus[a.id] ? <FaRegEye /> : <FaEyeSlash />}
                                                     </Button>
                                                 </td>
                                             </tr>
@@ -237,33 +200,35 @@ function AnnualReport() {
                     ) : (
                         <Form onSubmit={handleForm}>
                             <Row>
+
                                 <Col lg={6} md={6} sm={12}>
                                     <Form.Group className="mb-3" controlId="formBasicName">
                                         <Form.Label>Enter Title</Form.Label>
                                         <Form.Control
                                             type="text"
-                                            placeholder="Enter Name"
+                                            placeholder="Enter instagram link"
                                             value={title}
-                                            onChange={(e) => setTitle(e.target.value)}
+                                            onChange={(e) => settitle(e.target.value)}
                                         />
                                         {errors.title && <span className="error text-danger">{errors.title}</span>}
                                     </Form.Group>
                                 </Col>
                                 <Col lg={6} md={6} sm={12}>
-                                    <Form.Group className="mb-3" controlId="formBasicPdf">
-                                        <Form.Label>Upload PDF</Form.Label>
+                                    <Form.Group className="mb-3" controlId="formBasicName">
+                                        <Form.Label>Enter Media URL</Form.Label>
                                         <Form.Control
-                                            type="file"
-                                            accept="application/pdf"
-                                            onChange={handlePdfChange}
+                                            type="text"
+                                            placeholder="Enter instagram link"
+                                            value={mediaurl}
+                                            onChange={(e) => setmediaurl(e.target.value)}
                                         />
-                                        {preview && <span>{pdf.name}</span>}
-                                        {errors.pdf && <span className="error text-danger">{errors.pdf}</span>}
+                                        {errors.mediaurl && <span className="error text-danger">{errors.mediaurl}</span>}
                                     </Form.Group>
                                 </Col>
+                                
                             </Row>
                             <Button variant={editMode ? "primary" : "success"} type="submit">
-                                {editMode ? "Update" : "Submit"} 
+                                {editMode ? 'Update' : 'Submit'}
                             </Button>
                         </Form>
                     )}
@@ -273,4 +238,6 @@ function AnnualReport() {
     );
 }
 
-export default AnnualReport;
+export default HomeVideos;
+
+

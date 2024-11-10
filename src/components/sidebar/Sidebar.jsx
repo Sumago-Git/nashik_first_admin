@@ -41,6 +41,19 @@ const SidebarMenu = [
     ],
   },
   {
+    menu: "Home Banner",
+    url: "/homebanner",
+    mainIcon: <RiTeamFill size={24} />,
+    subMenu: [
+      {
+        subMenus: "Home Banner",
+        url: "/homebanner",
+        icon: <FiUsers style={{ color: "red" }} size={24} />,
+      },
+
+    ],
+  },
+  {
     menu: "About",
     url: "/about",
     mainIcon: <RiTeamFill size={24} />,
@@ -51,6 +64,56 @@ const SidebarMenu = [
         icon: <FiUsers style={{ color: "red" }} size={24} />,
       },
 
+    ],
+  },
+  {
+    menu: "Objective Of ANF",
+    url: "/objective-of-anf",
+    mainIcon: <RiTeamFill size={24} />,
+    subMenu: [
+      {
+        subMenus: "Objective Of ANF",
+        url: "/objective-of-anf",
+        icon: <FiUsers style={{ color: "red" }} size={24} />,
+      },
+
+    ],
+  },
+  {
+    menu: "Home Counter",
+    url: "/home-counter",
+    mainIcon: <RiTeamFill size={24} />,
+    subMenu: [
+      {
+        subMenus: "Home Counter",
+        url: "/home-counter",
+        icon: <FiUsers style={{ color: "red" }} size={24} />,
+      },
+
+    ],
+  },
+  {
+    menu: "Photo Gallary",
+    url: "/photo-gallary",
+    mainIcon: <MdOutlinePermContactCalendar size={24} />,
+    subMenu: [
+      {
+        subMenus: "Photo Gallary",
+        url: "/photo-gallary",
+        icon: <BsBuilding style={{ color: "red" }} size={24} />,
+      },
+    ],
+  },
+  {
+    menu: "Directors",
+    url: "/directors",
+    mainIcon: <MdOutlinePermContactCalendar size={24} />,
+    subMenu: [
+      {
+        subMenus: "Director",
+        url: "/directors",
+        icon: <BsBuilding style={{ color: "red" }} size={24} />,
+      },
     ],
   },
   {
@@ -80,7 +143,24 @@ const SidebarMenu = [
         url: "/trafficawarenessvideo",
         icon: <FiUsers style={{ color: "red" }} size={24} />,
       },
+      {
+        subMenus: "Home Video",
+        url: "/home-videos",
+        icon: <FiUsers style={{ color: "red" }} size={24} />,
+      },
 
+    ],
+  },
+  {
+    menu: "News",
+    url: "/news",
+    mainIcon: <RiTeamFill size={24} />,
+    subMenu: [
+      {
+        subMenus: "News",
+        url: "/news",
+        icon: <FiUsers style={{ color: "red" }} size={24} />,
+      },
     ],
   },
   {
@@ -128,6 +208,11 @@ const SidebarMenu = [
         url: "/contactinfo",
         icon: <BsBuilding style={{ color: "red" }} size={24} />,
       },
+      {
+        subMenus: "Follow on us",
+        url: "/follow-on-us",
+        icon: <BsBuilding style={{ color: "red" }} size={24} />,
+      }
     ],
   },
   {
