@@ -12,11 +12,15 @@ import Tabs from 'react-bootstrap/Tabs';
 import { jsPDF } from "jspdf"; // Import jsPDF
 
 import cirtificate from '../../assets/Holiday/cirtificate.png'
+import Categories from "../../components/Categories";
+import instance from "../../api/AxiosInstance";
 
 const Bookpackages = ({ tabKey }) => {
     const [show, setShow] = useState(false);
     const [selectedDate, setSelectedDate] = useState("");
     const [selectedDay, setSelectedDay] = useState("");
+    const [categoryName, setCategoryName] = useState("");
+    const [dataByDateAndCategory, setDataByDateAndCategory] = useState([]);
 
     const [lgShow, setLgShow] = useState(false);
     const [rowModal, setRowModal] = useState(false);
@@ -32,6 +36,19 @@ const Bookpackages = ({ tabKey }) => {
     //     setSelectedRowData(rowData);
     //     setRowModal(true);
     // };
+    const getUserDataByCategoryAndDate = (date) => {
+        let data = {
+            category: categoryName,
+            booking_date: date
+        }
+        instance.post("bookingentries/get-bookingentries-by-date-category", data).then((result) => {
+            console.log("result", result);
+            setDataByDateAndCategory(result.data.responseData)
+        }).catch((error) => {
+            console.log("error", error);
+
+        })
+    }
 
     const handleApprovedButtonClick = (event) => {
         event.stopPropagation(); // Prevent row click event from firing
@@ -108,13 +125,23 @@ const Bookpackages = ({ tabKey }) => {
     };
 
     const handleDayClick = (day) => {
+        alert("test")
         if (day && !isPastDate(day)) {
             const clickedDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
+            console.log("clickedDate", clickedDate);
+
             const dayOfWeek = daysOfWeek[clickedDate.getDay()];
             const formattedDate = clickedDate.toLocaleDateString();
             setSelectedDate(formattedDate);
             setSelectedDay(dayOfWeek);
             handleShow();
+            const date = new Date(clickedDate);
+            const dayName = new Intl.DateTimeFormat("en-GB", { weekday: "long" }).format(date);
+            const datePart = new Intl.DateTimeFormat("en-GB", { day: "2-digit", month: "2-digit", year: "numeric" }).format(date);
+            const formattedDateToMatchWithFrontend = `${dayName} ${datePart}`;
+            getUserDataByCategoryAndDate(formattedDateToMatchWithFrontend)
+            console.log("formattedDateToMatchWithFrontend", formattedDateToMatchWithFrontend);
+
         }
     };
 
@@ -224,70 +251,73 @@ const Bookpackages = ({ tabKey }) => {
     return (
         <>
             <Container fluid className="slotbg mt-4">
-                <Container className="calender">
-                    <Col lg={12} className="d-flex justify-content-center align-items-center bg-white">
-                        <button className="btn ms-1" onClick={() => changeMonth('prev')}>
-                            <img src={leftarrow} className="w-75 arrowimg" alt="Previous" />
-                        </button>
-                        <h3 className="calenderheadline mx-4">
-                            {monthNames[currentDate.getMonth()]} {currentDate.getFullYear()}
-                        </h3>
-                        <button className="btn ms-1" onClick={() => changeMonth('next')}>
-                            <img src={rightarrow} className="w-75 arrowimg" alt="Next" />
-                        </button>
-                    </Col>
+                {
+                    !categoryName ? <Categories setCategoryName={setCategoryName} /> :
+                        <Container className="calender">
+                            <Col lg={12} className="d-flex justify-content-center align-items-center bg-white">
+                                <button className="btn ms-1" onClick={() => changeMonth('prev')}>
+                                    <img src={leftarrow} className="w-75 arrowimg" alt="Previous" />
+                                </button>
+                                <h3 className="calenderheadline mx-4">
+                                    {monthNames[currentDate.getMonth()]} {currentDate.getFullYear()}
+                                </h3>
+                                <button className="btn ms-1" onClick={() => changeMonth('next')}>
+                                    <img src={rightarrow} className="w-75 arrowimg" alt="Next" />
+                                </button>
+                            </Col>
 
-                    <Container className="mt-4 card py-4">
-                        <Table responsive style={{ tableLayout: 'fixed', borderCollapse: 'collapse' }}>
-                            <thead>
-                                <tr className="text-start">
-                                    {daysOfWeek.map((day) => <th key={day}>{day}</th>)}
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {weeks.map((week, weekIndex) => (
-                                    <tr key={weekIndex}>
-                                        {week.map((day, dayIndex) => (
-                                            <td
-                                                key={dayIndex}
-                                                onClick={() => handleDayClick(day)}
-                                                style={{
-                                                    height: "100px",
-                                                    textAlign: "end",
-                                                    verticalAlign: "middle",
-                                                    backgroundColor: day ? (isPastDate(day) ? "#f7f7f7" : "white") : "#f0f0f0",
-                                                    color: day ? (isPastDate(day) ? "black" : "black") : "transparent",
-                                                    cursor: day && !isPastDate(day) ? "pointer" : "default",
-                                                    fontFamily: "Poppins",
-                                                    fontWeight: "600",
-                                                    opacity: isPastDate(day) ? 0.5 : 1,
-                                                    borderLeft: "1px solid #ddd",
-                                                }}
-                                            >
-                                                <div style={{ textAlign: "end" }}>{day || ""}</div>
-                                                <br />
-                                                {day && !isPastDate(day) && getSpecialDateLabel(day) && (
-                                                    <div style={{
-                                                        fontSize: "0.8rem",
-                                                        padding: "4px 8px",
-                                                        borderRadius: "12px",
-                                                        ...getSpecialDateLabel(day).style,
-                                                        width: "70px",
-                                                        textAlign: "center",
-                                                        whiteSpace: "nowrap",
-                                                        margin: "0 auto",
-                                                    }}>
-                                                        {isMobileView ? getSpecialDateLabel(day).label.charAt(0) : getSpecialDateLabel(day).label}
-                                                    </div>
-                                                )}
-                                            </td>
+                            <Container className="mt-4 card py-4">
+                                <Table responsive style={{ tableLayout: 'fixed', borderCollapse: 'collapse' }}>
+                                    <thead>
+                                        <tr className="text-start">
+                                            {daysOfWeek.map((day) => <th key={day}>{day}</th>)}
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {weeks.map((week, weekIndex) => (
+                                            <tr key={weekIndex}>
+                                                {week.map((day, dayIndex) => (
+                                                    <td
+                                                        key={dayIndex}
+                                                        onClick={() => handleDayClick(day)}
+                                                        style={{
+                                                            height: "100px",
+                                                            textAlign: "end",
+                                                            verticalAlign: "middle",
+                                                            backgroundColor: day ? (isPastDate(day) ? "#f7f7f7" : "white") : "#f0f0f0",
+                                                            color: day ? (isPastDate(day) ? "black" : "black") : "transparent",
+                                                            cursor: day && !isPastDate(day) ? "pointer" : "default",
+                                                            fontFamily: "Poppins",
+                                                            fontWeight: "600",
+                                                            opacity: isPastDate(day) ? 0.5 : 1,
+                                                            borderLeft: "1px solid #ddd",
+                                                        }}
+                                                    >
+                                                        <div style={{ textAlign: "end" }}>{day || ""}</div>
+                                                        <br />
+                                                        {day && !isPastDate(day) && getSpecialDateLabel(day) && (
+                                                            <div style={{
+                                                                fontSize: "0.8rem",
+                                                                padding: "4px 8px",
+                                                                borderRadius: "12px",
+                                                                ...getSpecialDateLabel(day).style,
+                                                                width: "70px",
+                                                                textAlign: "center",
+                                                                whiteSpace: "nowrap",
+                                                                margin: "0 auto",
+                                                            }}>
+                                                                {isMobileView ? getSpecialDateLabel(day).label.charAt(0) : getSpecialDateLabel(day).label}
+                                                            </div>
+                                                        )}
+                                                    </td>
+                                                ))}
+                                            </tr>
                                         ))}
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </Table>
-                    </Container>
-                </Container>
+                                    </tbody>
+                                </Table>
+                            </Container>
+                        </Container>
+                }
             </Container>
 
             <Modal
@@ -308,32 +338,31 @@ const Bookpackages = ({ tabKey }) => {
                             <Table striped bordered hover responsive="sm">
                                 <tbody>
                                     {
-                                        bookingpack_data.map((a) => {
-                                            return (
-                                                <>
-                                                    <tr onClick={() => { handleRowClick(a) }}>
-                                                        <td>{a.time}</td>
-                                                        <td>{a.id}</td>
-                                                        <td> <Button variant="primary" onClick={(event) => handleApprovedButtonClick(event)} className="w-100">
-                                                            Approved
-                                                        </Button></td>
-                                                        <td>{a.fname}</td>
-                                                        <td>{a.lname}</td>
-                                                        <td>{a.l_license}</td>
-                                                        <td>{a.fees}</td>
-                                                        <td>{a.status}</td>
-                                                    </tr>
-                                                </>
-                                            )
-                                        })
+                                        dataByDateAndCategory.length == 0 ? <p className="fw-bold ">No Data Found</p> :
+                                            dataByDateAndCategory.map((a) => {
+                                                return (
+                                                    <>
+                                                        <tr onClick={() => { handleRowClick(a) }}>
+                                                            <td>{a.time}</td>
+                                                            <td>{a.id}</td>
+                                                            <td> <Button variant="primary" onClick={(event) => handleApprovedButtonClick(event)} className="w-100">
+                                                                Approved
+                                                            </Button></td>
+                                                            <td>{a.fname}</td>
+                                                            <td>{a.lname}</td>
+                                                            <td>{a.l_license}</td>
+                                                            <td>{a.fees}</td>
+                                                            <td>{a.status}</td>
+                                                        </tr>
+                                                    </>
+                                                )
+                                            })
                                     }
-
                                 </tbody>
                             </Table>
                         </Tab>
                         <Tab eventKey="tab2" title="Booking">
-                            <h1>Hii Tab 2</h1>
-
+                            <p className="fw-bold ">Comming Soon</p>
                         </Tab>
                     </Tabs>
                 </Modal.Body>

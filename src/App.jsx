@@ -101,7 +101,7 @@ function App() {
             element={<ProtectedRoutes Component={AnnualReport} />}
           />
           <Route
-            path="/trinner"
+            path="/trainer"
             element={<ProtectedRoutes Component={Trainer} />}
           />
           <Route

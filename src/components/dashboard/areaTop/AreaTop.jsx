@@ -97,7 +97,8 @@ const AreaTop = ({ buttonValue, tableView }) => {
     "/directors",
     "/follow-on-us",
     "/news",
-    "/home-videos"
+    "/home-videos",
+    "/trainer"
   ];
   const isHiddenPath = hiddenPaths.includes(location.pathname);
 
@@ -146,7 +147,7 @@ const AreaTop = ({ buttonValue, tableView }) => {
     } else if (window.location.pathname == "/annualreport") {
       setHeader("Annual Report");
     }
-    else if (window.location.pathname == "/trinner") {
+    else if (window.location.pathname == "/trainer") {
       setHeader("Trainer");
     }
     else if (window.location.pathname == "/annualreturn") {

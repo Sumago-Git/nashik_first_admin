@@ -241,12 +241,12 @@ const SidebarMenu = [
   },
   {
     menu: "Trainer",
-    url: "/trinner",
+    url: "/trainer",
     mainIcon: <MdOutlinePermContactCalendar size={24} />,
     subMenu: [
       {
         subMenus: "Trainer",
-        url: "/trinner",
+        url: "/trainer",
         icon: <BsBuilding style={{ color: "red" }} size={24} />,
       },
     ],
