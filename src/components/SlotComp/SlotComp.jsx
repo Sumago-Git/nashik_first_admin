@@ -1,39 +1,46 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Card, Form, Modal, OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { Button, Card, Form, Modal, OverlayTrigger, Tooltip, Col, Row } from 'react-bootstrap';
 import DataTable from 'react-data-table-component';
 import { FaEdit, FaTrash, FaEye, FaEyeSlash } from "react-icons/fa";
 import instance from "../../api/AxiosInstance";
 import { confirmAlert } from "react-confirm-alert";
 import { toast } from "react-toastify";
+import NewResuableForm from "../../components/form/NewResuableForm";
 
-const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal }) => {
+const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal, handleShowModal }) => {
     const [currentPage, setCurrentPage] = useState(1);
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [eyeVisibilityById, setEyeVisibilityById] = useState({});
     const [data, setData] = useState([]);
+    const [editMode, setEditMode] = useState(false);
     const [show, setShow] = useState(false);
+    const [showTable, setShowTable] = useState(true)
     const [show1, setShow1] = useState(false);
-    const handleClose1 = () => setShow1(false);
+    const handleClose1 = () => setShow1(true);
     const handleShow1 = () => setShow1(true);
     const [imagePreview, setImagePreview] = useState("");
     const [team, setTeam] = useState([]);
-
+    const [errors, setErrors] = useState({});
     const [loading, setLoading] = useState(false);
     const handleClose = () => setShow(false);
+    const [editingId, setEditingId] = useState(null);
     const CustomHeader = ({ name }) => (
         <div style={{ fontWeight: "bold", color: "black", fontSize: "16px" }}>
             {name}
         </div>
     );
 
-    const [formData, setFormData] = useState({
+    const initialFormData = {
+        category: '',
         time: '',
         deadlineTime: '',
         title: '',
         capacity: '',
-        trainer: "",
+        trainer: '',
+    };
 
-    });
+    // Use the initial state when setting up the useState hook
+    const [formData, setFormData] = useState(initialFormData);
 
     useEffect(() => {
         fetchTeam();
@@ -68,7 +75,7 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal }) 
         setLoading(true);
         const accessToken = localStorage.getItem("accessToken"); // Retrieve access token
         try {
-            const response = await instance.get("counter/get-homecounter", {
+            const response = await instance.get("Sessionslot/get-SessionSessionslot", {
                 headers: {
                     Authorization: "Bearer " + accessToken,
                     "Content-Type": "application/json",
@@ -126,68 +133,10 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal }) 
             img.src = URL.createObjectURL(file);
         });
     };
-    const handleDelete = async (id) => {
-        confirmAlert({
-            title: "Confirm to delete",
-            message: "Are you sure you want to delete this data?",
-            customUI: ({ onClose }) => (
-                <div
-                    style={{
-                        textAlign: "left",
-                        padding: "20px",
-                        backgroundColor: "white",
-                        borderRadius: "8px",
-                        boxShadow: "0 4px 8px rgba(5, 5, 5, 0.2)",
-                        maxWidth: "400px",
-                        margin: "0 auto",
-                    }}
-                >
-                    <h2>Confirm to delete</h2>
-                    <p>Are you sure you want to delete this data?</p>
-                    <div
-                        style={{
-                            display: "flex",
-                            justifyContent: "flex-end",
-                            marginTop: "20px",
-                        }}
-                    >
-                        <button
-                            style={{ marginRight: "10px" }}
-                            className="btn btn-primary"
-                            onClick={async () => {
-                                setLoading(true);
-                                const accessToken = localStorage.getItem("accessToken");
-                                try {
-                                    await instance.delete(`counter/delete-homecounter/${id}`, {
-                                        headers: {
-                                            Authorization: `Bearer ${accessToken}`,
-                                            "Content-Type": "application/json",
-                                        },
-                                    });
-                                    toast.success("Data Deleted Successfully");
-                                    fetchTeam();
-                                } catch (error) {
-                                    console.error("Error deleting data:", error);
-                                    toast.error("Error deleting data");
-                                } finally {
-                                    setLoading(false);
-                                }
-                                onClose();
-                            }}
-                        >
-                            Yes
-                        </button>
-                        <button className="btn btn-secondary" onClick={() => onClose()}>
-                            No
-                        </button>
-                    </div>
-                </div>
-            ),
-        });
-    };
+
 
     const handleIsActive = async (id, isVisible) => {
-      
+
         confirmAlert({
             title: "Confirm to change visibility",
             customUI: ({ onClose }) => (
@@ -221,7 +170,7 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal }) 
                                 const accessToken = localStorage.getItem("accessToken");
                                 try {
                                     await instance.put(
-                                        `counter/isactive-homecounter/${id}`,
+                                        `Sessionslot/isactive-Sessionslot/${id}`,
                                         { isVisible },
                                         {
                                             headers: {
@@ -244,12 +193,13 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal }) 
                                 } finally {
                                     setLoading(false); // Set loading to false
                                 }
-                                onClose();
+                                onClose();handleShowModal()
+                                handleShowModal
                             }}
                         >
                             Yes
                         </button>
-                        <button className="btn btn-secondary" onClick={() => onClose()}>
+                        <button className="btn btn-secondary" onClick={() => { onClose(); handleShowModal() }}>
                             No
                         </button>
                     </div>
@@ -257,14 +207,73 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal }) 
             ),
         });
     };
-
+    const handleDelete = async (id) => {
+        confirmAlert({
+            title: "Confirm to delete",
+            message: "Are you sure you want to delete this data?",
+            customUI: ({ onClose }) => (
+                <div
+                    style={{
+                        textAlign: "left",
+                        padding: "20px",
+                        backgroundColor: "white",
+                        borderRadius: "8px",
+                        boxShadow: "0 4px 8px rgba(5, 5, 5, 0.2)",
+                        maxWidth: "400px",
+                        margin: "0 auto",
+                    }}
+                >
+                    <h2>Confirm to delete</h2>
+                    <p>Are you sure you want to delete this data?</p>
+                    <div
+                        style={{
+                            display: "flex",
+                            justifyContent: "flex-end",
+                            marginTop: "20px",
+                        }}
+                    >
+                        <button
+                            style={{ marginRight: "10px" }}
+                            className="btn btn-primary"
+                            onClick={async () => {
+                                setLoading(true);
+                                const accessToken = localStorage.getItem("accessToken");
+                                try {
+                                    await instance.delete(`Sessionslot/isdelete-Sessionslot/${id}`, {
+                                        headers: {
+                                            Authorization: `Bearer ${accessToken}`,
+                                            "Content-Type": "application/json",
+                                        },
+                                    });
+                                    toast.success("Data Deleted Successfully");
+                                    fetchTeam();
+                                } catch (error) {
+                                    console.error("Error deleting data:", error);
+                                    toast.error("Error deleting data");
+                                } finally {
+                                    setLoading(false);
+                                }
+                                onClose(); handleShowModal()
+                            }}
+                        >
+                            Yes
+                        </button>
+                        <button className="btn btn-secondary" onClick={() => { onClose(); handleShowModal() }}>
+                            No
+                        </button>
+                    </div>
+                </div>
+            ),
+        });
+    };
     const toggleEdit = (id) => {
         const selectedMember = team.find((member) => member.id === id);
         if (selectedMember) {
             setEditingId(id);
             setFormData(selectedMember); // This should set existing data correctly
             setEditMode(true);
-            setShowTable(false); // Switch to form view when editing
+            setShowTable(false);
+            setShow1(true) // Switch to form view when editing
         }
     };
 
@@ -283,12 +292,12 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal }) 
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
         if (validateForm(formData)) {
             setLoading(true);
-            const accessToken = localStorage.getItem("accessToken"); // Retrieve access token
+            const accessToken = localStorage.getItem("accessToken");
             const data = new FormData();
 
-            // Append all formData fields, including the img file if present
             for (const key in formData) {
                 if (formData[key] instanceof File || typeof formData[key] === "string") {
                     data.append(key, formData[key]);
@@ -297,7 +306,7 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal }) 
 
             try {
                 if (editMode) {
-                    await instance.put(`counter/update-homecounter/${editingId}`, data, {
+                    await instance.put(`Sessionslot/Sessionslot/${editingId}`, data, {
                         headers: {
                             Authorization: "Bearer " + accessToken,
                             "Content-Type": "application/json",
@@ -309,7 +318,7 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal }) 
                     );
                     setTeam(updatedTeam);
                 } else {
-                    await instance.post("counter/create-homecounter", data, {
+                    await instance.post("Sessionslot/create-Sessionslot", data, {
                         headers: {
                             Authorization: "Bearer " + accessToken,
                             "Content-Type": "application/json",
@@ -320,13 +329,13 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal }) 
                 fetchTeam();
 
                 setEditMode(false);
-                setFormData({});
+                setFormData(initialFormData); // Reset formData to initial state
                 setImagePreview("");
-                setShowTable(true); // Switch back to table view after submission
+                setShowTable(true);
             } catch (error) {
                 console.error("Error handling form submission:", error);
             } finally {
-                setLoading(false); // Set loading to false
+                setLoading(false);
             }
         }
     };
@@ -355,18 +364,23 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal }) 
         },
         {
             name: <CustomHeader name="Title" />,
-            cell: (row) => <span>{row.training_imparted}</span>,
+            cell: (row) => <span>{row.title}</span>,
         },
         {
-            name: <CustomHeader name="Title" />,
-            cell: (row) => <span>{row.lives_changed}</span>,
+            name: <CustomHeader name="Capacity" />,
+            cell: (row) => <span>{row.capacity}</span>,
         },
         {
-            name: <CustomHeader name="Title" />,
-            cell: (row) => <span>{row.children}</span>,
-        }, {
-            name: <CustomHeader name="Title" />,
-            cell: (row) => <span>{row.adult}</span>,
+            name: <CustomHeader name="Time" />,
+            cell: (row) => <span>{row.time}</span>,
+        }, 
+        {
+            name: <CustomHeader name="Trainer" />,
+            cell: (row) => <span>{row.trainer}</span>,
+        },
+        {
+            name: <CustomHeader name="Category" />,
+            cell: (row) => <span>{row.category}</span>,
         },
         {
             name: <CustomHeader name="Actions" />,
@@ -387,7 +401,7 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal }) 
                         <Button
                             className="ms-1"
                             style={{ backgroundColor: "red", color: "white", borderColor: "red" }}
-                            onClick={() => handleDelete(row.id)}
+                            onClick={() => { handleDelete(row.id); handleCloseModal() }}
                         >
                             <FaTrash />
                         </Button>
@@ -403,7 +417,7 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal }) 
                                 borderColor: eyeVisibilityById[row.id] ? 'red' : 'green',
                                 color: 'white',
                             }}
-                            onClick={() => handleIsActive(row.id, !eyeVisibilityById[row.id])}
+                            onClick={() => { handleIsActive(row.id, !eyeVisibilityById[row.id]); handleCloseModal() }}
                         >
                             {eyeVisibilityById[row.id] ? <FaEyeSlash /> : <FaEye />}
                         </Button>
@@ -426,7 +440,9 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal }) 
             >
                 <Modal.Header closeButton>
                     <Modal.Title id="contained-modal-title-vcenter">
-                        {/* {selectedDates} */}
+                        <Button variant="secondary" onClick={handleClose1}>
+                            add slot
+                        </Button>
                     </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
@@ -483,80 +499,81 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal }) 
                 </Modal.Header>
                 <Modal.Body>
                     <Form onSubmit={handleSubmit}>
-                        <Form.Group controlId="formCategory">
-                            <Form.Label>Training Category</Form.Label>
-                            <Form.Control
-                                type="category"
-                                name="category"
-                                value={formData.category}
-                                onChange={handleChange}
-                                required
-                                disabled
-                            />
-                        </Form.Group>
-
-                        <Form.Group controlId="formTrainer" className="mt-3">
-                            <Form.Label>Trainer</Form.Label>
-                            <Form.Control
-                                type="text"
-                                name="trainer"
-                                value={formData.trainer}
-                                onChange={handleChange}
-                                required
-                            />
-                        </Form.Group>
-
-                        <Form.Group controlId="formTime" className="mt-3">
-                            <Form.Label>Time</Form.Label>
-                            <Form.Control
-                                type="time"
-                                name="time"
-                                value={formData.time}
-                                onChange={handleChange}
-                                required
-                            />
-                        </Form.Group>
-
-                        <Form.Group controlId="formDeadlineTime" className="mt-3">
-                            <Form.Label>Deadline Time</Form.Label>
-                            <Form.Control
-                                type="time"
-                                name="deadlineTime"
-                                value={formData.deadlineTime}
-                                onChange={handleChange}
-                                required
-                            />
-                        </Form.Group>
-
-                        <Form.Group controlId="formTitle" className="mt-3">
-                            <Form.Label>Title</Form.Label>
-                            <Form.Control
-                                type="text"
-                                name="title"
-                                value={formData.title}
-                                onChange={handleChange}
-                                required
-                            />
-                        </Form.Group>
-
-                        <Form.Group controlId="formCapacity" className="mt-3">
-                            <Form.Label>Capacity</Form.Label>
-                            <Form.Control
-                                type="number"
-                                name="capacity"
-                                value={formData.capacity}
-                                onChange={handleChange}
-                                required
-                            />
-                        </Form.Group>
-
+                        <Row>
+                            <Col md={6}>
+                                <NewResuableForm
+                                    label="Phone"
+                                    placeholder="Enter phone number"
+                                    type="text"
+                                    name="phone"
+                                    onChange={handleChange}
+                                    initialData={formData}
+                                />
+                            </Col>
+                            <Col md={6}>
+                                <NewResuableForm
+                                    label="Trainer"
+                                    placeholder="Enter trainer name"
+                                    type="text"
+                                    name="trainer"
+                                    onChange={handleChange}
+                                    initialData={formData}
+                                />
+                            </Col>
+                            <Col md={6}>
+                                <NewResuableForm
+                                    label="Time"
+                                    placeholder="Enter time"
+                                    type="text"
+                                    name="time"
+                                    onChange={handleChange}
+                                    initialData={formData}
+                                />
+                            </Col>
+                            <Col md={6}>
+                                <NewResuableForm
+                                    label="Deadline Time"
+                                    placeholder="Enter deadline time"
+                                    type="text"
+                                    name="deadlineTime"
+                                    onChange={handleChange}
+                                    initialData={formData}
+                                />
+                            </Col>
+                            <Col md={6}>
+                                <NewResuableForm
+                                    label="Title"
+                                    placeholder="Enter title"
+                                    type="text"
+                                    name="title"
+                                    onChange={handleChange}
+                                    initialData={formData}
+                                />
+                            </Col>
+                            <Col md={6}>
+                                <NewResuableForm
+                                    label="Capacity"
+                                    placeholder="Enter capacity"
+                                    type="text"
+                                    name="capacity"
+                                    onChange={handleChange}
+                                    initialData={formData}
+                                />
+                            </Col>
+                            <Col xs={12} className="d-flex justify-content-end">
+                                <Button variant="primary" type="submit">
+                                    Submit
+                                </Button>
+                            </Col>
+                        </Row>
                     </Form>
                 </Modal.Body>
+
                 <Modal.Footer>
-                    <Button variant="primary" type="submit">
+                    <Button variant="primary" type="submit" >
                         Submit
                     </Button>
-                    <Button variant="secondary" onClick={handleClose1}>
+                    <Button variant="secondary" onClick={() => setShow1(false)}>
                         Close
                     </Button>
                 </Modal.Footer>
