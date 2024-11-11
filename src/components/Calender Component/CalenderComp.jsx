@@ -223,6 +223,7 @@ const CalenderComp = ({ tabKey, categoryName }) => {
             </Container>
             <SlotComp showModal={showModal}
                 handleCloseModal={handleCloseModal}
+                handleShowModal={handleShowModal}
                 selectedDates={selectedDates}
                 categoryName={categoryName} />
         </>
