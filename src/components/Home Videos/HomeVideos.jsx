@@ -7,19 +7,25 @@ import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import Table from 'react-bootstrap/Table';
 import Alert from 'react-bootstrap/Alert';
-import { FaEdit, FaEye, FaEyeSlash, FaRegEye } from 'react-icons/fa';
+import { FaEdit, FaEyeSlash, FaRegEye } from 'react-icons/fa';
 import { MdDelete } from 'react-icons/md';
 import instance from '../../api/AxiosInstance';
 
 import { confirmAlert } from "react-confirm-alert";
 import "react-confirm-alert/src/react-confirm-alert.css";
 import { useSearchExport } from '../../context/SearchExportContext';
-import SearchInput from '../../components/search/SearchInput';
+import SearchInput from '../search/SearchInput';
 
-function AnnualReport() {
-    const [financialYear, setFinancialYear] = useState("");
-    const [file, setPdf] = useState(null);
-    const [preview, setPreview] = useState(null);
+function HomeVideos() {
+    // const [instagram, setinstgram] = useState("");
+    // const [facebook, setfacebook] = useState("");
+    // const [email, setemail] = useState("");
+    // const [whatsapp, setwhatsapp] = useState("");
+    // const [linkedin, setlinkedin] = useState("");
+
+    const [title, settitle] = useState("");
+    const [mediaurl, setmediaurl] = useState("");
+
     const [errors, setErrors] = useState({});
     const [showAdd, setShowAdd] = useState(true);
     const [getadmin_data, setadmin_data] = useState([]);
@@ -27,82 +33,56 @@ function AnnualReport() {
     const [editId, setEditId] = useState(null);
     const [activeStatus, setActiveStatus] = useState({});
 
-    const { searchQuery, handleSearch, handleExport, setData, filteredData } = useSearchExport();
+    const { searchQuery, handleSearch } = useSearchExport();
 
     const validateForm = () => {
         let errors = {};
         let isValid = true;
 
-        if (!financialYear.trim()) {
-            errors.financialYear = 'Financial Year is required';
-            isValid = false;
-        }
-        if (!file && !editMode) { // Only validate PDF in add mode
-            errors.file = 'PDF file is required';
-            isValid = false;
-        }
+        if (!title.trim()) errors.title = 'title is required';
+        if (!mediaurl.trim()) errors.mediaurl = 'mediaurl is required';
+
 
         setErrors(errors);
-        return isValid;
+        return isValid && Object.keys(errors).length === 0;
     };
 
     const handleForm = async (e) => {
         e.preventDefault();
-
         if (validateForm()) {
-            const formData = new FormData();
-            formData.append('financialYear', financialYear);
-            if (file) formData.append('file', file);
-
+            const formData = { title, mediaurl };
             try {
                 if (editMode && editId) {
-                    await instance.put(`AnnualReport/update-annualReport/${editId}`, formData);
+                    await instance.put(`homeyoutube/update-homeyoutube/${editId}`, formData);
                     alert('Data updated successfully!');
                 } else {
-                    await instance.post('AnnualReport/create-annualReport', formData, {
-                        headers: { 'Content-Type': 'multipart/form-data' }
-                    });
+                    await instance.post('homeyoutube/create-homeyoutube', formData);
                     alert('Data submitted successfully!');
                 }
-
-                setFinancialYear("");
-                setPdf(null);
-                setPreview(null);
-                setErrors({});
-                setEditMode(false);
-                setEditId(null);
+                clearForm();
                 getdata_admin();
                 setShowAdd(true);
             } catch (error) {
-                console.error("Error uploading PDF:", error);
+                console.error("Error submitting data:", error);
             }
         }
     };
 
-    const handlePdfChange = (e) => {
-        const file = e.target.files[0];
-        if (file && file.type === "application/pdf") {
-            setPdf(file);
-            setPreview(URL.createObjectURL(file));
-            setErrors({});
-        } else {
-            setErrors({ pdf: "Only PDF files are allowed." });
-            setPdf(null);
-            setPreview(null);
-        }
+    const clearForm = () => {
+        settitle("");
+        setmediaurl("");
+        setErrors({});
+        setEditMode(false);
+        setEditId(null);
     };
 
     const handleToggle = () => {
         setShowAdd(!showAdd);
-        setEditMode(false);
-        setFinancialYear("");
-        setPdf(null);
-        setPreview(null);
-        setErrors({});
+        clearForm();
     };
 
     const getdata_admin = () => {
-        instance.get('AnnualReport/get-active-annualReports')
+        instance.get('homeyoutube/find-homeyoutube')
             .then((res) => {
                 setadmin_data(res.data.responseData || []);
                 const initialStatus = {};
@@ -121,8 +101,8 @@ function AnnualReport() {
     const edit = (id) => {
         const item = getadmin_data.find((a) => a.id === id);
         if (item) {
-            setFinancialYear(item.financialYear);
-            setPreview(item.pdf);
+            settitle(item.title);
+            setmediaurl(title.mediaurl);
             setEditMode(true);
             setEditId(id);
             setShowAdd(false);
@@ -138,35 +118,31 @@ function AnnualReport() {
                     label: 'Yes',
                     onClick: async () => {
                         try {
-                            await instance.delete(`AnnualReport/annualReport-delete/${id}`);
+                            await instance.delete(`homeyoutube/delete-homeyoutube/${id}`);
                             getdata_admin();
                         } catch (error) {
                             console.error("Error deleting data:", error);
-                            alert("There was an error deleting the data.");
                         }
                     }
                 },
-                {
-                    label: 'No',
-                    onClick: () => { }
-                }
+                { label: 'No' }
             ]
         });
     };
 
-    const toggleActiveStatus = async (id) => {
-        try {
-            const response = await instance.put(`AnnualReport/annualReport-status/${id}`);
-            if (response.data) {
-                setActiveStatus(prevStatus => ({
-                    ...prevStatus,
-                    [id]: !prevStatus[id]
-                }));
-            }
-        } catch (error) {
-            console.error("Error updating status:", error);
-        }
-    };
+    // const toggleActiveStatus = async (id) => {
+    //     try {
+    //         const response = await instance.put(`social-contact/isactive-social/${id}`);
+    //         if (response.data) {
+    //             setActiveStatus(prev => ({
+    //                 ...prev,
+    //                 [id]: !prev[id]
+    //             }));
+    //         }
+    //     } catch (error) {
+    //         console.error("Error updating status:", error);
+    //     }
+    // };
 
     return (
         <Container>
@@ -183,36 +159,32 @@ function AnnualReport() {
                                 <SearchInput value={searchQuery} onChange={handleSearch} />
                                 <Table striped bordered hover responsive="sm">
                                     <thead>
-                                        <tr>
+                                        <tr className="text-center">
                                             <th>Sr. No</th>
-                                            <th>Financial Year</th>
-                                            <th>PDF</th>
+                                            <th>Title</th>
+                                            <th>Media URL</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         {getadmin_data.map((a, index) => (
-                                            <tr key={index}>
+                                            <tr key={index} className="text-center">
                                                 <td>{index + 1}</td>
-                                                <td>{a.financialYear}</td>
+                                                <td className="text-truncate" style={{ maxWidth: '120px' }}>{a.title}</td>
+                                                <td className="text-truncate" style={{ maxWidth: '120px' }}>{a.mediaurl}</td>
                                                 <td>
-                                                    <a href={a.file} target="_blank" rel="noopener noreferrer">View PDF</a>
-                                                </td>
-                                                <td className="p-2">
-                                                    <Button variant="primary" className="m-2" onClick={() => edit(a.id)}>
+                                                    <Button variant="primary" className="m-1" onClick={() => edit(a.id)}>
                                                         <FaEdit />
                                                     </Button>
-                                                    <Button variant="danger" className="m-2" onClick={() => delete_data(a.id)}><MdDelete /></Button>
+                                                    <Button variant="danger" className="m-1" onClick={() => delete_data(a.id)}>
+                                                        <MdDelete />
+                                                    </Button>
                                                     <Button
                                                         variant={activeStatus[a.id] ? "success" : "warning"}
-                                                        className="m-2"
+                                                        className="m-1"
                                                         onClick={() => toggleActiveStatus(a.id)}
                                                     >
-                                                        {activeStatus[a.id] ? (
-                                                            <FaRegEye color="white" />
-                                                        ) : (
-                                                            <FaEyeSlash color="white" />
-                                                        )}
+                                                        {activeStatus[a.id] ? <FaRegEye /> : <FaEyeSlash />}
                                                     </Button>
                                                 </td>
                                             </tr>
@@ -228,29 +200,32 @@ function AnnualReport() {
                     ) : (
                         <Form onSubmit={handleForm}>
                             <Row>
+
                                 <Col lg={6} md={6} sm={12}>
-                                    <Form.Group className="mb-3" controlId="formFinancialYear">
-                                        <Form.Label>Financial Year</Form.Label>
+                                    <Form.Group className="mb-3" controlId="formBasicName">
+                                        <Form.Label>Enter Title</Form.Label>
                                         <Form.Control
                                             type="text"
-                                            placeholder="Enter Financial Year"
-                                            value={financialYear}
-                                            onChange={(e) => setFinancialYear(e.target.value)}
+                                            placeholder="Enter instagram link"
+                                            value={title}
+                                            onChange={(e) => settitle(e.target.value)}
                                         />
-                                        {errors.financialYear && <span className="error text-danger">{errors.financialYear}</span>}
+                                        {errors.title && <span className="error text-danger">{errors.title}</span>}
                                     </Form.Group>
                                 </Col>
                                 <Col lg={6} md={6} sm={12}>
-                                    <Form.Group className="mb-3" controlId="formBasicPdf">
-                                        <Form.Label>Upload PDF</Form.Label>
+                                    <Form.Group className="mb-3" controlId="formBasicName">
+                                        <Form.Label>Enter Media URL</Form.Label>
                                         <Form.Control
-                                            type="file"
-                                            accept="application/pdf"
-                                            onChange={handlePdfChange}
+                                            type="text"
+                                            placeholder="Enter instagram link"
+                                            value={mediaurl}
+                                            onChange={(e) => setmediaurl(e.target.value)}
                                         />
-                                        {errors.file && <span className="error text-danger">{errors.file}</span>}
+                                        {errors.mediaurl && <span className="error text-danger">{errors.mediaurl}</span>}
                                     </Form.Group>
                                 </Col>
+                                
                             </Row>
                             <Button variant={editMode ? "primary" : "success"} type="submit">
                                 {editMode ? 'Update' : 'Submit'}
@@ -263,4 +238,6 @@ function AnnualReport() {
     );
 }
 
-export default AnnualReport;
+export default HomeVideos;
+
+

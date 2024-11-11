@@ -14,12 +14,12 @@ import instance from '../../api/AxiosInstance';
 import { confirmAlert } from "react-confirm-alert";
 import "react-confirm-alert/src/react-confirm-alert.css";
 import { useSearchExport } from '../../context/SearchExportContext';
-import SearchInput from '../../components/search/SearchInput';
+import SearchInput from '../search/SearchInput';
 
-function AnnualReport() {
-    const [financialYear, setFinancialYear] = useState("");
-    const [file, setPdf] = useState(null);
-    const [preview, setPreview] = useState(null);
+function Trainer() {
+    const [name, setName] = useState("");
+    const [email, setEmail] = useState("");
+    const [mobile, setMobile] = useState("");
     const [errors, setErrors] = useState({});
     const [showAdd, setShowAdd] = useState(true);
     const [getadmin_data, setadmin_data] = useState([]);
@@ -33,12 +33,22 @@ function AnnualReport() {
         let errors = {};
         let isValid = true;
 
-        if (!financialYear.trim()) {
-            errors.financialYear = 'Financial Year is required';
+        if (!name.trim()) {
+            errors.name = 'Name is required';
             isValid = false;
         }
-        if (!file && !editMode) { // Only validate PDF in add mode
-            errors.file = 'PDF file is required';
+        if (!email.trim()) {
+            errors.email = 'Email is required';
+            isValid = false;
+        } else if (!/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email)) {
+            errors.email = 'Enter a valid email address';
+            isValid = false;
+        }
+        if (!mobile.trim()) {
+            errors.mobile = 'Mobile number is required';
+            isValid = false;
+        } else if (!/^\d{10}$/.test(mobile)) {
+            errors.mobile = 'Enter a valid 10-digit mobile number';
             isValid = false;
         }
 
@@ -50,59 +60,42 @@ function AnnualReport() {
         e.preventDefault();
 
         if (validateForm()) {
-            const formData = new FormData();
-            formData.append('financialYear', financialYear);
-            if (file) formData.append('file', file);
+            const formData = { name, email, mobile };
 
             try {
                 if (editMode && editId) {
-                    await instance.put(`AnnualReport/update-annualReport/${editId}`, formData);
+                    await instance.put(`trainer/trainer/${editId}`, formData);
                     alert('Data updated successfully!');
                 } else {
-                    await instance.post('AnnualReport/create-annualReport', formData, {
-                        headers: { 'Content-Type': 'multipart/form-data' }
-                    });
+                    await instance.post('trainer/create-trainer', formData);
                     alert('Data submitted successfully!');
                 }
 
-                setFinancialYear("");
-                setPdf(null);
-                setPreview(null);
+                setName("");
+                setEmail("");
+                setMobile("");
                 setErrors({});
                 setEditMode(false);
                 setEditId(null);
                 getdata_admin();
                 setShowAdd(true);
             } catch (error) {
-                console.error("Error uploading PDF:", error);
+                console.error("Error uploading data:", error);
             }
-        }
-    };
-
-    const handlePdfChange = (e) => {
-        const file = e.target.files[0];
-        if (file && file.type === "application/pdf") {
-            setPdf(file);
-            setPreview(URL.createObjectURL(file));
-            setErrors({});
-        } else {
-            setErrors({ pdf: "Only PDF files are allowed." });
-            setPdf(null);
-            setPreview(null);
         }
     };
 
     const handleToggle = () => {
         setShowAdd(!showAdd);
         setEditMode(false);
-        setFinancialYear("");
-        setPdf(null);
-        setPreview(null);
+        setName("");
+        setEmail("");
+        setMobile("");
         setErrors({});
     };
 
     const getdata_admin = () => {
-        instance.get('AnnualReport/get-active-annualReports')
+        instance.get('trainer/get-trainers')
             .then((res) => {
                 setadmin_data(res.data.responseData || []);
                 const initialStatus = {};
@@ -121,8 +114,9 @@ function AnnualReport() {
     const edit = (id) => {
         const item = getadmin_data.find((a) => a.id === id);
         if (item) {
-            setFinancialYear(item.financialYear);
-            setPreview(item.pdf);
+            setName(item.name);
+            setEmail(item.email);
+            setMobile(item.mobile);
             setEditMode(true);
             setEditId(id);
             setShowAdd(false);
@@ -138,7 +132,7 @@ function AnnualReport() {
                     label: 'Yes',
                     onClick: async () => {
                         try {
-                            await instance.delete(`AnnualReport/annualReport-delete/${id}`);
+                            await instance.delete(`trainer/toggle-delete-trainer/${id}`);
                             getdata_admin();
                         } catch (error) {
                             console.error("Error deleting data:", error);
@@ -146,17 +140,14 @@ function AnnualReport() {
                         }
                     }
                 },
-                {
-                    label: 'No',
-                    onClick: () => { }
-                }
+                { label: 'No', onClick: () => {} }
             ]
         });
     };
 
     const toggleActiveStatus = async (id) => {
         try {
-            const response = await instance.put(`AnnualReport/annualReport-status/${id}`);
+            const response = await instance.put(`trainer/toggle-active-trainer/${id}`);
             if (response.data) {
                 setActiveStatus(prevStatus => ({
                     ...prevStatus,
@@ -185,8 +176,9 @@ function AnnualReport() {
                                     <thead>
                                         <tr>
                                             <th>Sr. No</th>
-                                            <th>Financial Year</th>
-                                            <th>PDF</th>
+                                            <th>Name</th>
+                                            <th>Email</th>
+                                            <th>Mobile</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
@@ -194,10 +186,9 @@ function AnnualReport() {
                                         {getadmin_data.map((a, index) => (
                                             <tr key={index}>
                                                 <td>{index + 1}</td>
-                                                <td>{a.financialYear}</td>
-                                                <td>
-                                                    <a href={a.file} target="_blank" rel="noopener noreferrer">View PDF</a>
-                                                </td>
+                                                <td>{a.name}</td>
+                                                <td>{a.email}</td>
+                                                <td>{a.mobile}</td>
                                                 <td className="p-2">
                                                     <Button variant="primary" className="m-2" onClick={() => edit(a.id)}>
                                                         <FaEdit />
@@ -208,11 +199,7 @@ function AnnualReport() {
                                                         className="m-2"
                                                         onClick={() => toggleActiveStatus(a.id)}
                                                     >
-                                                        {activeStatus[a.id] ? (
-                                                            <FaRegEye color="white" />
-                                                        ) : (
-                                                            <FaEyeSlash color="white" />
-                                                        )}
+                                                        {activeStatus[a.id] ? <FaRegEye color="white" /> : <FaEyeSlash color="white" />}
                                                     </Button>
                                                 </td>
                                             </tr>
@@ -229,26 +216,39 @@ function AnnualReport() {
                         <Form onSubmit={handleForm}>
                             <Row>
                                 <Col lg={6} md={6} sm={12}>
-                                    <Form.Group className="mb-3" controlId="formFinancialYear">
-                                        <Form.Label>Financial Year</Form.Label>
+                                    <Form.Group className="mb-3" controlId="formBasicName">
+                                        <Form.Label>Enter Name</Form.Label>
                                         <Form.Control
                                             type="text"
-                                            placeholder="Enter Financial Year"
-                                            value={financialYear}
-                                            onChange={(e) => setFinancialYear(e.target.value)}
+                                            placeholder="Enter Name"
+                                            value={name}
+                                            onChange={(e) => setName(e.target.value)}
                                         />
-                                        {errors.financialYear && <span className="error text-danger">{errors.financialYear}</span>}
+                                        {errors.name && <span className="error text-danger">{errors.name}</span>}
                                     </Form.Group>
                                 </Col>
                                 <Col lg={6} md={6} sm={12}>
-                                    <Form.Group className="mb-3" controlId="formBasicPdf">
-                                        <Form.Label>Upload PDF</Form.Label>
+                                    <Form.Group className="mb-3" controlId="formBasicEmail">
+                                        <Form.Label>Enter Email</Form.Label>
                                         <Form.Control
-                                            type="file"
-                                            accept="application/pdf"
-                                            onChange={handlePdfChange}
+                                            type="email"
+                                            placeholder="Enter Email"
+                                            value={email}
+                                            onChange={(e) => setEmail(e.target.value)}
                                         />
-                                        {errors.file && <span className="error text-danger">{errors.file}</span>}
+                                        {errors.email && <span className="error text-danger">{errors.email}</span>}
+                                    </Form.Group>
+                                </Col>
+                                <Col lg={6} md={6} sm={12}>
+                                    <Form.Group className="mb-3" controlId="formBasicMobile">
+                                        <Form.Label>Enter Mobile</Form.Label>
+                                        <Form.Control
+                                            type="text"
+                                            placeholder="Enter Mobile"
+                                            value={mobile}
+                                            onChange={(e) => setMobile(e.target.value)}
+                                        />
+                                        {errors.mobile && <span className="error text-danger">{errors.mobile}</span>}
                                     </Form.Group>
                                 </Col>
                             </Row>
@@ -263,4 +263,4 @@ function AnnualReport() {
     );
 }
 
-export default AnnualReport;
+export default Trainer;

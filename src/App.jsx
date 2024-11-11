@@ -29,6 +29,17 @@ import UpcommingEvents from "./screens/submenus/UpcommingEvents";
 import PastEvents from "./screens/submenus/PastEvents";
 import Calender from "./screens/submenus/Booking/Calender";
 import Bookpackages from "./screens/Booking Packages/Bookpackages";
+import Trainer from "./components/Trainer/Trainer";
+import Thanksto from "./components/ThanksTo/Thanksto";
+import Homebanner from "./components/HomeBanner/Homebanner";
+import ObjectiveofAnf from "./components/Objective of ANF/ObjectiveofAnf";
+import PhotoGallary from "./components/PhotoGallary/PhotoGallary";
+import HomeCounter from "./components/Home Counter/HomeCounter";
+import Directors from "./components/Directors/Directors";
+import FollowonUs from "./components/Follow on us/FollowonUs";
+import News from "./components/News/News";
+import HomeVideos from "./components/Home Videos/HomeVideos";
+import ConatctFrom from "./components/Contact From/ConatctFrom";
 
 function App() {
   return (
@@ -43,8 +54,20 @@ function App() {
             element={<ProtectedRoutes Component={Dashboard} />}
           />
           <Route
+            path="/homebanner"
+            element={<ProtectedRoutes Component={Homebanner} />}
+          />
+          <Route
+            path="/objective-of-anf"
+            element={<ProtectedRoutes Component={ObjectiveofAnf} />}
+          />
+          <Route
             path="/infrastructure"
             element={<ProtectedRoutes Component={Infrastructure} />}
+          />
+          <Route
+            path="/photo-gallary"
+            element={<ProtectedRoutes Component={PhotoGallary} />}
           />
           <Route
             path="/slots"
@@ -79,6 +102,14 @@ function App() {
             element={<ProtectedRoutes Component={AnnualReport} />}
           />
           <Route
+            path="/conact-form"
+            element={<ProtectedRoutes Component={ConatctFrom} />}
+          />
+          <Route
+            path="/trainer"
+            element={<ProtectedRoutes Component={Trainer} />}
+          />
+          <Route
             path="/annualreturn"
             element={<ProtectedRoutes Component={AnnualReturn} />}
           />
@@ -89,6 +120,30 @@ function App() {
           <Route
             path="/pastevents"
             element={<ProtectedRoutes Component={PastEvents} />}
+          />
+          <Route
+            path="/home-counter"
+            element={<ProtectedRoutes Component={HomeCounter} />}
+          />
+          <Route
+            path="/directors"
+            element={<ProtectedRoutes Component={Directors} />}
+          />
+          <Route
+            path="/follow-on-us"
+            element={<ProtectedRoutes Component={FollowonUs} />}
+          />
+          <Route
+            path="/news"
+            element={<ProtectedRoutes Component={News} />}
+          />
+          <Route
+            path="/home-videos"
+            element={<ProtectedRoutes Component={HomeVideos} />}
+          />
+          <Route
+            path="/thanksto"
+            element={<ProtectedRoutes Component={Thanksto} />}
           />
           <Route
             path="/upcommingevents"

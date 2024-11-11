@@ -14,33 +14,37 @@ import instance from '../../api/AxiosInstance';
 import { confirmAlert } from "react-confirm-alert";
 import "react-confirm-alert/src/react-confirm-alert.css";
 import { useSearchExport } from '../../context/SearchExportContext';
-import SearchInput from '../../components/search/SearchInput';
+import SearchInput from '../search/SearchInput';
 
-function AnnualReport() {
-    const [financialYear, setFinancialYear] = useState("");
-    const [file, setPdf] = useState(null);
+function Directors() {
+    const [designation, setdesignation] = useState("");
+    const [name, setname] = useState("");
+
+
     const [preview, setPreview] = useState(null);
     const [errors, setErrors] = useState({});
     const [showAdd, setShowAdd] = useState(true);
     const [getadmin_data, setadmin_data] = useState([]);
     const [editMode, setEditMode] = useState(false);
     const [editId, setEditId] = useState(null);
-    const [activeStatus, setActiveStatus] = useState({});
+    const [activeStatus, setActiveStatus] = useState({}); // Track isActive status
 
-    const { searchQuery, handleSearch, handleExport, setData, filteredData } = useSearchExport();
+    const { searchQuery, handleSearch, handleExport, setData, filteredData } =
+        useSearchExport();
 
     const validateForm = () => {
         let errors = {};
         let isValid = true;
 
-        if (!financialYear.trim()) {
-            errors.financialYear = 'Financial Year is required';
+        if (!designation.trim()) {
+            errors.designation = 'designation is required';
             isValid = false;
         }
-        if (!file && !editMode) { // Only validate PDF in add mode
-            errors.file = 'PDF file is required';
+        if (!name.trim()) {
+            errors.name = 'Name is required';
             isValid = false;
         }
+
 
         setErrors(errors);
         return isValid;
@@ -51,65 +55,67 @@ function AnnualReport() {
 
         if (validateForm()) {
             const formData = new FormData();
-            formData.append('financialYear', financialYear);
-            if (file) formData.append('file', file);
+            formData.append('designation', designation);
+            formData.append('name', name);
+
 
             try {
                 if (editMode && editId) {
-                    await instance.put(`AnnualReport/update-annualReport/${editId}`, formData);
+                    await instance.put(`Directors/update-Directors/${editId}`, formData);
                     alert('Data updated successfully!');
                 } else {
-                    await instance.post('AnnualReport/create-annualReport', formData, {
+                    await instance.post('Directors/create-Directors', formData, {
                         headers: { 'Content-Type': 'multipart/form-data' }
                     });
                     alert('Data submitted successfully!');
                 }
 
-                setFinancialYear("");
-                setPdf(null);
+                setdesignation('')
+                setname('')
+
                 setPreview(null);
                 setErrors({});
                 setEditMode(false);
                 setEditId(null);
                 getdata_admin();
-                setShowAdd(true);
+                setShowAdd(true); // Show table after form submission
             } catch (error) {
-                console.error("Error uploading PDF:", error);
+                console.error("Error uploading image:", error);
             }
         }
     };
 
-    const handlePdfChange = (e) => {
-        const file = e.target.files[0];
-        if (file && file.type === "application/pdf") {
-            setPdf(file);
-            setPreview(URL.createObjectURL(file));
-            setErrors({});
-        } else {
-            setErrors({ pdf: "Only PDF files are allowed." });
-            setPdf(null);
-            setPreview(null);
-        }
-    };
+    // const handleImageChange = (e) => {
+    //     const file = e.target.files[0];
+    //     if (file && file.type.startsWith("image/")) {
+    //         setImage(file);
+    //         setPreview(URL.createObjectURL(file));
+    //         setErrors({});
+    //     } else {
+    //         setErrors({ img: "Only image files are allowed." });
+    //         setImage(null);
+    //         setPreview(null);
+    //     }
+    // };
 
     const handleToggle = () => {
         setShowAdd(!showAdd);
         setEditMode(false);
-        setFinancialYear("");
-        setPdf(null);
+        setdesignation("");
+        setname("");
         setPreview(null);
         setErrors({});
     };
 
     const getdata_admin = () => {
-        instance.get('AnnualReport/get-active-annualReports')
+        instance.get('Directors/find-Directors')
             .then((res) => {
                 setadmin_data(res.data.responseData || []);
                 const initialStatus = {};
                 res.data.responseData.forEach(item => {
-                    initialStatus[item.id] = item.isActive;
+                    initialStatus[item.id] = item.isActive; // Set the initial status for each item
                 });
-                setActiveStatus(initialStatus);
+                setActiveStatus(initialStatus); // Set active status state
             })
             .catch((err) => console.log(err));
     };
@@ -121,11 +127,11 @@ function AnnualReport() {
     const edit = (id) => {
         const item = getadmin_data.find((a) => a.id === id);
         if (item) {
-            setFinancialYear(item.financialYear);
-            setPreview(item.pdf);
+            setdesignation(item.designation);
+            setname(item.name)
             setEditMode(true);
             setEditId(id);
-            setShowAdd(false);
+            setShowAdd(false); // Show form for editing
         }
     };
 
@@ -138,8 +144,8 @@ function AnnualReport() {
                     label: 'Yes',
                     onClick: async () => {
                         try {
-                            await instance.delete(`AnnualReport/annualReport-delete/${id}`);
-                            getdata_admin();
+                            await instance.delete(`Directors/Directors-delete/${id}`);
+                            getdata_admin(); // Refresh the data after deletion
                         } catch (error) {
                             console.error("Error deleting data:", error);
                             alert("There was an error deleting the data.");
@@ -148,7 +154,7 @@ function AnnualReport() {
                 },
                 {
                     label: 'No',
-                    onClick: () => { }
+                    onClick: () => { } // Do nothing if user clicks "No"
                 }
             ]
         });
@@ -156,11 +162,11 @@ function AnnualReport() {
 
     const toggleActiveStatus = async (id) => {
         try {
-            const response = await instance.put(`AnnualReport/annualReport-status/${id}`);
+            const response = await instance.put(`Directors/Directors-status/${id}`);
             if (response.data) {
                 setActiveStatus(prevStatus => ({
                     ...prevStatus,
-                    [id]: !prevStatus[id]
+                    [id]: !prevStatus[id] // Toggle the isActive status
                 }));
             }
         } catch (error) {
@@ -177,7 +183,9 @@ function AnnualReport() {
                     </Button>
                 </Card.Header>
                 <Card.Body>
+
                     {showAdd ? (
+
                         getadmin_data.length > 0 ? (
                             <>
                                 <SearchInput value={searchQuery} onChange={handleSearch} />
@@ -185,8 +193,8 @@ function AnnualReport() {
                                     <thead>
                                         <tr>
                                             <th>Sr. No</th>
-                                            <th>Financial Year</th>
-                                            <th>PDF</th>
+                                            <th>Designation</th>
+                                            <th>Name</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
@@ -194,26 +202,27 @@ function AnnualReport() {
                                         {getadmin_data.map((a, index) => (
                                             <tr key={index}>
                                                 <td>{index + 1}</td>
-                                                <td>{a.financialYear}</td>
-                                                <td>
-                                                    <a href={a.file} target="_blank" rel="noopener noreferrer">View PDF</a>
-                                                </td>
+                                                <td>{a.designation}</td>
+                                                <td>{a.name}</td>
+
                                                 <td className="p-2">
                                                     <Button variant="primary" className="m-2" onClick={() => edit(a.id)}>
                                                         <FaEdit />
                                                     </Button>
                                                     <Button variant="danger" className="m-2" onClick={() => delete_data(a.id)}><MdDelete /></Button>
                                                     <Button
-                                                        variant={activeStatus[a.id] ? "success" : "warning"}
+                                                        variant={activeStatus[a.id] ? "success" : "warning"} // Button color based on isActive
                                                         className="m-2"
                                                         onClick={() => toggleActiveStatus(a.id)}
                                                     >
+                                                        {/* Conditionally render the icon based on isActive status */}
                                                         {activeStatus[a.id] ? (
-                                                            <FaRegEye color="white" />
+                                                            <FaRegEye color="white" />  // Green Eye when isActive is true
                                                         ) : (
-                                                            <FaEyeSlash color="white" />
+                                                            <FaEyeSlash color="white" />  // Red Eye-slash when isActive is false
                                                         )}
                                                     </Button>
+
                                                 </td>
                                             </tr>
                                         ))}
@@ -229,26 +238,27 @@ function AnnualReport() {
                         <Form onSubmit={handleForm}>
                             <Row>
                                 <Col lg={6} md={6} sm={12}>
-                                    <Form.Group className="mb-3" controlId="formFinancialYear">
-                                        <Form.Label>Financial Year</Form.Label>
+                                    <Form.Group className="mb-3" controlId="formBasicName">
+                                        <Form.Label>Enter Destination</Form.Label>
                                         <Form.Control
                                             type="text"
-                                            placeholder="Enter Financial Year"
-                                            value={financialYear}
-                                            onChange={(e) => setFinancialYear(e.target.value)}
+                                            placeholder="Enter destination"
+                                            value={designation}
+                                            onChange={(e) => setdesignation(e.target.value)}
                                         />
-                                        {errors.financialYear && <span className="error text-danger">{errors.financialYear}</span>}
+                                        {errors.designation && <span className="error text-danger">{errors.designation}</span>}
                                     </Form.Group>
                                 </Col>
                                 <Col lg={6} md={6} sm={12}>
-                                    <Form.Group className="mb-3" controlId="formBasicPdf">
-                                        <Form.Label>Upload PDF</Form.Label>
+                                    <Form.Group className="mb-3" controlId="formBasicName">
+                                        <Form.Label>Enter Name</Form.Label>
                                         <Form.Control
-                                            type="file"
-                                            accept="application/pdf"
-                                            onChange={handlePdfChange}
+                                            type="text"
+                                            placeholder="Enter Name"
+                                            value={name}
+                                            onChange={(e) => setname(e.target.value)}
                                         />
-                                        {errors.file && <span className="error text-danger">{errors.file}</span>}
+                                        {errors.designation && <span className="error text-danger">{errors.designation}</span>}
                                     </Form.Group>
                                 </Col>
                             </Row>
@@ -263,4 +273,4 @@ function AnnualReport() {
     );
 }
 
-export default AnnualReport;
+export default Directors;
