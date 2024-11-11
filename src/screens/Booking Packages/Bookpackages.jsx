@@ -10,8 +10,6 @@ import Modal from 'react-bootstrap/Modal';
 import Tab from 'react-bootstrap/Tab';
 import Tabs from 'react-bootstrap/Tabs';
 import { jsPDF } from "jspdf"; // Import jsPDF
-
-import cirtificate from '../../assets/Holiday/cirtificate.png'
 import Categories from "../../components/Categories";
 import instance from "../../api/AxiosInstance";
 
@@ -32,6 +30,7 @@ const Bookpackages = ({ tabKey }) => {
     const handleShow2 = () => setShow2(true);
 
 
+    
     // const handleRowClick = (rowData) => {
     //     setSelectedRowData(rowData);
     //     setRowModal(true);
@@ -39,9 +38,9 @@ const Bookpackages = ({ tabKey }) => {
     const getUserDataByCategoryAndDate = (date) => {
         let data = {
             category: categoryName,
-            booking_date: date
+            slotdate: date
         }
-        instance.post("bookingentries/get-bookingentries-by-date-category", data).then((result) => {
+        instance.post("bookingform/get-bookingentries-by-date-category", data).then((result) => {
             console.log("result", result);
             setDataByDateAndCategory(result.data.responseData)
         }).catch((error) => {
@@ -67,6 +66,14 @@ const Bookpackages = ({ tabKey }) => {
     const handleSave = () => {
         // Here you can add logic to save changes to your state or backend
         setIsEditing(false); // Disable edit mode
+        console.log("selectedBooking", selectedBooking);
+
+        instance.put(`bookingform/bookingform/${selectedBooking.id}`, selectedBooking).then((resp) => {
+            console.log("resp", resp);
+        }).catch((err) => {
+            console.log("err", err);
+
+        })
     };
 
 
@@ -125,7 +132,6 @@ const Bookpackages = ({ tabKey }) => {
     };
 
     const handleDayClick = (day) => {
-        alert("test")
         if (day && !isPastDate(day)) {
             const clickedDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
             console.log("clickedDate", clickedDate);
@@ -165,45 +171,35 @@ const Bookpackages = ({ tabKey }) => {
     const lastWeek = weeks[weeks.length - 1];
     lastWeek.push(...Array(7 - lastWeek.length).fill(null));
 
-    const bookingpack_data = [
-        {
-            time: "03:00 pm",
-            id: 6231,
-            fname: 'Amit',
-            lname: 'Patil',
-            l_license: "Leraning License",
-            fees: 75418,
-            status: "Not Confirmed"
-        },
-        {
-            time: "03:00 pm",
-            id: 6512,
-            fname: 'Mohit',
-            lname: 'Patil',
-            l_license: "Leraning License",
-            fees: 74185,
-            status: "Attended"
-        },
-        {
-            time: "03:00 pm",
-            id: 6254,
-            fname: 'Karan',
-            lname: 'Panjwani',
-            l_license: "Leraning License",
-            fees: 79541,
-            status: "Attended"
-        },
-        {
-            time: "03:00 pm",
-            id: 6325,
-            fname: 'kaif',
-            lname: 'Shaikh',
-            l_license: "Leraning License",
-            fees: 78415,
-            status: "Attended"
-        }
-    ]
+    const EditDate = (e) => {
+        let value = e.target.value
+        const date = new Date(value);
 
+        // Define options for formatting
+        const options = {
+            weekday: 'long',
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric'
+        };
+        const formattedDate = date.toLocaleDateString('en-GB', options).replace(',', '').replace('/', '');
+        setSelectedBooking({ ...selectedBooking, slotdate: formattedDate })
+    }
+
+    const EditSubmissionDate = (e) => {
+        let value = e.target.value
+        const date = new Date(value);
+
+        // Set the desired time (17:22:33.000)
+        date.setHours(17, 22, 33, 0);
+
+        // Convert to ISO string format
+        const isoString = date.toISOString();
+
+        setSelectedBooking({ ...selectedBooking, submission_date: isoString })
+
+
+    }
     const handleDownloadCertificate = async () => {
         const doc = new jsPDF();
 
@@ -244,6 +240,8 @@ const Bookpackages = ({ tabKey }) => {
 
 
     const handleRowClick = (a) => {
+        console.log("aaaa", a);
+
         setSelectedBooking(a); // Set the selected booking data
         handleShow1();
     };
@@ -340,19 +338,21 @@ const Bookpackages = ({ tabKey }) => {
                                     {
                                         dataByDateAndCategory.length == 0 ? <p className="fw-bold ">No Data Found</p> :
                                             dataByDateAndCategory.map((a) => {
+                                                console.log("a", a);
+
                                                 return (
                                                     <>
                                                         <tr onClick={() => { handleRowClick(a) }}>
-                                                            <td>{a.time}</td>
-                                                            <td>{a.id}</td>
+                                                            <td>{a.slotsession}</td>
+                                                            <td>{a.user_id}</td>
                                                             <td> <Button variant="primary" onClick={(event) => handleApprovedButtonClick(event)} className="w-100">
-                                                                Approved
+                                                                {a.status}
                                                             </Button></td>
                                                             <td>{a.fname}</td>
                                                             <td>{a.lname}</td>
-                                                            <td>{a.l_license}</td>
-                                                            <td>{a.fees}</td>
-                                                            <td>{a.status}</td>
+                                                            <td>{a.category}</td>
+                                                            <td>{a.certificate_no}</td>
+                                                            <td>{a.training_status}</td>
                                                         </tr>
                                                     </>
                                                 )
@@ -373,15 +373,8 @@ const Bookpackages = ({ tabKey }) => {
                 </Modal.Footer>
             </Modal>
 
-
-
-            {/* 
-            <Button variant="primary" onClick={handleShow}>
-                Launch demo modal
-            </Button> */}
-
             <Modal show={show1} onHide={handleClose1} size="lg" className="modaldetail">
-                <Modal.Header closeButton>
+                <Modal.Header >
                     <Modal.Title>Customer Details</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
@@ -389,28 +382,58 @@ const Bookpackages = ({ tabKey }) => {
                         <div>
                             <Row>
                                 <Col lg={6} md={6} sm={12} className="pb-4">
-                                    <b>ID</b><br />
-                                    {selectedBooking.id}<br />
+                                    <b>User Id</b><br />
+                                    {selectedBooking.user_id}<br />
                                 </Col>
                                 <Col lg={6} md={6} sm={12}>
                                     <b>Status</b><br />
-                                    <Button variant="success" className="w-100">Approved</Button>
+                                    <Button variant={selectedBooking.status === "APPROVED" ? "primary" : selectedBooking.status === "PENDING" ? "warning" : selectedBooking.status === "CANCELLED" && "danger"} onClick={() => setLgShow(true)} className="w-100">{selectedBooking.status}</Button>
                                 </Col>
                                 <hr></hr>
 
                                 <Col lg={6} md={6} sm={12} className="pb-4">
                                     <b>Booking Date</b><br />
-                                    Monday 17/10/2024 , 03:00 PM - Session 2
+                                    {isEditing ? (
+                                        <input
+                                            type="date"
+                                            onChange={EditDate}
+                                        />
+                                    ) : (
+                                        selectedBooking.slotdate
+                                    )}
                                 </Col>
                                 <Col lg={6} md={6} sm={12}>
                                     <b>Payment Method</b><br />
-                                    I Will pay Locally
+                                    {selectedBooking.payment_method}
                                 </Col>
                                 <hr></hr>
 
                                 <Col lg={6} md={6} sm={12} className="pb-4">
                                     <b>Submission Date</b><br />
-                                    Tuesday 18/10/2024 , 03:00 PM<br />
+                                    {isEditing ? (
+                                        <input
+                                            type="date"
+                                            defaultValue={selectedBooking.submission_date}
+                                            onChange={EditSubmissionDate}
+                                        />
+                                    ) : (
+                                        // Check if submission_date is a valid date and format it properly
+                                        <span>
+                                            {selectedBooking.submission_date
+                                                ? (() => {
+                                                    const date = new Date(selectedBooking.submission_date);
+                                                    const options = {
+                                                        weekday: 'long',
+                                                        day: '2-digit',
+                                                        month: '2-digit',
+                                                        year: 'numeric',
+                                                    };
+                                                    const formattedDate = date.toLocaleDateString('en-GB', options); // 'en-GB' uses day/month/year format
+                                                    return formattedDate.replace(',', '').replace('/', '/'); // Remove commas and ensure proper formatting
+                                                })()
+                                                : selectedBooking.submission_date}
+                                        </span>
+                                    )}
                                 </Col>
                                 <Col lg={6} md={6} sm={12}>
                                     <b>First Name:</b><br />
@@ -441,45 +464,115 @@ const Bookpackages = ({ tabKey }) => {
                                 <Col lg={6} md={6} sm={12}>
                                     <b>Training For</b><br />
                                     {isEditing ? (
-                                        <input
-                                            type="text"
-                                            defaultValue={selectedBooking.l_license}
-                                            onChange={(e) => setSelectedBooking({ ...selectedBooking, l_license: e.target.value })}
-                                        />
+                                        <select
+                                            defaultValue={selectedBooking.category}
+                                            onChange={(e) => setSelectedBooking({ ...selectedBooking, category: e.target.value })}
+                                        >
+                                            <option value="RTO – Learner Driving License Holder Training">RTO – Learner Driving License Holder Training</option>
+                                            <option value="RTO – Suspended Driving License Holders Training">RTO – Suspended Driving License Holders Training</option>
+                                            <option value="RTO – Training for School Bus Driver">RTO – Training for School Bus Driver</option>
+                                            <option value="School Students Training – Group">School Students Training – Group</option>
+                                            <option value="College/Organization Training – Group">College/Organization Training – Group</option>
+                                            <option value="College / Organization Training – Individual">College / Organization Training – Individual</option>
+                                            {/* Add other options as needed */}
+                                        </select>
                                     ) : (
-                                        selectedBooking.l_license
+                                        selectedBooking.category
                                     )}
 
                                 </Col>
                                 <hr></hr>
 
                                 <Col lg={6} md={6} sm={12} className="pb-4">
-                                    <b>Cirtificate Number</b><br />
-                                    {selectedBooking.fees}
+                                    <b>Certificate Number</b><br />
+                                    {selectedBooking.certificate_no}
                                 </Col>
                                 <Col lg={6} md={6} sm={12}>
                                     <b>Tranning Status</b><br />
-                                    {selectedBooking.status}
+                                    {isEditing ? (
+                                        <select
+                                            defaultValue={selectedBooking.training_status}
+                                            onChange={(e) => setSelectedBooking({ ...selectedBooking, training_status: e.target.value })}
+                                        >
+                                            <option value="Attended">Attended</option>
+                                            <option value="Confirmed">Confirmed</option>
+                                            <option value="Not Confirmed">Not Confirmed</option>
+                                            <option value="Absent">Absent</option>
+                                            {/* Add other options as needed */}
+                                        </select>
+                                    ) : (
+                                        selectedBooking.training_status
+                                    )}
                                 </Col>
                                 <hr></hr>
 
                                 <Col lg={6} md={6} sm={12} className="pb-4">
-                                    <b>Learinning Licenses Number</b><br />
-                                    MH 15 AB 7541
+                                    <b>Learining Licenses Number</b><br />
+                                    {selectedBooking.learningNo}
                                 </Col>
                                 <Col lg={6} md={6} sm={12}>
                                     <b>Email</b><br />
-                                    dcdc@gmail.com
+                                    {isEditing ? (
+                                        <input
+                                            type="text"
+                                            defaultValue={selectedBooking.email}
+                                            onChange={(e) => setSelectedBooking({ ...selectedBooking, email: e.target.value })}
+                                        />
+                                    ) : (
+                                        selectedBooking.email
+                                    )}
                                 </Col>
                                 <hr></hr>
 
                                 <Col lg={6} md={6} sm={12} className="pb-4">
                                     <b>Phone Number</b><br />
-                                    9512475846
+                                    {isEditing ? (
+                                        <input
+                                            type="text"
+                                            defaultValue={selectedBooking.phone}
+                                            onChange={(e) => setSelectedBooking({ ...selectedBooking, phone: e.target.value })}
+                                        />
+                                    ) : (
+                                        selectedBooking.phone
+                                    )}
                                 </Col>
                                 <Col lg={6} md={6} sm={12}>
                                     <b>Vehical Type</b><br />
-                                    2 Wheeler , 4 wheeler light
+                                    {isEditing ? (
+                                        // Editable mode with checkboxes
+                                        <>
+                                            {["2 Wheeler", "3/5 Wheeler", "4 Wheeler Light", "4 Wheeler Heavy"].map((type) => (
+                                                <label key={type} style={{ display: "block", marginBottom: "5px" }}>
+                                                    <input
+                                                        type="checkbox"
+                                                        value={type}
+                                                        checked={selectedBooking.vehicletype.includes(type)} // Check if type exists in the array
+                                                        onChange={(e) => {
+                                                            let updatedVehicleTypes = [...selectedBooking.vehicletype]; // Copy current array
+
+                                                            if (e.target.checked) {
+                                                                // Add selected type to the array if it's checked
+                                                                updatedVehicleTypes.push(type);
+                                                            } else {
+                                                                // Remove type from the array if it's unchecked
+                                                                updatedVehicleTypes = updatedVehicleTypes.filter((item) => item !== type);
+                                                            }
+
+                                                            // Update the selectedBooking with new vehicletype array
+                                                            setSelectedBooking({
+                                                                ...selectedBooking,
+                                                                vehicletype: updatedVehicleTypes,
+                                                            });
+                                                        }}
+                                                    />
+                                                    {type}
+                                                </label>
+                                            ))}
+                                        </>
+                                    ) : (
+                                        // Non-editable mode
+                                        selectedBooking.vehicletype
+                                    )}
                                 </Col>
                                 <hr></hr>
 
@@ -497,15 +590,15 @@ const Bookpackages = ({ tabKey }) => {
                 </Modal.Body>
 
                 <Modal.Footer>
-                    <Button variant="danger" >
-                        Delete
+                    <Button variant="danger" onClick={() => { handleClose1(); setIsEditing(false); }}>
+                        Return
                     </Button>
                     {isEditing ? (
                         <Button variant="primary" onClick={handleSave}>
                             Save
                         </Button>
                     ) : (
-                        <Button variant="secondary" onClick={handleEdit}>
+                        <Button variant="primary" onClick={handleEdit}>
                             Edit
                         </Button>
                     )}
@@ -520,9 +613,26 @@ const Bookpackages = ({ tabKey }) => {
                 <Modal.Body>
                     <Row>
                         <Col lg={12} md={12} sm={12}>
-                            <Button variant="danger" className="w-100 m-2">PENDING </Button>
-                            <Button variant="warning" className="w-100 m-2">CANCELED</Button>
-                            <Button variant="secondary" className="w-100 m-2">CLOSE</Button>
+                            <Button
+                                variant="primary"
+                                onClick={() => {
+                                    setSelectedBooking({ ...selectedBooking, status: "APPROVED" });
+                                    setLgShow(false);
+                                }}
+                                className="w-100 m-2">
+                                APPROVED
+                            </Button>
+                            <Button variant="warning"
+                                onClick={() => {
+                                    setSelectedBooking({ ...selectedBooking, status: "PENDING" })
+                                    setLgShow(false);
+                                }}
+                                className="w-100 m-2">PENDING </Button>
+                            <Button variant="danger" onClick={() => {
+                                setSelectedBooking({ ...selectedBooking, status: "CANCELLED" })
+                                setLgShow(false);
+                            }} className="w-100 m-2">CANCELLED</Button>
+                            <Button variant="secondary" onClick={() => setLgShow(false)} className="w-100 m-2">CLOSE</Button>
                         </Col>
                     </Row>
                 </Modal.Body>
@@ -532,31 +642,6 @@ const Bookpackages = ({ tabKey }) => {
                     </Button>
                 </Modal.Footer>
             </Modal>
-
-            {/* <Modal
-                size="lg"
-                show={lgShow}
-                onHide={() => setLgShow(false)}
-                aria-labelledby="example-modal-sizes-title-lg"
-            >
-                <Modal.Header closeButton>
-                    <Modal.Title id="example-modal-sizes-title-lg">
-                        Change Status
-                    </Modal.Title>
-                </Modal.Header>
-                <Modal.Body >
-                    <Row>
-                        <Col lg={12} md={12} sm={12}>
-                            <Button variant="danger" className="w-100 m-2">PENDING </Button>
-                            <Button variant="warning" className="w-100 m-2">CANCELED</Button>
-                            <Button variant="secondary" className="w-100 m-2">CLOSE</Button>
-                        </Col>
-                    </Row>
-
-                </Modal.Body>
-            </Modal> */}
-
-
         </>
     );
 };
