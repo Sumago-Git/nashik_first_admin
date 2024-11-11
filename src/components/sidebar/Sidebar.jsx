@@ -212,6 +212,11 @@ const SidebarMenu = [
         subMenus: "Follow on us",
         url: "/follow-on-us",
         icon: <BsBuilding style={{ color: "red" }} size={24} />,
+      },
+      {
+        subMenus: "Contact Form",
+        url: "/conact-form",
+        icon: <BsBuilding style={{ color: "red" }} size={24} />,
       }
     ],
   },

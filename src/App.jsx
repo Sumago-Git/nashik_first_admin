@@ -39,6 +39,7 @@ import Directors from "./components/Directors/Directors";
 import FollowonUs from "./components/Follow on us/FollowonUs";
 import News from "./components/News/News";
 import HomeVideos from "./components/Home Videos/HomeVideos";
+import ConatctFrom from "./components/Contact From/ConatctFrom";
 
 function App() {
   return (
@@ -99,6 +100,10 @@ function App() {
           <Route
             path="/annualreport"
             element={<ProtectedRoutes Component={AnnualReport} />}
+          />
+          <Route
+            path="/conact-form"
+            element={<ProtectedRoutes Component={ConatctFrom} />}
           />
           <Route
             path="/trainer"
