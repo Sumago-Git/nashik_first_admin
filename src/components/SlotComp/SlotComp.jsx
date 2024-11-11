@@ -9,6 +9,7 @@ import NewResuableForm from "../../components/form/NewResuableForm";
 
 const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal, handleShowModal }) => {
     const [currentPage, setCurrentPage] = useState(1);
+    const [title, setTitle] = useState("");
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [eyeVisibilityById, setEyeVisibilityById] = useState({});
     const [data, setData] = useState([]);
@@ -24,12 +25,16 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal, ha
     const [loading, setLoading] = useState(false);
     const handleClose = () => setShow(false);
     const [editingId, setEditingId] = useState(null);
+    const [selectedBooking, setSelectedBooking] = useState(null); // New state for selected booking
+    const [isEditing, setIsEditing] = useState(false); // State for edit mode
+
     const CustomHeader = ({ name }) => (
-        <div style={{ fontWeight: "bold", color: "black", fontSize: "16px" }}>
+        <div style={{ fontWeight: "bold", color: "black", fontSize: "18px" }}>
             {name}
         </div>
     );
 
+    console.log(selectedDates)
     const initialFormData = {
         category: '',
         time: '',
@@ -37,6 +42,7 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal, ha
         title: '',
         capacity: '',
         trainer: '',
+        slotdate: selectedDates
     };
 
     // Use the initial state when setting up the useState hook
@@ -98,41 +104,38 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal, ha
         let errors = {};
         let isValid = true;
 
-        // if (!formData.img) {
-        //     errors.img = "Image is not 338x220 pixels";
-        //     isValid = false;
-
-        // } else if (
-        //     formData.img instanceof File &&
-        //     !validateImageSize(formData.img)
-        // ) {
-        //     errors.img = "Image is required with 338x220 pixels";
-        //     isValid = false;
-        // }
-
-        // else if (formData.desc.length > 1000) {
-        //   errors.desc = "Description must be 1000 characters or less";
-        //   isValid = false;
-        // }
+        if (!formData.title.trim()) {
+            errors.title = 'Title is required';
+            isValid = false;
+        }
+        if (!formData.capacity.trim()) {
+            errors.title = 'Title is required';
+            isValid = false;
+        }
+        if (!formData.deadlineTime.trim()) {
+            errors.title = 'Title is required';
+            isValid = false;
+        }
+        if (!formData.category.trim()) {
+            errors.title = 'Title is required';
+            isValid = false;
+        }
 
         setErrors(errors);
         return isValid;
     };
-
-    const validateImageSize = (file) => {
-        return new Promise((resolve, reject) => {
-            const img = new Image();
-            img.onload = () => {
-                if (img.width === 338 && img.height === 220) {
-                    resolve();
-                } else {
-                    reject("Image is required with 338x220 pixels");
-                }
-            };
-            img.onerror = () => reject("Error loading image");
-            img.src = URL.createObjectURL(file);
-        });
+    const [traniners, settainers] = useState([])
+    const getdata_admin = () => {
+        instance.get('trainer/get-trainers')
+            .then((res) => {
+                settainers(res.data.responseData)
+            })
+            .catch((err) => console.log(err));
     };
+
+    useEffect(() => {
+        getdata_admin();
+    }, []);
 
 
     const handleIsActive = async (id, isVisible) => {
@@ -193,7 +196,7 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal, ha
                                 } finally {
                                     setLoading(false); // Set loading to false
                                 }
-                                onClose();handleShowModal()
+                                onClose(); handleShowModal()
                                 handleShowModal
                             }}
                         >
@@ -340,21 +343,11 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal, ha
         }
     };
 
-
-    const handleChange = async (name, value) => {
-        if (name === "img" && value instanceof File) {
-            try {
-                await validateImageSize(value);
-                setFormData((prevFormData) => ({ ...prevFormData, [name]: value }));
-                setErrors((prevErrors) => ({ ...prevErrors, img: "" }));
-            } catch (error) {
-                setErrors((prevErrors) => ({ ...prevErrors, img: error }));
-                setImagePreview("");
-            }
-        } else {
-            setFormData((prevFormData) => ({ ...prevFormData, [name]: value }));
-            setErrors((prevErrors) => ({ ...prevErrors, [name]: "" }));
-        }
+    const handleChange = (name, value) => {
+        setFormData(prevFormData => ({
+            ...prevFormData,
+            [name]: value,
+        }));
     };
 
     const tableColumns = (currentPage, rowsPerPage) => [
@@ -373,7 +366,11 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal, ha
         {
             name: <CustomHeader name="Time" />,
             cell: (row) => <span>{row.time}</span>,
-        }, 
+        },
+        {
+            name: <CustomHeader name="deadlineTime" />,
+            cell: (row) => <span>{row.deadlineTime}</span>,
+        },
         {
             name: <CustomHeader name="Trainer" />,
             cell: (row) => <span>{row.trainer}</span>,
@@ -500,47 +497,73 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal, ha
                 <Modal.Body>
                     <Form onSubmit={handleSubmit}>
                         <Row>
-                            <Col md={6}>
-                                <NewResuableForm
-                                    label="Phone"
-                                    placeholder="Enter phone number"
-                                    type="text"
-                                    name="phone"
-                                    onChange={handleChange}
-                                    initialData={formData}
-                                />
+
+
+                            <Col md={8}>
+                                <Form.Group controlId="trainingType">
+                                    <Form.Label>Training Type</Form.Label>
+                                    <Form.Select
+                                        name="category"
+                                        value={formData.category} // Use "category" as it matches initialFormData
+                                        onChange={(e) => handleChange("category", e.target.value)} // Call handleChange with "category"
+                                    >
+                                        <option value="">choose Category</option>
+                                        <option value="RTO – Learner Driving License Holder Training">RTO – Learner Driving License Holder Training</option>
+                                        <option value="RTO – Suspended Driving License Holders Training">RTO – Suspended Driving License Holders Training</option>
+                                        <option value="RTO – Training for School Bus Driver">RTO – Training for School Bus Driver</option>
+                                        <option value="School Students Training – Group">School Students Training – Group</option>
+                                        <option value="College/Organization Training – Group">College/Organization Training – Group</option>
+                                        <option value="College / Organization Training – Individual">College / Organization Training – Individual</option>
+                                    </Form.Select>
+                                </Form.Group>
+
+
                             </Col>
-                            <Col md={6}>
-                                <NewResuableForm
-                                    label="Trainer"
-                                    placeholder="Enter trainer name"
-                                    type="text"
-                                    name="trainer"
-                                    onChange={handleChange}
-                                    initialData={formData}
-                                />
+
+                            <Col md={8}>
+                                <Form.Group controlId="trainingType">
+                                    <Form.Label>Training Type</Form.Label>
+                                    <Form.Select
+                                        name="category"
+                                        value={formData.trainer} // Use "category" as it matches initialFormData
+                                        onChange={(e) => handleChange("trainer", e.target.value)} // Call handleChange with "category"
+                                    >
+                                        <option value="">choose trainer</option>
+                                        {traniners.map((a) => {
+                                            return (
+                                                <option key={a.id} value={a.name}>
+                                                    {a.name}
+                                                </option>
+                                            );
+                                        })}
+
+                                    </Form.Select>
+                                </Form.Group>
+
+
                             </Col>
-                            <Col md={6}>
+                            <Col md={8}>
                                 <NewResuableForm
                                     label="Time"
                                     placeholder="Enter time"
-                                    type="text"
+                                    type="time"
                                     name="time"
                                     onChange={handleChange}
                                     initialData={formData}
+                                    required
                                 />
                             </Col>
-                            <Col md={6}>
+                            <Col md={8}>
                                 <NewResuableForm
                                     label="Deadline Time"
                                     placeholder="Enter deadline time"
-                                    type="text"
+                                    type="time"
                                     name="deadlineTime"
                                     onChange={handleChange}
                                     initialData={formData}
                                 />
                             </Col>
-                            <Col md={6}>
+                            <Col md={8}>
                                 <NewResuableForm
                                     label="Title"
                                     placeholder="Enter title"
@@ -550,33 +573,29 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal, ha
                                     initialData={formData}
                                 />
                             </Col>
-                            <Col md={6}>
+                            <Col md={8}>
                                 <NewResuableForm
                                     label="Capacity"
                                     placeholder="Enter capacity"
-                                    type="text"
+                                    type="number"
                                     name="capacity"
                                     onChange={handleChange}
                                     initialData={formData}
                                 />
                             </Col>
                             <Col xs={12} className="d-flex justify-content-end">
-                                <Button variant="primary" type="submit">
+                                <Button variant="primary" type="submit" className='mx-3'>
                                     Submit
+                                </Button>
+                                <Button variant="secondary" onClick={() => setShow1(false)}>
+                                    Close
                                 </Button>
                             </Col>
                         </Row>
                     </Form>
                 </Modal.Body>
 
-                <Modal.Footer>
-                    <Button variant="primary" type="submit" >
-                        Submit
-                    </Button>
-                    <Button variant="secondary" onClick={() => setShow1(false)}>
-                        Close
-                    </Button>
-                </Modal.Footer>
+
             </Modal>
         </>
     );
