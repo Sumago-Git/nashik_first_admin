@@ -169,8 +169,10 @@ function FollowonUs() {
                                             <th>Instagram</th>
                                             <th>Facebook</th>
                                             <th>Email</th>
-                                            <th>WhatsApp</th>
-                                            <th>LinkedIn</th>
+                                            {/* <th>WhatsApp</th>
+                                            <th>LinkedIn</th> */}
+                                            <th>Youtube</th>
+                                            <th>Twitter</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>

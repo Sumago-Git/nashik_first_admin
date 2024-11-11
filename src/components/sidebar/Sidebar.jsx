@@ -53,19 +53,19 @@ const SidebarMenu = [
 
     ],
   },
-  {
-    menu: "About",
-    url: "/about",
-    mainIcon: <RiTeamFill size={24} />,
-    subMenu: [
-      {
-        subMenus: "Leadership",
-        url: "/leadership",
-        icon: <FiUsers style={{ color: "red" }} size={24} />,
-      },
+  // {
+  //   menu: "About",
+  //   url: "/about",
+  //   mainIcon: <RiTeamFill size={24} />,
+  //   subMenu: [
+  //     {
+  //       subMenus: "Leadership",
+  //       url: "/leadership",
+  //       icon: <FiUsers style={{ color: "red" }} size={24} />,
+  //     },
 
-    ],
-  },
+  //   ],
+  // },
   {
     menu: "Objective Of ANF",
     url: "/objective-of-anf",
@@ -198,11 +198,11 @@ const SidebarMenu = [
     url: "/contactus",
     mainIcon: <MdOutlinePermContactCalendar size={24} />,
     subMenu: [
-      {
-        subMenus: "Our Offices",
-        url: "/office",
-        icon: <BsBuilding style={{ color: "red" }} size={24} />,
-      },
+      // {
+      //   subMenus: "Our Offices",
+      //   url: "/office",
+      //   icon: <BsBuilding style={{ color: "red" }} size={24} />,
+      // },
       {
         subMenus: "Contact Details",
         url: "/contactinfo",
