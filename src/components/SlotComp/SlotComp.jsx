@@ -36,7 +36,7 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal, ha
 
     console.log(selectedDates)
     const initialFormData = {
-        category: '',
+        category: categoryName,
         time: '',
         deadlineTime: '',
         title: '',
@@ -364,6 +364,10 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal, ha
             cell: (row) => <span>{row.capacity}</span>,
         },
         {
+            name: <CustomHeader name="Slot Date" />,
+            cell: (row) => <span>{row.slotdate}</span>,
+        },
+        {
             name: <CustomHeader name="Time" />,
             cell: (row) => <span>{row.time}</span>,
         },
@@ -491,15 +495,15 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal, ha
             `}</style>
 
             <Modal show={show1} onHide={handleClose1}>
-                <Modal.Header closeButton>
+                <Modal.Header>
                     <Modal.Title>Add Slot</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <Form onSubmit={handleSubmit}>
-                        <Row>
+                        <Row className='justify-content-center'>
 
 
-                            <Col md={8}>
+                            <Col md={10}>
                                 <Form.Group controlId="trainingType">
                                     <Form.Label>Training Type</Form.Label>
                                     <Form.Select
@@ -507,7 +511,7 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal, ha
                                         value={formData.category} // Use "category" as it matches initialFormData
                                         onChange={(e) => handleChange("category", e.target.value)} // Call handleChange with "category"
                                     >
-                                        <option value="">choose Category</option>
+                                        <option value={categoryName}>{categoryName}</option>
                                         <option value="RTO – Learner Driving License Holder Training">RTO – Learner Driving License Holder Training</option>
                                         <option value="RTO – Suspended Driving License Holders Training">RTO – Suspended Driving License Holders Training</option>
                                         <option value="RTO – Training for School Bus Driver">RTO – Training for School Bus Driver</option>
@@ -520,7 +524,7 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal, ha
 
                             </Col>
 
-                            <Col md={8}>
+                            <Col md={10}>
                                 <Form.Group controlId="trainingType">
                                     <Form.Label>Training Type</Form.Label>
                                     <Form.Select
@@ -542,7 +546,7 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal, ha
 
 
                             </Col>
-                            <Col md={8}>
+                            <Col md={10}>
                                 <NewResuableForm
                                     label="Time"
                                     placeholder="Enter time"
@@ -553,7 +557,7 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal, ha
                                     required
                                 />
                             </Col>
-                            <Col md={8}>
+                            <Col md={10}>
                                 <NewResuableForm
                                     label="Deadline Time"
                                     placeholder="Enter deadline time"
@@ -563,7 +567,7 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal, ha
                                     initialData={formData}
                                 />
                             </Col>
-                            <Col md={8}>
+                            <Col md={10}>
                                 <NewResuableForm
                                     label="Title"
                                     placeholder="Enter title"
@@ -573,7 +577,7 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal, ha
                                     initialData={formData}
                                 />
                             </Col>
-                            <Col md={8}>
+                            <Col md={10}>
                                 <NewResuableForm
                                     label="Capacity"
                                     placeholder="Enter capacity"
@@ -583,7 +587,7 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal, ha
                                     initialData={formData}
                                 />
                             </Col>
-                            <Col xs={12} className="d-flex justify-content-end">
+                            <Col xs={12} className="d-flex justify-content-end mt-3">
                                 <Button variant="primary" type="submit" className='mx-3'>
                                     Submit
                                 </Button>

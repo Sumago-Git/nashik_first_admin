@@ -9,7 +9,7 @@ const Calender = () => {
     const [categoryName, setCategoryName] = useState("")
     const training_categories = [
         {
-            category: "RTO – Learner Driving License Holders Training",
+            category: "RTO – Learner Driving License Holder Training",
             url: ""
         },
         {
@@ -17,19 +17,19 @@ const Calender = () => {
             url: ""
         },
         {
-            category: "RTO – School Bus Driver Training",
+            category: "RTO – Training for School Bus Driver",
             url: ""
         },
         {
-            category: "School / College / Organization Trainings - Group",
+            category: "School Students Training – Group",
             url: ""
         },
         {
-            category: "Adult (College/Organization) Training - Individual",
+            category: "College/Organization Training – Group",
             url: ""
         },
         {
-            category: "POLICE – Counselling Training",
+            category: "College / Organization Training – Individual",
             url: ""
         },
     ]
