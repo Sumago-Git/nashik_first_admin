@@ -19,6 +19,7 @@ const Bookpackages = ({ tabKey }) => {
     const [selectedDay, setSelectedDay] = useState("");
     const [categoryName, setCategoryName] = useState("");
     const [dataByDateAndCategory, setDataByDateAndCategory] = useState([]);
+    const [formatedDateData, setFormatedDate] = useState();
 
     const [lgShow, setLgShow] = useState(false);
     const [rowModal, setRowModal] = useState(false);
@@ -30,7 +31,7 @@ const Bookpackages = ({ tabKey }) => {
     const handleShow2 = () => setShow2(true);
 
 
-    
+
     // const handleRowClick = (rowData) => {
     //     setSelectedRowData(rowData);
     //     setRowModal(true);
@@ -66,17 +67,29 @@ const Bookpackages = ({ tabKey }) => {
     const handleSave = () => {
         // Here you can add logic to save changes to your state or backend
         setIsEditing(false); // Disable edit mode
-        console.log("selectedBooking", selectedBooking);
+        let updatedBooking = { ...selectedBooking };
 
-        instance.put(`bookingform/bookingform/${selectedBooking.id}`, selectedBooking).then((resp) => {
+        if (typeof updatedBooking.vehicletype === "string") {
+            if (updatedBooking.vehicletype.includes(",")) {
+                // Split comma-separated string into an array
+                updatedBooking.vehicletype = updatedBooking.vehicletype.split(",").map(item => item.trim());
+            } else {
+                // Wrap single value string in an array
+                updatedBooking.vehicletype = [updatedBooking.vehicletype.trim()];
+            }
+        } else if (!Array.isArray(updatedBooking.vehicletype)) {
+            // If vehicletype is neither string nor array, wrap it as a single-value array
+            updatedBooking.vehicletype = [updatedBooking.vehicletype];
+        }
+
+        instance.put(`bookingform/bookingform/${updatedBooking.id}`, updatedBooking).then((resp) => {
             console.log("resp", resp);
+            getUserDataByCategoryAndDate(formatedDateData)
         }).catch((err) => {
             console.log("err", err);
 
         })
     };
-
-
 
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
@@ -146,6 +159,7 @@ const Bookpackages = ({ tabKey }) => {
             const datePart = new Intl.DateTimeFormat("en-GB", { day: "2-digit", month: "2-digit", year: "numeric" }).format(date);
             const formattedDateToMatchWithFrontend = `${dayName} ${datePart}`;
             getUserDataByCategoryAndDate(formattedDateToMatchWithFrontend)
+            setFormatedDate(formattedDateToMatchWithFrontend)
             console.log("formattedDateToMatchWithFrontend", formattedDateToMatchWithFrontend);
 
         }
@@ -345,7 +359,7 @@ const Bookpackages = ({ tabKey }) => {
                                                         <tr onClick={() => { handleRowClick(a) }}>
                                                             <td>{a.slotsession}</td>
                                                             <td>{a.user_id}</td>
-                                                            <td> <Button variant="primary" onClick={(event) => handleApprovedButtonClick(event)} className="w-100">
+                                                            <td> <Button variant="primary" className="w-100">
                                                                 {a.status}
                                                             </Button></td>
                                                             <td>{a.fname}</td>
@@ -538,41 +552,7 @@ const Bookpackages = ({ tabKey }) => {
                                 </Col>
                                 <Col lg={6} md={6} sm={12}>
                                     <b>Vehical Type</b><br />
-                                    {isEditing ? (
-                                        // Editable mode with checkboxes
-                                        <>
-                                            {["2 Wheeler", "3/5 Wheeler", "4 Wheeler Light", "4 Wheeler Heavy"].map((type) => (
-                                                <label key={type} style={{ display: "block", marginBottom: "5px" }}>
-                                                    <input
-                                                        type="checkbox"
-                                                        value={type}
-                                                        checked={selectedBooking.vehicletype.includes(type)} // Check if type exists in the array
-                                                        onChange={(e) => {
-                                                            let updatedVehicleTypes = [...selectedBooking.vehicletype]; // Copy current array
-
-                                                            if (e.target.checked) {
-                                                                // Add selected type to the array if it's checked
-                                                                updatedVehicleTypes.push(type);
-                                                            } else {
-                                                                // Remove type from the array if it's unchecked
-                                                                updatedVehicleTypes = updatedVehicleTypes.filter((item) => item !== type);
-                                                            }
-
-                                                            // Update the selectedBooking with new vehicletype array
-                                                            setSelectedBooking({
-                                                                ...selectedBooking,
-                                                                vehicletype: updatedVehicleTypes,
-                                                            });
-                                                        }}
-                                                    />
-                                                    {type}
-                                                </label>
-                                            ))}
-                                        </>
-                                    ) : (
-                                        // Non-editable mode
-                                        selectedBooking.vehicletype
-                                    )}
+                                    {selectedBooking.vehicletype}
                                 </Col>
                                 <hr></hr>
 

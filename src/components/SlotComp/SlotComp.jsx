@@ -1,39 +1,52 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Card, Form, Modal, OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { Button, Card, Form, Modal, OverlayTrigger, Tooltip, Col, Row } from 'react-bootstrap';
 import DataTable from 'react-data-table-component';
 import { FaEdit, FaTrash, FaEye, FaEyeSlash } from "react-icons/fa";
 import instance from "../../api/AxiosInstance";
 import { confirmAlert } from "react-confirm-alert";
 import { toast } from "react-toastify";
+import NewResuableForm from "../../components/form/NewResuableForm";
 
-const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal }) => {
+const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal, handleShowModal }) => {
     const [currentPage, setCurrentPage] = useState(1);
+    const [title, setTitle] = useState("");
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [eyeVisibilityById, setEyeVisibilityById] = useState({});
     const [data, setData] = useState([]);
+    const [editMode, setEditMode] = useState(false);
     const [show, setShow] = useState(false);
+    const [showTable, setShowTable] = useState(true)
     const [show1, setShow1] = useState(false);
-    const handleClose1 = () => setShow1(false);
+    const handleClose1 = () => setShow1(true);
     const handleShow1 = () => setShow1(true);
     const [imagePreview, setImagePreview] = useState("");
     const [team, setTeam] = useState([]);
-
+    const [errors, setErrors] = useState({});
     const [loading, setLoading] = useState(false);
     const handleClose = () => setShow(false);
+    const [editingId, setEditingId] = useState(null);
+    const [selectedBooking, setSelectedBooking] = useState(null); // New state for selected booking
+    const [isEditing, setIsEditing] = useState(false); // State for edit mode
+
     const CustomHeader = ({ name }) => (
-        <div style={{ fontWeight: "bold", color: "black", fontSize: "16px" }}>
+        <div style={{ fontWeight: "bold", color: "black", fontSize: "18px" }}>
             {name}
         </div>
     );
 
-    const [formData, setFormData] = useState({
+    console.log(selectedDates)
+    const initialFormData = {
+        category: categoryName,
         time: '',
         deadlineTime: '',
         title: '',
         capacity: '',
-        trainer: "",
+        trainer: '',
+        slotdate: selectedDates
+    };
 
-    });
+    // Use the initial state when setting up the useState hook
+    const [formData, setFormData] = useState(initialFormData);
 
     useEffect(() => {
         fetchTeam();
@@ -68,7 +81,7 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal }) 
         setLoading(true);
         const accessToken = localStorage.getItem("accessToken"); // Retrieve access token
         try {
-            const response = await instance.get("counter/get-homecounter", {
+            const response = await instance.get("Sessionslot/get-SessionSessionslot", {
                 headers: {
                     Authorization: "Bearer " + accessToken,
                     "Content-Type": "application/json",
@@ -91,39 +104,110 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal }) 
         let errors = {};
         let isValid = true;
 
-        // if (!formData.img) {
-        //     errors.img = "Image is not 338x220 pixels";
-        //     isValid = false;
-
-        // } else if (
-        //     formData.img instanceof File &&
-        //     !validateImageSize(formData.img)
-        // ) {
-        //     errors.img = "Image is required with 338x220 pixels";
-        //     isValid = false;
-        // }
-
-        // else if (formData.desc.length > 1000) {
-        //   errors.desc = "Description must be 1000 characters or less";
-        //   isValid = false;
-        // }
+        if (!formData.title.trim()) {
+            errors.title = 'Title is required';
+            isValid = false;
+        }
+        if (!formData.capacity.trim()) {
+            errors.title = 'Title is required';
+            isValid = false;
+        }
+        if (!formData.deadlineTime.trim()) {
+            errors.title = 'Title is required';
+            isValid = false;
+        }
+        if (!formData.category.trim()) {
+            errors.title = 'Title is required';
+            isValid = false;
+        }
 
         setErrors(errors);
         return isValid;
     };
+    const [traniners, settainers] = useState([])
+    const getdata_admin = () => {
+        instance.get('trainer/get-trainers')
+            .then((res) => {
+                settainers(res.data.responseData)
+            })
+            .catch((err) => console.log(err));
+    };
 
-    const validateImageSize = (file) => {
-        return new Promise((resolve, reject) => {
-            const img = new Image();
-            img.onload = () => {
-                if (img.width === 338 && img.height === 220) {
-                    resolve();
-                } else {
-                    reject("Image is required with 338x220 pixels");
-                }
-            };
-            img.onerror = () => reject("Error loading image");
-            img.src = URL.createObjectURL(file);
+    useEffect(() => {
+        getdata_admin();
+    }, []);
+
+
+    const handleIsActive = async (id, isVisible) => {
+
+        confirmAlert({
+            title: "Confirm to change visibility",
+            customUI: ({ onClose }) => (
+                <div
+                    style={{
+                        textAlign: "left",
+                        padding: "20px",
+                        backgroundColor: "white",
+                        borderRadius: "8px",
+                        boxShadow: "0 4px 8px rgba(5, 5, 5, 0.2)",
+                        maxWidth: "400px",
+                        margin: "0 auto",
+                    }}
+                >
+                    <h2>Confirm to change visibility</h2>
+                    <p>
+                        Are you sure you want to {isVisible ? "hide" : "show"} this data?
+                    </p>
+                    <div
+                        style={{
+                            display: "flex",
+                            justifyContent: "flex-end",
+                            marginTop: "20px",
+                        }}
+                    >
+                        <button
+                            style={{ marginRight: "10px" }}
+                            className="btn btn-primary"
+                            onClick={async () => {
+                                setLoading(true);
+                                const accessToken = localStorage.getItem("accessToken");
+                                try {
+                                    await instance.put(
+                                        `Sessionslot/isactive-Sessionslot/${id}`,
+                                        { isVisible },
+                                        {
+                                            headers: {
+                                                Authorization: `Bearer ${accessToken}`,
+                                                "Content-Type": "application/json",
+                                            },
+                                        }
+                                    );
+                                    toast.success(
+                                        `Data ${isVisible ? "hidden" : "shown"} successfully`
+                                    );
+                                    setEyeVisibilityById((prev) => ({
+                                        ...prev,
+                                        [id]: isVisible,
+                                    }));
+                                    fetchTeam();
+                                } catch (error) {
+                                    console.error("Error updating visibility:", error);
+                                    toast.error("Error updating visibility");
+                                } finally {
+                                    setLoading(false); // Set loading to false
+                                }
+                                onClose(); handleShowModal()
+                                handleShowModal
+                            }}
+                        >
+                            Yes
+                        </button>
+                        <button className="btn btn-secondary" onClick={() => { onClose(); handleShowModal() }}>
+                            No
+                        </button>
+                    </div>
+                </div>
+            ),
         });
     };
     const handleDelete = async (id) => {
@@ -158,7 +242,7 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal }) 
                                 setLoading(true);
                                 const accessToken = localStorage.getItem("accessToken");
                                 try {
-                                    await instance.delete(`counter/delete-homecounter/${id}`, {
+                                    await instance.delete(`Sessionslot/isdelete-Sessionslot/${id}`, {
                                         headers: {
                                             Authorization: `Bearer ${accessToken}`,
                                             "Content-Type": "application/json",
@@ -172,12 +256,12 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal }) 
                                 } finally {
                                     setLoading(false);
                                 }
-                                onClose();
+                                onClose(); handleShowModal()
                             }}
                         >
                             Yes
                         </button>
-                        <button className="btn btn-secondary" onClick={() => onClose()}>
+                        <button className="btn btn-secondary" onClick={() => { onClose(); handleShowModal() }}>
                             No
                         </button>
                     </div>
@@ -185,86 +269,14 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal }) 
             ),
         });
     };
-
-    const handleIsActive = async (id, isVisible) => {
-      
-        confirmAlert({
-            title: "Confirm to change visibility",
-            customUI: ({ onClose }) => (
-                <div
-                    style={{
-                        textAlign: "left",
-                        padding: "20px",
-                        backgroundColor: "white",
-                        borderRadius: "8px",
-                        boxShadow: "0 4px 8px rgba(5, 5, 5, 0.2)",
-                        maxWidth: "400px",
-                        margin: "0 auto",
-                    }}
-                >
-                    <h2>Confirm to change visibility</h2>
-                    <p>
-                        Are you sure you want to {isVisible ? "hide" : "show"} this data?
-                    </p>
-                    <div
-                        style={{
-                            display: "flex",
-                            justifyContent: "flex-end",
-                            marginTop: "20px",
-                        }}
-                    >
-                        <button
-                            style={{ marginRight: "10px" }}
-                            className="btn btn-primary"
-                            onClick={async () => {
-                                setLoading(true);
-                                const accessToken = localStorage.getItem("accessToken");
-                                try {
-                                    await instance.put(
-                                        `counter/isactive-homecounter/${id}`,
-                                        { isVisible },
-                                        {
-                                            headers: {
-                                                Authorization: `Bearer ${accessToken}`,
-                                                "Content-Type": "application/json",
-                                            },
-                                        }
-                                    );
-                                    toast.success(
-                                        `Data ${isVisible ? "hidden" : "shown"} successfully`
-                                    );
-                                    setEyeVisibilityById((prev) => ({
-                                        ...prev,
-                                        [id]: isVisible,
-                                    }));
-                                    fetchTeam();
-                                } catch (error) {
-                                    console.error("Error updating visibility:", error);
-                                    toast.error("Error updating visibility");
-                                } finally {
-                                    setLoading(false); // Set loading to false
-                                }
-                                onClose();
-                            }}
-                        >
-                            Yes
-                        </button>
-                        <button className="btn btn-secondary" onClick={() => onClose()}>
-                            No
-                        </button>
-                    </div>
-                </div>
-            ),
-        });
-    };
-
     const toggleEdit = (id) => {
         const selectedMember = team.find((member) => member.id === id);
         if (selectedMember) {
             setEditingId(id);
             setFormData(selectedMember); // This should set existing data correctly
             setEditMode(true);
-            setShowTable(false); // Switch to form view when editing
+            setShowTable(false);
+            setShow1(true) // Switch to form view when editing
         }
     };
 
@@ -283,12 +295,12 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal }) 
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
         if (validateForm(formData)) {
             setLoading(true);
-            const accessToken = localStorage.getItem("accessToken"); // Retrieve access token
+            const accessToken = localStorage.getItem("accessToken");
             const data = new FormData();
 
-            // Append all formData fields, including the img file if present
             for (const key in formData) {
                 if (formData[key] instanceof File || typeof formData[key] === "string") {
                     data.append(key, formData[key]);
@@ -297,7 +309,7 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal }) 
 
             try {
                 if (editMode) {
-                    await instance.put(`counter/update-homecounter/${editingId}`, data, {
+                    await instance.put(`Sessionslot/Sessionslot/${editingId}`, data, {
                         headers: {
                             Authorization: "Bearer " + accessToken,
                             "Content-Type": "application/json",
@@ -309,7 +321,7 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal }) 
                     );
                     setTeam(updatedTeam);
                 } else {
-                    await instance.post("counter/create-homecounter", data, {
+                    await instance.post("Sessionslot/create-Sessionslot", data, {
                         headers: {
                             Authorization: "Bearer " + accessToken,
                             "Content-Type": "application/json",
@@ -320,32 +332,22 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal }) 
                 fetchTeam();
 
                 setEditMode(false);
-                setFormData({});
+                setFormData(initialFormData); // Reset formData to initial state
                 setImagePreview("");
-                setShowTable(true); // Switch back to table view after submission
+                setShowTable(true);
             } catch (error) {
                 console.error("Error handling form submission:", error);
             } finally {
-                setLoading(false); // Set loading to false
+                setLoading(false);
             }
         }
     };
 
-
-    const handleChange = async (name, value) => {
-        if (name === "img" && value instanceof File) {
-            try {
-                await validateImageSize(value);
-                setFormData((prevFormData) => ({ ...prevFormData, [name]: value }));
-                setErrors((prevErrors) => ({ ...prevErrors, img: "" }));
-            } catch (error) {
-                setErrors((prevErrors) => ({ ...prevErrors, img: error }));
-                setImagePreview("");
-            }
-        } else {
-            setFormData((prevFormData) => ({ ...prevFormData, [name]: value }));
-            setErrors((prevErrors) => ({ ...prevErrors, [name]: "" }));
-        }
+    const handleChange = (name, value) => {
+        setFormData(prevFormData => ({
+            ...prevFormData,
+            [name]: value,
+        }));
     };
 
     const tableColumns = (currentPage, rowsPerPage) => [
@@ -355,18 +357,31 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal }) 
         },
         {
             name: <CustomHeader name="Title" />,
-            cell: (row) => <span>{row.training_imparted}</span>,
+            cell: (row) => <span>{row.title}</span>,
         },
         {
-            name: <CustomHeader name="Title" />,
-            cell: (row) => <span>{row.lives_changed}</span>,
+            name: <CustomHeader name="Capacity" />,
+            cell: (row) => <span>{row.capacity}</span>,
         },
         {
-            name: <CustomHeader name="Title" />,
-            cell: (row) => <span>{row.children}</span>,
-        }, {
-            name: <CustomHeader name="Title" />,
-            cell: (row) => <span>{row.adult}</span>,
+            name: <CustomHeader name="Slot Date" />,
+            cell: (row) => <span>{row.slotdate}</span>,
+        },
+        {
+            name: <CustomHeader name="Time" />,
+            cell: (row) => <span>{row.time}</span>,
+        },
+        {
+            name: <CustomHeader name="deadlineTime" />,
+            cell: (row) => <span>{row.deadlineTime}</span>,
+        },
+        {
+            name: <CustomHeader name="Trainer" />,
+            cell: (row) => <span>{row.trainer}</span>,
+        },
+        {
+            name: <CustomHeader name="Category" />,
+            cell: (row) => <span>{row.category}</span>,
         },
         {
             name: <CustomHeader name="Actions" />,
@@ -387,7 +402,7 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal }) 
                         <Button
                             className="ms-1"
                             style={{ backgroundColor: "red", color: "white", borderColor: "red" }}
-                            onClick={() => handleDelete(row.id)}
+                            onClick={() => { handleDelete(row.id); handleCloseModal() }}
                         >
                             <FaTrash />
                         </Button>
@@ -403,7 +418,7 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal }) 
                                 borderColor: eyeVisibilityById[row.id] ? 'red' : 'green',
                                 color: 'white',
                             }}
-                            onClick={() => handleIsActive(row.id, !eyeVisibilityById[row.id])}
+                            onClick={() => { handleIsActive(row.id, !eyeVisibilityById[row.id]); handleCloseModal() }}
                         >
                             {eyeVisibilityById[row.id] ? <FaEyeSlash /> : <FaEye />}
                         </Button>
@@ -426,7 +441,9 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal }) 
             >
                 <Modal.Header closeButton>
                     <Modal.Title id="contained-modal-title-vcenter">
-                        {/* {selectedDates} */}
+                        <Button variant="secondary" onClick={handleClose1}>
+                            add slot
+                        </Button>
                     </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
@@ -478,88 +495,111 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal }) 
             `}</style>
 
             <Modal show={show1} onHide={handleClose1}>
-                <Modal.Header closeButton>
+                <Modal.Header>
                     <Modal.Title>Add Slot</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <Form onSubmit={handleSubmit}>
-                        <Form.Group controlId="formCategory">
-                            <Form.Label>Training Category</Form.Label>
-                            <Form.Control
-                                type="category"
-                                name="category"
-                                value={formData.category}
-                                onChange={handleChange}
-                                required
-                                disabled
-                            />
-                        </Form.Group>
+                        <Row className='justify-content-center'>
 
-                        <Form.Group controlId="formTrainer" className="mt-3">
-                            <Form.Label>Trainer</Form.Label>
-                            <Form.Control
-                                type="text"
-                                name="trainer"
-                                value={formData.trainer}
-                                onChange={handleChange}
-                                required
-                            />
-                        </Form.Group>
 
-                        <Form.Group controlId="formTime" className="mt-3">
-                            <Form.Label>Time</Form.Label>
-                            <Form.Control
-                                type="time"
-                                name="time"
-                                value={formData.time}
-                                onChange={handleChange}
-                                required
-                            />
-                        </Form.Group>
+                            <Col md={10}>
+                                <Form.Group controlId="trainingType">
+                                    <Form.Label>Training Type</Form.Label>
+                                    <Form.Select
+                                        name="category"
+                                        value={formData.category} // Use "category" as it matches initialFormData
+                                        onChange={(e) => handleChange("category", e.target.value)} // Call handleChange with "category"
+                                    >
+                                        <option value={categoryName}>{categoryName}</option>
+                                        <option value="RTO – Learner Driving License Holder Training">RTO – Learner Driving License Holder Training</option>
+                                        <option value="RTO – Suspended Driving License Holders Training">RTO – Suspended Driving License Holders Training</option>
+                                        <option value="RTO – Training for School Bus Driver">RTO – Training for School Bus Driver</option>
+                                        <option value="School Students Training – Group">School Students Training – Group</option>
+                                        <option value="College/Organization Training – Group">College/Organization Training – Group</option>
+                                        <option value="College / Organization Training – Individual">College / Organization Training – Individual</option>
+                                    </Form.Select>
+                                </Form.Group>
 
-                        <Form.Group controlId="formDeadlineTime" className="mt-3">
-                            <Form.Label>Deadline Time</Form.Label>
-                            <Form.Control
-                                type="time"
-                                name="deadlineTime"
-                                value={formData.deadlineTime}
-                                onChange={handleChange}
-                                required
-                            />
-                        </Form.Group>
 
-                        <Form.Group controlId="formTitle" className="mt-3">
-                            <Form.Label>Title</Form.Label>
-                            <Form.Control
-                                type="text"
-                                name="title"
-                                value={formData.title}
-                                onChange={handleChange}
-                                required
-                            />
-                        </Form.Group>
+                            </Col>
 
-                        <Form.Group controlId="formCapacity" className="mt-3">
-                            <Form.Label>Capacity</Form.Label>
-                            <Form.Control
-                                type="number"
-                                name="capacity"
-                                value={formData.capacity}
-                                onChange={handleChange}
-                                required
-                            />
-                        </Form.Group>
+                            <Col md={10}>
+                                <Form.Group controlId="trainingType">
+                                    <Form.Label>Training Type</Form.Label>
+                                    <Form.Select
+                                        name="category"
+                                        value={formData.trainer} // Use "category" as it matches initialFormData
+                                        onChange={(e) => handleChange("trainer", e.target.value)} // Call handleChange with "category"
+                                    >
+                                        <option value="">choose trainer</option>
+                                        {traniners.map((a) => {
+                                            return (
+                                                <option key={a.id} value={a.name}>
+                                                    {a.name}
+                                                </option>
+                                            );
+                                        })}
 
+                                    </Form.Select>
+                                </Form.Group>
+
+
+                            </Col>
+                            <Col md={10}>
+                                <NewResuableForm
+                                    label="Time"
+                                    placeholder="Enter time"
+                                    type="time"
+                                    name="time"
+                                    onChange={handleChange}
+                                    initialData={formData}
+                                    required
+                                />
+                            </Col>
+                            <Col md={10}>
+                                <NewResuableForm
+                                    label="Deadline Time"
+                                    placeholder="Enter deadline time"
+                                    type="time"
+                                    name="deadlineTime"
+                                    onChange={handleChange}
+                                    initialData={formData}
+                                />
+                            </Col>
+                            <Col md={10}>
+                                <NewResuableForm
+                                    label="Title"
+                                    placeholder="Enter title"
+                                    type="text"
+                                    name="title"
+                                    onChange={handleChange}
+                                    initialData={formData}
+                                />
+                            </Col>
+                            <Col md={10}>
+                                <NewResuableForm
+                                    label="Capacity"
+                                    placeholder="Enter capacity"
+                                    type="number"
+                                    name="capacity"
+                                    onChange={handleChange}
+                                    initialData={formData}
+                                />
+                            </Col>
+                            <Col xs={12} className="d-flex justify-content-end mt-3">
+                                <Button variant="primary" type="submit" className='mx-3'>
+                                    Submit
+                                </Button>
+                                <Button variant="secondary" onClick={() => setShow1(false)}>
+                                    Close
+                                </Button>
+                            </Col>
+                        </Row>
                     </Form>
                 </Modal.Body>
-                <Modal.Footer>
-                    <Button variant="primary" type="submit">
-                        Submit
-                    </Button>
-                    <Button variant="secondary" onClick={handleClose1}>
-                        Close
-                    </Button>
-                </Modal.Footer>
+
+
             </Modal>
         </>
     );
