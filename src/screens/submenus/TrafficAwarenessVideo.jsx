@@ -157,7 +157,7 @@ function TrafficAwarenessVideo() {
                     {showAdd ? (
                         getadmin_data.length > 0 ? (
                             <>
-                                <SearchInput value={searchQuery} onChange={handleSearch} />
+                                {/* <SearchInput value={searchQuery} onChange={handleSearch} /> */}
                                 <Table striped bordered hover responsive="sm">
                                     <thead>
                                         <tr className="text-center">
@@ -207,7 +207,7 @@ function TrafficAwarenessVideo() {
                                         <Form.Label>Enter Title</Form.Label>
                                         <Form.Control
                                             type="text"
-                                            placeholder="Enter instagram link"
+                                            placeholder="Enter title"
                                             value={title}
                                             onChange={(e) => settitle(e.target.value)}
                                         />
@@ -219,7 +219,7 @@ function TrafficAwarenessVideo() {
                                         <Form.Label>Enter Media URL</Form.Label>
                                         <Form.Control
                                             type="text"
-                                            placeholder="Enter instagram link"
+                                            placeholder="Enter media link"
                                             value={mediaurl}
                                             onChange={(e) => setmediaurl(e.target.value)}
                                         />

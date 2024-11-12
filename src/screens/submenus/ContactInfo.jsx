@@ -59,20 +59,20 @@ function ContactInfo() {
         e.preventDefault();
 
         if (validateForm()) {
-            const formData = new FormData();
-            formData.append('email', email);
-            formData.append('phone', phone);
-            formData.append('address', address);
-            formData.append('whatsapp', whatsapp);
+           
+            const formData = {
+                email,
+                phone,
+                address,
+                whatsapp
+            };
 
             try {
                 if (editMode && editId) {
                     await instance.put(`contact-detail/update-contactdetails/${editId}`, formData);
                     alert('Data updated successfully!');
                 } else {
-                    await instance.post('', formData, {
-                        headers: { 'Content-Type': 'multipart/form-data' }
-                    });
+                    await instance.post('contact-detail/create-contactdetails', formData);
                     alert('Data submitted successfully!');
                 }
 
