@@ -218,7 +218,7 @@ const Bookpackages = ({ tabKey }) => {
         const doc = new jsPDF();
 
         // Add the certificate background image
-        const image = await import('../../assets/Holiday/cirt.jpg'); // Make sure the path is correct
+        const image = await import('../../assets/Holiday/cirtification.jpg'); // Make sure the path is correct
         const imgData = image.default; // Get the image data
 
         // Add the background image to the PDF

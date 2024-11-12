@@ -192,7 +192,7 @@ function HomeCounter() {
                     {showAdd ? (
                         getadmin_data.length > 0 ? (
                             <>
-                                <SearchInput value={searchQuery} onChange={handleSearch} />
+                                {/* <SearchInput value={searchQuery} onChange={handleSearch} /> */}
                                 <Table striped bordered hover responsive="sm">
                                     <thead>
                                         <tr>
