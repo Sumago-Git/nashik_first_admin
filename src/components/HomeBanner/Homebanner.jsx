@@ -129,7 +129,7 @@ function Homebanner() {
   };
 
   const getdata_admin = () => {
-    instance.get('homeBanner/find-homeBanners')
+    instance.get('homeBanner/get-homeBanners')
       .then((res) => {
         setadmin_data(res.data.responseData || []);
         const initialStatus = {};
@@ -210,7 +210,7 @@ function Homebanner() {
 
             getadmin_data.length > 0 ? (
               <>
-                <SearchInput value={searchQuery} onChange={handleSearch} />
+                {/* <SearchInput value={searchQuery} onChange={handleSearch} /> */}
                 <Table striped bordered hover responsive="sm">
                   <thead>
                     <tr>

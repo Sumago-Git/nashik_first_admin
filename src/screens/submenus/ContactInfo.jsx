@@ -7,7 +7,7 @@ import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import Table from 'react-bootstrap/Table';
 import Alert from 'react-bootstrap/Alert';
-import { FaEdit } from 'react-icons/fa';
+import { FaEdit, FaEyeSlash, FaRegEye } from 'react-icons/fa';
 import { MdDelete } from 'react-icons/md';
 import instance from '../../api/AxiosInstance';
 import { confirmAlert } from "react-confirm-alert";
@@ -102,7 +102,7 @@ function ContactInfo() {
     };
 
     const getdata_admin = () => {
-        instance.get('contact-detail/get-contactdetails')
+        instance.get('contact-detail/find-contactdetails')
             .then((res) => {
                 setadmin_data(res.data.responseData || []);
                 const initialStatus = {};
@@ -140,7 +140,7 @@ function ContactInfo() {
                     label: 'Yes',
                     onClick: async () => {
                         try {
-                            await instance.delete(`contact-detail/isdelete-contact${id}`);
+                            await instance.delete(`contact-detail/isdelete-contact/${id}`);
                             getdata_admin();
                         } catch (error) {
                             console.error("Error deleting data:", error);
@@ -158,7 +158,7 @@ function ContactInfo() {
 
     const toggleActiveStatus = async (id) => {
         try {
-            const response = await instance.put(`thanksto/ThanksTo-status/${id}`);
+            const response = await instance.put(`contact-detail/isactive-contact/${id}`);
             if (response.data) {
                 setActiveStatus(prevStatus => ({
                     ...prevStatus,
@@ -214,7 +214,7 @@ function ContactInfo() {
                                                         className="m-2"
                                                         onClick={() => toggleActiveStatus(a.id)}
                                                     >
-                                                        {activeStatus[a.id] ? 'Active' : 'Inactive'}
+                                                        {activeStatus[a.id] ? <FaRegEye color="white" /> : <FaEyeSlash color="white" /> }
                                                     </Button>
                                                 </td>
                                             </tr>
