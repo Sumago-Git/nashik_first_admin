@@ -110,7 +110,7 @@ function PastEvenets() {
     };
 
     const getdata_admin = () => {
-        instance.get('PostEvents/find-PostEvents')
+        instance.get('PostEvents/get-PostEvents')
             .then((res) => {
                 setadmin_data(res.data.responseData || []);
                 const initialStatus = {};
