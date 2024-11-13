@@ -15,6 +15,7 @@ import { confirmAlert } from "react-confirm-alert";
 import "react-confirm-alert/src/react-confirm-alert.css";
 import { useSearchExport } from '../../context/SearchExportContext';
 import SearchInput from '../search/SearchInput';
+import "../../assets/contactform.css"
 
 function ContactForm() {
     const [fullName, setFullName] = useState("");
@@ -144,34 +145,34 @@ function ContactForm() {
 
 
     const handleDelete = (id) => {
-      confirmAlert({
-          title: 'Confirm to delete',
-          message: 'Are you sure you want to delete this entry?',
-          buttons: [
-              {
-                  label: 'Yes',
-                  onClick: async () => {
-                      try {
-                          await instance.delete(`contactform/delete-contactform/${id}`);
-                          // alert("Data deleted successfully!");
-                          getdata_admin(); // Refresh data after deletion
-                      } catch (error) {
-                          console.error("Error deleting data:", error);
-                      }
-                  }
-              },
-              {
-                  label: 'No'
-              }
-          ]
-      });
-  };
+        confirmAlert({
+            title: 'Confirm to delete',
+            message: 'Are you sure you want to delete this entry?',
+            buttons: [
+                {
+                    label: 'Yes',
+                    onClick: async () => {
+                        try {
+                            await instance.delete(`contactform/delete-contactform/${id}`);
+                            // alert("Data deleted successfully!");
+                            getdata_admin(); // Refresh data after deletion
+                        } catch (error) {
+                            console.error("Error deleting data:", error);
+                        }
+                    }
+                },
+                {
+                    label: 'No'
+                }
+            ]
+        });
+    };
 
     return (
         <Container>
             <Card>
                 <Card.Header className="d-flex justify-content-end">
-                  <b>Detials</b>
+                    <b>Detials</b>
                     {/* <Button variant={editMode ? "primary" : "success"} onClick={handleToggle}>
                         {showAdd ? 'Add' : 'View'}
                     </Button> */}
@@ -205,12 +206,12 @@ function ContactForm() {
                                                 <td>{a.age}</td>
                                                 <td>{a.subject}</td>
                                                 <td>{a.profession}</td>
-                                                <td>{a.suggestions}</td>
+                                                <td className="ellipsis">{a.suggestions}</td>
                                                 <td className="p-2">
                                                     {/* <Button variant="primary" className="m-2">
-                                                        <FaEdit />
-                                                    </Button> */}
-                                                    <Button variant="danger" className="m-2" onClick={()=> handleDelete(a.id)}>
+                        <FaEdit />
+                    </Button> */}
+                                                    <Button variant="danger" className="m-2" onClick={() => handleDelete(a.id)}>
                                                         <MdDelete />
                                                     </Button>
                                                 </td>
@@ -218,6 +219,7 @@ function ContactForm() {
                                         ))}
                                     </tbody>
                                 </Table>
+
                             </>
                         ) : (
                             <Alert variant="warning" className="text-center">

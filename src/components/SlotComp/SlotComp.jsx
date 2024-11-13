@@ -438,6 +438,8 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal, ha
                 aria-labelledby="contained-modal-title-vcenter"
                 centered
                 className="modal-fullscreen d-flex justify-content-center"
+               
+               
             >
                 <Modal.Header closeButton>
                     <Modal.Title id="contained-modal-title-vcenter">
