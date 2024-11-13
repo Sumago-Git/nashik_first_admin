@@ -8,6 +8,9 @@ import {
   MdHome,
   MdLogout,
   MdOutlinePermContactCalendar,
+  MdOutlinePhotoSizeSelectLarge, MdInfoOutline, MdOutlineFlag, MdTimer, MdPhotoLibrary,
+  MdPeopleOutline,MdEvent,MdPlayCircleOutline,MdArticle,MdEventNote,MdAssessment,MdContactMail,
+  MdSchool,MdLocalOffer,MdSupervisorAccount,MdThumbUp
 } from "react-icons/md";
 import { RiTeamFill, RiContactsBookLine, RiFileListLine } from "react-icons/ri";
 import { FiUsers, FiList, FiFileText, FiUploadCloud } from "react-icons/fi";
@@ -36,19 +39,19 @@ const SidebarMenu = [
       {
         subMenus: "Social Contacts",
         url: "/social-contact",
-        icon: <RiContactsBookLine style={{ color: "red" }} size={24} />,
+        icon: <AiOutlineAppstoreAdd  style={{ color: "red" }} size={24} />,
       },
     ],
   },
   {
     menu: "Home Banner",
     url: "/homebanner",
-    mainIcon: <RiTeamFill size={24} />,
+    mainIcon: <MdOutlinePhotoSizeSelectLarge size={24} />,
     subMenu: [
       {
         subMenus: "Home Banner",
         url: "/homebanner",
-        icon: <FiUsers style={{ color: "red" }} size={24} />,
+        icon: <AiOutlineAppstoreAdd  style={{ color: "red" }} size={24} />,
       },
 
     ],
@@ -56,7 +59,7 @@ const SidebarMenu = [
   // {
   //   menu: "About",
   //   url: "/about",
-  //   mainIcon: <RiTeamFill size={24} />,
+  //   mainIcon: <MdInfoOutline size={24} />,
   //   subMenu: [
   //     {
   //       subMenus: "Leadership",
@@ -67,14 +70,14 @@ const SidebarMenu = [
   //   ],
   // },
   {
-    menu: "Objective Of ANF",
+    menu: "Objective of ANF",
     url: "/objective-of-anf",
-    mainIcon: <RiTeamFill size={24} />,
+    mainIcon: <MdOutlineFlag size={24} />,
     subMenu: [
       {
-        subMenus: "Objective Of ANF",
+        subMenus: "Objective of ANF",
         url: "/objective-of-anf",
-        icon: <FiUsers style={{ color: "red" }} size={24} />,
+        icon: <AiOutlineAppstoreAdd style={{ color: "red" }} size={24} />,
       },
 
     ],
@@ -82,12 +85,12 @@ const SidebarMenu = [
   {
     menu: "Home Counter",
     url: "/home-counter",
-    mainIcon: <RiTeamFill size={24} />,
+    mainIcon: <MdTimer size={24} />,
     subMenu: [
       {
         subMenus: "Home Counter",
         url: "/home-counter",
-        icon: <FiUsers style={{ color: "red" }} size={24} />,
+        icon: <AiOutlineAppstoreAdd style={{ color: "red" }} size={24} />,
       },
 
     ],
@@ -95,58 +98,58 @@ const SidebarMenu = [
   {
     menu: "Photo Gallary",
     url: "/photo-gallary",
-    mainIcon: <MdOutlinePermContactCalendar size={24} />,
+    mainIcon: <MdPhotoLibrary size={24} />,
     subMenu: [
       {
         subMenus: "Photo Gallary",
         url: "/photo-gallary",
-        icon: <BsBuilding style={{ color: "red" }} size={24} />,
+        icon: <AiOutlineAppstoreAdd style={{ color: "red" }} size={24} />,
       },
     ],
   },
   {
     menu: "Directors",
     url: "/directors",
-    mainIcon: <MdOutlinePermContactCalendar size={24} />,
+    mainIcon: <MdPeopleOutline size={24} />,
     subMenu: [
       {
         subMenus: "Director",
         url: "/directors",
-        icon: <BsBuilding style={{ color: "red" }} size={24} />,
+        icon: <AiOutlineAppstoreAdd style={{ color: "red" }} size={24} />,
       },
     ],
   },
   {
     menu: "Events",
     url: "/masters",
-    mainIcon: <MdOutlinePermContactCalendar size={24} />,
+    mainIcon: <MdEvent size={24} />,
     subMenu: [
       {
         subMenus: "Past Event",
         url: "/pastevents",
-        icon: <BsBuilding style={{ color: "red" }} size={24} />,
+        icon: <AiOutlineAppstoreAdd style={{ color: "red" }} size={24} />,
       },
       {
         subMenus: "Upcomming Events",
         url: "/upcommingevents",
-        icon: <BsBuilding style={{ color: "red" }} size={24} />,
+        icon: <AiOutlineAppstoreAdd style={{ color: "red" }} size={24} />,
       },
     ],
   },
   {
     menu: "Video",
     url: "/tav",
-    mainIcon: <RiTeamFill size={24} />,
+    mainIcon: <MdPlayCircleOutline size={24} />,
     subMenu: [
       {
         subMenus: "Our Video",
         url: "/trafficawarenessvideo",
-        icon: <FiUsers style={{ color: "red" }} size={24} />,
+        icon: <AiOutlineAppstoreAdd style={{ color: "red" }} size={24} />,
       },
       {
         subMenus: "Home Video",
         url: "/home-videos",
-        icon: <FiUsers style={{ color: "red" }} size={24} />,
+        icon: <AiOutlineAppstoreAdd style={{ color: "red" }} size={24} />,
       },
 
     ],
@@ -154,41 +157,41 @@ const SidebarMenu = [
   {
     menu: "News",
     url: "/news",
-    mainIcon: <RiTeamFill size={24} />,
+    mainIcon: <MdArticle size={24} />,
     subMenu: [
       {
         subMenus: "News",
         url: "/news",
-        icon: <FiUsers style={{ color: "red" }} size={24} />,
+        icon: <AiOutlineAppstoreAdd style={{ color: "red" }} size={24} />,
       },
     ],
   },
   {
     menu: "Booking Calender",
     url: "/report",
-    mainIcon: <RiTeamFill size={24} />,
+    mainIcon: <MdEventNote size={24} />,
     subMenu: [
       {
         subMenus: "Calender",
         url: "/calender",
-        icon: <FiUsers style={{ color: "red" }} size={24} />,
+        icon: <AiOutlineAppstoreAdd style={{ color: "red" }} size={24} />,
       },
     ],
   },
   {
     menu: "Reports",
     url: "/report",
-    mainIcon: <RiTeamFill size={24} />,
+    mainIcon: <MdAssessment size={24} />,
     subMenu: [
       {
         subMenus: "Annual Reports",
         url: "/annualreport",
-        icon: <FiUsers style={{ color: "red" }} size={24} />,
+        icon: <AiOutlineAppstoreAdd style={{ color: "red" }} size={24} />,
       },
       {
         subMenus: "Annual Returns",
         url: "/annualreturn",
-        icon: <FiUsers style={{ color: "red" }} size={24} />,
+        icon: <AiOutlineAppstoreAdd style={{ color: "red" }} size={24} />,
       },
 
     ],
@@ -196,7 +199,7 @@ const SidebarMenu = [
   {
     menu: "Contact Us",
     url: "/contactus",
-    mainIcon: <MdOutlinePermContactCalendar size={24} />,
+    mainIcon: <MdContactMail size={24} />,
     subMenu: [
       // {
       //   subMenus: "Our Offices",
@@ -206,65 +209,65 @@ const SidebarMenu = [
       {
         subMenus: "Contact Details",
         url: "/contactinfo",
-        icon: <BsBuilding style={{ color: "red" }} size={24} />,
+        icon: <AiOutlineAppstoreAdd style={{ color: "red" }} size={24} />,
       },
       {
         subMenus: "Follow on us",
         url: "/follow-on-us",
-        icon: <BsBuilding style={{ color: "red" }} size={24} />,
+        icon: <AiOutlineAppstoreAdd style={{ color: "red" }} size={24} />,
       },
       {
         subMenus: "Contact Form",
         url: "/conact-form",
-        icon: <BsBuilding style={{ color: "red" }} size={24} />,
+        icon: <AiOutlineAppstoreAdd style={{ color: "red" }} size={24} />,
       }
     ],
   },
   {
     menu: "Training",
     url: "/training",
-    mainIcon: <MdOutlinePermContactCalendar size={24} />,
+    mainIcon: <MdSchool size={24} />,
     subMenu: [
       {
         subMenus: "Bookings",
         url: "/bookings",
-        icon: <BsBuilding style={{ color: "red" }} size={24} />,
+        icon: <AiOutlineAppstoreAdd style={{ color: "red" }} size={24} />,
       },
     ],
   },
   {
     menu: "Booking Package",
     url: "/bookpackg",
-    mainIcon: <MdOutlinePermContactCalendar size={24} />,
+    mainIcon: <MdLocalOffer size={24} />,
     subMenu: [
       {
         subMenus: "Booking Package",
         url: "/bookpackg",
-        icon: <BsBuilding style={{ color: "red" }} size={24} />,
+        icon: <AiOutlineAppstoreAdd style={{ color: "red" }} size={24} />,
       },
     ],
   },
   {
     menu: "Trainer",
     url: "/trainer",
-    mainIcon: <MdOutlinePermContactCalendar size={24} />,
+    mainIcon: <MdSupervisorAccount size={24} />,
     subMenu: [
       {
         subMenus: "Trainer",
         url: "/trainer",
-        icon: <BsBuilding style={{ color: "red" }} size={24} />,
+        icon: <AiOutlineAppstoreAdd style={{ color: "red" }} size={24} />,
       },
     ],
   },
   {
     menu: "Thanks To ",
     url: "/thanksto",
-    mainIcon: <MdOutlinePermContactCalendar size={24} />,
+    mainIcon: <MdThumbUp size={24} />,
     subMenu: [
       {
         subMenus: "Thanks To",
         url: "/thanksto",
-        icon: <BsBuilding style={{ color: "red" }} size={24} />,
+        icon: <AiOutlineAppstoreAdd style={{ color: "red" }} size={24} />,
       },
     ],
   },
@@ -272,27 +275,27 @@ const SidebarMenu = [
   {
     menu: "Masters",
     url: "/masters",
-    mainIcon: <MdOutlinePermContactCalendar size={24} />,
+    mainIcon: <MdSchool size={24} />,
     subMenu: [
       {
         subMenus: "Holiday",
         url: "/holiday",
-        icon: <BsBuilding style={{ color: "red" }} size={24} />,
+        icon: <AiOutlineAppstoreAdd style={{ color: "red" }} size={24} />,
       },
       {
         subMenus: "Slots",
         url: "/slots",
-        icon: <BsBuilding style={{ color: "red" }} size={24} />,
+        icon: <AiOutlineAppstoreAdd style={{ color: "red" }} size={24} />,
       },
       {
         subMenus: "Sessions",
         url: "/session",
-        icon: <BsBuilding style={{ color: "red" }} size={24} />,
+        icon: <AiOutlineAppstoreAdd style={{ color: "red" }} size={24} />,
       },
       {
         subMenus: "Seat Availability",
         url: "/seat",
-        icon: <BsBuilding style={{ color: "red" }} size={24} />,
+        icon: <AiOutlineAppstoreAdd style={{ color: "red" }} size={24} />,
       },
     ],
   },
