@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Container, Table, Col, Modal } from "react-bootstrap";
 import leftarrow from "../../assets/images/Holiday/leftarrow.png";
 import rightarrow from "../../assets/images/Holiday/rightarrow.png";
@@ -9,6 +9,8 @@ import SlotComp from "../SlotComp/SlotComp";
 
 const CalenderComp = ({ tabKey, categoryName }) => {
     console.log("tabKey", tabKey);
+    const [team, setTeam] = useState([]);
+    const [newdate, setnewdate] = useState("")
 
     const [comp, setComp] = useState("false")
     const [currentDate, setCurrentDate] = useState(new Date());
@@ -142,18 +144,47 @@ const CalenderComp = ({ tabKey, categoryName }) => {
     }
 
     // Function to handle day click
+
     const handleDayClick = (day) => {
         if (day) {
             const clickedDate = new Date(currentYear, currentMonth, day);
-            console.log(`Selected Date: ${clickedDate.toLocaleDateString()}`);
+            const newDateString = clickedDate.toLocaleDateString();
+            setSelectedDate(newDateString);  // Update selected date
+            setnewdate(newDateString);  // Update the new date string
+            fetchTeam(); // Call fetchTeam() with updated selectedDates
             if (tabKey === "Closed Days") {
-                alertBox(clickedDate.toLocaleDateString())
+                alertBox(newDateString); // Pass the date here
             } else {
-                setSelectedDate(clickedDate.toLocaleDateString())
-                handleShowModal();
+                handleShowModal(); // Show the modal
             }
         }
     };
+    const fetchTeam = async () => {
+        setLoading(true);
+        const accessToken = localStorage.getItem("accessToken"); // Retrieve access token
+        try {
+            const response = await instance.post("Sessionslot/get-getSessionbySessionslot", { slotdate: selectedDates, category: categoryName }, {
+                headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },
+            });
+            const filteredData = response.data.responseData?.reverse()
+            setTeam(filteredData);
+            console.log('dfh', filteredData)
+
+
+        } catch (error) {
+            console.error(
+                "Error fetching team:",
+                error.response || error.message || error
+            );
+        } finally {
+            setLoading(false);
+        }
+    };
+    useEffect(() => {
+        if (selectedDates) {
+            fetchTeam();
+        }
+    }, [selectedDates]);
 
     return (
         <>
@@ -225,6 +256,7 @@ const CalenderComp = ({ tabKey, categoryName }) => {
                 handleCloseModal={handleCloseModal}
                 handleShowModal={handleShowModal}
                 selectedDates={selectedDates}
+                realdata={team}
                 categoryName={categoryName} />
         </>
     );

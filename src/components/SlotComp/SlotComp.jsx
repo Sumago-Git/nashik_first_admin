@@ -7,12 +7,16 @@ import { confirmAlert } from "react-confirm-alert";
 import { toast } from "react-toastify";
 import NewResuableForm from "../../components/form/NewResuableForm";
 
-const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal, handleShowModal }) => {
+const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal, handleShowModal, realdata }) => {
     const [currentPage, setCurrentPage] = useState(1);
     const [title, setTitle] = useState("");
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [eyeVisibilityById, setEyeVisibilityById] = useState({});
-    const [data, setData] = useState([]);
+    const [data, setData] = useState(realdata);
+    console.log("cbvdf",realdata)
+    useEffect(() => {
+        setData(realdata);
+    }, [realdata]);
     const [editMode, setEditMode] = useState(false);
     const [show, setShow] = useState(false);
     const [showTable, setShowTable] = useState(true)
@@ -33,7 +37,11 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal, ha
             {name}
         </div>
     );
-
+    useEffect(() => {
+        if (selectedDates && selectedDates.length > 0) {
+            setFormData((prev) => ({ ...prev, slotdate: selectedDates }));
+        }
+    }, [selectedDates]);
     console.log(selectedDates)
     const initialFormData = {
         category: categoryName,
@@ -53,6 +61,7 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal, ha
         // Retrieve and set visibility state from localStorage
         const storedVisibility = JSON.parse(localStorage.getItem('eyeVisibilityById')) || {};
         setEyeVisibilityById(storedVisibility);
+
     }, []);
 
     useEffect(() => {
@@ -87,9 +96,22 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal, ha
                     "Content-Type": "application/json",
                 },
             });
-            const reversedData = response.data.responseData.reverse();
+            console.log("response", response);
+            if (selectedDates) {
+                const filteredData = response.data.responseData.filter((data) => {
+                    console.log("data.slotdate", data.slotdate);
+                    console.log("selectedDates", selectedDates);
+                    return data.slotdate == selectedDates;
+
+                });
+            }
+            const reversedData = response.data.responseData.reverse()
+
             setTeam(reversedData);
-            setData(reversedData);
+            // setData(reversedData);
+            console.log(reversedData)
+            console.log()
+
         } catch (error) {
             console.error(
                 "Error fetching team:",
@@ -335,6 +357,7 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal, ha
                 setFormData(initialFormData); // Reset formData to initial state
                 setImagePreview("");
                 setShowTable(true);
+                setShow1(false)
             } catch (error) {
                 console.error("Error handling form submission:", error);
             } finally {
@@ -471,11 +494,7 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal, ha
                         />
                     </Card>
                 </Modal.Body>
-                <Modal.Footer>
-                    <Button variant="secondary" onClick={handleClose}>
-                        Close
-                    </Button>
-                </Modal.Footer>
+
             </Modal>
 
             <style jsx>{`
@@ -497,7 +516,7 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal, ha
             `}</style>
 
             <Modal show={show1} onHide={handleClose1}>
-                <Modal.Header>
+                <Modal.Header >
                     <Modal.Title>Add Slot</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
@@ -507,7 +526,7 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal, ha
 
                             <Col md={10}>
                                 <Form.Group controlId="trainingType">
-                                    <Form.Label>Training Type</Form.Label>
+                                    <Form.Label>Category</Form.Label>
                                     <Form.Select
                                         name="category"
                                         value={formData.category} // Use "category" as it matches initialFormData
@@ -528,7 +547,7 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal, ha
 
                             <Col md={10}>
                                 <Form.Group controlId="trainingType">
-                                    <Form.Label>Training Type</Form.Label>
+                                    <Form.Label>Trainer Name</Form.Label>
                                     <Form.Select
                                         name="category"
                                         value={formData.trainer} // Use "category" as it matches initialFormData
