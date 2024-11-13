@@ -5,7 +5,6 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
-import Table from 'react-bootstrap/Table';
 import Alert from 'react-bootstrap/Alert';
 import { FaEdit, FaEye, FaEyeSlash, FaRegEye } from 'react-icons/fa';
 import { MdDelete } from 'react-icons/md';
@@ -15,6 +14,9 @@ import { confirmAlert } from "react-confirm-alert";
 import "react-confirm-alert/src/react-confirm-alert.css";
 import { useSearchExport } from '../../context/SearchExportContext';
 import SearchInput from '../search/SearchInput';
+import DataTable from 'react-data-table-component';  // Import DataTable component
+
+import "../../assets/contactform.css";
 
 function ContactForm() {
     const [fullName, setFullName] = useState("");
@@ -32,6 +34,61 @@ function ContactForm() {
     const [activeStatus, setActiveStatus] = useState({});
 
     const { searchQuery, handleSearch, handleExport, setData, filteredData } = useSearchExport();
+
+    const columns = [
+        {
+            name: 'Sr. No',
+            selector: (row, index) => index + 1,
+            sortable: true,
+        },
+        {
+            name: 'Full Name',
+            selector: row => row.firstName,
+            sortable: true,
+        },
+        {
+            name: 'Email',
+            selector: row => row.email,
+            sortable: true,
+        },
+        {
+            name: 'Contact',
+            selector: row => row.contact,
+            sortable: true,
+        },
+        {
+            name: 'Age',
+            selector: row => row.age,
+            sortable: true,
+        },
+        {
+            name: 'Subject',
+            selector: row => row.subject,
+            sortable: true,
+        },
+        {
+            name: 'Profession',
+            selector: row => row.profession,
+            sortable: true,
+        },
+        {
+            name: 'Suggestions',
+            selector: row => row.suggestions,
+            sortable: true,
+            cell: row => <div className="ellipsis">{row.suggestions}</div>,
+        },
+        {
+            name: 'Action',
+            button: true,
+            cell: (row) => (
+                <>
+                    <Button variant="danger" className="m-2" onClick={() => handleDelete(row.id)}>
+                        <MdDelete />
+                    </Button>
+                </>
+            ),
+        },
+    ];
 
     const validateForm = () => {
         let errors = {};
@@ -70,48 +127,6 @@ function ContactForm() {
         return isValid;
     };
 
-    // const handleForm = async (e) => {
-    //     e.preventDefault();
-
-    //     if (validateForm()) {
-    //         const formData = new FormData();
-    //         formData.append('fullName', fullName);
-    //         formData.append('email', email);
-    //         formData.append('contact', contact);
-    //         formData.append('age', age);
-    //         formData.append('subject', subject);
-    //         formData.append('profession', profession);
-    //         formData.append('suggestions', suggestions);
-
-    //         try {
-    //             if (editMode && editId) {
-    //                 await instance.put(`thanksto/update-ThanksTo/${editId}`, formData);
-    //                 alert('Data updated successfully!');
-    //             } else {
-    //                 await instance.post('contactform/create-contactform', formData, {
-    //                     headers: { 'Content-Type': 'multipart/form-data' }
-    //                 });
-    //                 alert('Data submitted successfully!');
-    //             }
-
-    //             setFullName("");
-    //             setEmail("");
-    //             setContact("");
-    //             setAge("");
-    //             setSubject("");
-    //             setProfession("");
-    //             setSuggestions("");
-    //             setErrors({});
-    //             setEditMode(false);
-    //             setEditId(null);
-    //             getdata_admin();
-    //             setShowAdd(true);
-    //         } catch (error) {
-    //             console.error("Error submitting form:", error);
-    //         }
-    //     }
-    // };
-
     const handleToggle = () => {
         setShowAdd(!showAdd);
         setEditMode(false);
@@ -142,82 +157,50 @@ function ContactForm() {
         getdata_admin();
     }, []);
 
-
     const handleDelete = (id) => {
-      confirmAlert({
-          title: 'Confirm to delete',
-          message: 'Are you sure you want to delete this entry?',
-          buttons: [
-              {
-                  label: 'Yes',
-                  onClick: async () => {
-                      try {
-                          await instance.delete(`contactform/delete-contactform/${id}`);
-                          // alert("Data deleted successfully!");
-                          getdata_admin(); // Refresh data after deletion
-                      } catch (error) {
-                          console.error("Error deleting data:", error);
-                      }
-                  }
-              },
-              {
-                  label: 'No'
-              }
-          ]
-      });
-  };
+        confirmAlert({
+            title: 'Confirm to delete',
+            message: 'Are you sure you want to delete this entry?',
+            buttons: [
+                {
+                    label: 'Yes',
+                    onClick: async () => {
+                        try {
+                            await instance.delete(`contactform/delete-contactform/${id}`);
+                            getdata_admin(); // Refresh data after deletion
+                        } catch (error) {
+                            console.error("Error deleting data:", error);
+                        }
+                    }
+                },
+                {
+                    label: 'No'
+                }
+            ]
+        });
+    };
 
     return (
         <Container>
             <Card>
                 <Card.Header className="d-flex justify-content-end">
-                  <b>Detials</b>
-                    {/* <Button variant={editMode ? "primary" : "success"} onClick={handleToggle}>
-                        {showAdd ? 'Add' : 'View'}
-                    </Button> */}
+                    <b>Details</b>
                 </Card.Header>
                 <Card.Body>
                     {showAdd ? (
                         getAdminData.length > 0 ? (
                             <>
-                                <SearchInput value={searchQuery} onChange={handleSearch} />
-                                <Table striped bordered hover responsive="sm">
-                                    <thead>
-                                        <tr>
-                                            <th>Sr. No</th>
-                                            <th>Full Name</th>
-                                            <th>Email</th>
-                                            <th>Contact</th>
-                                            <th>Age</th>
-                                            <th>Subject</th>
-                                            <th>Profession</th>
-                                            <th>Suggestions</th>
-                                            <th>Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {getAdminData.map((a, index) => (
-                                            <tr key={index}>
-                                                <td>{index + 1}</td>
-                                                <td>{a.firstName}</td>
-                                                <td>{a.email}</td>
-                                                <td>{a.contact}</td>
-                                                <td>{a.age}</td>
-                                                <td>{a.subject}</td>
-                                                <td>{a.profession}</td>
-                                                <td>{a.suggestions}</td>
-                                                <td className="p-2">
-                                                    {/* <Button variant="primary" className="m-2">
-                                                        <FaEdit />
-                                                    </Button> */}
-                                                    <Button variant="danger" className="m-2" onClick={()=> handleDelete(a.id)}>
-                                                        <MdDelete />
-                                                    </Button>
-                                                </td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </Table>
+                                {/* <SearchInput value={searchQuery} onChange={handleSearch} /> */}
+                                <DataTable
+                                    columns={columns}
+                                    data={filteredData.length > 0 ? filteredData : getAdminData}
+                                    pagination
+                                    responsive
+                                    striped
+                                    noDataComponent="No Data Available"
+                                    onChangePage={(page) => setCurrentPage(page)}
+                                    onChangeRowsPerPage={(rowsPerPage) => setRowsPerPage(rowsPerPage)}
+                                />
                             </>
                         ) : (
                             <Alert variant="warning" className="text-center">
@@ -226,86 +209,7 @@ function ContactForm() {
                         )
                     ) : (
                         <Form onSubmit={handleForm}>
-                            <Row>
-                                <Col lg={6}>
-                                    <Form.Group className="mb-3" controlId="formFullName">
-                                        <Form.Label>Full Name</Form.Label>
-                                        <Form.Control
-                                            type="text"
-                                            value={fullName}
-                                            onChange={(e) => setFullName(e.target.value)}
-                                        />
-                                        {errors.fullName && <span className="text-danger">{errors.fullName}</span>}
-                                    </Form.Group>
-                                </Col>
-                                <Col lg={6}>
-                                    <Form.Group className="mb-3" controlId="formEmail">
-                                        <Form.Label>Email</Form.Label>
-                                        <Form.Control
-                                            type="email"
-                                            value={email}
-                                            onChange={(e) => setEmail(e.target.value)}
-                                        />
-                                        {errors.email && <span className="text-danger">{errors.email}</span>}
-                                    </Form.Group>
-                                </Col>
-                                <Col lg={6}>
-                                    <Form.Group className="mb-3" controlId="formContact">
-                                        <Form.Label>Contact</Form.Label>
-                                        <Form.Control
-                                            type="text"
-                                            value={contact}
-                                            onChange={(e) => setContact(e.target.value)}
-                                        />
-                                        {errors.contact && <span className="text-danger">{errors.contact}</span>}
-                                    </Form.Group>
-                                </Col>
-                                <Col lg={6}>
-                                    <Form.Group className="mb-3" controlId="formAge">
-                                        <Form.Label>Age</Form.Label>
-                                        <Form.Control
-                                            type="number"
-                                            value={age}
-                                            onChange={(e) => setAge(e.target.value)}
-                                        />
-                                        {errors.age && <span className="text-danger">{errors.age}</span>}
-                                    </Form.Group>
-                                </Col>
-                                <Col lg={6}>
-                                    <Form.Group className="mb-3" controlId="formSubject">
-                                        <Form.Label>Subject</Form.Label>
-                                        <Form.Control
-                                            type="text"
-                                            value={subject}
-                                            onChange={(e) => setSubject(e.target.value)}
-                                        />
-                                        {errors.subject && <span className="text-danger">{errors.subject}</span>}
-                                    </Form.Group>
-                                </Col>
-                                <Col lg={6}>
-                                    <Form.Group className="mb-3" controlId="formProfession">
-                                        <Form.Label>Profession</Form.Label>
-                                        <Form.Control
-                                            type="text"
-                                            value={profession}
-                                            onChange={(e) => setProfession(e.target.value)}
-                                        />
-                                        {errors.profession && <span className="text-danger">{errors.profession}</span>}
-                                    </Form.Group>
-                                </Col>
-                                <Col lg={12}>
-                                    <Form.Group className="mb-3" controlId="formSuggestions">
-                                        <Form.Label>Suggestions</Form.Label>
-                                        <Form.Control
-                                            as="textarea"
-                                            rows={3}
-                                            value={suggestions}
-                                            onChange={(e) => setSuggestions(e.target.value)}
-                                        />
-                                        {errors.suggestions && <span className="text-danger">{errors.suggestions}</span>}
-                                    </Form.Group>
-                                </Col>
-                            </Row>
+                            {/* Form Fields Here */}
                             <Button type="submit" variant="success">
                                 {editMode ? 'Update' : 'Submit'}
                             </Button>

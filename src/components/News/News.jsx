@@ -5,9 +5,8 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
-import Table from 'react-bootstrap/Table';
 import Alert from 'react-bootstrap/Alert';
-import { FaEdit, FaEye, FaEyeSlash, FaRegEye } from 'react-icons/fa';
+import { FaEdit, FaRegEye, FaEyeSlash } from 'react-icons/fa';
 import { MdDelete } from 'react-icons/md';
 import instance from '../../api/AxiosInstance';
 
@@ -15,8 +14,9 @@ import { confirmAlert } from "react-confirm-alert";
 import "react-confirm-alert/src/react-confirm-alert.css";
 import { useSearchExport } from '../../context/SearchExportContext';
 import SearchInput from '../search/SearchInput';
+import DataTable from 'react-data-table-component'; // Import DataTable
 
-function Thanksto() {
+function News() {
     const [title, setTitle] = useState("");
     const [img, setImage] = useState(null);
     const [preview, setPreview] = useState(null);
@@ -26,6 +26,9 @@ function Thanksto() {
     const [editMode, setEditMode] = useState(false);
     const [editId, setEditId] = useState(null);
     const [activeStatus, setActiveStatus] = useState({}); // Track isActive status
+
+    const [currentPage, setCurrentPage] = useState(1);
+    const [rowsPerPage, setRowsPerPage] = useState(10);
 
     const { searchQuery, handleSearch, handleExport, setData, filteredData } =
         useSearchExport();
@@ -169,6 +172,48 @@ function Thanksto() {
         }
     };
 
+    // Columns for DataTable
+    const columns = [
+        {
+            name: 'Sr. No',
+            selector: (row, index) => index + 1,
+            sortable: true,
+        },
+        {
+            name: 'Title',
+            selector: row => row.title,
+            sortable: true,
+        },
+        {
+            name: 'Image',
+            selector: row => <img src={row.img} alt={row.title} height="40" width="120" />,
+        },
+        {
+            name: 'Action',
+            cell: (row) => (
+                <div className="d-flex">
+                    <Button variant="primary" className="m-2" onClick={() => edit(row.id)}>
+                        <FaEdit />
+                    </Button>
+                    <Button variant="danger" className="m-2" onClick={() => delete_data(row.id)}>
+                        <MdDelete />
+                    </Button>
+                    <Button
+                        variant={activeStatus[row.id] ? "success" : "warning"} // Button color based on isActive
+                        className="m-2"
+                        onClick={() => toggleActiveStatus(row.id)}
+                    >
+                        {activeStatus[row.id] ? (
+                            <FaRegEye color="white" />  // Green Eye when isActive is true
+                        ) : (
+                            <FaEyeSlash color="white" />  // Red Eye-slash when isActive is false
+                        )}
+                    </Button>
+                </div>
+            ),
+        },
+    ];
+
     return (
         <Container>
             <Card>
@@ -178,58 +223,20 @@ function Thanksto() {
                     </Button>
                 </Card.Header>
                 <Card.Body>
-                   
                     {showAdd ? (
-                       
                         getadmin_data.length > 0 ? (
                             <>
-                            {/* <SearchInput value={searchQuery} onChange={handleSearch} /> */}
-                            <Table striped bordered hover responsive="sm">
-                                <thead>
-                                    <tr>
-                                        <th>Sr. No</th>
-                                        <th>Title</th>
-                                        <th>Image</th>
-                                        <th>Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {getadmin_data.map((a, index) => (
-                                        <tr key={index}>
-                                            <td>{index + 1}</td>
-                                            <td>{a.title}</td>
-                                            <td>
-                                                <img
-                                                    src={a.img}
-                                                    className="trademark img-fluid"
-                                                    alt={a.title}
-                                                    height="40"
-                                                    width="120"
-                                                />
-                                            </td>
-                                            <td className="p-2">
-                                                <Button variant="primary" className="m-2" onClick={() => edit(a.id)}>
-                                                    <FaEdit />
-                                                </Button>
-                                                <Button variant="danger" className="m-2" onClick={() => delete_data(a.id)}><MdDelete /></Button>
-                                                <Button
-                                                    variant={activeStatus[a.id] ? "success" : "warning"} // Button color based on isActive
-                                                    className="m-2"
-                                                    onClick={() => toggleActiveStatus(a.id)}
-                                                >
-                                                    {/* Conditionally render the icon based on isActive status */}
-                                                    {activeStatus[a.id] ? (
-                                                        <FaRegEye color="white" />  // Green Eye when isActive is true
-                                                    ) : (
-                                                        <FaEyeSlash color="white" />  // Red Eye-slash when isActive is false
-                                                    )}
-                                                </Button>
-
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </Table>
+                                {/* Search and Export functionality could be added here */}
+                                <DataTable
+                                    columns={columns}
+                                    data={filteredData.length > 0 ? filteredData : getadmin_data}
+                                    pagination
+                                    responsive
+                                    striped
+                                    noDataComponent="No Data Available"
+                                    onChangePage={(page) => setCurrentPage(page)}
+                                    onChangeRowsPerPage={(rowsPerPage) => setRowsPerPage(rowsPerPage)}
+                                />
                             </>
                         ) : (
                             <Alert variant="warning" className="text-center">
@@ -252,18 +259,18 @@ function Thanksto() {
                                     </Form.Group>
                                 </Col>
                                 <Col lg={6} md={6} sm={12}>
-                                    <Form.Group className="mb-3" controlId="formBasicImage">
+                                    <Form.Group className="mb-3">
                                         <Form.Label>Upload Image</Form.Label>
                                         <Form.Control
                                             type="file"
-                                            accept="image/*"
                                             onChange={handleImageChange}
                                         />
                                         {errors.img && <span className="error text-danger">{errors.img}</span>}
                                     </Form.Group>
+                                    
                                 </Col>
                             </Row>
-                            <Button variant={editMode ? "primary" : "success"} type="submit">
+                            <Button variant="primary" type="submit">
                                 {editMode ? 'Update' : 'Submit'}
                             </Button>
                         </Form>
@@ -274,4 +281,4 @@ function Thanksto() {
     );
 }
 
-export default Thanksto;
+export default News;

@@ -19,6 +19,8 @@ import { useSearchExport } from '../../context/SearchExportContext';
 import Tab from 'react-bootstrap/Tab';
 import Tabs from 'react-bootstrap/Tabs';
 
+import DataTable from 'react-data-table-component';
+
 function PastEvenets() {
     const [title, setTitle] = useState("");
     const [img, setImage] = useState(null);
@@ -274,6 +276,116 @@ function PastEvenets() {
         }
     };
 
+
+    // Special Events -
+
+    const columns = [
+        {
+            name: 'Sr. No',
+            selector: (row, index) => index + 1, // For Sr. No based on the index
+            sortable: true,
+        },
+        {
+            name: 'Title',
+            selector: (row) => row.title,
+            sortable: true,
+        },
+        {
+            name: 'Image',
+            selector: (row) => (
+                <img
+                    src={row.img}
+                    className="trademark img-fluid"
+                    alt={row.title}
+                    height="40"
+                    width="120"
+                />
+            ),
+            sortable: false,
+        },
+        {
+            name: 'Action',
+            cell: (row) => (
+                <div className="p-2">
+                    <Button variant="primary" className="m-2" onClick={() => edit(row.id)}>
+                        <FaEdit />
+                    </Button>
+                    <Button variant="danger" className="m-2" onClick={() => delete_data(row.id)}>
+                        <MdDelete />
+                    </Button>
+                    <Button
+                        variant={activeStatus[row.id] ? "success" : "warning"} // Button color based on isActive
+                        className="m-2"
+                        onClick={() => toggleActiveStatus(row.id)}
+                    >
+                        {/* Conditionally render the icon based on isActive status */}
+                        {activeStatus[row.id] ? (
+                            <FaRegEye color="white" />  // Green Eye when isActive is true
+                        ) : (
+                            <FaEyeSlash color="white" />  // Red Eye-slash when isActive is false
+                        )}
+                    </Button>
+                </div>
+            ),
+            ignoreRowClick: true, // To avoid row click issues with the button
+            sortable: false,
+        },
+    ];
+
+    // Event Gallery
+
+    const columns_eventgallery = [
+        {
+            name: 'Sr. No',
+            selector: (row, index) => index + 1, // For Sr. No based on the index
+            sortable: true,
+        },
+        {
+            name: 'Title',
+            selector: (row) => row.title,
+            sortable: true,
+        },
+        {
+            name: 'Image',
+            selector: (row) => (
+                <img
+                    src={row.img}
+                    className="trademark img-fluid"
+                    alt={row.title}
+                    height="40"
+                    width="120"
+                />
+            ),
+            sortable: false,
+        },
+        {
+            name: 'Action',
+            cell: (row) => (
+                <div className="p-2">
+                    <Button variant="primary" className="m-2" onClick={() => edit_eventgallery(row.id)}>
+                        <FaEdit />
+                    </Button>
+                    <Button variant="danger" className="m-2" onClick={() => delete_data_eventgallry(row.id)}>
+                        <MdDelete />
+                    </Button>
+                    <Button
+                        variant={activeStatus[row.id] ? "warning" : "success"} // Button color based on isActive
+                        className="m-2"
+                        onClick={() => toggleActiveStatus_eventgalley(row.id)}
+                    >
+                        {/* Conditionally render the icon based on isActive status */}
+                        {activeStatus[row.id] ? (
+                            <FaEyeSlash color="white" />  // Green Eye when isActive is true
+                        ) : (
+                            <FaRegEye color="white" /> // Red Eye-slash when isActive is false
+                        )}
+                    </Button>
+                </div>
+            ),
+            ignoreRowClick: true, // To avoid row click issues with the button
+            sortable: false,
+        },
+    ];
     return (
         <>
             <Tabs
@@ -295,52 +407,16 @@ function PastEvenets() {
                                     <>
                                         {/* <SearchInput value={searchQuery} onChange={handleSearch} /> */}
 
-                                        <Table striped bordered hover responsive="sm">
-                                            <thead>
-                                                <tr>
-                                                    <th>Sr. No</th>
-                                                    <th>Title</th>
-                                                    <th>Image</th>
-                                                    <th>Action</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {getadmin_data.map((a, index) => (
-                                                    <tr key={index}>
-                                                        <td>{index + 1}</td>
-                                                        <td>{a.title}</td>
-                                                        <td>
-                                                            <img
-                                                                src={a.img}
-                                                                className="trademark img-fluid"
-                                                                alt={a.title}
-                                                                height="40"
-                                                                width="120"
-                                                            />
-                                                        </td>
-                                                        <td className="p-2">
-                                                            <Button variant="primary" className="m-2" onClick={() => edit(a.id)}>
-                                                                <FaEdit />
-                                                            </Button>
-                                                            <Button variant="danger" className="m-2" onClick={() => delete_data(a.id)}><MdDelete /></Button>
-                                                            <Button
-                                                                variant={activeStatus[a.id] ? "success" : "warning"} // Button color based on isActive
-                                                                className="m-2"
-                                                                onClick={() => toggleActiveStatus(a.id)}
-                                                            >
-                                                                {/* Conditionally render the icon based on isActive status */}
-                                                                {activeStatus[a.id] ? (
-                                                                    <FaRegEye color="white" />  // Green Eye when isActive is true
-                                                                ) : (
-                                                                    <FaEyeSlash color="white" />  // Red Eye-slash when isActive is false
-                                                                )}
-                                                            </Button>
-
-                                                        </td>
-                                                    </tr>
-                                                ))}
-                                            </tbody>
-                                        </Table>
+                                        <DataTable
+                                            columns={columns}
+                                            data={filteredData.length > 0 ? filteredData : getadmin_data}
+                                            pagination
+                                            responsive
+                                            striped
+                                            noDataComponent="No Data Available"
+                                            onChangePage={(page) => setCurrentPage(page)}
+                                            onChangeRowsPerPage={(rowsPerPage) => setRowsPerPage(rowsPerPage)}
+                                        />
                                     </>
                                 ) : (
                                     <Alert variant="warning" className="text-center">
@@ -397,54 +473,18 @@ function PastEvenets() {
                                 {showAdd ? (
                                     eventgallery_data.length > 0 ? (
                                         <>
-                                            <SearchInput value={searchQuery} onChange={handleSearch} />
+                                            {/* <SearchInput value={searchQuery} onChange={handleSearch} /> */}
 
-                                            <Table striped bordered hover responsive="sm">
-                                                <thead>
-                                                    <tr>
-                                                        <th>Sr. No</th>
-                                                        <th>Title</th>
-                                                        <th>Image</th>
-                                                        <th>Action</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    {eventgallery_data.map((a, index) => (
-                                                        <tr key={index}>
-                                                            <td>{index + 1}</td>
-                                                            <td>{a.title}</td>
-                                                            <td>
-                                                                <img
-                                                                    src={a.img}
-                                                                    className="trademark img-fluid"
-                                                                    alt={a.title}
-                                                                    height="40"
-                                                                    width="120"
-                                                                />
-                                                            </td>
-                                                            <td className="p-2">
-                                                                <Button variant="primary" className="m-2" onClick={() => edit_eventgallery(a.id)}>
-                                                                    <FaEdit />
-                                                                </Button>
-                                                                <Button variant="danger" className="m-2" onClick={() => delete_data_eventgallry(a.id)}><MdDelete /></Button>
-                                                                <Button
-                                                                    variant={activeStatus[a.id] ? "warning": "success" } // Button color based on isActive
-                                                                    className="m-2"
-                                                                    onClick={() => toggleActiveStatus_eventgalley(a.id)}
-                                                                >
-                                                                    {/* Conditionally render the icon based on isActive status */}
-                                                                    {activeStatus[a.id] ? (
-                                                                         <FaEyeSlash color="white" />  // Green Eye when isActive is true
-                                                                    ) : (
-                                                                        <FaRegEye color="white" /> // Red Eye-slash when isActive is false
-                                                                    )}
-                                                                </Button>
-
-                                                            </td>
-                                                        </tr>
-                                                    ))}
-                                                </tbody>
-                                            </Table>
+                                            <DataTable
+                                                columns={columns_eventgallery}
+                                                data={filteredData.length > 0 ? filteredData : eventgallery_data}
+                                                pagination
+                                                responsive
+                                                striped
+                                                noDataComponent="No Data Available"
+                                                onChangePage={(page) => setCurrentPage(page)}
+                                                onChangeRowsPerPage={(rowsPerPage) => setRowsPerPage(rowsPerPage)}
+                                            />
                                         </>
                                     ) : (
                                         <Alert variant="warning" className="text-center">

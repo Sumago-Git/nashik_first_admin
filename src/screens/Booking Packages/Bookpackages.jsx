@@ -37,10 +37,15 @@ const Bookpackages = ({ tabKey }) => {
     //     setRowModal(true);
     // };
     const getUserDataByCategoryAndDate = (date) => {
+        const newdate = date.split(' ')[1]; // Get "14/11/2024"
+        const [day, month, year] = newdate.split('/'); // Split into day, month, and year
+        const formattedDate = `${month}/${day}/${year}`; // Rearrange to "MM/DD/YYYY"
+
+        // Construct the data object with the formatted date
         let data = {
             category: categoryName,
-            slotdate: date
-        }
+            slotdate: formattedDate // Use the formatted date here
+        };
         instance.post("bookingform/get-bookingentries-by-date-category", data).then((result) => {
             console.log("result", result);
             setDataByDateAndCategory(result.data.responseData)
@@ -222,7 +227,7 @@ const Bookpackages = ({ tabKey }) => {
         const imgData = image.default; // Get the image data
 
         // Add the background image to the PDF
-        doc.addImage(imgData, 'PNG', 0, 0, 210, 297); // Adjust width and height as necessary
+        doc.addImage(imgData, 'PNG', 0, 0, 210, 270); // Adjust width and height as necessary
 
         // Set font for the user's name
         doc.setFont("cursive");
@@ -234,8 +239,8 @@ const Bookpackages = ({ tabKey }) => {
         const nameWidth = doc.getTextWidth(nameText); // Get the width of the name text
 
         // Calculate position for centered text
-        const xPosition = (250 - nameWidth) / 2; // Centering in a A4 size PDF
-        const yPosition = 140; // Adjust as needed for vertical positioning
+        const xPosition = (210 - nameWidth) / 2; // Centering in a A4 size PDF
+        const yPosition = 115; // Adjust as needed for vertical positioning
 
         // Draw user's name
         doc.text(nameText, xPosition, yPosition);
@@ -346,7 +351,7 @@ const Bookpackages = ({ tabKey }) => {
                 </Modal.Header>
                 <Modal.Body>
                     <Tabs defaultActiveKey="tab1" id="modal-tabs" className="mb-3">
-                        <Tab eventKey="tab1" title="Customer">
+                        <Tab eventKey="tab1" title="Customer">dksfhehiso
                             <Table striped bordered hover responsive="sm">
                                 <tbody>
                                     {
