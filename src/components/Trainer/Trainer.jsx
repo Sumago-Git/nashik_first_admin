@@ -5,7 +5,6 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
-import Table from 'react-bootstrap/Table';
 import Alert from 'react-bootstrap/Alert';
 import { FaEdit, FaEye, FaEyeSlash, FaRegEye } from 'react-icons/fa';
 import { MdDelete } from 'react-icons/md';
@@ -14,7 +13,7 @@ import instance from '../../api/AxiosInstance';
 import { confirmAlert } from "react-confirm-alert";
 import "react-confirm-alert/src/react-confirm-alert.css";
 import { useSearchExport } from '../../context/SearchExportContext';
-import SearchInput from '../search/SearchInput';
+import DataTable from 'react-data-table-component';  // Import DataTable
 
 function Trainer() {
     const [name, setName] = useState("");
@@ -26,6 +25,8 @@ function Trainer() {
     const [editMode, setEditMode] = useState(false);
     const [editId, setEditId] = useState(null);
     const [activeStatus, setActiveStatus] = useState({});
+    const [currentPage, setCurrentPage] = useState(1);
+    const [rowsPerPage, setRowsPerPage] = useState(10);
 
     const { searchQuery, handleSearch, handleExport, setData, filteredData } = useSearchExport();
 
@@ -159,6 +160,50 @@ function Trainer() {
         }
     };
 
+    // Define columns for DataTable
+    const columns = [
+        {
+            name: 'Sr. No',
+            selector: (row, index) => index + 1,
+            sortable: true
+        },
+        {
+            name: 'Name',
+            selector: row => row.name,
+            sortable: true
+        },
+        {
+            name: 'Email',
+            selector: row => row.email,
+            sortable: true
+        },
+        {
+            name: 'Mobile',
+            selector: row => row.mobile,
+            sortable: true
+        },
+        {
+            name: 'Action',
+            cell: (row) => (
+                <div>
+                    <Button variant="primary" className="m-2" onClick={() => edit(row.id)}>
+                        <FaEdit />
+                    </Button>
+                    <Button variant="danger" className="m-2" onClick={() => delete_data(row.id)}>
+                        <MdDelete />
+                    </Button>
+                    <Button
+                        variant={activeStatus[row.id] ? "success" : "warning"}
+                        className="m-2"
+                        onClick={() => toggleActiveStatus(row.id)}
+                    >
+                        {activeStatus[row.id] ? <FaRegEye color="white" /> : <FaEyeSlash color="white" />}
+                    </Button>
+                </div>
+            )
+        }
+    ];
+
     return (
         <Container>
             <Card>
@@ -170,43 +215,16 @@ function Trainer() {
                 <Card.Body>
                     {showAdd ? (
                         getadmin_data.length > 0 ? (
-                            <>
-                                {/* <SearchInput value={searchQuery} onChange={handleSearch} /> */}
-                                <Table striped bordered hover responsive="sm">
-                                    <thead>
-                                        <tr>
-                                            <th>Sr. No</th>
-                                            <th>Name</th>
-                                            <th>Email</th>
-                                            <th>Mobile</th>
-                                            <th>Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {getadmin_data.map((a, index) => (
-                                            <tr key={index}>
-                                                <td>{index + 1}</td>
-                                                <td>{a.name}</td>
-                                                <td>{a.email}</td>
-                                                <td>{a.mobile}</td>
-                                                <td className="p-2">
-                                                    <Button variant="primary" className="m-2" onClick={() => edit(a.id)}>
-                                                        <FaEdit />
-                                                    </Button>
-                                                    <Button variant="danger" className="m-2" onClick={() => delete_data(a.id)}><MdDelete /></Button>
-                                                    <Button
-                                                        variant={activeStatus[a.id] ? "success" : "warning"}
-                                                        className="m-2"
-                                                        onClick={() => toggleActiveStatus(a.id)}
-                                                    >
-                                                        {activeStatus[a.id] ? <FaRegEye color="white" /> : <FaEyeSlash color="white" />}
-                                                    </Button>
-                                                </td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </Table>
-                            </>
+                            <DataTable
+                                columns={columns}
+                                data={filteredData.length > 0 ? filteredData : getadmin_data}
+                                pagination
+                                responsive
+                                striped
+                                noDataComponent="No Data Available"
+                                onChangePage={(page) => setCurrentPage(page)}
+                                onChangeRowsPerPage={(rowsPerPage) => setRowsPerPage(rowsPerPage)}
+                            />
                         ) : (
                             <Alert variant="warning" className="text-center">
                                 No data found
@@ -244,7 +262,7 @@ function Trainer() {
                                         <Form.Label>Enter Mobile</Form.Label>
                                         <Form.Control
                                             type="text"
-                                            placeholder="Enter Mobile"
+                                            placeholder="Enter Mobile Number"
                                             value={mobile}
                                             onChange={(e) => setMobile(e.target.value)}
                                         />
@@ -252,8 +270,8 @@ function Trainer() {
                                     </Form.Group>
                                 </Col>
                             </Row>
-                            <Button variant={editMode ? "primary" : "success"} type="submit">
-                                {editMode ? 'Update' : 'Submit'}
+                            <Button variant="primary" type="submit">
+                                {editMode ? 'Update' : 'Add'}
                             </Button>
                         </Form>
                     )}

@@ -225,7 +225,7 @@ function Thanksto() {
                     {showAdd ? (
                         getadmin_data.length > 0 ? (
                             <>
-                                <SearchInput value={searchQuery} onChange={handleSearch} />
+                                {/* <SearchInput value={searchQuery} onChange={handleSearch} /> */}
                                 <DataTable
                                     columns={columns}
                                     data={filteredData.length > 0 ? filteredData : getadmin_data}
