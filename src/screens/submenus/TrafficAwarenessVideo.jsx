@@ -5,7 +5,6 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
-import Table from 'react-bootstrap/Table';
 import Alert from 'react-bootstrap/Alert';
 import { FaEdit, FaEyeSlash, FaRegEye } from 'react-icons/fa';
 import { MdDelete } from 'react-icons/md';
@@ -14,36 +13,26 @@ import instance from '../../api/AxiosInstance';
 import { confirmAlert } from "react-confirm-alert";
 import "react-confirm-alert/src/react-confirm-alert.css";
 import { useSearchExport } from '../../context/SearchExportContext';
-import SearchInput from '../../components/search/SearchInput';
-
+import DataTable from 'react-data-table-component';  // Import DataTable
 
 function TrafficAwarenessVideo() {
-    // const [instagram, setinstgram] = useState("");
-    // const [facebook, setfacebook] = useState("");
-    // const [email, setemail] = useState("");
-    // const [whatsapp, setwhatsapp] = useState("");
-    // const [linkedin, setlinkedin] = useState("");
-
     const [title, settitle] = useState("");
     const [mediaurl, setmediaurl] = useState("");
-
     const [errors, setErrors] = useState({});
     const [showAdd, setShowAdd] = useState(true);
     const [getadmin_data, setadmin_data] = useState([]);
     const [editMode, setEditMode] = useState(false);
     const [editId, setEditId] = useState(null);
     const [activeStatus, setActiveStatus] = useState({});
-
+    const [currentPage, setCurrentPage] = useState(1);
+    const [rowsPerPage, setRowsPerPage] = useState(10);  // Default number of rows per page
     const { searchQuery, handleSearch } = useSearchExport();
 
     const validateForm = () => {
         let errors = {};
         let isValid = true;
-
-        if (!title.trim()) errors.title = 'title is required';
-        if (!mediaurl.trim()) errors.mediaurl = 'mediaurl is required';
-
-
+        if (!title.trim()) errors.title = 'Title is required';
+        if (!mediaurl.trim()) errors.mediaurl = 'Media URL is required';
         setErrors(errors);
         return isValid && Object.keys(errors).length === 0;
     };
@@ -103,7 +92,7 @@ function TrafficAwarenessVideo() {
         const item = getadmin_data.find((a) => a.id === id);
         if (item) {
             settitle(item.title);
-            setmediaurl(title.mediaurl);
+            setmediaurl(item.mediaurl);
             setEditMode(true);
             setEditId(id);
             setShowAdd(false);
@@ -145,6 +134,46 @@ function TrafficAwarenessVideo() {
         }
     };
 
+    const columns = [
+        {
+            name: 'Sr. No',
+            selector: (row, index) => index + 1,
+            sortable: false,
+        },
+        {
+            name: 'Title',
+            selector: 'title',
+            sortable: true,
+            cell: row => <div style={{ maxWidth: '120px', overflow: 'hidden', textOverflow: 'ellipsis' }}>{row.title}</div>
+        },
+        {
+            name: 'Media URL',
+            selector: 'mediaurl',
+            sortable: true,
+            cell: row => <div style={{ maxWidth: '120px', overflow: 'hidden', textOverflow: 'ellipsis' }}>{row.mediaurl}</div>
+        },
+        {
+            name: 'Action',
+            cell: (row) => (
+                <div>
+                    <Button variant="primary" className="m-1" onClick={() => edit(row.id)}>
+                        <FaEdit />
+                    </Button>
+                    <Button variant="danger" className="m-1" onClick={() => delete_data(row.id)}>
+                        <MdDelete />
+                    </Button>
+                    <Button
+                        variant={activeStatus[row.id] ? "success" : "warning"}
+                        className="m-1"
+                        onClick={() => toggleActiveStatus(row.id)}
+                    >
+                        {activeStatus[row.id] ? <FaRegEye /> : <FaEyeSlash />}
+                    </Button>
+                </div>
+            ),
+        }
+    ];
+
     return (
         <Container>
             <Card>
@@ -156,43 +185,18 @@ function TrafficAwarenessVideo() {
                 <Card.Body>
                     {showAdd ? (
                         getadmin_data.length > 0 ? (
-                            <>
-                                {/* <SearchInput value={searchQuery} onChange={handleSearch} /> */}
-                                <Table striped bordered hover responsive="sm">
-                                    <thead>
-                                        <tr className="text-center">
-                                            <th>Sr. No</th>
-                                            <th>Title</th>
-                                            <th>Media URL</th>
-                                            <th>Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {getadmin_data.map((a, index) => (
-                                            <tr key={index} className="text-center">
-                                                <td>{index + 1}</td>
-                                                <td className="text-truncate" style={{ maxWidth: '120px' }}>{a.title}</td>
-                                                <td className="text-truncate" style={{ maxWidth: '120px' }}>{a.mediaurl}</td>
-                                                <td>
-                                                    <Button variant="primary" className="m-1" onClick={() => edit(a.id)}>
-                                                        <FaEdit />
-                                                    </Button>
-                                                    <Button variant="danger" className="m-1" onClick={() => delete_data(a.id)}>
-                                                        <MdDelete />
-                                                    </Button>
-                                                    <Button
-                                                        variant={activeStatus[a.id] ? "success" : "warning"}
-                                                        className="m-1"
-                                                        onClick={() => toggleActiveStatus(a.id)}
-                                                    >
-                                                        {activeStatus[a.id] ? <FaRegEye /> : <FaEyeSlash />}
-                                                    </Button>
-                                                </td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </Table>
-                            </>
+                            <DataTable
+                                columns={columns}
+                                data={getadmin_data}  // Use all data or filtered data if needed
+                                pagination
+                                responsive
+                                striped
+                                noDataComponent="No Data Available"
+                                onChangePage={(page) => setCurrentPage(page)}
+                                onChangeRowsPerPage={(rowsPerPage) => setRowsPerPage(rowsPerPage)}
+                                paginationPerPage={rowsPerPage}
+                                paginationRowsPerPageOptions={[5, 10, 15, 20]}  // Pagination options
+                            />
                         ) : (
                             <Alert variant="warning" className="text-center">
                                 No data found
@@ -201,7 +205,6 @@ function TrafficAwarenessVideo() {
                     ) : (
                         <Form onSubmit={handleForm}>
                             <Row>
-
                                 <Col lg={6} md={6} sm={12}>
                                     <Form.Group className="mb-3" controlId="formBasicName">
                                         <Form.Label>Enter Title</Form.Label>
@@ -226,7 +229,6 @@ function TrafficAwarenessVideo() {
                                         {errors.mediaurl && <span className="error text-danger">{errors.mediaurl}</span>}
                                     </Form.Group>
                                 </Col>
-                                
                             </Row>
                             <Button variant={editMode ? "primary" : "success"} type="submit">
                                 {editMode ? 'Update' : 'Submit'}
@@ -240,5 +242,3 @@ function TrafficAwarenessVideo() {
 }
 
 export default TrafficAwarenessVideo;
-
-

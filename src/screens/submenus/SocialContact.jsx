@@ -222,6 +222,7 @@ const SocialContact = () => {
                       showExportButton={false}
                     />
                   )}
+               
                 </Col>
               </Row>
             </Card.Header>
@@ -251,6 +252,7 @@ const SocialContact = () => {
                     setRowsPerPage(rowsPerPage)
                   }
                 />
+                
               ) : (
                 <Form onSubmit={handleSubmit}>
                   <Row>

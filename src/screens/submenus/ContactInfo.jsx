@@ -5,7 +5,6 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
-import Table from 'react-bootstrap/Table';
 import Alert from 'react-bootstrap/Alert';
 import { FaEdit, FaEyeSlash, FaRegEye } from 'react-icons/fa';
 import { MdDelete } from 'react-icons/md';
@@ -14,6 +13,7 @@ import { confirmAlert } from "react-confirm-alert";
 import "react-confirm-alert/src/react-confirm-alert.css";
 import { useSearchExport } from '../../context/SearchExportContext';
 import SearchInput from '../../components/search/SearchInput';
+import DataTable from 'react-data-table-component';
 
 function ContactInfo() {
     const [email, setEmail] = useState("");
@@ -26,9 +26,10 @@ function ContactInfo() {
     const [editMode, setEditMode] = useState(false);
     const [editId, setEditId] = useState(null);
     const [activeStatus, setActiveStatus] = useState({});
+    const [currentPage, setCurrentPage] = useState(1);
+    const [rowsPerPage, setRowsPerPage] = useState(10);
 
-    const { searchQuery, handleSearch, handleExport, setData, filteredData } =
-        useSearchExport();
+    const { searchQuery, handleSearch, handleExport, setData, filteredData } = useSearchExport();
 
     const validateForm = () => {
         let errors = {};
@@ -59,7 +60,6 @@ function ContactInfo() {
         e.preventDefault();
 
         if (validateForm()) {
-           
             const formData = {
                 email,
                 phone,
@@ -170,6 +170,55 @@ function ContactInfo() {
         }
     };
 
+    // Define columns for the DataTable
+    const columns = [
+        {
+            name: 'Sr. No',
+            selector: (row, index) => index + 1,
+            sortable: true
+        },
+        {
+            name: 'Email',
+            selector: row => row.email,
+            sortable: true
+        },
+        {
+            name: 'Phone',
+            selector: row => row.phone,
+            sortable: true
+        },
+        {
+            name: 'Address',
+            selector: row => row.address,
+            sortable: true
+        },
+        {
+            name: 'Whatsapp',
+            selector: row => row.whatsapp,
+            sortable: true
+        },
+        {
+            name: 'Action',
+            cell: row => (
+                <div>
+                    <Button variant="primary" className="m-2" onClick={() => edit(row.id)}>
+                        <FaEdit />
+                    </Button>
+                    <Button variant="danger" className="m-2" onClick={() => delete_data(row.id)}>
+                        <MdDelete />
+                    </Button>
+                    <Button
+                        variant={activeStatus[row.id] ? "success" : "warning"}
+                        className="m-2"
+                        onClick={() => toggleActiveStatus(row.id)}
+                    >
+                        {activeStatus[row.id] ? <FaRegEye color="white" /> : <FaEyeSlash color="white" />}
+                    </Button>
+                </div>
+            )
+        }
+    ];
+
     return (
         <Container>
             <Card>
@@ -182,45 +231,21 @@ function ContactInfo() {
                     {showAdd ? (
                         getadmin_data.length > 0 ? (
                             <>
-                                <SearchInput value={searchQuery} onChange={handleSearch} />
-                                <Table striped bordered hover responsive="sm">
-                                    <thead>
-                                        <tr>
-                                            <th>Sr. No</th>
-                                            <th>Email</th>
-                                            <th>Phone</th>
-                                            <th>Address</th>
-                                            <th>Whatsapp</th>
-                                            <th>Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {getadmin_data.map((a, index) => (
-                                            <tr key={index}>
-                                                <td>{index + 1}</td>
-                                                <td>{a.email}</td>
-                                                <td>{a.phone}</td>
-                                                <td>{a.address}</td>
-                                                <td>{a.whatsapp}</td>
-                                                <td className="p-2">
-                                                    <Button variant="primary" className="m-2" onClick={() => edit(a.id)}>
-                                                        <FaEdit />
-                                                    </Button>
-                                                    <Button variant="danger" className="m-2" onClick={() => delete_data(a.id)}>
-                                                        <MdDelete />
-                                                    </Button>
-                                                    <Button
-                                                        variant={activeStatus[a.id] ? "success" : "warning"}
-                                                        className="m-2"
-                                                        onClick={() => toggleActiveStatus(a.id)}
-                                                    >
-                                                        {activeStatus[a.id] ? <FaRegEye color="white" /> : <FaEyeSlash color="white" /> }
-                                                    </Button>
-                                                </td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </Table>
+                                {/* <SearchInput value={searchQuery} onChange={handleSearch} /> */}
+                                <DataTable
+                                    columns={columns}
+                                    data={filteredData.length > 0 ? filteredData : getadmin_data}
+                                    pagination
+                                    responsive
+                                    striped
+                                    noDataComponent="No Data Available"
+                                    onChangePage={(page) => setCurrentPage(page)}
+                                    onChangeRowsPerPage={(rowsPerPage) => setRowsPerPage(rowsPerPage)}
+                                    paginationServer
+                                    paginationPerPage={rowsPerPage}
+                                    paginationTotalRows={getadmin_data.length}
+                                    currentPage={currentPage}
+                                />
                             </>
                         ) : (
                             <Alert variant="warning" className="text-center">No data found</Alert>
@@ -273,7 +298,7 @@ function ContactInfo() {
                                     </Form.Group>
                                 </Col>
                             </Row>
-                            <Button type="submit" variant="primary" className="m-2">
+                            <Button type="submit" variant="primary">
                                 {editMode ? 'Update' : 'Submit'}
                             </Button>
                         </Form>

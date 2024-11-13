@@ -461,6 +461,8 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal, ha
                 aria-labelledby="contained-modal-title-vcenter"
                 centered
                 className="modal-fullscreen d-flex justify-content-center"
+               
+               
             >
                 <Modal.Header closeButton>
                     <Modal.Title id="contained-modal-title-vcenter">
@@ -524,7 +526,7 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal, ha
 
                             <Col md={10}>
                                 <Form.Group controlId="trainingType">
-                                    <Form.Label>Training Type</Form.Label>
+                                    <Form.Label>Category</Form.Label>
                                     <Form.Select
                                         name="category"
                                         value={formData.category} // Use "category" as it matches initialFormData
@@ -545,7 +547,7 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal, ha
 
                             <Col md={10}>
                                 <Form.Group controlId="trainingType">
-                                    <Form.Label>Training Type</Form.Label>
+                                    <Form.Label>Trainer Name</Form.Label>
                                     <Form.Select
                                         name="category"
                                         value={formData.trainer} // Use "category" as it matches initialFormData

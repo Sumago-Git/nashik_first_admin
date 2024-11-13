@@ -5,31 +5,29 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
-import Table from 'react-bootstrap/Table';
 import Alert from 'react-bootstrap/Alert';
-import { FaEdit, FaEye, FaEyeSlash, FaRegEye } from 'react-icons/fa';
+import { FaEdit, FaEyeSlash, FaRegEye } from 'react-icons/fa';
 import { MdDelete } from 'react-icons/md';
+import DataTable from 'react-data-table-component';
 import instance from '../../api/AxiosInstance';
-
 import { confirmAlert } from "react-confirm-alert";
 import "react-confirm-alert/src/react-confirm-alert.css";
 import { useSearchExport } from '../../context/SearchExportContext';
-import SearchInput from '../search/SearchInput';
 
 function Homebanner() {
-  // const [title, setTitle] = useState("");
   const [img2, setImage] = useState(null);
   const [img1, setImage1] = useState(null);
-
   const [previewMobile, setPreviewMobile] = useState(null);
-
   const [preview, setPreview] = useState(null);
   const [errors, setErrors] = useState({});
   const [showAdd, setShowAdd] = useState(true);
   const [getadmin_data, setadmin_data] = useState([]);
   const [editMode, setEditMode] = useState(false);
   const [editId, setEditId] = useState(null);
-  const [activeStatus, setActiveStatus] = useState({}); // Track isActive status
+  const [activeStatus, setActiveStatus] = useState({});
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
 
   const { searchQuery, handleSearch, handleExport, setData, filteredData } =
     useSearchExport();
@@ -38,12 +36,11 @@ function Homebanner() {
     let errors = {};
     let isValid = true;
 
-
-    if (!img2 && !editMode) { // Only validate image in add mode
+    if (!img2 && !editMode) {
       errors.img2 = 'Image is required';
       isValid = false;
     }
-    if (!img1 && !editMode) { // Only validate image in add mode
+    if (!img1 && !editMode) {
       errors.img1 = 'Image is required';
       isValid = false;
     }
@@ -72,7 +69,6 @@ function Homebanner() {
           alert('Data submitted successfully!');
         }
 
-
         setImage(null);
         setImage1(null);
 
@@ -81,7 +77,7 @@ function Homebanner() {
         setEditMode(false);
         setEditId(null);
         getdata_admin();
-        setShowAdd(true); // Show table after form submission
+        setShowAdd(true);
       } catch (error) {
         console.error("Error uploading image:", error);
       }
@@ -113,7 +109,7 @@ function Homebanner() {
         setImage1(null);
         setPreviewMobile(null);
       } else {
-        setImage2(null);
+        setImage(null);
       }
     }
   };
@@ -121,7 +117,6 @@ function Homebanner() {
   const handleToggle = () => {
     setShowAdd(!showAdd);
     setEditMode(false);
-
     setImage(null);
     setImage1(null);
     setPreview(null);
@@ -134,9 +129,9 @@ function Homebanner() {
         setadmin_data(res.data.responseData || []);
         const initialStatus = {};
         res.data.responseData.forEach(item => {
-          initialStatus[item.id] = item.isActive; // Set the initial status for each item
+          initialStatus[item.id] = item.isActive;
         });
-        setActiveStatus(initialStatus); // Set active status state
+        setActiveStatus(initialStatus);
       })
       .catch((err) => console.log(err));
   };
@@ -148,12 +143,11 @@ function Homebanner() {
   const edit = (id) => {
     const item = getadmin_data.find((a) => a.id === id);
     if (item) {
-
-      setPreview(item.img2); // Assuming 'img' contains the URL for preview
+      setPreview(item.img2);
       setPreview(item.img1);
       setEditMode(true);
       setEditId(id);
-      setShowAdd(false); // Show form for editing
+      setShowAdd(false);
     }
   };
 
@@ -167,7 +161,7 @@ function Homebanner() {
           onClick: async () => {
             try {
               await instance.delete(`homeBanner/homeBanner-delete/${id}`);
-              getdata_admin(); // Refresh the data after deletion
+              getdata_admin();
             } catch (error) {
               console.error("Error deleting data:", error);
               alert("There was an error deleting the data.");
@@ -176,7 +170,7 @@ function Homebanner() {
         },
         {
           label: 'No',
-          onClick: () => { } // Do nothing if user clicks "No"
+          onClick: () => { }
         }
       ]
     });
@@ -188,13 +182,49 @@ function Homebanner() {
       if (response.data) {
         setActiveStatus(prevStatus => ({
           ...prevStatus,
-          [id]: !prevStatus[id] // Toggle the isActive status
+          [id]: !prevStatus[id]
         }));
       }
     } catch (error) {
       console.error("Error updating status:", error);
     }
   };
+
+  // Define columns for DataTable
+  const tableColumns = () => [
+    {
+      name: 'Sr. No',
+      selector: (row, index) => index + 1 + (currentPage - 1) * rowsPerPage,
+    },
+    {
+      name: 'Image Desktop',
+      cell: (row) => <img src={row.img2} alt={row.title} height="40" width="120" />,
+    },
+    {
+      name: 'Image Mobile',
+      cell: (row) => <img src={row.img1} alt={row.title} height="40" width="120" />,
+    },
+    {
+      name: 'Action',
+      cell: (row) => (
+        <>
+          <Button variant="primary" className="m-2" onClick={() => edit(row.id)}>
+            <FaEdit />
+          </Button>
+          <Button variant="danger" className="m-2" onClick={() => delete_data(row.id)}>
+            <MdDelete />
+          </Button>
+          <Button
+            variant={activeStatus[row.id] ? "success" : "warning"}
+            className="m-2"
+            onClick={() => toggleActiveStatus(row.id)}
+          >
+            {activeStatus[row.id] ? <FaRegEye color="white" /> : <FaEyeSlash color="white" />}
+          </Button>
+        </>
+      ),
+    },
+  ];
 
   return (
     <Container>
@@ -205,72 +235,17 @@ function Homebanner() {
           </Button>
         </Card.Header>
         <Card.Body>
-
           {showAdd ? (
-
-            getadmin_data.length > 0 ? (
-              <>
-                {/* <SearchInput value={searchQuery} onChange={handleSearch} /> */}
-                <Table striped bordered hover responsive="sm">
-                  <thead>
-                    <tr>
-                      <th>Sr. No</th>
-                      <th>Image Desktop</th>
-                      <th>Image Mobile</th>
-                      <th>Action</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {getadmin_data.map((a, index) => (
-                      <tr key={index}>
-                        <td>{index + 1}</td>
-                        <td>
-                          <img
-                            src={a.img2}
-                            className="trademark img-fluid"
-                            alt={a.title}
-                            height="40"
-                            width="120"
-                          />
-                        </td>
-                        <td>
-                          <img
-                            src={a.img1}
-                            className="trademark img-fluid"
-                            alt={a.title}
-                            height="40"
-                            width="120"
-                          />
-                        </td>
-                        <td className="p-2">
-                          <Button variant="primary" className="m-2" onClick={() => edit(a.id)}>
-                            <FaEdit />
-                          </Button>
-                          <Button variant="danger" className="m-2" onClick={() => delete_data(a.id)}><MdDelete /></Button>
-                          <Button
-                            variant={activeStatus[a.id] ? "success" : "warning"} // Button color based on isActive
-                            className="m-2"
-                            onClick={() => toggleActiveStatus(a.id)}
-                          >
-                            {/* Conditionally render the icon based on isActive status */}
-                            {activeStatus[a.id] ? (
-                              <FaRegEye color="white" />  // Green Eye when isActive is true
-                            ) : (
-                              <FaEyeSlash color="white" />  // Red Eye-slash when isActive is false
-                            )}
-                          </Button>
-
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </Table>
-              </>
-            ) : (
-              <Alert variant="warning" className="text-center">
-                No data found
-              </Alert>
-            )
+            <DataTable
+              columns={tableColumns()}
+              data={filteredData.length > 0 ? filteredData : getadmin_data}
+              pagination
+              responsive
+              striped
+              noDataComponent="No Data Available"
+              onChangePage={(page) => setCurrentPage(page)}
+              onChangeRowsPerPage={(rows) => setRowsPerPage(rows)}
+            />
           ) : (
             <Form onSubmit={handleForm}>
               <Row>
@@ -286,8 +261,8 @@ function Homebanner() {
                   </Form.Group>
                 </Col>
                 <Col lg={6} md={6} sm={12}>
-                  <Form.Group className="mb-3" controlId="formBasicImage">
-                    <Form.Label>Upload Image mobile</Form.Label>
+                  <Form.Group className="mb-3" controlId="formBasicImage1">
+                    <Form.Label>Upload Image Mobile</Form.Label>
                     <Form.Control
                       type="file"
                       accept="image/*"
@@ -297,9 +272,11 @@ function Homebanner() {
                   </Form.Group>
                 </Col>
               </Row>
-              <Button variant={editMode ? "primary" : "success"} type="submit">
-                {editMode ? 'Update' : 'Submit'}
-              </Button>
+              <div className="d-flex ">
+                <Button variant={editMode ? "primary" : "success"}  type="submit">
+                  {editMode ? 'Update' : 'Submit'}
+                </Button>
+              </div>
             </Form>
           )}
         </Card.Body>

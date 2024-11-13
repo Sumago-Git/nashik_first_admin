@@ -5,12 +5,11 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
-import Table from 'react-bootstrap/Table';
 import Alert from 'react-bootstrap/Alert';
 import { FaEdit, FaEye, FaEyeSlash, FaRegEye } from 'react-icons/fa';
 import { MdDelete } from 'react-icons/md';
 import instance from '../../api/AxiosInstance';
-
+import DataTable from 'react-data-table-component';
 import { confirmAlert } from "react-confirm-alert";
 import "react-confirm-alert/src/react-confirm-alert.css";
 import { useSearchExport } from '../../context/SearchExportContext';
@@ -25,10 +24,11 @@ function Thanksto() {
     const [getadmin_data, setadmin_data] = useState([]);
     const [editMode, setEditMode] = useState(false);
     const [editId, setEditId] = useState(null);
-    const [activeStatus, setActiveStatus] = useState({}); // Track isActive status
+    const [activeStatus, setActiveStatus] = useState({});
+    const [currentPage, setCurrentPage] = useState(1);
+    const [rowsPerPage, setRowsPerPage] = useState(10);
 
-    const { searchQuery, handleSearch, handleExport, setData, filteredData } =
-        useSearchExport();
+    const { searchQuery, handleSearch, handleExport, setData, filteredData } = useSearchExport();
 
     const validateForm = () => {
         let errors = {};
@@ -38,7 +38,7 @@ function Thanksto() {
             errors.title = 'Title is required';
             isValid = false;
         }
-        if (!img && !editMode) { // Only validate image in add mode
+        if (!img && !editMode) {
             errors.img = 'Image is required';
             isValid = false;
         }
@@ -73,7 +73,7 @@ function Thanksto() {
                 setEditMode(false);
                 setEditId(null);
                 getdata_admin();
-                setShowAdd(true); // Show table after form submission
+                setShowAdd(true);
             } catch (error) {
                 console.error("Error uploading image:", error);
             }
@@ -108,9 +108,9 @@ function Thanksto() {
                 setadmin_data(res.data.responseData || []);
                 const initialStatus = {};
                 res.data.responseData.forEach(item => {
-                    initialStatus[item.id] = item.isActive; // Set the initial status for each item
+                    initialStatus[item.id] = item.isActive;
                 });
-                setActiveStatus(initialStatus); // Set active status state
+                setActiveStatus(initialStatus);
             })
             .catch((err) => console.log(err));
     };
@@ -123,10 +123,10 @@ function Thanksto() {
         const item = getadmin_data.find((a) => a.id === id);
         if (item) {
             setTitle(item.title);
-            setPreview(item.img); // Assuming 'img' contains the URL for preview
+            setPreview(item.img);
             setEditMode(true);
             setEditId(id);
-            setShowAdd(false); // Show form for editing
+            setShowAdd(false);
         }
     };
 
@@ -140,7 +140,7 @@ function Thanksto() {
                     onClick: async () => {
                         try {
                             await instance.delete(`gallery/photoGallery-delete/${id}`);
-                            getdata_admin(); // Refresh the data after deletion
+                            getdata_admin();
                         } catch (error) {
                             console.error("Error deleting data:", error);
                             alert("There was an error deleting the data.");
@@ -149,7 +149,7 @@ function Thanksto() {
                 },
                 {
                     label: 'No',
-                    onClick: () => { } // Do nothing if user clicks "No"
+                    onClick: () => {}
                 }
             ]
         });
@@ -161,13 +161,51 @@ function Thanksto() {
             if (response.data) {
                 setActiveStatus(prevStatus => ({
                     ...prevStatus,
-                    [id]: !prevStatus[id] // Toggle the isActive status
+                    [id]: !prevStatus[id]
                 }));
             }
         } catch (error) {
             console.error("Error updating status:", error);
         }
     };
+
+    const tableColumns = () => [
+        {
+            name: "Sr. No",
+            selector: (row, index) => index + 1,
+            sortable: true,
+            width: "100px",
+        },
+        {
+            name: "Title",
+            selector: (row) => row.title,
+            sortable: true,
+        },
+        {
+            name: "Image",
+            cell: (row) => <img src={row.img} alt={row.title} height="40" width="120" />,
+        },
+        {
+            name: "Action",
+            cell: (row) => (
+                <>
+                    <Button variant="primary" className="m-2" onClick={() => edit(row.id)}>
+                        <FaEdit />
+                    </Button>
+                    <Button variant="danger" className="m-2" onClick={() => delete_data(row.id)}>
+                        <MdDelete />
+                    </Button>
+                    <Button
+                        variant={activeStatus[row.id] ? "success" : "warning"}
+                        className="m-2"
+                        onClick={() => toggleActiveStatus(row.id)}
+                    >
+                        {activeStatus[row.id] ? <FaRegEye color="white" /> : <FaEyeSlash color="white" />}
+                    </Button>
+                </>
+            ),
+        },
+    ];
 
     return (
         <Container>
@@ -178,59 +216,18 @@ function Thanksto() {
                     </Button>
                 </Card.Header>
                 <Card.Body>
-                   
                     {showAdd ? (
-                       
                         getadmin_data.length > 0 ? (
-                            <>
-                            {/* <SearchInput value={searchQuery} onChange={handleSearch} /> */}
-                            <Table striped bordered hover responsive="sm">
-                                <thead>
-                                    <tr>
-                                        <th>Sr. No</th>
-                                        <th>Title</th>
-                                        <th>Image</th>
-                                        <th>Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {getadmin_data.map((a, index) => (
-                                        <tr key={index}>
-                                            <td>{index + 1}</td>
-                                            <td>{a.title}</td>
-                                            <td>
-                                                <img
-                                                    src={a.img}
-                                                    className="trademark img-fluid"
-                                                    alt={a.title}
-                                                    height="40"
-                                                    width="120"
-                                                />
-                                            </td>
-                                            <td className="p-2">
-                                                <Button variant="primary" className="m-2" onClick={() => edit(a.id)}>
-                                                    <FaEdit />
-                                                </Button>
-                                                <Button variant="danger" className="m-2" onClick={() => delete_data(a.id)}><MdDelete /></Button>
-                                                <Button
-                                                    variant={activeStatus[a.id] ? "success" : "warning"} // Button color based on isActive
-                                                    className="m-2"
-                                                    onClick={() => toggleActiveStatus(a.id)}
-                                                >
-                                                    {/* Conditionally render the icon based on isActive status */}
-                                                    {activeStatus[a.id] ? (
-                                                        <FaRegEye color="white" />  // Green Eye when isActive is true
-                                                    ) : (
-                                                        <FaEyeSlash color="white" />  // Red Eye-slash when isActive is false
-                                                    )}
-                                                </Button>
-
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </Table>
-                            </>
+                            <DataTable
+                                columns={tableColumns()}
+                                data={filteredData.length > 0 ? filteredData : getadmin_data}
+                                pagination
+                                responsive
+                                striped
+                                noDataComponent="No Data Available"
+                                onChangePage={(page) => setCurrentPage(page)}
+                                onChangeRowsPerPage={(rowsPerPage) => setRowsPerPage(rowsPerPage)}
+                            />
                         ) : (
                             <Alert variant="warning" className="text-center">
                                 No data found

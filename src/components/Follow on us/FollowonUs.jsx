@@ -5,32 +5,34 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
-import Table from 'react-bootstrap/Table';
 import Alert from 'react-bootstrap/Alert';
-import { FaEdit, FaEyeSlash, FaRegEye } from 'react-icons/fa';
+import { FaEdit, FaRegEye, FaEyeSlash } from 'react-icons/fa';
 import { MdDelete } from 'react-icons/md';
 import instance from '../../api/AxiosInstance';
-
-import { confirmAlert } from "react-confirm-alert";
-import "react-confirm-alert/src/react-confirm-alert.css";
+import { confirmAlert } from 'react-confirm-alert';
+import 'react-confirm-alert/src/react-confirm-alert.css';
 import { useSearchExport } from '../../context/SearchExportContext';
 import SearchInput from '../search/SearchInput';
+import DataTable from 'react-data-table-component';  // Import DataTable
 
 function FollowonUs() {
-    const [instagram, setinstgram] = useState("");
-    const [facebook, setfacebook] = useState("");
-    const [email, setemail] = useState("");
-    const [whatsapp, setwhatsapp] = useState("");
-    const [linkedin, setlinkedin] = useState("");
+    const [instagram, setInstagram] = useState("");
+    const [facebook, setFacebook] = useState("");
+    const [email, setEmail] = useState("");
+    const [whatsapp, setWhatsapp] = useState("");
+    const [linkedin, setLinkedin] = useState("");
 
     const [errors, setErrors] = useState({});
     const [showAdd, setShowAdd] = useState(true);
-    const [getadmin_data, setadmin_data] = useState([]);
+    const [getAdminData, setAdminData] = useState([]);
     const [editMode, setEditMode] = useState(false);
     const [editId, setEditId] = useState(null);
     const [activeStatus, setActiveStatus] = useState({});
 
     const { searchQuery, handleSearch } = useSearchExport();
+    const [filteredData, setFilteredData] = useState(getAdminData);
+    const [rowsPerPage, setRowsPerPage] = useState(10);
+    const [currentPage, setCurrentPage] = useState(1);
 
     const validateForm = () => {
         let errors = {};
@@ -59,7 +61,7 @@ function FollowonUs() {
                     alert('Data submitted successfully!');
                 }
                 clearForm();
-                getdata_admin();
+                getDataAdmin();
                 setShowAdd(true);
             } catch (error) {
                 console.error("Error submitting data:", error);
@@ -68,11 +70,11 @@ function FollowonUs() {
     };
 
     const clearForm = () => {
-        setinstgram("");
-        setfacebook("");
-        setemail("");
-        setwhatsapp("");
-        setlinkedin("");
+        setInstagram("");
+        setFacebook("");
+        setEmail("");
+        setWhatsapp("");
+        setLinkedin("");
         setErrors({});
         setEditMode(false);
         setEditId(null);
@@ -83,10 +85,10 @@ function FollowonUs() {
         clearForm();
     };
 
-    const getdata_admin = () => {
+    const getDataAdmin = () => {
         instance.get('social-contact/find-socialcontacts')
             .then((res) => {
-                setadmin_data(res.data.responseData || []);
+                setAdminData(res.data.responseData || []);
                 const initialStatus = {};
                 res.data.responseData.forEach(item => {
                     initialStatus[item.id] = item.isActive;
@@ -97,24 +99,24 @@ function FollowonUs() {
     };
 
     useEffect(() => {
-        getdata_admin();
+        getDataAdmin();
     }, []);
 
     const edit = (id) => {
-        const item = getadmin_data.find((a) => a.id === id);
+        const item = getAdminData.find((a) => a.id === id);
         if (item) {
-            setinstgram(item.instagram);
-            setfacebook(item.facebook);
-            setemail(item.email);
-            setwhatsapp(item.whatsapp);
-            setlinkedin(item.linkedin);
+            setInstagram(item.instagram);
+            setFacebook(item.facebook);
+            setEmail(item.email);
+            setWhatsapp(item.whatsapp);
+            setLinkedin(item.linkedin);
             setEditMode(true);
             setEditId(id);
             setShowAdd(false);
         }
     };
 
-    const delete_data = async (id) => {
+    const deleteData = async (id) => {
         confirmAlert({
             title: 'Confirm Delete',
             message: 'Are you sure you want to delete this item?',
@@ -124,7 +126,7 @@ function FollowonUs() {
                     onClick: async () => {
                         try {
                             await instance.delete(`social-contact/isdelete-social/${id}`);
-                            getdata_admin();
+                            getDataAdmin();
                         } catch (error) {
                             console.error("Error deleting data:", error);
                         }
@@ -149,6 +151,61 @@ function FollowonUs() {
         }
     };
 
+    // Columns for DataTable
+    const columns = [
+        {
+            name: 'Sr. No',
+            selector: (row, index) => index + 1,
+            width: '60px',
+        },
+        {
+            name: 'Instagram',
+            selector: row => row.instagram,
+            width: '150px',
+        },
+        {
+            name: 'Facebook',
+            selector: row => row.facebook,
+            width: '150px',
+        },
+        {
+            name: 'Email',
+            selector: row => row.email,
+            width: '200px',
+        },
+        {
+            name: 'WhatsApp',
+            selector: row => row.whatsapp,
+            width: '150px',
+        },
+        {
+            name: 'LinkedIn',
+            selector: row => row.linkedin,
+            width: '150px',
+        },
+        {
+            name: 'Actions',
+            cell: (row) => (
+                <div className="d-flex">
+                    <Button variant="primary" className="m-1" onClick={() => edit(row.id)}>
+                        <FaEdit />
+                    </Button>
+                    <Button variant="danger" className="m-1" onClick={() => deleteData(row.id)}>
+                        <MdDelete />
+                    </Button>
+                    <Button
+                        variant={activeStatus[row.id] ? "success" : "warning"}
+                        className="m-1"
+                        onClick={() => toggleActiveStatus(row.id)}
+                    >
+                        {activeStatus[row.id] ? <FaRegEye /> : <FaEyeSlash />}
+                    </Button>
+                </div>
+            ),
+            width: '200px',
+        },
+    ];
+
     return (
         <Container>
             <Card>
@@ -159,51 +216,19 @@ function FollowonUs() {
                 </Card.Header>
                 <Card.Body>
                     {showAdd ? (
-                        getadmin_data.length > 0 ? (
+                        getAdminData.length > 0 ? (
                             <>
-                                <SearchInput value={searchQuery} onChange={handleSearch} />
-                                <Table striped bordered hover responsive="sm">
-                                    <thead>
-                                        <tr className="text-center">
-                                            <th>Sr. No</th>
-                                            <th>Instagram</th>
-                                            <th>Facebook</th>
-                                            <th>Email</th>
-                                            {/* <th>WhatsApp</th>
-                                            <th>LinkedIn</th> */}
-                                            <th>Youtube</th>
-                                            <th>Twitter</th>
-                                            <th>Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {getadmin_data.map((a, index) => (
-                                            <tr key={index} className="text-center">
-                                                <td>{index + 1}</td>
-                                                <td className="text-truncate" style={{ maxWidth: '120px' }}>{a.instagram}</td>
-                                                <td className="text-truncate" style={{ maxWidth: '120px' }}>{a.facebook}</td>
-                                                <td className="text-truncate" style={{ maxWidth: '150px' }}>{a.email}</td>
-                                                <td className="text-truncate" style={{ maxWidth: '120px' }}>{a.whatsapp}</td>
-                                                <td className="text-truncate" style={{ maxWidth: '120px' }}>{a.linkedin}</td>
-                                                <td>
-                                                    <Button variant="primary" className="m-1" onClick={() => edit(a.id)}>
-                                                        <FaEdit />
-                                                    </Button>
-                                                    <Button variant="danger" className="m-1" onClick={() => delete_data(a.id)}>
-                                                        <MdDelete />
-                                                    </Button>
-                                                    <Button
-                                                        variant={activeStatus[a.id] ? "success" : "warning"}
-                                                        className="m-1"
-                                                        onClick={() => toggleActiveStatus(a.id)}
-                                                    >
-                                                        {activeStatus[a.id] ? <FaRegEye /> : <FaEyeSlash />}
-                                                    </Button>
-                                                </td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </Table>
+                                {/* <SearchInput value={searchQuery} onChange={handleSearch} /> */}
+                                <DataTable
+                                    columns={columns}
+                                    data={filteredData.length > 0 ? filteredData : getAdminData}
+                                    pagination
+                                    responsive
+                                    striped
+                                    noDataComponent="No Data Available"
+                                    onChangePage={(page) => setCurrentPage(page)}
+                                    onChangeRowsPerPage={(rowsPerPage) => setRowsPerPage(rowsPerPage)}
+                                />
                             </>
                         ) : (
                             <Alert variant="warning" className="text-center">
@@ -213,63 +238,63 @@ function FollowonUs() {
                     ) : (
                         <Form onSubmit={handleForm}>
                             <Row>
-
+                                {/* Form fields */}
                                 <Col lg={6} md={6} sm={12}>
-                                    <Form.Group className="mb-3" controlId="formBasicName">
-                                        <Form.Label>Enter Instagram Links</Form.Label>
+                                    <Form.Group className="mb-3" controlId="instagram">
+                                        <Form.Label>Instagram</Form.Label>
                                         <Form.Control
                                             type="text"
-                                            placeholder="Enter instagram link"
+                                            placeholder="Enter Instagram link"
                                             value={instagram}
-                                            onChange={(e) => setinstgram(e.target.value)}
+                                            onChange={(e) => setInstagram(e.target.value)}
                                         />
                                         {errors.instagram && <span className="error text-danger">{errors.instagram}</span>}
                                     </Form.Group>
                                 </Col>
                                 <Col lg={6} md={6} sm={12}>
-                                    <Form.Group className="mb-3" controlId="formBasicName">
-                                        <Form.Label>Enter FaceBook Links</Form.Label>
+                                    <Form.Group className="mb-3" controlId="facebook">
+                                        <Form.Label>Facebook</Form.Label>
                                         <Form.Control
                                             type="text"
-                                            placeholder="Enter instagram link"
+                                            placeholder="Enter Facebook link"
                                             value={facebook}
-                                            onChange={(e) => setfacebook(e.target.value)}
+                                            onChange={(e) => setFacebook(e.target.value)}
                                         />
                                         {errors.facebook && <span className="error text-danger">{errors.facebook}</span>}
                                     </Form.Group>
                                 </Col>
                                 <Col lg={6} md={6} sm={12}>
-                                    <Form.Group className="mb-3" controlId="formBasicName">
-                                        <Form.Label>Enter Email Links</Form.Label>
+                                    <Form.Group className="mb-3" controlId="email">
+                                        <Form.Label>Email</Form.Label>
                                         <Form.Control
-                                            type="text"
-                                            placeholder="Enter email"
+                                            type="email"
+                                            placeholder="Enter Email"
                                             value={email}
-                                            onChange={(e) => setemail(e.target.value)}
+                                            onChange={(e) => setEmail(e.target.value)}
                                         />
                                         {errors.email && <span className="error text-danger">{errors.email}</span>}
                                     </Form.Group>
                                 </Col>
                                 <Col lg={6} md={6} sm={12}>
-                                    <Form.Group className="mb-3" controlId="formBasicName">
-                                        <Form.Label>Enter Whatsapp Links</Form.Label>
+                                    <Form.Group className="mb-3" controlId="whatsapp">
+                                        <Form.Label>WhatsApp</Form.Label>
                                         <Form.Control
                                             type="text"
-                                            placeholder="Enter whatsapp"
+                                            placeholder="Enter WhatsApp link"
                                             value={whatsapp}
-                                            onChange={(e) => setwhatsapp(e.target.value)}
+                                            onChange={(e) => setWhatsapp(e.target.value)}
                                         />
                                         {errors.whatsapp && <span className="error text-danger">{errors.whatsapp}</span>}
                                     </Form.Group>
                                 </Col>
                                 <Col lg={6} md={6} sm={12}>
-                                    <Form.Group className="mb-3" controlId="formBasicName">
-                                        <Form.Label>Enter Linkdin Links</Form.Label>
+                                    <Form.Group className="mb-3" controlId="linkedin">
+                                        <Form.Label>LinkedIn</Form.Label>
                                         <Form.Control
                                             type="text"
-                                            placeholder="Enter whatsapp"
+                                            placeholder="Enter LinkedIn link"
                                             value={linkedin}
-                                            onChange={(e) => setlinkedin(e.target.value)}
+                                            onChange={(e) => setLinkedin(e.target.value)}
                                         />
                                         {errors.linkedin && <span className="error text-danger">{errors.linkedin}</span>}
                                     </Form.Group>
@@ -287,5 +312,3 @@ function FollowonUs() {
 }
 
 export default FollowonUs;
-
-

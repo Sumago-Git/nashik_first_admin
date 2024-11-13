@@ -16,6 +16,9 @@ import "react-confirm-alert/src/react-confirm-alert.css";
 import SearchInput from '../../components/search/SearchInput';
 import { useSearchExport } from '../../context/SearchExportContext';
 
+import DataTable from 'react-data-table-component';
+
+
 function UpcommingEvents() {
     // const [title, setTitle] = useState("");
     const [img, setImage] = useState(null);
@@ -198,6 +201,68 @@ function UpcommingEvents() {
         }
     };
 
+    const columns = [
+        {
+            name: 'Sr. No',
+            selector: (row, index) => index + 1,
+            sortable: true
+        },
+        {
+            name: 'Area',
+            selector: row => row.area,
+            sortable: true
+        },
+        {
+            name: 'Time Duration',
+            selector: row => `${row.fromdate} To ${row.todate}`,
+            sortable: true
+        },
+        {
+            name: 'Purpose of the Campaign',
+            selector: row => row.purpose,
+            sortable: true
+        },
+        {
+            name: 'Image',
+            cell: row => (
+                <img
+                    src={row.img}
+                    className="trademark img-fluid"
+                    alt={row.title}
+                    height="40"
+                    width="120"
+                />
+            ),
+            sortable: false
+        },
+        {
+            name: 'Action',
+            cell: row => (
+                <div>
+                    <Button variant="primary" className="m-2" onClick={() => edit(row.id)}>
+                        <FaEdit />
+                    </Button>
+                    <Button variant="danger" className="m-2" onClick={() => delete_data(row.id)}>
+                        <MdDelete />
+                    </Button>
+                    <Button
+                        variant={activeStatus[row.id] ? "success" : "warning"}
+                        className="m-2"
+                        onClick={() => toggleActiveStatus(row.id)}
+                    >
+                        {activeStatus[row.id] ? (
+                            <FaRegEye color="white" />
+                        ) : (
+                            <FaEyeSlash color="white" />
+                        )}
+                    </Button>
+                </div>
+            ),
+            sortable: false
+        }
+    ];
+
+
     return (
         <Container>
             <Card>
@@ -213,56 +278,17 @@ function UpcommingEvents() {
                         getadmin_data.length > 0 ? (
                             <>
                                 {/* <SearchInput value={searchQuery} onChange={handleSearch} /> */}
-                                <Table striped bordered hover responsive="sm">
-                                    <thead>
-                                        <tr>
-                                            <th>Sr. No</th>
-                                            <th>Area</th>
-                                            <th>Time Duration </th>
-                                            <th>Purpose of the campaign</th>
-                                            <th>Image</th>
-                                            <th>Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody >
-                                        {getadmin_data.map((a, index) => (
-                                            <tr key={index}>
-                                                <td>{index + 1}</td>
-                                                <td>{a.area}</td>
-                                                <td>{a.fromdate} To {a.todate}</td>
-                                                <td className="truncate">{a.purpose}</td> {/* Apply the truncate class here */}
-                                                <td>
-                                                    <img
-                                                        src={a.img}
-                                                        className="trademark img-fluid"
-                                                        alt={a.title}
-                                                        height="40"
-                                                        width="120"
-                                                    />
-                                                </td>
-                                                <td className="p-2">
-                                                    <Button variant="primary" className="m-2" onClick={() => edit(a.id)}>
-                                                        <FaEdit />
-                                                    </Button>
-                                                    <Button variant="danger" className="m-2" onClick={() => delete_data(a.id)}>
-                                                        <MdDelete />
-                                                    </Button>
-                                                    <Button
-                                                        variant={activeStatus[a.id] ? "success" : "warning"}
-                                                        className="m-2"
-                                                        onClick={() => toggleActiveStatus(a.id)}
-                                                    >
-                                                        {activeStatus[a.id] ? (
-                                                            <FaRegEye color="white" />
-                                                        ) : (
-                                                            <FaEyeSlash color="white" />
-                                                        )}
-                                                    </Button>
-                                                </td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </Table>
+                                <DataTable
+                                    columns={columns}
+                                    data={filteredData.length > 0 ? filteredData : getadmin_data}
+                                    pagination
+                                    responsive
+                                    striped
+                                    noDataComponent="No Data Available"
+                                    onChangePage={(page) => setCurrentPage(page)}
+                                    onChangeRowsPerPage={(rowsPerPage) => setRowsPerPage(rowsPerPage)}
+                                />
+
                             </>
                         ) : (
                             <Alert variant="warning" className="text-center">
