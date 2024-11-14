@@ -37,10 +37,15 @@ const Bookpackages = ({ tabKey }) => {
     //     setRowModal(true);
     // };
     const getUserDataByCategoryAndDate = (date) => {
+        const newdate = date.split(' ')[1]; // Get "14/11/2024"
+        const [day, month, year] = newdate.split('/'); // Split into day, month, and year
+        const formattedDate = `${month}/${day}/${year}`; // Rearrange to "MM/DD/YYYY"
+
+        // Construct the data object with the formatted date
         let data = {
             category: categoryName,
-            slotdate: date
-        }
+            slotdate: formattedDate // Use the formatted date here
+        };
         instance.post("bookingform/get-bookingentries-by-date-category", data).then((result) => {
             console.log("result", result);
             setDataByDateAndCategory(result.data.responseData)
@@ -346,7 +351,7 @@ const Bookpackages = ({ tabKey }) => {
                 </Modal.Header>
                 <Modal.Body>
                     <Tabs defaultActiveKey="tab1" id="modal-tabs" className="mb-3">
-                        <Tab eventKey="tab1" title="Customer">
+                        <Tab eventKey="tab1" title="Customer">dksfhehiso
                             <Table striped bordered hover responsive="sm">
                                 <tbody>
                                     {
