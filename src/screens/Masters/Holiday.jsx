@@ -90,6 +90,7 @@ const Holiday = () => {
             setLoading(false);
         }
     };
+    
     function alertBox(selectedDate) {
         confirmAlert({
             title: "Confirm to delete",

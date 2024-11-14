@@ -180,10 +180,35 @@ const CalenderComp = ({ tabKey, categoryName }) => {
             setLoading(false);
         }
     };
+    const fetchHoliday = async () => {
+        setLoading(true);
+        const accessToken = localStorage.getItem("accessToken"); // Retrieve access token
+        try {
+            const response = await instance.get("/holiday/find-holidays", {
+                headers: {
+                    Authorization: "Bearer " + accessToken,
+                    "Content-Type": "application/json",
+                },
+            });
+            console.log("response", response);
+
+        } catch (error) {
+            console.error(
+                "Error fetching team:",
+                error.response || error.message || error
+            );
+        } finally {
+            setLoading(false);
+        }
+    };
+    useEffect(() => {
+        fetchHoliday()
+    },[])
     useEffect(() => {
         if (selectedDates) {
             fetchTeam();
         }
+
     }, [selectedDates]);
 
     return (
