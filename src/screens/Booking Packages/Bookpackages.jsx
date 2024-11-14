@@ -12,6 +12,7 @@ import Tabs from 'react-bootstrap/Tabs';
 import { jsPDF } from "jspdf"; // Import jsPDF
 import Categories from "../../components/Categories";
 import instance from "../../api/AxiosInstance";
+import Form from 'react-bootstrap/Form';
 
 const Bookpackages = ({ tabKey }) => {
     const [show, setShow] = useState(false);
@@ -229,31 +230,43 @@ const Bookpackages = ({ tabKey }) => {
         // Add the background image to the PDF
         doc.addImage(imgData, 'PNG', 0, 0, 210, 270); // Adjust width and height as necessary
 
-        // Set font for the user's name
+        // Set font, color, and size for the user's name
         doc.setFont("cursive");
         doc.setFontSize(36);
         doc.setTextColor("#4e4e95");
 
         // Prepare user's name
         const nameText = `${selectedBooking.fname} ${selectedBooking.lname}`;
-        const nameWidth = doc.getTextWidth(nameText); // Get the width of the name text
+        const nameWidth = doc.getTextWidth(nameText);
 
-        // Calculate position for centered text
-        const xPosition = (210 - nameWidth) / 2; // Centering in a A4 size PDF
-        const yPosition = 115; // Adjust as needed for vertical positioning
+        // Center the name horizontally
+        const xPositionName = (210 - nameWidth) / 2;
+        const yPositionName = 115; // Adjust as needed for vertical positioning
 
-        // Draw user's name
-        doc.text(nameText, xPosition, yPosition);
+        // Draw the user's name
+        doc.text(nameText, xPositionName, yPositionName);
 
-        // Optional: Draw additional details (if needed)
-        doc.setFontSize(24); // Font size for additional details
-        doc.setFont("Arial"); // Font for additional details
-        doc.setTextColor("#000"); // Color for additional text
+        // Set font and size for Sr and slotdate
+        doc.setFont("Arial");
 
+        // Set color and position for Sr (ID)
+        doc.setTextColor("#4e4e95"); // Set color for Sr (use any desired color code)
+        doc.setFontSize(17);
+        const srText = `00${selectedBooking.id}`;
+        const xPositionSr = 185; // Adjust x-position for Sr
+        const yPositionSr = 63; // Adjust y-position for Sr
+        doc.text(srText, xPositionSr, yPositionSr);
 
+        // Set color and position for slotdate
+        doc.setTextColor("#4e4e95"); // Set color for slotdate (use any desired color code)
+        doc.setFontSize(15);
+        const slotDateText = `: ${selectedBooking.slotdate}`;
+        const xPositionSlotDate = 180; // Adjust x-position for slotdate
+        const yPositionSlotDate = 82; // Adjust y-position for slotdate
+        doc.text(slotDateText, xPositionSlotDate, yPositionSlotDate);
 
         // Save the PDF
-        doc.save(`${selectedBooking.fname}_certificate.pdf`); // Save the PDF with the user's name
+        doc.save(`${selectedBooking.fname}_certificate.pdf`);
     };
 
 
@@ -351,7 +364,7 @@ const Bookpackages = ({ tabKey }) => {
                 </Modal.Header>
                 <Modal.Body>
                     <Tabs defaultActiveKey="tab1" id="modal-tabs" className="mb-3">
-                        <Tab eventKey="tab1" title="Customer">dksfhehiso
+                        <Tab eventKey="tab1" title="Customer">
                             <Table striped bordered hover responsive="sm">
                                 <tbody>
                                     {
@@ -363,7 +376,7 @@ const Bookpackages = ({ tabKey }) => {
                                                     <>
                                                         <tr onClick={() => { handleRowClick(a) }}>
                                                             <td>{a.slotsession}</td>
-                                                            <td>{a.user_id}</td>
+                                                            {/* <td>{a.user_id}</td> */}
                                                             <td> <Button variant="primary" className="w-100">
                                                                 {a.status}
                                                             </Button></td>
@@ -411,15 +424,14 @@ const Bookpackages = ({ tabKey }) => {
                                 <hr></hr>
 
                                 <Col lg={6} md={6} sm={12} className="pb-4">
-                                    <b>Booking Date</b><br />
-                                    {isEditing ? (
-                                        <input
-                                            type="date"
-                                            onChange={EditDate}
-                                        />
-                                    ) : (
-                                        selectedBooking.slotdate
-                                    )}
+                                    <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+                                        <b>Booking Date</b><br />
+                                        {isEditing ? (
+                                            <Form.Control type="date" onChange={EditDate} />
+                                        ) : (
+                                            selectedBooking.slotdate
+                                        )}
+                                    </Form.Group>
                                 </Col>
                                 <Col lg={6} md={6} sm={12}>
                                     <b>Payment Method</b><br />
@@ -428,65 +440,73 @@ const Bookpackages = ({ tabKey }) => {
                                 <hr></hr>
 
                                 <Col lg={6} md={6} sm={12} className="pb-4">
-                                    <b>Submission Date</b><br />
-                                    {isEditing ? (
-                                        <input
-                                            type="date"
-                                            defaultValue={selectedBooking.submission_date}
-                                            onChange={EditSubmissionDate}
-                                        />
-                                    ) : (
-                                        // Check if submission_date is a valid date and format it properly
-                                        <span>
-                                            {selectedBooking.submission_date
-                                                ? (() => {
-                                                    const date = new Date(selectedBooking.submission_date);
-                                                    const options = {
-                                                        weekday: 'long',
-                                                        day: '2-digit',
-                                                        month: '2-digit',
-                                                        year: 'numeric',
-                                                    };
-                                                    const formattedDate = date.toLocaleDateString('en-GB', options); // 'en-GB' uses day/month/year format
-                                                    return formattedDate.replace(',', '').replace('/', '/'); // Remove commas and ensure proper formatting
-                                                })()
-                                                : selectedBooking.submission_date}
-                                        </span>
-                                    )}
+                                    <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+                                        <b>Submission Date</b><br />
+                                        {isEditing ? (
+                                            // <input
+                                            //     type="date"
+                                            //     defaultValue={selectedBooking.submission_date}
+                                            //     onChange={EditSubmissionDate}
+                                            // />
+                                            <Form.Control type="date" defaultValue={selectedBooking.submission_date} onChange={EditSubmissionDate} />
+                                        ) : (
+                                            // Check if submission_date is a valid date and format it properly
+                                            <span>
+                                                {selectedBooking.submission_date
+                                                    ? (() => {
+                                                        const date = new Date(selectedBooking.submission_date);
+                                                        const options = {
+                                                            weekday: 'long',
+                                                            day: '2-digit',
+                                                            month: '2-digit',
+                                                            year: 'numeric',
+                                                        };
+                                                        const formattedDate = date.toLocaleDateString('en-GB', options); // 'en-GB' uses day/month/year format
+                                                        return formattedDate.replace(',', '').replace('/', '/'); // Remove commas and ensure proper formatting
+                                                    })()
+                                                    : selectedBooking.submission_date}
+                                            </span>
+                                        )}
+                                    </Form.Group>
                                 </Col>
                                 <Col lg={6} md={6} sm={12}>
-                                    <b>First Name:</b><br />
-                                    {isEditing ? (
-                                        <input
-                                            type="text"
-                                            defaultValue={selectedBooking.fname}
-                                            onChange={(e) => setSelectedBooking({ ...selectedBooking, fname: e.target.value })}
-                                        />
-                                    ) : (
-                                        selectedBooking.fname
-                                    )}
+                                    <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+                                        <b>First Name:</b><br />
+                                        {isEditing ? (
+                                            // <input
+                                            //     type="text"
+                                            //     defaultValue={selectedBooking.fname}
+                                            //     onChange={(e) => setSelectedBooking({ ...selectedBooking, fname: e.target.value })}
+                                            // />
+                                            <Form.Control type="text" defaultValue={selectedBooking.fname} onChange={(e) => setSelectedBooking({ ...selectedBooking, fname: e.target.value })} />
+                                        ) : (
+                                            selectedBooking.fname
+                                        )}
+                                    </Form.Group>
                                 </Col>
                                 <hr></hr>
 
                                 <Col lg={6} md={6} sm={12} className="pb-4">
-                                    <b>Last Name</b><br />
-                                    {isEditing ? (
-                                        <input
-                                            type="text"
-                                            defaultValue={selectedBooking.lname}
-                                            onChange={(e) => setSelectedBooking({ ...selectedBooking, lname: e.target.value })}
-                                        />
-                                    ) : (
-                                        selectedBooking.lname
-                                    )}
+                                    <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+                                        <b>Last Name</b><br />
+                                        {isEditing ? (
+                                            // <input
+                                            //     type="text"
+                                            //     defaultValue={selectedBooking.lname}
+                                            //     onChange={(e) => setSelectedBooking({ ...selectedBooking, lname: e.target.value })}
+                                            // />
+                                            <Form.Control type="text" defaultValue={selectedBooking.lname} onChange={(e) => setSelectedBooking({ ...selectedBooking, lname: e.target.value })} />
+                                        ) : (
+                                            selectedBooking.lname
+                                        )}
+                                    </Form.Group>
                                 </Col>
                                 <Col lg={6} md={6} sm={12}>
                                     <b>Training For</b><br />
+
                                     {isEditing ? (
-                                        <select
-                                            defaultValue={selectedBooking.category}
-                                            onChange={(e) => setSelectedBooking({ ...selectedBooking, category: e.target.value })}
-                                        >
+                                        <Form.Select aria-label="Default select example" defaultValue={selectedBooking.category} onChange={(e) => setSelectedBooking({ ...selectedBooking, category: e.target.value })}>
+
                                             <option value="RTO – Learner Driving License Holder Training">RTO – Learner Driving License Holder Training</option>
                                             <option value="RTO – Suspended Driving License Holders Training">RTO – Suspended Driving License Holders Training</option>
                                             <option value="RTO – Training for School Bus Driver">RTO – Training for School Bus Driver</option>
@@ -494,10 +514,11 @@ const Bookpackages = ({ tabKey }) => {
                                             <option value="College/Organization Training – Group">College/Organization Training – Group</option>
                                             <option value="College / Organization Training – Individual">College / Organization Training – Individual</option>
                                             {/* Add other options as needed */}
-                                        </select>
+                                        </Form.Select>
                                     ) : (
                                         selectedBooking.category
                                     )}
+
 
                                 </Col>
                                 <hr></hr>
@@ -509,16 +530,18 @@ const Bookpackages = ({ tabKey }) => {
                                 <Col lg={6} md={6} sm={12}>
                                     <b>Tranning Status</b><br />
                                     {isEditing ? (
-                                        <select
-                                            defaultValue={selectedBooking.training_status}
-                                            onChange={(e) => setSelectedBooking({ ...selectedBooking, training_status: e.target.value })}
-                                        >
+                                        // <select
+                                        //     defaultValue={selectedBooking.training_status}
+                                        //     onChange={(e) => setSelectedBooking({ ...selectedBooking, training_status: e.target.value })}
+                                        // >
+                                        <Form.Select aria-label="Default select example" defaultValue={selectedBooking.training_status} onChange={(e) => setSelectedBooking({ ...selectedBooking, training_status: e.target.value })}>
+
                                             <option value="Attended">Attended</option>
                                             <option value="Confirmed">Confirmed</option>
                                             <option value="Not Confirmed">Not Confirmed</option>
                                             <option value="Absent">Absent</option>
                                             {/* Add other options as needed */}
-                                        </select>
+                                        </Form.Select>
                                     ) : (
                                         selectedBooking.training_status
                                     )}
@@ -530,30 +553,42 @@ const Bookpackages = ({ tabKey }) => {
                                     {selectedBooking.learningNo}
                                 </Col>
                                 <Col lg={6} md={6} sm={12}>
-                                    <b>Email</b><br />
-                                    {isEditing ? (
-                                        <input
-                                            type="text"
-                                            defaultValue={selectedBooking.email}
-                                            onChange={(e) => setSelectedBooking({ ...selectedBooking, email: e.target.value })}
-                                        />
-                                    ) : (
-                                        selectedBooking.email
-                                    )}
+                                    <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+                                        {/* <b>Email</b><br /> */}
+                                        <Form.Label><b>Email</b></Form.Label><br />
+                                        {isEditing ? (
+                                            // <input
+                                            //     type="text"
+                                            //     defaultValue={selectedBooking.email}
+                                            //     onChange={(e) => setSelectedBooking({ ...selectedBooking, email: e.target.value })}
+                                            // />
+
+
+                                            <Form.Control type="text" defaultValue={selectedBooking.email} onChange={(e) => setSelectedBooking({ ...selectedBooking, email: e.target.value })} />
+
+                                        ) : (
+                                            selectedBooking.email
+                                        )}
+                                    </Form.Group>
                                 </Col>
                                 <hr></hr>
 
                                 <Col lg={6} md={6} sm={12} className="pb-4">
-                                    <b>Phone Number</b><br />
-                                    {isEditing ? (
-                                        <input
-                                            type="text"
-                                            defaultValue={selectedBooking.phone}
-                                            onChange={(e) => setSelectedBooking({ ...selectedBooking, phone: e.target.value })}
-                                        />
-                                    ) : (
-                                        selectedBooking.phone
-                                    )}
+                                    <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+                                        <Form.Label><b>Phone Number</b></Form.Label><br />
+
+
+                                        {isEditing ? (
+                                            // <input
+                                            //     type="text"
+                                            //     defaultValue={selectedBooking.phone}
+                                            //     onChange={(e) => setSelectedBooking({ ...selectedBooking, phone: e.target.value })}
+                                            // />
+                                            <Form.Control type="text" defaultValue={selectedBooking.phone} onChange={(e) => setSelectedBooking({ ...selectedBooking, phone: e.target.value })} />
+                                        ) : (
+                                            selectedBooking.phone
+                                        )}
+                                    </Form.Group>
                                 </Col>
                                 <Col lg={6} md={6} sm={12}>
                                     <b>Vehical Type</b><br />

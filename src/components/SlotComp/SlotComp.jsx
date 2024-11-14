@@ -476,7 +476,7 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal, ha
                 <Modal.Body>
                     <Card>
                         <DataTable
-                            columns={tableColumns(currentPage, rowsPerPage)}
+                            columns={tableColumns(currentPage, rowsPerPage)} 
                             data={data}
                             pagination
                             paginationServer
@@ -488,9 +488,9 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal, ha
                             noDataComponent={
                                 <div className="text-center my-3">
                                     <p>There is no record to display.</p>
-                                    <Button variant="success" className='rounded-5' onClick={handleCreateNewSlot}>
+                                    {/* <Button variant="success" className='rounded-5' onClick={handleClose1}>
                                         Create New Slot
-                                    </Button>
+                                    </Button> */}
                                 </div>
                             }
                         />
