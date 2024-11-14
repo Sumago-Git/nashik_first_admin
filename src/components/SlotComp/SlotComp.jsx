@@ -460,7 +460,9 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal, ha
                 size="xl"
                 aria-labelledby="contained-modal-title-vcenter"
                 centered
-                className="modal-fullscreen d-flex justify-content-center"
+                fullscreen 
+                className="modal-fullscreen d-flex justify-content-center "
+                
                
                
             >

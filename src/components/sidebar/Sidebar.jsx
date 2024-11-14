@@ -279,21 +279,21 @@ const SidebarMenu = [
         url: "/holiday",
         icon: <BsBuilding style={{ color: "red" }} size={24} />,
       },
-      {
-        subMenus: "Slots",
-        url: "/slots",
-        icon: <BsBuilding style={{ color: "red" }} size={24} />,
-      },
-      {
-        subMenus: "Sessions",
-        url: "/session",
-        icon: <BsBuilding style={{ color: "red" }} size={24} />,
-      },
-      {
-        subMenus: "Seat Availability",
-        url: "/seat",
-        icon: <BsBuilding style={{ color: "red" }} size={24} />,
-      },
+      // {
+      //   subMenus: "Slots",
+      //   url: "/slots",
+      //   icon: <BsBuilding style={{ color: "red" }} size={24} />,
+      // },
+      // {
+      //   subMenus: "Sessions",
+      //   url: "/session",
+      //   icon: <BsBuilding style={{ color: "red" }} size={24} />,
+      // },
+      // {
+      //   subMenus: "Seat Availability",
+      //   url: "/seat",
+      //   icon: <BsBuilding style={{ color: "red" }} size={24} />,
+      // },
     ],
   },
   {
