@@ -68,17 +68,34 @@ const CalenderComp = ({ tabKey, categoryName }) => {
     ];
 
     // Function to change the month when clicking the arrows
+    // const changeMonth = (direction) => {
+    //     setCurrentDate(prevDate => {
+    //         const newDate = new Date(prevDate);
+    //         if (direction === 'prev') {
+    //             newDate.setMonth(newDate.getMonth() - 1);
+    //         } else if (direction === 'next') {
+    //             newDate.setMonth(newDate.getMonth() + 1);
+    //         }
+    //         return newDate;
+    //     });
+    // };
     const changeMonth = (direction) => {
-        setCurrentDate(prevDate => {
+        setCurrentDate((prevDate) => {
             const newDate = new Date(prevDate);
-            if (direction === 'prev') {
+            if (direction === "prev") {
+                // Check if the current date is in the current month and year
+                const isCurrentMonth = newDate.getMonth() === new Date().getMonth() && newDate.getFullYear() === new Date().getFullYear();
+                if (isCurrentMonth) {
+                    return prevDate; // Do nothing if it's the current month
+                }
                 newDate.setMonth(newDate.getMonth() - 1);
-            } else if (direction === 'next') {
+            } else if (direction === "next") {
                 newDate.setMonth(newDate.getMonth() + 1);
             }
             return newDate;
         });
     };
+    
 
     function alertBox(selectedDate) {
         confirmAlert({

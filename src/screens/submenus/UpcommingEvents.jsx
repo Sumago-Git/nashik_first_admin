@@ -72,9 +72,46 @@ function UpcommingEvents() {
         return isValid;
     };
 
+    // const handleForm = async (e) => {
+    //     e.preventDefault();
+
+    //     if (validateForm()) {
+    //         const formData = new FormData();
+    //         formData.append('purpose', purpose);
+    //         formData.append('area', area);
+    //         formData.append('fromdate', fromdate);
+    //         formData.append('todate', todate);
+    //         if (img) formData.append('img', img);
+
+    //         try {
+    //             if (editMode && editId) {
+    //                 await instance.put(`Upcomming/update-Upcomming/${editId}`, formData);
+    //                 alert('Data updated successfully!');
+    //             } else {
+    //                 await instance.post('Upcomming/create-Upcomming', formData, {
+    //                     headers: { 'Content-Type': 'multipart/form-data' }
+    //                 });
+    //                 alert('Data submitted successfully!');
+    //             }
+
+    //             setTitle("");
+    //             setImage(null);
+    //             setPreview(null);
+    //             setErrors({});
+    //             setEditMode(false);
+    //             setEditId(null);
+    //             getdata_admin();
+    //             setShowAdd(true); // Show table after form submission
+               
+    //         } catch (error) {
+    //             console.error("Error uploading image:", error);
+    //         }
+    //     }
+    // };
+
     const handleForm = async (e) => {
         e.preventDefault();
-
+    
         if (validateForm()) {
             const formData = new FormData();
             formData.append('purpose', purpose);
@@ -82,7 +119,7 @@ function UpcommingEvents() {
             formData.append('fromdate', fromdate);
             formData.append('todate', todate);
             if (img) formData.append('img', img);
-
+    
             try {
                 if (editMode && editId) {
                     await instance.put(`Upcomming/update-Upcomming/${editId}`, formData);
@@ -93,20 +130,29 @@ function UpcommingEvents() {
                     });
                     alert('Data submitted successfully!');
                 }
-
-                setTitle("");
+    
+                // Clear form fields
+                setpurpose("");
+                setarea("");
+                setfromdate("");
+                settodate("");
                 setImage(null);
                 setPreview(null);
                 setErrors({});
+    
+                // Reset edit mode and ID
                 setEditMode(false);
                 setEditId(null);
+    
+                // Fetch updated data and switch to table view
                 getdata_admin();
-                setShowAdd(true); // Show table after form submission
+                setShowAdd(true); // Switch to table view after form submission
             } catch (error) {
                 console.error("Error uploading image:", error);
             }
         }
     };
+    
 
     const handleImageChange = (e) => {
         const file = e.target.files[0];
@@ -147,13 +193,15 @@ function UpcommingEvents() {
         getdata_admin();
     }, []);
 
+   
+
     const edit = (id) => {
         const item = getadmin_data.find((a) => a.id === id);
         if (item) {
-            setpurpose(purpose.purpose);
-            setarea(area.area);
-            setfromdate(fromdate.fromdate);
-            settodate(todate.todate);
+            setpurpose(item.purpose);
+            setarea(item.area);
+            setfromdate(item.fromdate);
+            settodate(item.todate);
             setPreview(item.img); // Assuming 'img' contains the URL for preview
 
             setEditMode(true);
@@ -161,6 +209,7 @@ function UpcommingEvents() {
             setShowAdd(false); // Show form for editing
         }
     };
+
 
     const delete_data = async (id) => {
         confirmAlert({

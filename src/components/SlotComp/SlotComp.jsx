@@ -516,7 +516,7 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal, ha
                   
                     <Card>
                         <DataTable
-                            columns={tableColumns(currentPage, rowsPerPage)}
+                            columns={tableColumns(currentPage, rowsPerPage)} 
                             data={data}
                             pagination
                             paginationServer
