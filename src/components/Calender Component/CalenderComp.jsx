@@ -11,6 +11,7 @@ const CalenderComp = ({ tabKey, categoryName }) => {
     console.log("tabKey", tabKey);
     const [team, setTeam] = useState([]);
     const [newdate, setnewdate] = useState("")
+    const [specialDates, setSpecialDates] = useState([]);
 
     const [comp, setComp] = useState("false")
     const [currentDate, setCurrentDate] = useState(new Date());
@@ -180,35 +181,42 @@ const CalenderComp = ({ tabKey, categoryName }) => {
             setLoading(false);
         }
     };
-    const fetchHoliday = async () => {
-        setLoading(true);
-        const accessToken = localStorage.getItem("accessToken"); // Retrieve access token
-        try {
-            const response = await instance.get("/holiday/find-holidays", {
-                headers: {
-                    Authorization: "Bearer " + accessToken,
-                    "Content-Type": "application/json",
-                },
-            });
-            console.log("response", response);
+    const isHoliday = (day) => {
+        return specialDates.some(specialDate =>
+            specialDate.date.getDate() === day &&
+            specialDate.date.getMonth() === currentMonth &&
+            specialDate.date.getFullYear() === currentYear
+        );
+    };
+    const isFutureOrToday = (day) => {
+        const today = new Date();
+        const selectedDate = new Date(currentYear, currentMonth, day);
+        return selectedDate >= today;
+    };
 
-        } catch (error) {
-            console.error(
-                "Error fetching team:",
-                error.response || error.message || error
-            );
-        } finally {
-            setLoading(false);
-        }
+    const fetchHolidays = () => {
+        instance.get('holiday/get-holidays')
+            .then((res) => {
+                const holidayData = res.data.responseData.map(holiday => ({
+                    date: new Date(holiday.holiday_date),
+                    label: 'Holiday',
+                    color: 'red',
+                    bgColor: '#ffd4d4'
+                }));
+                setSpecialDates(holidayData);
+            })
+            .catch((err) => {
+                console.error(err);
+            });
     };
     useEffect(() => {
-        fetchHoliday()
-    },[])
+        // Fetch holidays on component mount
+        fetchHolidays()
+    }, []);
     useEffect(() => {
         if (selectedDates) {
             fetchTeam();
         }
-
     }, [selectedDates]);
 
     return (
@@ -252,24 +260,28 @@ const CalenderComp = ({ tabKey, categoryName }) => {
                             <tbody>
                                 {weeks.map((week, weekIndex) => (
                                     <tr key={weekIndex}>
-                                        {week.map((day, dayIndex) => (
-                                            <td
-                                                key={dayIndex}
-                                                onClick={() => handleDayClick(day)} // Add click event
-                                                style={{
-                                                    height: "100px",
-                                                    textAlign: "end",
-                                                    verticalAlign: "middle",
-                                                    backgroundColor: day ? "white" : "#f0f0f0",
-                                                    color: day ? "black" : "transparent",
-                                                    fontFamily: "Poppins",
-                                                    fontWeight: "600",
-                                                    cursor: day ? "pointer" : "default" // Make clickable cells appear interactive
-                                                }}
-                                            >
-                                                {day || ""} {/* Display the day or empty cell */}
-                                            </td>
-                                        ))}
+                                        {week.map((day, dayIndex) => {
+                                            const isPast = day && !isFutureOrToday(day);
+                                            const isHolidayDay = day && isHoliday(day);
+                                            return (
+                                                <td
+                                                    key={dayIndex}
+                                                    onClick={!isHolidayDay && day && isFutureOrToday(day) ? () => handleDayClick(day) : null}
+                                                    style={{
+                                                        height: "100px",
+                                                        textAlign: "end",
+                                                        verticalAlign: "middle",
+                                                        backgroundColor: isHolidayDay ? "#ffd4d4" : isPast ? "#e0e0e0" : "white",
+                                                        color: isHolidayDay ? "red" : isPast ? "#a0a0a0" : "black",
+                                                        fontFamily: "Poppins",
+                                                        fontWeight: "600",
+                                                        cursor: day && isFutureOrToday(day) ? "pointer" : "not-allowed" // Set cursor for past days
+                                                    }}
+                                                >
+                                                    {day || ""} {/* Display the day or empty cell */}
+                                                </td>
+                                            );
+                                        })}
                                     </tr>
                                 ))}
                             </tbody>

@@ -40,6 +40,7 @@ import FollowonUs from "./components/Follow on us/FollowonUs";
 import News from "./components/News/News";
 import HomeVideos from "./components/Home Videos/HomeVideos";
 import ConatctFrom from "./components/Contact From/ConatctFrom";
+import bookingcatname from "./screens/Booking Packages/bookingcatname";
 
 function App() {
   return (
@@ -152,6 +153,10 @@ function App() {
           <Route
             path="/bookpackg"
             element={<ProtectedRoutes Component={Bookpackages} />}
+          />
+            <Route
+            path="/bookseats"
+            element={<ProtectedRoutes Component={bookingcatname} />}
           />
           <Route
             path="/office"

@@ -12,15 +12,16 @@ import Tabs from 'react-bootstrap/Tabs';
 import { jsPDF } from "jspdf"; // Import jsPDF
 import Categories from "../../components/Categories";
 import instance from "../../api/AxiosInstance";
-
+import axios from "axios";
 const Bookpackages = ({ tabKey }) => {
     const [show, setShow] = useState(false);
     const [selectedDate, setSelectedDate] = useState("");
     const [selectedDay, setSelectedDay] = useState("");
     const [categoryName, setCategoryName] = useState("");
+    const [category1, setCategory1] = useState("");
     const [dataByDateAndCategory, setDataByDateAndCategory] = useState([]);
     const [formatedDateData, setFormatedDate] = useState();
-
+    const [currentDate, setCurrentDate] = useState(new Date());
     const [lgShow, setLgShow] = useState(false);
     const [rowModal, setRowModal] = useState(false);
     const [selectedRowData, setSelectedRowData] = useState(null);
@@ -55,6 +56,8 @@ const Bookpackages = ({ tabKey }) => {
         })
     }
 
+    const currentMonth = currentDate.getMonth();
+    const currentYear = currentDate.getFullYear();
     const handleApprovedButtonClick = (event) => {
         event.stopPropagation(); // Prevent row click event from firing
         setLgShow(true);
@@ -103,7 +106,7 @@ const Bookpackages = ({ tabKey }) => {
     const [show1, setShow1] = useState(false);
     const handleClose1 = () => setShow1(false);
 
-    const [currentDate, setCurrentDate] = useState(new Date());
+
     const [loading, setLoading] = useState(false);
     const [isMobileView, setIsMobileView] = useState(window.innerWidth <= 768);
 
@@ -112,6 +115,38 @@ const Bookpackages = ({ tabKey }) => {
         { date: 15, label: "Closed", style: { backgroundColor: "#ffd4d4", color: "red" } },
         { date: 22, label: "Available", style: { backgroundColor: "#d4ffd4", color: "green" } },
     ];
+    const getdata_here = () => {
+        instance.post('/Sessionslot/getAvailableslotslots', {
+            year: currentYear.toString(),
+            month: (currentMonth + 1).toString(),
+            category: categoryName,
+        })
+            .then((res) => {
+                const slotData = res.data.data.reduce((acc, slot) => {
+                    // Add the status of each date to the dateStatuses state
+                    acc[slot.day] = slot.status;
+                    return acc;
+                }, {});
+
+               
+                setspecialDates(res.data.data.map(slot => ({
+                    day: slot.day,
+                    status: slot.status,
+                    totalCapacity: slot.totalCapacity,
+                    totalAvailableSeats: slot.totalAvailableSeats,
+                    label: slot.status === "available" ? "Available" : slot.status === "Holiday" ? "Holiday" : "Closed",
+                    color: slot.status === "Holiday" ? "#ff0000" : (slot.status === "available" ? "green" : "red"),
+                    bgColor: slot.status === "Holiday" ? "#ea7777" : (slot.status === "available" ? "#d4ffd4" : "#ffd4d4"),
+                    isHoliday: slot.status === "Holiday",
+                })));
+            })
+            .catch((err) => {
+                console.error(err);
+            });
+    };
+    useEffect(() => {
+        getdata_here();
+    }, [])
 
     useEffect(() => {
         const handleResize = () => {
@@ -136,6 +171,12 @@ const Bookpackages = ({ tabKey }) => {
             newDate.setMonth(direction === 'prev' ? newDate.getMonth() - 1 : newDate.getMonth() + 1);
             return newDate;
         });
+        // setCurrentDate(prevDate => {
+        //     const newDate = new Date(prevDate);
+        //     newDate.setMonth(newDate.getMonth() + (direction === 'prev' ? -1 : 1));
+        //     return newDate;
+        // });
+        getdata_here()
     };
 
     const isPastDate = (day) => {
@@ -257,7 +298,13 @@ const Bookpackages = ({ tabKey }) => {
     };
 
 
+    useEffect(() => {
+        if (location && location.state) {
 
+            // console.log("location.selectedTime", location.state.selectedTime);
+            setCategory1(location.state.category || ""); // Assume category comes from the location state
+        }
+    }, [location])
     const handleRowClick = (a) => {
         console.log("aaaa", a);
 
@@ -268,73 +315,72 @@ const Bookpackages = ({ tabKey }) => {
     return (
         <>
             <Container fluid className="slotbg mt-4">
-                {
-                    !categoryName ? <Categories setCategoryName={setCategoryName} /> :
-                        <Container className="calender">
-                            <Col lg={12} className="d-flex justify-content-center align-items-center bg-white">
-                                <button className="btn ms-1" onClick={() => changeMonth('prev')}>
-                                    <img src={leftarrow} className="w-75 arrowimg" alt="Previous" />
-                                </button>
-                                <h3 className="calenderheadline mx-4">
-                                    {monthNames[currentDate.getMonth()]} {currentDate.getFullYear()}
-                                </h3>
-                                <button className="btn ms-1" onClick={() => changeMonth('next')}>
-                                    <img src={rightarrow} className="w-75 arrowimg" alt="Next" />
-                                </button>
-                            </Col>
 
-                            <Container className="mt-4 card py-4">
-                                <Table responsive style={{ tableLayout: 'fixed', borderCollapse: 'collapse' }}>
-                                    <thead>
-                                        <tr className="text-start">
-                                            {daysOfWeek.map((day) => <th key={day}>{day}</th>)}
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {weeks.map((week, weekIndex) => (
-                                            <tr key={weekIndex}>
-                                                {week.map((day, dayIndex) => (
-                                                    <td
-                                                        key={dayIndex}
-                                                        onClick={() => handleDayClick(day)}
-                                                        style={{
-                                                            height: "100px",
-                                                            textAlign: "end",
-                                                            verticalAlign: "middle",
-                                                            backgroundColor: day ? (isPastDate(day) ? "#f7f7f7" : "white") : "#f0f0f0",
-                                                            color: day ? (isPastDate(day) ? "black" : "black") : "transparent",
-                                                            cursor: day && !isPastDate(day) ? "pointer" : "default",
-                                                            fontFamily: "Poppins",
-                                                            fontWeight: "600",
-                                                            opacity: isPastDate(day) ? 0.5 : 1,
-                                                            borderLeft: "1px solid #ddd",
-                                                        }}
-                                                    >
-                                                        <div style={{ textAlign: "end" }}>{day || ""}</div>
-                                                        <br />
-                                                        {day && !isPastDate(day) && getSpecialDateLabel(day) && (
-                                                            <div style={{
-                                                                fontSize: "0.8rem",
-                                                                padding: "4px 8px",
-                                                                borderRadius: "12px",
-                                                                ...getSpecialDateLabel(day).style,
-                                                                width: "70px",
-                                                                textAlign: "center",
-                                                                whiteSpace: "nowrap",
-                                                                margin: "0 auto",
-                                                            }}>
-                                                                {isMobileView ? getSpecialDateLabel(day).label.charAt(0) : getSpecialDateLabel(day).label}
-                                                            </div>
-                                                        )}
-                                                    </td>
-                                                ))}
-                                            </tr>
+                <Container className="calender">
+                    <Col lg={12} className="d-flex justify-content-center align-items-center bg-white">
+                        <button className="btn ms-1" onClick={() => { changeMonth('prev'); getdata_here() }}>
+                            <img src={leftarrow} className="w-75 arrowimg" alt="Previous" />
+                        </button>
+                        <h3 className="calenderheadline mx-4">
+                            {monthNames[currentDate.getMonth()]} {currentDate.getFullYear()}
+                        </h3>
+                        <button className="btn ms-1" onClick={() => { changeMonth('next'); getdata_here() }}>
+                            <img src={rightarrow} className="w-75 arrowimg" alt="Next" />
+                        </button>
+                    </Col>
+
+                    <Container className="mt-4 card py-4">
+                        <Table responsive style={{ tableLayout: 'fixed', borderCollapse: 'collapse' }}>
+                            <thead>
+                                <tr className="text-start">
+                                    {daysOfWeek.map((day) => <th key={day}>{day}</th>)}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {weeks.map((week, weekIndex) => (
+                                    <tr key={weekIndex}>
+                                        {week.map((day, dayIndex) => (
+                                            <td
+                                                key={dayIndex}
+                                                onClick={() => handleDayClick(day)}
+                                                style={{
+                                                    height: "100px",
+                                                    textAlign: "end",
+                                                    verticalAlign: "middle",
+                                                    backgroundColor: day ? (isPastDate(day) ? "#f7f7f7" : "white") : "#f0f0f0",
+                                                    color: day ? (isPastDate(day) ? "black" : "black") : "transparent",
+                                                    cursor: day && !isPastDate(day) ? "pointer" : "default",
+                                                    fontFamily: "Poppins",
+                                                    fontWeight: "600",
+                                                    opacity: isPastDate(day) ? 0.5 : 1,
+                                                    borderLeft: "1px solid #ddd",
+                                                }}
+                                            >
+                                                <div style={{ textAlign: "end" }}>{day || ""}</div>
+                                                <br />
+                                                {day && !isPastDate(day) && getSpecialDateLabel(day) && (
+                                                    <div style={{
+                                                        fontSize: "0.8rem",
+                                                        padding: "4px 8px",
+                                                        borderRadius: "12px",
+                                                        ...getSpecialDateLabel(day).style,
+                                                        width: "70px",
+                                                        textAlign: "center",
+                                                        whiteSpace: "nowrap",
+                                                        margin: "0 auto",
+                                                    }}>
+                                                        {isMobileView ? getSpecialDateLabel(day).label.charAt(0) : getSpecialDateLabel(day).label}
+                                                    </div>
+                                                )}
+                                            </td>
                                         ))}
-                                    </tbody>
-                                </Table>
-                            </Container>
-                        </Container>
-                }
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </Table>
+                    </Container>
+                </Container>
+
             </Container>
 
             <Modal
@@ -485,7 +531,7 @@ const Bookpackages = ({ tabKey }) => {
                                     {isEditing ? (
                                         <select
                                             defaultValue={selectedBooking.category}
-                                            onChange={(e) => setSelectedBooking({ ...selectedBooking, category: e.target.value })}
+                                            onChange={(e) => { setSelectedBooking({ ...selectedBooking, category: e.target.value }); }}
                                         >
                                             <option value="RTO – Learner Driving License Holder Training">RTO – Learner Driving License Holder Training</option>
                                             <option value="RTO – Suspended Driving License Holders Training">RTO – Suspended Driving License Holders Training</option>

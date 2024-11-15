@@ -62,7 +62,7 @@ const Login = () => {
           localStorage.setItem("accessToken", token);
 
           toast.success("Login successful");
-          navigate("/headercontact");
+          navigate("/homebanner");
         } else {
           toast.error("Login failed");
         }
@@ -76,11 +76,11 @@ const Login = () => {
   };
 
   return (
-    <Container className="d-flex flex-column align-items-center justify-content-center min-vh-100 bg-light">
+    <Container fluid className="d-flex flex-column align-items-center justify-content-center min-vh-100 bg-light">
       <Row className="w-100 justify-content-center">
         <Col xs={12} sm={10} md={8} lg={6} xl={4}>
           <Card className="shadow-lg border-0 rounded-3">
-            <Card.Body className="p-4 p-md-5 bg-white">
+            <Card.Body className="p-4 p-md-5 bg-white rounded-5">
               <Row className="align-items-center mb-4">
                 <Col xs={12} className="text-center mb-3">
                   <Image src={logo} alt="Logo" fluid style={{ width: "100%" }} />
