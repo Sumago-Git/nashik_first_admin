@@ -95,18 +95,18 @@ const Bookcalender = ({ tabKey }) => {
         setIsEditing(false); // Disable edit mode
         let updatedBooking = { ...selectedBooking };
 
-        if (typeof updatedBooking.vehicletype === "string") {
-            if (updatedBooking.vehicletype.includes(",")) {
-                // Split comma-separated string into an array
-                updatedBooking.vehicletype = updatedBooking.vehicletype.split(",").map(item => item.trim());
-            } else {
-                // Wrap single value string in an array
-                updatedBooking.vehicletype = [updatedBooking.vehicletype.trim()];
-            }
-        } else if (!Array.isArray(updatedBooking.vehicletype)) {
-            // If vehicletype is neither string nor array, wrap it as a single-value array
-            updatedBooking.vehicletype = [updatedBooking.vehicletype];
-        }
+        // if (typeof updatedBooking.vehicletype === "string") {
+        //     if (updatedBooking.vehicletype.includes(",")) {
+        //         // Split comma-separated string into an array
+        //         updatedBooking.vehicletype = updatedBooking.vehicletype.split(",").map(item => item.trim());
+        //     } else {
+        //         // Wrap single value string in an array
+        //         updatedBooking.vehicletype = [updatedBooking.vehicletype.trim()];
+        //     }
+        // } else if (!Array.isArray(updatedBooking.vehicletype)) {
+        //     // If vehicletype is neither string nor array, wrap it as a single-value array
+        //     updatedBooking.vehicletype = [updatedBooking.vehicletype];
+        // }
 
         instance.put(`bookingform/bookingform/${updatedBooking.id}`, updatedBooking).then((resp) => {
             console.log("resp", resp);
@@ -541,21 +541,16 @@ const Bookcalender = ({ tabKey }) => {
 
 
                                         {isEditing ? (
-                                            // <input
-                                            //     type="text"
-                                            //     defaultValue={selectedBooking.phone}
-                                            //     onChange={(e) => setSelectedBooking({ ...selectedBooking, phone: e.target.value })}
-                                            // />
                                             <Form.Control type="text" defaultValue={selectedBooking.phone} onChange={(e) => setSelectedBooking({ ...selectedBooking, phone: e.target.value })} />
                                         ) : (
                                             selectedBooking.phone
                                         )}
                                     </Form.Group>
                                 </Col>
-                                <Col lg={6} md={6} sm={12}>
+                                {/* <Col lg={6} md={6} sm={12}>
                                     <b>Vehical Type</b><br />
                                     {selectedBooking.vehicletype}
-                                </Col>
+                                </Col> */}
                                 <hr></hr>
 
                                 <Col lg={6} md={6} sm={12} className="pb-4">
