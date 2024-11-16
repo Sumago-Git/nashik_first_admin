@@ -1,64 +1,49 @@
-import React, { useState } from 'react'
-import { Card, Col, Nav, Row } from 'react-bootstrap'
-import { Link } from 'react-router-dom'
-import CalenderComp from '../../../components/Calender Component/CalenderComp'
+import React, { useState } from 'react';
+import { Card, Col, Nav, Row } from 'react-bootstrap';
+import { Link, useNavigate } from 'react-router-dom';
+import CalenderComp from '../../../components/Calender Component/CalenderComp';
 
 const Calender = () => {
-    const [show, setShow] = useState(true)
-    const [activeKey, setActiveKey] = useState("Schedules")
-    const [categoryName, setCategoryName] = useState("")
+    const [show, setShow] = useState(true);
+    const [activeKey, setActiveKey] = useState("Schedules");
+    const [categoryName, setCategoryName] = useState("");
+    const navigate = useNavigate(); // New useNavigate hook
+
     const training_categories = [
-        {
-            category: "RTO – Learner Driving License Holder Training",
-            url: ""
-        },
-        {
-            category: "RTO – Suspended Driving License Holders Training",
-            url: ""
-        },
-        {
-            category: "RTO – Training for School Bus Driver",
-            url: ""
-        },
-        {
-            category: "School Students Training – Group",
-            url: ""
-        },
-        {
-            category: "College/Organization Training – Group",
-            url: ""
-        },
-        {
-            category: "College / Organization Training – Individual",
-            url: ""
-        },
-    ]
-    const title = [
-        "Schedules", "Closed Days"]
-    const CategoryClick = (item, id) => {
-        setShow(false)
-        setCategoryName(item.category)
-    }
+        { category: "RTO – Learner Driving License Holder Training", url: "" },
+        { category: "RTO – Suspended Driving License Holders Training", url: "" },
+        { category: "RTO – Training for School Bus Driver", url: "" },
+        { category: "School Students Training – Group", url: "" },
+        { category: "College/Organization Training – Group", url: "" },
+        { category: "College / Organization Training – Individual", url: "" },
+    ];
+
+    const title = ["Schedules", "Closed Days"];
+
+    const CategoryClick = (item) => {
+        setCategoryName(item.category);
+        navigate('/CalenderComp', { state: { categoryName: item.category, tabKey: activeKey } });
+    };
+
     const ActiveTab = (key) => {
-        setActiveKey(key)
-    }
+        setActiveKey(key);
+    };
+
     return (
         <div>
             {
                 show ?
                     <Row className='justify-content-center'>
                         {
-                            training_categories.map((item, id) => {
-                                return (
-                                    <Col md={5}>
-                                        <Card onClick={() => CategoryClick(item, id)} className='p-3 my-3 text-center border-0 shadow'>
-                                            <Link className='text-decoration-none text-black fw-bold' to={""}>
-                                                {item.category}
-                                            </Link>
-                                        </Card>
-                                    </Col>
-                                )
-                            })
+                            training_categories.map((item, id) => (
+                                <Col md={5} key={id}>
+                                    <Card onClick={() => CategoryClick(item)} className='p-3 my-3 text-center border-0 shadow'>
+                                        <Link className='text-decoration-none text-black fw-bold' to="#">
+                                            {item.category}
+                                        </Link>
+                                    </Card>
+                                </Col>
+                            ))
                         }
                     </Row>
                     :
@@ -66,23 +51,19 @@ const Calender = () => {
                         <h3 className='py-3'>{categoryName}</h3>
                         <Nav fill variant="tabs" activeKey={activeKey}>
                             {
-                                title.map((item, id) => {
-                                    return (
-                                        <Nav.Item>
-                                            <Nav.Link eventKey={item} href="" onClick={() => ActiveTab(item)}>
-                                                {item}
-                                            </Nav.Link>
-                                        </Nav.Item>
-                                    )
-                                })
+                                title.map((item, id) => (
+                                    <Nav.Item key={id}>
+                                        <Nav.Link eventKey={item} href="#" onClick={() => ActiveTab(item)}>
+                                            {item}
+                                        </Nav.Link>
+                                    </Nav.Item>
+                                ))
                             }
                         </Nav>
-                        <CalenderComp tabKey={activeKey} categoryName={categoryName} />
-
                     </>
             }
         </div>
-    )
-}
+    );
+};
 
-export default Calender
+export default Calender;

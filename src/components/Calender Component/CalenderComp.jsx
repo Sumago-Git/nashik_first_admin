@@ -6,8 +6,11 @@ import { confirmAlert } from "react-confirm-alert";
 import instance from "../../api/AxiosInstance";
 import { toast } from "react-toastify";
 import SlotComp from "../SlotComp/SlotComp";
+import { useLocation } from 'react-router-dom';
 
-const CalenderComp = ({ tabKey, categoryName }) => {
+const CalenderComp = () => {
+    const location = useLocation();
+    const { categoryName, tabKey } = location.state || {};
     console.log("tabKey", tabKey);
     const [team, setTeam] = useState([]);
     const [newdate, setnewdate] = useState("")

@@ -41,6 +41,9 @@ import News from "./components/News/News";
 import HomeVideos from "./components/Home Videos/HomeVideos";
 import ConatctFrom from "./components/Contact From/ConatctFrom";
 import bookingcatname from "./screens/Booking Packages/bookingcatname";
+import Slotlistpage from "./screens/Booking Packages/Slotlistpage";
+import Bookcalender from "./screens/Booking Packages/Bookcalender";
+import CalenderComp from "./components/Calender Component/CalenderComp";
 
 function App() {
   return (
@@ -93,6 +96,10 @@ function App() {
           <Route
             path="/headercontact"
             element={<ProtectedRoutes Component={HeaderContact} />}
+          />
+            <Route
+            path="/CalenderComp"
+            element={<ProtectedRoutes Component={CalenderComp} />}
           />
           <Route
             path="/calender"
@@ -155,6 +162,14 @@ function App() {
             element={<ProtectedRoutes Component={Bookpackages} />}
           />
             <Route
+            path="/Bookcalender"
+            element={<ProtectedRoutes Component={Bookcalender} />}
+          />
+          <Route
+            path="/Slotlistpage"
+            element={<ProtectedRoutes Component={Slotlistpage} />}
+          />
+          <Route
             path="/bookseats"
             element={<ProtectedRoutes Component={bookingcatname} />}
           />
