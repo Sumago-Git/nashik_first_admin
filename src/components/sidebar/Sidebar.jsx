@@ -237,12 +237,12 @@ const SidebarMenu = [
   },
   {
     menu: "Booking Package",
-    url: "/bookpackg",
+    url: "/bookseats",
     mainIcon: <MdLocalOffer size={24} />,
     subMenu: [
       {
         subMenus: "Booking Package",
-        url: "/bookpackg",
+        url: "/bookseats",
         icon: <AiOutlineAppstoreAdd style={{ color: "red" }} size={24} />,
       },
     ],

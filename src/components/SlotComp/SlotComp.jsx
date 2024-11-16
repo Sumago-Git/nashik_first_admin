@@ -13,7 +13,7 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal, ha
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [eyeVisibilityById, setEyeVisibilityById] = useState({});
     const [data, setData] = useState(realdata);
-    console.log("cbvdf",realdata)
+    console.log("cbvdf", realdata)
     useEffect(() => {
         setData(realdata);
     }, [realdata]);
@@ -87,30 +87,18 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal, ha
         setShow1()
     }
     const fetchTeam = async () => {
+        
         setLoading(true);
         const accessToken = localStorage.getItem("accessToken"); // Retrieve access token
         try {
-            const response = await instance.get("Sessionslot/get-SessionSessionslot", {
-                headers: {
-                    Authorization: "Bearer " + accessToken,
-                    "Content-Type": "application/json",
-                },
+            const response = await instance.post("Sessionslot/get-getSessionbySessionslot", { slotdate: selectedDates, category: categoryName }, {
+                headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },
             });
-            console.log("response", response);
-            if (selectedDates) {
-                const filteredData = response.data.responseData.filter((data) => {
-                    console.log("data.slotdate", data.slotdate);
-                    console.log("selectedDates", selectedDates);
-                    return data.slotdate == selectedDates;
+            const filteredData = response.data.responseData?.reverse()
+            setTeam(filteredData);
+            setData(filteredData)
+            console.log('dfh', filteredData)
 
-                });
-            }
-            const reversedData = response.data.responseData.reverse()
-
-            setTeam(reversedData);
-            // setData(reversedData);
-            console.log(reversedData)
-            console.log()
 
         } catch (error) {
             console.error(
@@ -125,27 +113,35 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal, ha
     const validateForm = (formData) => {
         let errors = {};
         let isValid = true;
-
+    
+        // Check if the title is empty
         if (!formData.title.trim()) {
             errors.title = 'Title is required';
             isValid = false;
         }
-        if (!formData.capacity.trim()) {
-            errors.title = 'Title is required';
+        
+        // Convert capacity to a string before calling trim() and check if it's empty
+        if (!String(formData.capacity).trim()) {
+            errors.capacity = 'Capacity is required';
             isValid = false;
         }
+    
+        // Check if deadlineTime is empty
         if (!formData.deadlineTime.trim()) {
-            errors.title = 'Title is required';
+            errors.deadlineTime = 'Deadline time is required';
             isValid = false;
         }
+    
+        // Check if category is empty
         if (!formData.category.trim()) {
-            errors.title = 'Title is required';
+            errors.category = 'Category is required';
             isValid = false;
         }
-
+    
         setErrors(errors);
         return isValid;
     };
+    
     const [traniners, settainers] = useState([])
     const getdata_admin = () => {
         instance.get('trainer/get-trainers')
@@ -278,7 +274,9 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal, ha
                                 } finally {
                                     setLoading(false);
                                 }
-                                onClose(); handleShowModal()
+                                onClose();
+                                handleShowModal()
+
                             }}
                         >
                             Yes
@@ -293,8 +291,10 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal, ha
     };
     const toggleEdit = (id) => {
         const selectedMember = team.find((member) => member.id === id);
+        console.log(selectedMember)
         if (selectedMember) {
             setEditingId(id);
+            
             setFormData(selectedMember); // This should set existing data correctly
             setEditMode(true);
             setShowTable(false);
@@ -303,20 +303,24 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal, ha
     };
 
 
-    const handleAdd = () => {
-        setFormData({});
-        setEditMode(false);
-        setShowTable(false); // Switch to form view when adding new item
-    };
-
-    const handleView = () => {
-        setFormData({});
-        setEditMode(false);
-        setShowTable(true); // Switch to table view
-    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        const requiredFields = ["category", "time", "deadlineTime", "title", "capacity"];
+        for (const field of requiredFields) {
+            if (!formData[field]) {
+                toast.error(`${field} is required`); // Show error for each missing required field
+                return; // Exit if any required field is empty
+            }
+        }
+        if (formData.capacity <= 30) {
+            toast.error("Capacity should be more than 30");
+            return; // Exit if capacity is not greater than 30
+        }
+        if (deadlineError) {
+            toast.error('Deadline Time should be greater than Time');
+            return;
+        }
 
         if (validateForm(formData)) {
             setLoading(true);
@@ -331,7 +335,7 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal, ha
 
             try {
                 if (editMode) {
-                    await instance.put(`Sessionslot/Sessionslot/${editingId}`, data, {
+                    await instance.put(`Sessionslot/Sessionslot/${editingId}`, formData, {
                         headers: {
                             Authorization: "Bearer " + accessToken,
                             "Content-Type": "application/json",
@@ -342,6 +346,7 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal, ha
                         member.id === editingId ? formData : member
                     );
                     setTeam(updatedTeam);
+                    fetchTeam();
                 } else {
                     await instance.post("Sessionslot/create-Sessionslot", data, {
                         headers: {
@@ -349,28 +354,49 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal, ha
                             "Content-Type": "application/json",
                         },
                     });
-                    toast.success("Data Submitted Successfully");
+                
                 }
                 fetchTeam();
+                setShow1(false)
 
                 setEditMode(false);
                 setFormData(initialFormData); // Reset formData to initial state
                 setImagePreview("");
                 setShowTable(true);
-                setShow1(false)
+
             } catch (error) {
-                console.error("Error handling form submission:", error);
+                if (error.response && error.response.data && error.response.data.message) {
+                    toast.error(error.response.data.message); // Show error message in toast
+                }
+                console.log(error)
             } finally {
                 setLoading(false);
             }
         }
     };
+    const [deadlineError, setDeadlineError] = useState(false); // To track if the deadline time is invalid
 
     const handleChange = (name, value) => {
         setFormData(prevFormData => ({
             ...prevFormData,
             [name]: value,
         }));
+        if (name === 'time') {
+            setDeadlineError(false); // Reset deadline error when time is changed
+        }
+
+        // If "deadlineTime" is updated, validate it
+        if (name === 'deadlineTime') {
+            const selectedTime = new Date(`1970-01-01T${formData.time}:00`);
+            const deadline = new Date(`1970-01-01T${value}:00`);
+
+            // Check if deadline time is greater than the selected time
+            if (deadline <= selectedTime) {
+                setDeadlineError(true); // Set error if deadline time is before or equal to time
+            } else {
+                setDeadlineError(false); // Valid deadline time
+            }
+        }
     };
 
     const tableColumns = (currentPage, rowsPerPage) => [
@@ -452,6 +478,18 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal, ha
 
 
     ];
+    const dateParts = selectedDates.split("/");
+
+    // Create a new Date object using the parts
+    const date = new Date(dateParts[2], dateParts[0] - 1, dateParts[1]);
+
+    // Format the date to "DD Month YYYY"
+    const formattedDate = date.toLocaleDateString("en-GB", {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+    });
+
     return (
         <>
             <Modal
@@ -460,20 +498,22 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal, ha
                 size="xl"
                 aria-labelledby="contained-modal-title-vcenter"
                 centered
-                fullscreen 
-                className="modal-fullscreen d-flex justify-content-center "
-                
-               
-               
+                className="modal-fullscreen d-flex justify-content-center"
+                fullscreen
+
             >
-                <Modal.Header closeButton>
-                    <Modal.Title id="contained-modal-title-vcenter">
-                        <Button variant="secondary" onClick={handleClose1}>
-                            add slot
-                        </Button>
-                    </Modal.Title>
+                <Modal.Header closeButton >
+
+
+
+                    <Button variant="success" className='rounded-5' onClick={handleClose1}>
+                        Create New Slot
+                    </Button>
+                    <div className='text-center'> <h6>{categoryName}</h6><h5>{formattedDate}</h5></div>
+                   
                 </Modal.Header>
-                <Modal.Body>
+                <Modal.Body>|
+                  
                     <Card>
                         <DataTable
                             columns={tableColumns(currentPage, rowsPerPage)} 
@@ -488,9 +528,7 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal, ha
                             noDataComponent={
                                 <div className="text-center my-3">
                                     <p>There is no record to display.</p>
-                                    {/* <Button variant="success" className='rounded-5' onClick={handleClose1}>
-                                        Create New Slot
-                                    </Button> */}
+
                                 </div>
                             }
                         />
@@ -570,25 +608,34 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal, ha
 
                             </Col>
                             <Col md={10}>
-                                <NewResuableForm
-                                    label="Time"
-                                    placeholder="Enter time"
-                                    type="time"
-                                    name="time"
-                                    onChange={handleChange}
-                                    initialData={formData}
-                                    required
-                                />
+                                <Form.Group controlId="time">
+                                    <Form.Label>Time</Form.Label>
+                                    <Form.Control
+                                        type="time"
+                                        name="time"
+                                        value={formData.time}
+                                        onChange={(e) => handleChange('time', e.target.value)}
+                                        required
+                                    />
+                                </Form.Group>
                             </Col>
+
                             <Col md={10}>
-                                <NewResuableForm
-                                    label="Deadline Time"
-                                    placeholder="Enter deadline time"
-                                    type="time"
-                                    name="deadlineTime"
-                                    onChange={handleChange}
-                                    initialData={formData}
-                                />
+                                <Form.Group controlId="deadlineTime">
+                                    <Form.Label>Deadline Time</Form.Label>
+                                    <Form.Control
+                                        type="time"
+                                        name="deadlineTime"
+                                        value={formData.deadlineTime}
+                                        onChange={(e) => handleChange('deadlineTime', e.target.value)}
+                                        required
+                                    />
+                                    {deadlineError && (
+                                        <Form.Text className="text-danger">
+                                            Deadline Time must be greater than Time.
+                                        </Form.Text>
+                                    )}
+                                </Form.Group>
                             </Col>
                             <Col md={10}>
                                 <NewResuableForm
