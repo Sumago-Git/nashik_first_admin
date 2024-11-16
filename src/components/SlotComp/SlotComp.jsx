@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Card, Form, Modal, OverlayTrigger, Tooltip, Col, Row } from 'react-bootstrap';
+import { Button, Card, Form, Modal, OverlayTrigger, Tooltip, Col, Row, Badge } from 'react-bootstrap';
 import DataTable from 'react-data-table-component';
 import { FaEdit, FaTrash, FaEye, FaEyeSlash } from "react-icons/fa";
 import instance from "../../api/AxiosInstance";
@@ -22,6 +22,8 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal, ha
     const [showTable, setShowTable] = useState(true)
     const [show1, setShow1] = useState(false);
     const handleClose1 = () => setShow1(true);
+    const [show2, setShow2] = useState(false);
+    const handleClose2 = () => setShow2(true);
     const handleShow1 = () => setShow1(true);
     const [imagePreview, setImagePreview] = useState("");
     const [team, setTeam] = useState([]);
@@ -87,7 +89,7 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal, ha
         setShow1()
     }
     const fetchTeam = async () => {
-        
+
         setLoading(true);
         const accessToken = localStorage.getItem("accessToken"); // Retrieve access token
         try {
@@ -113,35 +115,35 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal, ha
     const validateForm = (formData) => {
         let errors = {};
         let isValid = true;
-    
+
         // Check if the title is empty
         if (!formData.title.trim()) {
             errors.title = 'Title is required';
             isValid = false;
         }
-        
+
         // Convert capacity to a string before calling trim() and check if it's empty
         if (!String(formData.capacity).trim()) {
             errors.capacity = 'Capacity is required';
             isValid = false;
         }
-    
+
         // Check if deadlineTime is empty
         if (!formData.deadlineTime.trim()) {
             errors.deadlineTime = 'Deadline time is required';
             isValid = false;
         }
-    
+
         // Check if category is empty
         if (!formData.category.trim()) {
             errors.category = 'Category is required';
             isValid = false;
         }
-    
+
         setErrors(errors);
         return isValid;
     };
-    
+
     const [traniners, settainers] = useState([])
     const getdata_admin = () => {
         instance.get('trainer/get-trainers')
@@ -294,11 +296,23 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal, ha
         console.log(selectedMember)
         if (selectedMember) {
             setEditingId(id);
-            
+
             setFormData(selectedMember); // This should set existing data correctly
             setEditMode(true);
             setShowTable(false);
             setShow1(true) // Switch to form view when editing
+        }
+    };
+    const toggleEdit2 = (id) => {
+        const selectedMember = team.find((member) => member.id === id);
+        console.log(selectedMember)
+        if (selectedMember) {
+            setEditingId(id);
+
+            setFormData(selectedMember); // This should set existing data correctly
+            setEditMode(true);
+            setShowTable(false);
+            setShow2(true) // Switch to form view when editing
         }
     };
 
@@ -354,10 +368,80 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal, ha
                             "Content-Type": "application/json",
                         },
                     });
-                
+
                 }
                 fetchTeam();
                 setShow1(false)
+
+                setEditMode(false);
+                setFormData(initialFormData); // Reset formData to initial state
+                setImagePreview("");
+                setShowTable(true);
+
+            } catch (error) {
+                if (error.response && error.response.data && error.response.data.message) {
+                    toast.error(error.response.data.message); // Show error message in toast
+                }
+                console.log(error)
+            } finally {
+                setLoading(false);
+            }
+        }
+    };
+    const handleSubmit2 = async (e) => {
+        e.preventDefault();
+        const requiredFields = ["category", "time", "deadlineTime", "title", "capacity"];
+        for (const field of requiredFields) {
+            if (!formData[field]) {
+                toast.error(`${field} is required`); // Show error for each missing required field
+                return; // Exit if any required field is empty
+            }
+        }
+        if (formData.capacity <= 30) {
+            toast.error("Capacity should be more than 30");
+            return; // Exit if capacity is not greater than 30
+        }
+        if (deadlineError) {
+            toast.error('Deadline Time should be greater than Time');
+            return;
+        }
+
+        if (validateForm(formData)) {
+            setLoading(true);
+            const accessToken = localStorage.getItem("accessToken");
+            const data = new FormData();
+
+            for (const key in formData) {
+                if (formData[key] instanceof File || typeof formData[key] === "string") {
+                    data.append(key, formData[key]);
+                }
+            }
+
+            try {
+                if (editMode) {
+                    await instance.put(`Sessionslot/Sessionslot/${editingId}`, formData, {
+                        headers: {
+                            Authorization: "Bearer " + accessToken,
+                            "Content-Type": "application/json",
+                        },
+                    });
+                    toast.success("Data Updated Successfully");
+                    const updatedTeam = team.map((member) =>
+                        member.id === editingId ? formData : member
+                    );
+                    setTeam(updatedTeam);
+                    fetchTeam();
+                } else {
+                    await instance.post("Sessionslot/create-Sessionslot", data, {
+                        headers: {
+                            Authorization: "Bearer " + accessToken,
+                            "Content-Type": "application/json",
+                        },
+                    });
+
+                }
+                fetchTeam();
+                setShow2(false)
 
                 setEditMode(false);
                 setFormData(initialFormData); // Reset formData to initial state
@@ -426,7 +510,18 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal, ha
         },
         {
             name: <CustomHeader name="Trainer" />,
-            cell: (row) => <span>{row.trainer}</span>,
+            cell: (row) => (
+                row.trainer ? (
+                    <span>{row.trainer}</span>
+                ) : (
+                    <Badge
+                        variant="primary"
+                        onClick={() => toggleEdit2(row.id)}
+                    >
+                        Add Trainer
+                    </Badge>
+                )
+            ),
         },
         {
             name: <CustomHeader name="Category" />,
@@ -510,13 +605,13 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal, ha
                         Create New Slot
                     </Button>
                     <div className='text-center'> <h6>{categoryName}</h6><h5>{formattedDate}</h5></div>
-                   
+
                 </Modal.Header>
                 <Modal.Body>|
-                  
+
                     <Card>
                         <DataTable
-                            columns={tableColumns(currentPage, rowsPerPage)} 
+                            columns={tableColumns(currentPage, rowsPerPage)}
                             data={data}
                             pagination
                             paginationServer
@@ -662,6 +757,54 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal, ha
                                     Submit
                                 </Button>
                                 <Button variant="secondary" onClick={() => setShow1(false)}>
+                                    Close
+                                </Button>
+                            </Col>
+                        </Row>
+                    </Form>
+                </Modal.Body>
+
+
+            </Modal>
+
+            <Modal show={show2} onHide={handleClose2}>
+                <Modal.Header >
+                    <Modal.Title>Add Slot</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <Form onSubmit={handleSubmit2}>
+                        <Row className='justify-content-center'>
+
+
+
+
+                            <Col md={10}>
+                                <Form.Group controlId="trainingType">
+                                    <Form.Label>Trainer Name</Form.Label>
+                                    <Form.Select
+                                        name="category"
+                                        value={formData.trainer} // Use "category" as it matches initialFormData
+                                        onChange={(e) => handleChange("trainer", e.target.value)} // Call handleChange with "category"
+                                    >
+                                        <option value="">choose trainer</option>
+                                        {traniners.map((a) => {
+                                            return (
+                                                <option key={a.id} value={a.name}>
+                                                    {a.name}
+                                                </option>
+                                            );
+                                        })}
+
+                                    </Form.Select>
+                                </Form.Group>
+
+
+                            </Col>
+                            <Col xs={12} className="d-flex justify-content-end mt-3">
+                                <Button variant="primary" type="submit" className='mx-3'>
+                                    Submit
+                                </Button>
+                                <Button variant="secondary" onClick={() => setShow2(false)}>
                                     Close
                                 </Button>
                             </Col>

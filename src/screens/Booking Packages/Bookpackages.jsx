@@ -14,8 +14,10 @@ import Categories from "../../components/Categories";
 import instance from "../../api/AxiosInstance";
 import axios from "axios";
 import { useNavigate } from "react-router-dom"; // Import useNavigate from react-router-dom
-
+import { useLocation } from 'react-router-dom';
 const Bookpackages = ({ tabKey }) => {
+
+    const location = useLocation();
     const [currentDate, setCurrentDate] = useState(new Date());
     const [hoveredDay, setHoveredDay] = useState(null);
     const navigate = useNavigate();
@@ -24,9 +26,7 @@ const Bookpackages = ({ tabKey }) => {
     const [btno, setbrno] = useState(1, "RTO – Learner Driving License Holder Training");
     const [dateStatuses, setDateStatuses] = useState({}); // State to store date statuses
 
-    useEffect(() => {
-        getdata_here();
-    }, []);
+
 
     const [isMobile, setIsMobile] = useState(false);
 
@@ -48,11 +48,12 @@ const Bookpackages = ({ tabKey }) => {
         };
     }, []);
 
-    const getdata_here = ({ category = selectedButton, buttonNumber = btno } = {}) => {
+    const savedCategory = localStorage.getItem("category");
+    const getdata_here = () => {
         instance.post('/Sessionslot/getAvailableslotslots', {
             year: currentYear.toString(),
             month: (currentMonth + 1).toString(),
-            category,
+            category: savedCategory,
         })
             .then((res) => {
                 const slotData = res.data.data.reduce((acc, slot) => {
@@ -95,11 +96,15 @@ const Bookpackages = ({ tabKey }) => {
     const changeMonth = (direction) => {
         setCurrentDate(prevDate => {
             const newDate = new Date(prevDate);
-            newDate.setMonth(newDate.getMonth() + (direction === 'prev' ? -1 : 1));
+            newDate.setMonth(newDate.getMonth() + (direction === 'prev' ? -1 : +1));
             return newDate;
-        });
-    };
 
+        });
+        console.log(currentDate)
+    };
+    useEffect(() => {
+        getdata_here();
+    }, [currentDate]);
     const currentMonth = currentDate.getMonth();
     const currentYear = currentDate.getFullYear();
     const daysInMonth = getDaysInMonth(currentMonth, currentYear);
@@ -141,26 +146,12 @@ const Bookpackages = ({ tabKey }) => {
         const dateToCheck = new Date(currentYear, currentMonth, day);
         return dateToCheck < today.setHours(0, 0, 0, 0);
     };
-    const handleButtonClick = (buttonNumber, btncategory) => {
-        setSelectedButton(btncategory);
-        setbrno(buttonNumber);
 
 
-        getdata_here({
-            category: btncategory,
-            buttonNumber,
-        });
-    };
 
 
-    const [Category1, setCategory1] = useState("")
-    useEffect(() => {
-        if (location && location.state) {
 
-            // console.log("location.selectedTime", location.state.selectedTime);
-            setCategory1(location.state.category || ""); // Assume category comes from the location state
-        }
-    }, [location])
+
 
 
     return (
@@ -169,13 +160,13 @@ const Bookpackages = ({ tabKey }) => {
 
                 <Container className="calender">
                     <Col lg={12} className="d-flex justify-content-center align-items-center bg-white">
-                        <button className="btn ms-1" onClick={() => { changeMonth('prev'); getdata_here() }}>
+                        <button className="btn ms-1" onClick={() => { changeMonth('prev'); }}>
                             <img src={leftarrow} className="w-75 arrowimg" alt="Previous" />
                         </button>
                         <h3 className="calenderheadline mx-4">
                             {monthNames[currentDate.getMonth()]} {currentDate.getFullYear()}
                         </h3>
-                        <button className="btn ms-1" onClick={() => { changeMonth('next'); getdata_here() }}>
+                        <button className="btn ms-1" onClick={() => { changeMonth('next'); }}>
                             <img src={rightarrow} className="w-75 arrowimg" alt="Next" />
                         </button>
                     </Col>

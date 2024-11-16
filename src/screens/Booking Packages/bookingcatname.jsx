@@ -36,11 +36,13 @@ const bookingcatname = ({ setCategoryName }) => {
     const session = { title: "Session 1" };
 
     const CategoryClick = (item) => {
+        localStorage.setItem("category", item.category); // Save to localStorage
+
         navigate("/bookpackg", {
             state: {
                 selectedDate: slotDate,
                 selectedTime: `${formattedTime}-${session.title}`,
-                category: item.category
+
             }
         });
     };
