@@ -37,7 +37,8 @@ const bookingcatname = ({ setCategoryName }) => {
 
     const CategoryClick = (item) => {
         localStorage.setItem("category", item.category); // Save to localStorage
-
+      
+      
         navigate("/bookpackg", {
             state: {
                 selectedDate: slotDate,
@@ -52,7 +53,7 @@ const bookingcatname = ({ setCategoryName }) => {
             <Row className='justify-content-center'>
                 {training_categories.map((item, id) => (
                     <Col md={5} key={id}>
-                        <Card onClick={() => CategoryClick(item)} className='p-3 my-3 text-center border-0 shadow'>
+                        <Card onClick={() => {CategoryClick(item)}} className='p-3 my-3 text-center border-0 shadow'>
                             <Link className='text-decoration-none text-black fw-bold' to={""}>
                                 {item.category}
                             </Link>

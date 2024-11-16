@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Container, Table, Col, Row,Form  } from "react-bootstrap";
+import { Container, Table, Col, Row, Form } from "react-bootstrap";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import './bookingpckg.css';
 import leftarrow from "../../assets/Holiday/leftarrow.png";
@@ -18,8 +18,7 @@ const Bookcalender = ({ tabKey }) => {
     // const [selectedDate, setSelectedDate] = useState("");
     const [selectedDay, setSelectedDay] = useState("");
     const [categoryName, setCategoryName] = useState("");
-    const [category1, setCategory1] = useState("");
-    console.log(category1)
+ 
     const [dataByDateAndCategory, setDataByDateAndCategory] = useState([]);
     const [formatedDateData, setFormatedDate] = useState();
     const [currentDate, setCurrentDate] = useState(new Date());
@@ -39,7 +38,7 @@ const Bookcalender = ({ tabKey }) => {
     //     setRowModal(true);
     // };
     const location = useLocation();
-    const { selectedDate, selectedTime, category,slotsession } = location.state || {}; // Destructure with default to avoid undefined errors
+    const { selectedDate, selectedTime, category, slotsession } = location.state || {}; // Destructure with default to avoid undefined errors
 
     useEffect(() => {
         if (!selectedDate || !selectedTime || !category) {
@@ -52,12 +51,15 @@ const Bookcalender = ({ tabKey }) => {
     }, [selectedDate, selectedTime, category]);
 
 
-
+    const sessionSlotId = localStorage.getItem('slotsid');
+    const category1 = localStorage.getItem('category')
     const getUserDataByCategoryAndDate = () => {
 
         const dateOnly = selectedDate.split(' ')[1];
         let data = {
-            slotsession:slotsession// Use the formatted date here
+            slotsession: slotsession,// Use the formatted date here
+            sessionSlotId: sessionSlotId,
+            category: category1
         };
         instance.post("bookingform/get-bookingentries-by-date-category", data).then((result) => {
             console.log("result", result);
@@ -68,9 +70,9 @@ const Bookcalender = ({ tabKey }) => {
         })
     }
 
-    useEffect(()=>{
+    useEffect(() => {
         getUserDataByCategoryAndDate()
-    },[])
+    }, [])
 
     const currentMonth = currentDate.getMonth();
     const currentYear = currentDate.getFullYear();

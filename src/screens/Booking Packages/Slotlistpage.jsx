@@ -85,6 +85,7 @@ const Slotlistpage = () => {
                                         className='p-3 my-3 text-center border-0 shadow'
                                         onClick={() => {
                                             if (isAvailable) {
+                                                localStorage.setItem('slotsid', session.id)
                                                 navigate("/Bookcalender", {
                                                     state: {
                                                         selectedDate: slotDate,

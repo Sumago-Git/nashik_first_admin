@@ -69,7 +69,7 @@ const Bookpackages = ({ tabKey }) => {
                     totalCapacity: slot.totalCapacity,
                     totalAvailableSeats: slot.totalAvailableSeats,
                     label: slot.status === "available" ? "Available" : slot.status === "Holiday" ? "Holiday" : "Closed",
-                    color: slot.status === "Holiday" ? "#ff0000" : (slot.status === "available" ? "green" : "red"),
+                    color: slot.status === "Holiday" ? "red" : (slot.status === "available" ? "green" : "red"),
                     bgColor: slot.status === "Holiday" ? "#ea7777" : (slot.status === "available" ? "#d4ffd4" : "#ffd4d4"),
                     isHoliday: slot.status === "Holiday",
                 })));
@@ -200,16 +200,16 @@ const Bookpackages = ({ tabKey }) => {
                                                         backgroundColor: day
                                                             ? dateStatuses[day] === "Holiday"
                                                                 ? "#ea7777" // Light blue for holiday
-                                                                : "white" // Red for closed or other statuses
+                                                                : "white" // Default background color
                                                             : "white",
                                                         color: day
                                                             ? day.isNextMonth
                                                                 ? "#ccc" // Light color for next month's dates
                                                                 : isDisabled || dateStatuses[day] === "Holiday"
-                                                                    ? "#999" // Gray for disabled or holiday
+                                                                    ? "black" // Gray for disabled or holiday
                                                                     : "black"
-                                                            : "black", color: day && (day.isNextMonth ? "#ccc" : isDisabled || isHoliday ? "#999" : "black"),
-                                                        pointerEvents: day && (isHoliday ? "none" : "auto"),
+                                                            : "black",
+                                                        pointerEvents: day && dateStatuses[day] === "Holiday" ? "none" : "auto",
                                                         transition: 'color 0.3s',
                                                         fontFamily: "Poppins",
                                                         fontWeight: "600",
@@ -217,30 +217,36 @@ const Bookpackages = ({ tabKey }) => {
                                                 >
                                                     {day && (day.isNextMonth ? day.day : day || "")}
                                                     <br />
-                                                    {specialDates && specialDates.length > 0 && specialDates.find((date) => date.day === day) && !isPastDate(day) && (
-                                                        <div style={{
-                                                            fontSize: '10px',
-                                                            marginTop: '5px',
-                                                            color: specialDates.find((date) => date.day === day)?.color, // Use color based on status
-                                                            backgroundColor: specialDates.find((date) => date.day === day)?.bgColor,
-                                                            padding: '3px 8px',
-                                                            borderRadius: '15px',
-                                                            display: 'inline-block',
-                                                            fontWeight: 'bold',
-                                                        }}>
-                                                            {/* {specialDates.find((date) => date.day === day)?.label} */}
-                                                            <h6> Available:  {specialDates.find((date) => date.day === day)?.totalAvailableSeats}
-                                                                <br />
-                                                                Capacity: {specialDates.find((date) => date.day === day)?.totalCapacity}</h6>
-                                                        </div>
-                                                    )}
-
+                                                    {specialDates &&
+                                                        specialDates.length > 0 &&
+                                                        dateStatuses[day] !== "Holiday" && // Check if the day is NOT a holiday
+                                                        specialDates.find((date) => date.day === day) &&
+                                                        !isPastDate(day) && (
+                                                            <div
+                                                                style={{
+                                                                    fontSize: '10px',
+                                                                    marginTop: '5px',
+                                                                    color: specialDates.find((date) => date.day === day)?.color,
+                                                                    backgroundColor: specialDates.find((date) => date.day === day)?.bgColor,
+                                                                    padding: '3px 8px',
+                                                                    borderRadius: '15px',
+                                                                    display: 'inline-block',
+                                                                    fontWeight: 'bold',
+                                                                }}
+                                                            >
+                                                                <h6>
+                                                                    Available: {specialDates.find((date) => date.day === day)?.totalAvailableSeats}
+                                                                    <br />
+                                                                    Capacity: {specialDates.find((date) => date.day === day)?.totalCapacity}
+                                                                </h6>
+                                                            </div>
+                                                        )}
                                                 </td>
-
                                             );
                                         })}
                                     </tr>
                                 ))}
+
                             </tbody>
                         </Table>
                     </Container>

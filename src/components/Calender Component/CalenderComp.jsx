@@ -15,7 +15,8 @@ const CalenderComp = () => {
     const [team, setTeam] = useState([]);
     const [newdate, setnewdate] = useState("")
     const [specialDates, setSpecialDates] = useState([]);
-
+    const [dateStatuses, setDateStatuses] = useState({}); // State to store date statuses
+    const [hoveredDay, setHoveredDay] = useState(null);
     const [comp, setComp] = useState("false")
     const [currentDate, setCurrentDate] = useState(new Date());
     const [loading, setLoading] = useState(false)
@@ -70,18 +71,10 @@ const CalenderComp = () => {
         "July", "August", "September", "October", "November", "December"
     ];
 
-    // Function to change the month when clicking the arrows
-    // const changeMonth = (direction) => {
-    //     setCurrentDate(prevDate => {
-    //         const newDate = new Date(prevDate);
-    //         if (direction === 'prev') {
-    //             newDate.setMonth(newDate.getMonth() - 1);
-    //         } else if (direction === 'next') {
-    //             newDate.setMonth(newDate.getMonth() + 1);
-    //         }
-    //         return newDate;
-    //     });
-    // };
+
+    const getSpecialDateDetails = (day, month) => {
+        return specialDates.find((special) => special.day === day && special.month === month) || {};
+    };
     const changeMonth = (direction) => {
         setCurrentDate((prevDate) => {
             const newDate = new Date(prevDate);
@@ -98,7 +91,7 @@ const CalenderComp = () => {
             return newDate;
         });
     };
-    
+
 
     function alertBox(selectedDate) {
         confirmAlert({
@@ -163,6 +156,12 @@ const CalenderComp = () => {
             ),
         });
     }
+    const today = new Date();
+    const isPastDate = (day) => {
+        const dateToCheck = new Date(currentYear, currentMonth, day);
+        return dateToCheck < today.setHours(0, 0, 0, 0);
+    };
+
 
     // Function to handle day click
 
@@ -213,26 +212,43 @@ const CalenderComp = () => {
         const selectedDate = new Date(currentYear, currentMonth, day);
         return selectedDate >= today;
     };
+    const savedCategory = localStorage.getItem("category");
 
-    const fetchHolidays = () => {
-        instance.get('holiday/get-holidays')
+    const getdata_here = () => {
+        instance.post('/Sessionslot/getAvailableslotslots', {
+            year: currentYear.toString(),
+            month: (currentMonth + 1).toString(),
+            category: savedCategory,
+        })
             .then((res) => {
-                const holidayData = res.data.responseData.map(holiday => ({
-                    date: new Date(holiday.holiday_date),
-                    label: 'Holiday',
-                    color: 'red',
-                    bgColor: '#ffd4d4'
-                }));
-                setSpecialDates(holidayData);
+                const slotData = res.data.data.reduce((acc, slot) => {
+                    // Add the status of each date to the dateStatuses state
+                    acc[slot.day] = slot.status;
+                    return acc;
+                }, {});
+
+                setDateStatuses(slotData);
+                setSpecialDates(res.data.data.map(slot => ({
+                    day: slot.day,
+                    status: slot.status,
+                    totalCapacity: slot.totalCapacity,
+                    totalSlots: slot.totalSlots,
+                    totalAvailableSeats: slot.totalAvailableSeats,
+                    label: slot.status === "available" ? "Available" : slot.status === "Holiday" ? "Holiday" : "Closed",
+                    color: slot.status === "Holiday" ? "#ff0000" : (slot.status === "available" ? "green" : "red"),
+                    bgColor: slot.status === "Holiday" ? "#ea7777" : (slot.status === "available" ? "#d4ffd4" : "#ffd4d4"),
+                    isHoliday: slot.status === "Holiday",
+                })));
             })
             .catch((err) => {
                 console.error(err);
             });
     };
+
     useEffect(() => {
         // Fetch holidays on component mount
-        fetchHolidays()
-    }, []);
+        getdata_here()
+    }, [currentDate]);
     useEffect(() => {
         if (selectedDates) {
             fetchTeam();
@@ -278,32 +294,77 @@ const CalenderComp = () => {
                                 </tr>
                             </thead>
                             <tbody>
+
                                 {weeks.map((week, weekIndex) => (
-                                    <tr key={weekIndex}>
+                                    <tr key={weekIndex} style={{ cursor: 'default' }}>
                                         {week.map((day, dayIndex) => {
-                                            const isPast = day && !isFutureOrToday(day);
-                                            const isHolidayDay = day && isHoliday(day);
+                                            const isDisabled = day && isPastDate(day);
+                                            const { label: dateLabel, color: textColor, bgColor, isHoliday } = getSpecialDateDetails(day, currentMonth);
+                                            const isAvailable = dateStatuses[day] === "available"; // Check status from state
+
                                             return (
                                                 <td
                                                     key={dayIndex}
-                                                    onClick={!isHolidayDay && day && isFutureOrToday(day) ? () => handleDayClick(day) : null}
+                                                    onMouseEnter={() => day && !isDisabled && setHoveredDay(day)}
+                                                    onMouseLeave={() => day && !isDisabled && setHoveredDay(null)}
+                                                    onClick={() => handleDayClick(day)}
                                                     style={{
                                                         height: "100px",
                                                         textAlign: "end",
                                                         verticalAlign: "middle",
-                                                        backgroundColor: isHolidayDay ? "#ffd4d4" : isPast ? "#e0e0e0" : "white",
-                                                        color: isHolidayDay ? "red" : isPast ? "#a0a0a0" : "black",
+                                                        borderRight: "1px solid #ddd",
+                                                        backgroundColor: day
+                                                            ? day.isNextMonth
+                                                                ? "#f0f0f0" // Next month's dates (light gray)
+                                                                : isDisabled
+                                                                    ? "#f9f9f9" // Disabled (past dates or holidays)
+                                                                    : dateStatuses[day] === "available"
+                                                                        ? "#d4ffd4" // Green for available
+                                                                        : dateStatuses[day] === "Holiday"
+                                                                            ? "#ea7777" // Light blue for holiday
+                                                                            : "#d4ffd4" // Red for closed or other statuses
+                                                            : "white",
+                                                        color: day
+                                                            ? day.isNextMonth
+                                                                ? "#ccc" // Light color for next month's dates
+                                                                : isDisabled || dateStatuses[day] === "Holiday"
+                                                                    ? "#999" // Gray for disabled or holiday
+                                                                    : "black"
+                                                            : "black", color: day && (day.isNextMonth ? "#ccc" : isDisabled || isHoliday ? "#999" : "black"),
+                                                        transition: "color 0.3s",
                                                         fontFamily: "Poppins",
                                                         fontWeight: "600",
-                                                        cursor: day && isFutureOrToday(day) ? "pointer" : "not-allowed" // Set cursor for past days
                                                     }}
                                                 >
-                                                    {day || ""} {/* Display the day or empty cell */}
+                                                    {day && (day.isNextMonth ? day.day : day || "")}
+                                                    <br />
+                                                    {specialDates &&
+                                                        specialDates.length > 0 &&
+                                                        dateStatuses[day] !== "Holiday" && // Ensure the day is not a holiday
+                                                        specialDates.find((date) => date.day === day) && (
+                                                            <div
+                                                                style={{
+                                                                    fontSize: "10px",
+                                                                    marginTop: "5px",
+                                                                
+                                                                    padding: "3px 8px",
+                                                                    borderRadius: "15px",
+                                                                    display: "inline-block",
+                                                                    fontWeight: "bold",
+                                                                }}
+                                                            >
+                                                                <h6>
+                                                                    totalSlots: {specialDates.find((date) => date.day === day)?.totalSlots}
+                                                                </h6>
+                                                            </div>
+                                                        )}
                                                 </td>
                                             );
+
                                         })}
                                     </tr>
                                 ))}
+
                             </tbody>
                         </Table>
                     </Container>
