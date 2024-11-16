@@ -1,8 +1,4 @@
 
-
-
-
-////sos final
 import React, { useState, useEffect } from "react";
 import {
     Container,
@@ -507,44 +503,44 @@ const HomeCounter = () => {
                                         <Col md={6}>
                                             <NewResuableForm
                                                 label="Title"
-                                                placeholder="Enter Title"
+                                                placeholder="training session"
                                                 name="training_imparted"
                                                 type="text"
                                                 onChange={handleChange}
                                                 initialData={formData}
-                                                error={errors.title}
+                                                error={errors.training_imparted}
                                             />
                                         </Col> <Col md={6}>
                                             <NewResuableForm
                                                 label="Link"
-                                                placeholder="Enter Title"
+                                                placeholder="lives changed"
                                                 name="lives_changed"
                                                 type="text"
                                                 onChange={handleChange}
                                                 initialData={formData}
-                                                error={errors.title}
+                                                error={errors.lives_changed}
                                             />
                                         </Col>
                                         <Col md={6}>
                                             <NewResuableForm
                                                 label="Link"
-                                                placeholder="Enter Title"
+                                                placeholder="children"
                                                 name="children"
                                                 type="text"
                                                 onChange={handleChange}
                                                 initialData={formData}
-                                                error={errors.title}
+                                                error={errors.children}
                                             />
                                         </Col>
                                         <Col md={6}>
                                             <NewResuableForm
                                                 label="Link"
-                                                placeholder="Enter Title"
+                                                placeholder="adult"
                                                 name="adult"
                                                 type="text"
                                                 onChange={handleChange}
                                                 initialData={formData}
-                                                error={errors.title}
+                                                error={errors.adult}
                                             />
                                         </Col>
                                     </Row>

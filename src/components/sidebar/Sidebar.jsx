@@ -142,7 +142,7 @@ const SidebarMenu = [
     mainIcon: <MdPlayCircleOutline size={24} />,
     subMenu: [
       {
-        subMenus: "Our Video",
+        subMenus: "Our Videos",
         url: "/trafficawarenessvideo",
         icon: <AiOutlineAppstoreAdd style={{ color: "red" }} size={24} />,
       },

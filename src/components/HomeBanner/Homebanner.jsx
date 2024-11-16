@@ -90,7 +90,7 @@ function Homebanner() {
       const img = new Image();
       img.src = URL.createObjectURL(file);
       img.onload = () => {
-        if (type === "mobile" && img.width <= 480 && img.height <= 800) {
+        if (type === "mobile" && img.width <= 1360 && img.height <= 1055) {
           setImage1(file);
           setPreviewMobile(URL.createObjectURL(file));
           setErrors((prevErrors) => ({ ...prevErrors, img1: '' }));
@@ -98,7 +98,7 @@ function Homebanner() {
           setImage(file);
           setErrors((prevErrors) => ({ ...prevErrors, img2: '' }));
         } else {
-          setErrors((prevErrors) => ({ ...prevErrors, img1: "Only mobile dimension images are allowed (e.g., max 480x800)." }));
+          setErrors((prevErrors) => ({ ...prevErrors, img1: "Only mobile dimension images are allowed (e.g., max 1360x1055)." }));
           setImage1(null);
           setPreviewMobile(null);
         }
