@@ -78,7 +78,7 @@ const SocialContact = () => {
               <FaEdit />
             </Button>
           </OverlayTrigger>
-          <OverlayTrigger
+          {/* <OverlayTrigger
             placement="top"
             overlay={<Tooltip id="delete-tooltip">Delete</Tooltip>}
           >
@@ -89,8 +89,8 @@ const SocialContact = () => {
             >
               <FaTrash />
             </Button>
-          </OverlayTrigger>
-          <OverlayTrigger
+          </OverlayTrigger> */}
+          {/* <OverlayTrigger
             placement="top"
             overlay={<Tooltip id="visibility-tooltip">{eyeVisibilityById[row.id] ? 'Hide' : 'Show'}</Tooltip>}
           >
@@ -105,7 +105,7 @@ const SocialContact = () => {
             >
               {eyeVisibilityById[row.id] ? <FaEyeSlash /> : <FaEye />}
             </Button>
-          </OverlayTrigger>
+          </OverlayTrigger> */}
         </div>
       ),
     },
