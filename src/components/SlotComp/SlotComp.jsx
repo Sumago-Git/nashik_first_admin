@@ -7,13 +7,13 @@ import { confirmAlert } from "react-confirm-alert";
 import { toast } from "react-toastify";
 import NewResuableForm from "../../components/form/NewResuableForm";
 
-const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal, handleShowModal, realdata }) => {
+const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal, handleShowModal, realdata, isPast }) => {
     const [currentPage, setCurrentPage] = useState(1);
     const [title, setTitle] = useState("");
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [eyeVisibilityById, setEyeVisibilityById] = useState({});
     const [data, setData] = useState(realdata);
-    console.log("cbvdf", realdata)
+    console.log("cbvdf", isPast)
     useEffect(() => {
         setData(realdata);
     }, [realdata]);
@@ -291,28 +291,28 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal, ha
             ),
         });
     };
-    const toggleEdit = (id) => {
-        const selectedMember = team.find((member) => member.id === id);
-        console.log(selectedMember)
-        if (selectedMember) {
+    const toggleEdit = (id, row) => {
+        // const selectedMember = team.find((member) => member.id === id);
+        // console.log(selectedMember)
+        if (row) {
+            setShow1(true)
             setEditingId(id);
-
-            setFormData(selectedMember); // This should set existing data correctly
+            setFormData(row); // This should set existing data correctly
             setEditMode(true);
             setShowTable(false);
-            setShow1(true) // Switch to form view when editing
+            // Switch to form view when editing
         }
     };
-    const toggleEdit2 = (id) => {
-        const selectedMember = team.find((member) => member.id === id);
-        console.log(selectedMember)
-        if (selectedMember) {
+    const toggleEdit2 = (id, row) => {
+        // const selectedMember = team.find((member) => member.id === id);
+        // console.log(selectedMember)
+        if (row) {
+            setShow2(true)
             setEditingId(id);
-
-            setFormData(selectedMember); // This should set existing data correctly
+            setFormData(row); // This should set existing data correctly
             setEditMode(true);
             setShowTable(false);
-            setShow2(true) // Switch to form view when editing
+            // Switch to form view when editing
         }
     };
 
@@ -516,7 +516,7 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal, ha
                 ) : (
                     <Badge
                         variant="primary"
-                        onClick={() => toggleEdit2(row.id)}
+                        onClick={() => toggleEdit2(row.id, row)}
                     >
                         Add Trainer
                     </Badge>
@@ -535,7 +535,7 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal, ha
                         placement="top"
                         overlay={<Tooltip id="edit-tooltip">Edit</Tooltip>}
                     >
-                        <Button className="ms-1" onClick={() => toggleEdit(row.id)}>
+                        <Button className="ms-1" onClick={() => toggleEdit(row.id, row)}>
                             <FaEdit />
                         </Button>
                     </OverlayTrigger>
@@ -600,10 +600,11 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal, ha
                 <Modal.Header closeButton >
 
 
-
-                    <Button variant="success" className='rounded-5' onClick={handleClose1}>
-                        Create New Slot
-                    </Button>
+                    {!isPast && (
+                        <Button variant="success" className="rounded-5" onClick={handleClose1}>
+                            Create New Slot
+                        </Button>
+                    )}
                     <div className='text-center'> <h6>{categoryName}</h6><h5>{formattedDate}</h5></div>
 
                 </Modal.Header>

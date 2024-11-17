@@ -212,7 +212,7 @@ const CalenderComp = () => {
         const selectedDate = new Date(currentYear, currentMonth, day);
         return selectedDate >= today;
     };
-    const savedCategory = localStorage.getItem("category");
+    const savedCategory = localStorage.getItem("categoryforslot");
 
     const getdata_here = () => {
         instance.post('/Sessionslot/getAvailableslotslots', {
@@ -254,10 +254,11 @@ const CalenderComp = () => {
             fetchTeam();
         }
     }, [selectedDates]);
-
+    const selectedDateIsPast = isPastDate(new Date(selectedDates).getDate());
     return (
         <>
             <Container fluid className="slotbg">
+                <div><h2>{savedCategory}</h2></div>
                 <Container className="calender">
                     <Col lg={12} className="d-flex justify-content-center align-items-center bg-white">
                         <button
@@ -307,7 +308,7 @@ const CalenderComp = () => {
                                                     key={dayIndex}
                                                     onMouseEnter={() => day && !isDisabled && setHoveredDay(day)}
                                                     onMouseLeave={() => day && !isDisabled && setHoveredDay(null)}
-                                                    onClick={() => handleDayClick(day)}
+                                                    onClick={() => dateStatuses[day] !== "Holiday" && handleDayClick(day)}
                                                     style={{
                                                         height: "100px",
                                                         textAlign: "end",
@@ -346,7 +347,7 @@ const CalenderComp = () => {
                                                                 style={{
                                                                     fontSize: "10px",
                                                                     marginTop: "5px",
-                                                                
+
                                                                     padding: "3px 8px",
                                                                     borderRadius: "15px",
                                                                     display: "inline-block",
@@ -375,6 +376,7 @@ const CalenderComp = () => {
                 handleShowModal={handleShowModal}
                 selectedDates={selectedDates}
                 realdata={team}
+                isPast={selectedDateIsPast}
                 categoryName={categoryName} />
         </>
     );

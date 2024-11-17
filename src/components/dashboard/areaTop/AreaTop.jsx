@@ -99,7 +99,8 @@ const AreaTop = ({ buttonValue, tableView }) => {
     "/news",
     "/home-videos",
     "/trainer",
-    "/conact-form"
+    "/conact-form",
+    "/CalenderComp"
   ];
   const isHiddenPath = hiddenPaths.includes(location.pathname);
 
@@ -229,7 +230,7 @@ const AreaTop = ({ buttonValue, tableView }) => {
 
   }, [window.location.pathname]);
   return (
-    <section className="content-area-top bg-white p-3 mb-3">
+    <section className="content-area-top bg-white p-1 mb-3">
       <div className="area-top-l">
         <button
           className="sidebar-open-btn"

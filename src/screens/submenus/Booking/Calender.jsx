@@ -21,6 +21,7 @@ const Calender = () => {
     const title = ["Schedules", "Closed Days"];
 
     const CategoryClick = (item) => {
+        localStorage.setItem("categoryforslot", item.category);
         setCategoryName(item.category);
         navigate('/CalenderComp', { state: { categoryName: item.category, tabKey: activeKey } });
     };
