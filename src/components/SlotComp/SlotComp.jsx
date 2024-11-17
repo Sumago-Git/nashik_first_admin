@@ -608,7 +608,7 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal, ha
                     <div className='text-center'> <h6>{categoryName}</h6><h5>{formattedDate}</h5></div>
 
                 </Modal.Header>
-                <Modal.Body>|
+                <Modal.Body>
 
                     <Card>
                         <DataTable

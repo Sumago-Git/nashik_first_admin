@@ -100,7 +100,9 @@ const AreaTop = ({ buttonValue, tableView }) => {
     "/home-videos",
     "/trainer",
     "/conact-form",
-    "/CalenderComp"
+    "/CalenderComp",
+    "/bookseats",
+    "/Slotlistpage",
   ];
   const isHiddenPath = hiddenPaths.includes(location.pathname);
 
