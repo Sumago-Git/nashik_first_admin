@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Container, Table, Col, Row, Form } from "react-bootstrap";
+import { Container, Table, Col, Row, Form, Alert } from "react-bootstrap";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import './bookingpckg.css';
 import leftarrow from "../../assets/Holiday/leftarrow.png";
@@ -13,6 +13,7 @@ import { jsPDF } from "jspdf"; // Import jsPDF
 import Categories from "../../components/Categories";
 import instance from "../../api/AxiosInstance";
 import { useLocation } from "react-router-dom";
+import DataTable from "react-data-table-component";
 
 const Bookcalender = ({ tabKey }) => {
     const [show, setShow] = useState(false);
@@ -444,61 +445,61 @@ const Bookcalender = ({ tabKey }) => {
             image = await import('../../assets/Holiday/suspended.jpg');
         }
         const imgData = image.default;
-    
+
         // Load the image to get its original dimensions
         const img = new Image();
         img.src = imgData;
-    
+
         img.onload = async () => {
             const imgWidthPx = img.width;
             const imgHeightPx = img.height;
-    
+
             const dpi = 96; // DPI for web images
             const imgWidthMm = (imgWidthPx / dpi) * 25.4;
             const imgHeightMm = (imgHeightPx / dpi) * 25.4;
-    
+
             const doc = new jsPDF({
                 orientation: imgWidthMm > imgHeightMm ? 'landscape' : 'portrait',
                 unit: 'mm',
                 format: [imgWidthMm, imgHeightMm]
             });
-    
+
             // Add image to PDF
             doc.addImage(img, 'PNG', 0, 0, imgWidthMm, imgHeightMm);
-    
+
             // Add user details to the PDF
             doc.setFont("cursive");
             doc.setFontSize(95);
             doc.setTextColor("#4e4e95");
-    
+
             const nameText = `${selectedBooking.fname} ${selectedBooking.lname}`;
             const nameWidth = doc.getTextWidth(nameText);
             const xPositionName = (imgWidthMm - nameWidth) / 2;
             const yPositionName = imgHeightMm * 0.52;
             doc.text(nameText, xPositionName, yPositionName);
-    
+
             doc.setFont("Arial");
             doc.setTextColor("#4e4e95");
             doc.setFontSize(35);
-    
+
             const srText = `00${selectedBooking.id}`;
             const xPositionSr = imgWidthMm - 80;
             const yPositionSr = 45;
             doc.text(srText, xPositionSr, yPositionSr);
-    
+
             const slotDateText = `: ${selectedBooking.slotdate}`;
             const xPositionSlotDate = imgWidthMm - 93;
             const yPositionSlotDate = 85;
             doc.text(slotDateText, xPositionSlotDate, yPositionSlotDate);
-    
+
             // Convert the generated PDF to a Blob for sending to backend
             const pdfBlob = doc.output("blob");
-    
+
             // Prepare FormData to send PDF and email to the backend
             const formData = new FormData();
             formData.append('pdf', pdfBlob, 'certificate.pdf');
             formData.append('email', selectedBooking.email); // Include email field
-    
+
             // Send the PDF and email to the backend API
             try {
                 const response = await instance.post('/certificate/upload-certificate', formData, {
@@ -506,20 +507,79 @@ const Bookcalender = ({ tabKey }) => {
                         'Content-Type': 'multipart/form-data',
                     },
                 });
-            
-                if (response.status === 200 && response.data.success) {
-                    alert('Certificate sent successfully!');
-                } else {
-                    alert('Failed to send certificate.');
-                }
+
+                // if (response.status === 200 && response.data.success) {
+                //     alert('Certificate sent successfully!');
+                // } else {
+                //     alert('Failed to send certificate.');
+                // }
             } catch (error) {
                 console.error('Error uploading certificate:', error);
                 alert('An error occurred while sending the certificate.');
             }
         };
     };
-    
+    const toggleStatus = (row) => {
+        const newStatus = row.training_status === "Confirmed" ? "Attended" : "Confirmed";
 
+        // Update backend
+        instance.put(`bookingform/bookingform/${row.id}`, { training_status: newStatus })
+            .then(() => {
+                // Update row status locally for immediate UI feedback
+                setDataByDateAndCategory(prevData =>
+                    prevData.map(item =>
+                        item.id === row.id ? { ...item, training_status: newStatus } : item
+                    )
+                );
+            })
+            .catch((error) => console.error("Error updating status:", error));
+    };
+
+    const columns = [
+        {
+            name: 'Session',
+            selector: row => row.slotsession,
+            sortable: true,
+        },
+        {
+            name: 'Status',
+            cell: row => (
+                <Button
+                    variant={row.training_status === "Confirmed" ? "success" : "secondary"}
+                    className="w-100"
+                    onClick={() => toggleStatus(row)}
+                >
+                    {row.training_status === "Confirmed" ? "Confirmed" : "Attended"}
+                </Button>
+            ),
+            sortable: true,
+        },
+        {
+            name: 'First Name',
+            selector: row => row.fname,
+            sortable: true,
+        },
+        {
+            name: 'Last Name',
+            selector: row => row.lname,
+            sortable: true,
+        },
+        {
+            name: 'Category',
+            selector: row => row.category,
+            sortable: true,
+        },
+        {
+            name: 'Certificate No.',
+            selector: row => row.certificate_no,
+            sortable: true,
+        },
+        {
+            name: 'Training Status',
+            selector: row => row.training_status,
+            sortable: true,
+        },
+    ];
 
 
     const handleRowClick = (a) => {
@@ -531,8 +591,25 @@ const Bookcalender = ({ tabKey }) => {
 
     return (
         <>
+            <h3>{category1}</h3><h3>{selectedDate}</h3>
 
-            <Table striped bordered hover responsive="sm">
+            {dataByDateAndCategory.length > 0 ? (
+                <DataTable
+                    columns={columns}
+                    data={dataByDateAndCategory}
+                    pagination
+                    responsive
+                    striped
+                    noDataComponent="No Data Available"
+                    onRowClicked={handleRowClick}
+                />
+            ) : (
+                <Alert variant="warning" className="text-center">
+                    No Data Found
+                </Alert>
+            )}
+
+            {/* <Table striped bordered hover responsive="sm">
                 <tbody>
                     {
                         dataByDateAndCategory.length == 0 ? <p className="fw-bold ">No Data Found</p> :
@@ -544,9 +621,7 @@ const Bookcalender = ({ tabKey }) => {
                                         <tr onClick={() => { handleRowClick(a) }}>
                                             <td>{a.slotsession}</td>
                                             <td>{a.id}</td>
-                                            {/* <td> <Button variant="primary" className="w-100">
-                                                {a.status}
-                                            </Button></td> */}
+                                         
                                             <td>{a.fname}</td>
                                             <td>{a.lname}</td>
                                             <td>{a.category}</td>
@@ -558,7 +633,7 @@ const Bookcalender = ({ tabKey }) => {
                             })
                     }
                 </tbody>
-            </Table>
+            </Table> */}
             <Modal
                 show={show}
                 onHide={handleClose}
