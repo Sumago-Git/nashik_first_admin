@@ -358,48 +358,48 @@ const Bookcalender = ({ tabKey }) => {
             image = await import('../../assets/Holiday/suspended.jpg'); // Adjust the path to your image
         }
         const imgData = image.default; // Get the image data
-    
+
         // Load the image to get its original dimensions
         const img = new Image();
         img.src = imgData;
         img.onload = () => {
             const imgWidthPx = img.width;
             const imgHeightPx = img.height;
-    
+
             // Assume 96 DPI for web images and convert pixels to mm
             const dpi = 96;
             const imgWidthMm = (imgWidthPx / dpi) * 25.4;
             const imgHeightMm = (imgHeightPx / dpi) * 25.4;
-    
+
             // Create a custom-sized PDF to match the image aspect ratio
             const doc = new jsPDF({
                 orientation: imgWidthMm > imgHeightMm ? 'landscape' : 'portrait',
                 unit: 'mm',
                 format: [imgWidthMm, imgHeightMm] // Custom page size matching the image dimensions
             });
-    
+
             // Add the image to the PDF
             doc.addImage(img, 'PNG', 0, 0, imgWidthMm, imgHeightMm);
-    
+
             // Set font, color, and size for the user's name
             doc.setFont("cursive");
             doc.setFontSize(95);
             doc.setTextColor("#4e4e95");
-    
+
             // Prepare user's name
             const nameText = `${selectedBooking.fname} ${selectedBooking.lname}`;
             const nameWidth = doc.getTextWidth(nameText);
-    
+
             // Center the name horizontally
             const xPositionName = (imgWidthMm - nameWidth) / 2;
             const yPositionName = imgHeightMm * 0.52; // Adjust as needed for vertical positioning
-    
+
             // Draw the user's name
             doc.text(nameText, xPositionName, yPositionName);
-    
+
             // Set font and size for Sr and slotdate
             doc.setFont("Arial");
-    
+
             // Set color and position for Sr (ID)
             doc.setTextColor("#4e4e95");
             doc.setFontSize(35);
@@ -407,7 +407,7 @@ const Bookcalender = ({ tabKey }) => {
             const xPositionSr = imgWidthMm - 80; // Adjust x-position for Sr
             const yPositionSr = 45; // Adjust y-position for Sr
             doc.text(srText, xPositionSr, yPositionSr);
-    
+
             // Set color and position for slotdate
             doc.setTextColor("#4e4e95");
             doc.setFontSize(35);
@@ -422,7 +422,7 @@ const Bookcalender = ({ tabKey }) => {
             // const xPositionSlotTime = imgWidthMm - 93; // Adjust x-position for slotdate
             // const yPositionSlotTime = 95; // Adjust y-position for slotdate
             // doc.text(slotTimeText, xPositionSlotTime, yPositionSlotTime);
-    
+
             // Open the PDF in a new window for printing
             const pdfWindow = window.open("");
             pdfWindow.document.write(
@@ -430,7 +430,97 @@ const Bookcalender = ({ tabKey }) => {
             );
         };
     };
+
+    const handleEmailCertificate = async () => {
+        // Dynamically select the image based on the booking category
+        let image;
+        if (selectedBooking.category === "RTO – Learner Driving License Holder Training") {
+            image = await import('../../assets/Holiday/learner.JPG');
+        } else if (selectedBooking.category === "RTO – Training for School Bus Driver") {
+            image = await import('../../assets/Holiday/CERTIFICATE - BUS - Final.jpg');
+        } else if (selectedBooking.category === "RTO – Suspended Driving License Holders Training") {
+            image = await import('../../assets/Holiday/suspended.jpg');
+        } else if (selectedBooking.category === "College/Organization Training – Group") {
+            image = await import('../../assets/Holiday/suspended.jpg');
+        }
+        const imgData = image.default;
     
+        // Load the image to get its original dimensions
+        const img = new Image();
+        img.src = imgData;
+    
+        img.onload = async () => {
+            const imgWidthPx = img.width;
+            const imgHeightPx = img.height;
+    
+            const dpi = 96; // DPI for web images
+            const imgWidthMm = (imgWidthPx / dpi) * 25.4;
+            const imgHeightMm = (imgHeightPx / dpi) * 25.4;
+    
+            const doc = new jsPDF({
+                orientation: imgWidthMm > imgHeightMm ? 'landscape' : 'portrait',
+                unit: 'mm',
+                format: [imgWidthMm, imgHeightMm]
+            });
+    
+            // Add image to PDF
+            doc.addImage(img, 'PNG', 0, 0, imgWidthMm, imgHeightMm);
+    
+            // Add user details to the PDF
+            doc.setFont("cursive");
+            doc.setFontSize(95);
+            doc.setTextColor("#4e4e95");
+    
+            const nameText = `${selectedBooking.fname} ${selectedBooking.lname}`;
+            const nameWidth = doc.getTextWidth(nameText);
+            const xPositionName = (imgWidthMm - nameWidth) / 2;
+            const yPositionName = imgHeightMm * 0.52;
+            doc.text(nameText, xPositionName, yPositionName);
+    
+            doc.setFont("Arial");
+            doc.setTextColor("#4e4e95");
+            doc.setFontSize(35);
+    
+            const srText = `00${selectedBooking.id}`;
+            const xPositionSr = imgWidthMm - 80;
+            const yPositionSr = 45;
+            doc.text(srText, xPositionSr, yPositionSr);
+    
+            const slotDateText = `: ${selectedBooking.slotdate}`;
+            const xPositionSlotDate = imgWidthMm - 93;
+            const yPositionSlotDate = 85;
+            doc.text(slotDateText, xPositionSlotDate, yPositionSlotDate);
+    
+            // Convert the generated PDF to a Blob for sending to backend
+            const pdfBlob = doc.output("blob");
+    
+            // Prepare FormData to send PDF and email to the backend
+            const formData = new FormData();
+            formData.append('pdf', pdfBlob, 'certificate.pdf');
+            formData.append('email', selectedBooking.email); // Include email field
+    
+            // Send the PDF and email to the backend API
+            try {
+                const response = await instance.post('/certificate/upload-certificate', formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                    },
+                });
+            
+                if (response.status === 200 && response.data.success) {
+                    alert('Certificate sent successfully!');
+                } else {
+                    alert('Failed to send certificate.');
+                }
+            } catch (error) {
+                console.error('Error uploading certificate:', error);
+                alert('An error occurred while sending the certificate.');
+            }
+        };
+    };
+    
+
+
 
     const handleRowClick = (a) => {
         console.log("aaaa", a);
@@ -439,9 +529,6 @@ const Bookcalender = ({ tabKey }) => {
         handleShow1();
     };
 
-    const handleEmailCertificate = () => {
-        alert("test email")
-    }
     return (
         <>
 
