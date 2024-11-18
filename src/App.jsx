@@ -44,6 +44,7 @@ import bookingcatname from "./screens/Booking Packages/bookingcatname";
 import Slotlistpage from "./screens/Booking Packages/Slotlistpage";
 import Bookcalender from "./screens/Booking Packages/Bookcalender";
 import CalenderComp from "./components/Calender Component/CalenderComp";
+import Individual from "./screens/Booking Packages/Individual";
 
 function App() {
   return (
@@ -97,7 +98,7 @@ function App() {
             path="/headercontact"
             element={<ProtectedRoutes Component={HeaderContact} />}
           />
-            <Route
+          <Route
             path="/CalenderComp"
             element={<ProtectedRoutes Component={CalenderComp} />}
           />
@@ -112,6 +113,10 @@ function App() {
           <Route
             path="/conact-form"
             element={<ProtectedRoutes Component={ConatctFrom} />}
+          />
+          <Route
+            path="Individual"
+            element={<ProtectedRoutes Component={Individual} />}
           />
           <Route
             path="/trainer"
@@ -161,7 +166,7 @@ function App() {
             path="/bookpackg"
             element={<ProtectedRoutes Component={Bookpackages} />}
           />
-            <Route
+          <Route
             path="/Bookcalender"
             element={<ProtectedRoutes Component={Bookcalender} />}
           />
