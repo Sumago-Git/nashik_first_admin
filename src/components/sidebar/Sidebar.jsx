@@ -245,6 +245,11 @@ const SidebarMenu = [
         url: "/bookseats",
         icon: <AiOutlineAppstoreAdd style={{ color: "red" }} size={24} />,
       },
+      {
+        subMenus: "Individual Entries",
+        url: "/Individual",
+        icon: <AiOutlineAppstoreAdd style={{ color: "red" }} size={24} />,
+      },
     ],
   },
   {
