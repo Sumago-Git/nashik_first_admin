@@ -13,12 +13,13 @@ import { jsPDF } from "jspdf"; // Import jsPDF
 import Categories from "../../components/Categories";
 import instance from "../../api/AxiosInstance";
 import { useLocation } from "react-router-dom";
+
 const Bookcalender = ({ tabKey }) => {
     const [show, setShow] = useState(false);
     // const [selectedDate, setSelectedDate] = useState("");
     const [selectedDay, setSelectedDay] = useState("");
     const [categoryName, setCategoryName] = useState("");
- 
+
     const [dataByDateAndCategory, setDataByDateAndCategory] = useState([]);
     const [formatedDateData, setFormatedDate] = useState();
     const [currentDate, setCurrentDate] = useState(new Date());
@@ -94,19 +95,6 @@ const Bookcalender = ({ tabKey }) => {
         // Here you can add logic to save changes to your state or backend
         setIsEditing(false); // Disable edit mode
         let updatedBooking = { ...selectedBooking };
-
-        // if (typeof updatedBooking.vehicletype === "string") {
-        //     if (updatedBooking.vehicletype.includes(",")) {
-        //         // Split comma-separated string into an array
-        //         updatedBooking.vehicletype = updatedBooking.vehicletype.split(",").map(item => item.trim());
-        //     } else {
-        //         // Wrap single value string in an array
-        //         updatedBooking.vehicletype = [updatedBooking.vehicletype.trim()];
-        //     }
-        // } else if (!Array.isArray(updatedBooking.vehicletype)) {
-        //     // If vehicletype is neither string nor array, wrap it as a single-value array
-        //     updatedBooking.vehicletype = [updatedBooking.vehicletype];
-        // }
 
         instance.put(`bookingform/bookingform/${updatedBooking.id}`, updatedBooking).then((resp) => {
             console.log("resp", resp);
@@ -248,15 +236,75 @@ const Bookcalender = ({ tabKey }) => {
 
 
     }
+    // const handleDownloadCertificate = async () => {
+    //     const doc = new jsPDF();
+
+    //     // Add the certificate background image
+    //     const image = await import('../../assets/Holiday/cirtification.jpg'); // Make sure the path is correct
+    //     const imgData = image.default; // Get the image data
+
+    //     // Add the background image to the PDF
+    //     doc.addImage(imgData, 'PNG', 0, 0, 210, 270); // Adjust width and height as necessary
+
+    //     // Set font, color, and size for the user's name
+    //     doc.setFont("cursive");
+    //     doc.setFontSize(36);
+    //     doc.setTextColor("#4e4e95");
+
+    //     // Prepare user's name
+    //     const nameText = `${selectedBooking.fname} ${selectedBooking.lname}`;
+    //     const nameWidth = doc.getTextWidth(nameText);
+
+    //     // Center the name horizontally
+    //     const xPositionName = (210 - nameWidth) / 2;
+    //     const yPositionName = 115; // Adjust as needed for vertical positioning
+
+    //     // Draw the user's name
+    //     doc.text(nameText, xPositionName, yPositionName);
+
+    //     // Set font and size for Sr and slotdate
+    //     doc.setFont("Arial");
+
+    //     // Set color and position for Sr (ID)
+    //     doc.setTextColor("#4e4e95"); // Set color for Sr (use any desired color code)
+    //     doc.setFontSize(17);
+    //     const srText = `00${selectedBooking.id}`;
+    //     const xPositionSr = 185; // Adjust x-position for Sr
+    //     const yPositionSr = 63; // Adjust y-position for Sr
+    //     doc.text(srText, xPositionSr, yPositionSr);
+
+    //     // Set color and position for slotdate
+    //     doc.setTextColor("#4e4e95"); // Set color for slotdate (use any desired color code)
+    //     doc.setFontSize(15);
+    //     const slotDateText = `: ${selectedBooking.slotdate}`;
+    //     const xPositionSlotDate = 180; // Adjust x-position for slotdate
+    //     const yPositionSlotDate = 82; // Adjust y-position for slotdate
+    //     doc.text(slotDateText, xPositionSlotDate, yPositionSlotDate);
+
+    //     // Save the PDF
+    //     doc.save(`${selectedBooking.fname}_certificate.pdf`);
+
+    // };
+
+
     const handleDownloadCertificate = async () => {
         const doc = new jsPDF();
 
         // Add the certificate background image
-        const image = await import('../../assets/Holiday/cirtification.jpg'); // Make sure the path is correct
+        let image
+        if (selectedBooking.category === "RTO – Learner Driving License Holder Training") {
+            image = await import('../../assets/Holiday/learner.jpg'); // Adjust the path to your image
+        } else if (selectedBooking.category === "RTO – Training for School Bus Driver") {
+            image = await import('../../assets/Holiday/CERTIFICATE - BUS - Final.jpg'); // Adjust the path to your image
+        } else if (selectedBooking.category === "RTO – Suspended Driving License Holders Training") {
+            image = await import('../../assets/Holiday/suspended.jpg'); // Adjust the path to your image
+        } else if (selectedBooking.category === "College/Organization Training – Group") {
+            image = await import('../../assets/Holiday/suspended.jpg'); // Adjust the path to your image
+        }
         const imgData = image.default; // Get the image data
 
         // Add the background image to the PDF
-        doc.addImage(imgData, 'PNG', 0, 0, 210, 270); // Adjust width and height as necessary
+        doc.addImage(imgData, 'PNG', 0, 0, 300, 270); // A4 dimensions: 210mm x 297mm, adjust height as needed
 
         // Set font, color, and size for the user's name
         doc.setFont("cursive");
@@ -278,7 +326,7 @@ const Bookcalender = ({ tabKey }) => {
         doc.setFont("Arial");
 
         // Set color and position for Sr (ID)
-        doc.setTextColor("#4e4e95"); // Set color for Sr (use any desired color code)
+        doc.setTextColor("#4e4e95");
         doc.setFontSize(17);
         const srText = `00${selectedBooking.id}`;
         const xPositionSr = 185; // Adjust x-position for Sr
@@ -286,7 +334,7 @@ const Bookcalender = ({ tabKey }) => {
         doc.text(srText, xPositionSr, yPositionSr);
 
         // Set color and position for slotdate
-        doc.setTextColor("#4e4e95"); // Set color for slotdate (use any desired color code)
+        doc.setTextColor("#4e4e95");
         doc.setFontSize(15);
         const slotDateText = `: ${selectedBooking.slotdate}`;
         const xPositionSlotDate = 180; // Adjust x-position for slotdate
@@ -297,7 +345,92 @@ const Bookcalender = ({ tabKey }) => {
         doc.save(`${selectedBooking.fname}_certificate.pdf`);
     };
 
+    const handlePrintCertificate = async () => {
+        // Dynamically select the image based on the booking category
+        let image;
+        if (selectedBooking.category === "RTO – Learner Driving License Holder Training") {
+            image = await import('../../assets/Holiday/learner.JPG'); // Adjust the path to your image
+        } else if (selectedBooking.category === "RTO – Training for School Bus Driver") {
+            image = await import('../../assets/Holiday/CERTIFICATE - BUS - Final.jpg'); // Adjust the path to your image
+        } else if (selectedBooking.category === "RTO – Suspended Driving License Holders Training") {
+            image = await import('../../assets/Holiday/suspended.jpg'); // Adjust the path to your image
+        } else if (selectedBooking.category === "College/Organization Training – Group") {
+            image = await import('../../assets/Holiday/suspended.jpg'); // Adjust the path to your image
+        }
+        const imgData = image.default; // Get the image data
+    
+        // Load the image to get its original dimensions
+        const img = new Image();
+        img.src = imgData;
+        img.onload = () => {
+            const imgWidthPx = img.width;
+            const imgHeightPx = img.height;
+    
+            // Assume 96 DPI for web images and convert pixels to mm
+            const dpi = 96;
+            const imgWidthMm = (imgWidthPx / dpi) * 25.4;
+            const imgHeightMm = (imgHeightPx / dpi) * 25.4;
+    
+            // Create a custom-sized PDF to match the image aspect ratio
+            const doc = new jsPDF({
+                orientation: imgWidthMm > imgHeightMm ? 'landscape' : 'portrait',
+                unit: 'mm',
+                format: [imgWidthMm, imgHeightMm] // Custom page size matching the image dimensions
+            });
+    
+            // Add the image to the PDF
+            doc.addImage(img, 'PNG', 0, 0, imgWidthMm, imgHeightMm);
+    
+            // Set font, color, and size for the user's name
+            doc.setFont("cursive");
+            doc.setFontSize(95);
+            doc.setTextColor("#4e4e95");
+    
+            // Prepare user's name
+            const nameText = `${selectedBooking.fname} ${selectedBooking.lname}`;
+            const nameWidth = doc.getTextWidth(nameText);
+    
+            // Center the name horizontally
+            const xPositionName = (imgWidthMm - nameWidth) / 2;
+            const yPositionName = imgHeightMm * 0.52; // Adjust as needed for vertical positioning
+    
+            // Draw the user's name
+            doc.text(nameText, xPositionName, yPositionName);
+    
+            // Set font and size for Sr and slotdate
+            doc.setFont("Arial");
+    
+            // Set color and position for Sr (ID)
+            doc.setTextColor("#4e4e95");
+            doc.setFontSize(35);
+            const srText = `00${selectedBooking.id}`;
+            const xPositionSr = imgWidthMm - 80; // Adjust x-position for Sr
+            const yPositionSr = 45; // Adjust y-position for Sr
+            doc.text(srText, xPositionSr, yPositionSr);
+    
+            // Set color and position for slotdate
+            doc.setTextColor("#4e4e95");
+            doc.setFontSize(35);
+            const slotDateText = `: ${selectedBooking.slotdate}`;
+            const xPositionSlotDate = imgWidthMm - 93; // Adjust x-position for slotdate
+            const yPositionSlotDate = 85; // Adjust y-position for slotdate
+            doc.text(slotDateText, xPositionSlotDate, yPositionSlotDate);
 
+            // doc.setTextColor("#4e4e95");
+            // doc.setFontSize(35);
+            // const slotTimeText = `: ${selectedBooking.slotdate}`;
+            // const xPositionSlotTime = imgWidthMm - 93; // Adjust x-position for slotdate
+            // const yPositionSlotTime = 95; // Adjust y-position for slotdate
+            // doc.text(slotTimeText, xPositionSlotTime, yPositionSlotTime);
+    
+            // Open the PDF in a new window for printing
+            const pdfWindow = window.open("");
+            pdfWindow.document.write(
+                `<iframe width='100%' height='100%' src='${doc.output("bloburl")}'></iframe>`
+            );
+        };
+    };
+    
 
     const handleRowClick = (a) => {
         console.log("aaaa", a);
@@ -306,6 +439,9 @@ const Bookcalender = ({ tabKey }) => {
         handleShow1();
     };
 
+    const handleEmailCertificate = () => {
+        alert("test email")
+    }
     return (
         <>
 
@@ -320,10 +456,10 @@ const Bookcalender = ({ tabKey }) => {
                                     <>
                                         <tr onClick={() => { handleRowClick(a) }}>
                                             <td>{a.slotsession}</td>
-                                            {/* <td>{a.user_id}</td> */}
-                                            <td> <Button variant="primary" className="w-100">
+                                            <td>{a.id}</td>
+                                            {/* <td> <Button variant="primary" className="w-100">
                                                 {a.status}
-                                            </Button></td>
+                                            </Button></td> */}
                                             <td>{a.fname}</td>
                                             <td>{a.lname}</td>
                                             <td>{a.category}</td>
@@ -375,13 +511,13 @@ const Bookcalender = ({ tabKey }) => {
                             <Row>
                                 <Col lg={6} md={6} sm={12} className="pb-4">
                                     <b>User Id</b><br />
-                                    {selectedBooking.user_id}<br />
+                                    {selectedBooking.id}<br />
                                 </Col>
-                                <Col lg={6} md={6} sm={12}>
+                                {/* <Col lg={6} md={6} sm={12}>
                                     <b>Status</b><br />
                                     <Button variant={selectedBooking.status === "APPROVED" ? "primary" : selectedBooking.status === "PENDING" ? "warning" : selectedBooking.status === "CANCELLED" && "danger"} onClick={() => setLgShow(true)} className="w-100">{selectedBooking.status}</Button>
-                                </Col>
-                                <hr></hr>
+                                </Col> */}
+                                {/* <hr></hr> */}
 
                                 <Col lg={6} md={6} sm={12} className="pb-4">
                                     <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
@@ -393,11 +529,7 @@ const Bookcalender = ({ tabKey }) => {
                                         )}
                                     </Form.Group>
                                 </Col>
-                                <Col lg={6} md={6} sm={12}>
-                                    <b>Payment Method</b><br />
-                                    {selectedBooking.payment_method}
-                                </Col>
-                                <hr></hr>
+                                <hr />
 
                                 <Col lg={6} md={6} sm={12} className="pb-4">
                                     <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
@@ -547,15 +679,30 @@ const Bookcalender = ({ tabKey }) => {
                                         )}
                                     </Form.Group>
                                 </Col>
+                                <Col lg={6} md={6} sm={12}>
+                                    <b>Payment Method</b><br />
+                                    {selectedBooking.payment_method}
+                                </Col>
+                                <hr>
+                                </hr>
+
                                 {/* <Col lg={6} md={6} sm={12}>
                                     <b>Vehical Type</b><br />
                                     {selectedBooking.vehicletype}
                                 </Col> */}
-                                <hr></hr>
+                                {/* <hr></hr> */}
 
-                                <Col lg={6} md={6} sm={12} className="pb-4">
+                                <Col lg={12} md={12} sm={12} className="pb-4">
                                     <b>Print </b><br />
-                                    <Button variant="danger" onClick={handleDownloadCertificate}>Print Cirtificate</Button>
+                                    <div>
+                                        <button
+                                            className="btn btn-success mx-2 mt-2 w-25"
+                                            onClick={handlePrintCertificate}
+                                        >
+                                            Print & Pdf
+                                        </button>
+                                        <Button variant="danger" className="mx-2 mt-2 w-25" onClick={handleEmailCertificate}>Email</Button>
+                                    </div>
                                 </Col>
 
                                 <Col lg={12} className="text-end">
