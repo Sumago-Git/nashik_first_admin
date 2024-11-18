@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { Container, Table, Col, Row, Form } from "react-bootstrap";
-import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
+import { Container, Table, Col, Row, Form, Alert } from "react-bootstrap";
+
 import './bookingpckg.css';
-import leftarrow from "../../assets/Holiday/leftarrow.png";
-import rightarrow from "../../assets/Holiday/rightarrow.png";
-import { confirmAlert } from "react-confirm-alert";
+
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import Tab from 'react-bootstrap/Tab';
@@ -13,30 +11,25 @@ import { jsPDF } from "jspdf"; // Import jsPDF
 import Categories from "../../components/Categories";
 import instance from "../../api/AxiosInstance";
 import { useLocation } from "react-router-dom";
+import DataTable from 'react-data-table-component';
+
 const Bookcalender = ({ tabKey }) => {
     const [show, setShow] = useState(false);
     // const [selectedDate, setSelectedDate] = useState("");
     const [selectedDay, setSelectedDay] = useState("");
-    const [categoryName, setCategoryName] = useState("");
- 
+
     const [dataByDateAndCategory, setDataByDateAndCategory] = useState([]);
     const [formatedDateData, setFormatedDate] = useState();
     const [currentDate, setCurrentDate] = useState(new Date());
     const [lgShow, setLgShow] = useState(false);
-    const [rowModal, setRowModal] = useState(false);
-    const [selectedRowData, setSelectedRowData] = useState(null);
+
 
     const [show2, setShow2] = useState(false);
 
-    const handleClose2 = () => setShow1(false);
-    const handleShow2 = () => setShow2(true);
 
 
 
-    // const handleRowClick = (rowData) => {
-    //     setSelectedRowData(rowData);
-    //     setRowModal(true);
-    // };
+
     const location = useLocation();
     const { selectedDate, selectedTime, category, slotsession } = location.state || {}; // Destructure with default to avoid undefined errors
 
@@ -74,12 +67,8 @@ const Bookcalender = ({ tabKey }) => {
         getUserDataByCategoryAndDate()
     }, [])
 
-    const currentMonth = currentDate.getMonth();
-    const currentYear = currentDate.getFullYear();
-    const handleApprovedButtonClick = (event) => {
-        event.stopPropagation(); // Prevent row click event from firing
-        setLgShow(true);
-    };
+
+
 
 
     const [selectedBooking, setSelectedBooking] = useState(null); // New state for selected booking
@@ -147,57 +136,10 @@ const Bookcalender = ({ tabKey }) => {
         };
     }, []);
 
-    const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-    const monthNames = [
-        "January", "February", "March", "April", "May", "June",
-        "July", "August", "September", "October", "November", "December"
-    ];
 
-    const changeMonth = (direction) => {
-        setCurrentDate((prevDate) => {
-            const newDate = new Date(prevDate);
-            newDate.setMonth(direction === 'prev' ? newDate.getMonth() - 1 : newDate.getMonth() + 1);
-            return newDate;
-        });
-        // setCurrentDate(prevDate => {
-        //     const newDate = new Date(prevDate);
-        //     newDate.setMonth(newDate.getMonth() + (direction === 'prev' ? -1 : 1));
-        //     return newDate;
-        // });
-        getdata_here()
-    };
 
-    const isPastDate = (day) => {
-        const selectedDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        return selectedDate < today;
-    };
 
-    const getSpecialDateLabel = (day) => {
-        return specialDates.find(dateObj => dateObj.date === day);
-    };
 
-    const handleDayClick = (day) => {
-        if (day && !isPastDate(day)) {
-            const clickedDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
-            console.log("clickedDate", clickedDate);
-
-            const dayOfWeek = daysOfWeek[clickedDate.getDay()];
-            const formattedDate = clickedDate.toLocaleDateString();
-            setSelectedDate(formattedDate);
-            setSelectedDay(dayOfWeek);
-            handleShow();
-            const date = new Date(clickedDate);
-            const dayName = new Intl.DateTimeFormat("en-GB", { weekday: "long" }).format(date);
-            const datePart = new Intl.DateTimeFormat("en-GB", { day: "2-digit", month: "2-digit", year: "numeric" }).format(date);
-            const formattedDateToMatchWithFrontend = `${dayName} ${datePart}`;
-            getUserDataByCategoryAndDate(formattedDateToMatchWithFrontend)
-            setFormatedDate(formattedDateToMatchWithFrontend)
-            console.log("formattedDateToMatchWithFrontend", formattedDateToMatchWithFrontend);
-
-        }
-    };
 
     const daysInMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).getDate();
     const startingDay = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1).getDay();
@@ -297,6 +239,21 @@ const Bookcalender = ({ tabKey }) => {
         doc.save(`${selectedBooking.fname}_certificate.pdf`);
     };
 
+    const toggleStatus = (row) => {
+        const newStatus = row.training_status === "Confirmed" ? "Attended" : "Confirmed";
+
+        // Update backend
+        instance.put(`bookingform/bookingform/${row.id}`, { training_status: newStatus })
+            .then(() => {
+                // Update row status locally for immediate UI feedback
+                setDataByDateAndCategory(prevData =>
+                    prevData.map(item =>
+                        item.id === row.id ? { ...item, training_status: newStatus } : item
+                    )
+                );
+            })
+            .catch((error) => console.error("Error updating status:", error));
+    };
 
 
     const handleRowClick = (a) => {
@@ -305,37 +262,72 @@ const Bookcalender = ({ tabKey }) => {
         setSelectedBooking(a); // Set the selected booking data
         handleShow1();
     };
-
+    const columns = [
+        {
+            name: 'Session',
+            selector: row => row.slotsession,
+            sortable: true,
+        },
+        {
+            name: 'Status',
+            cell: row => (
+                <Button
+                    variant={row.training_status === "Confirmed" ? "success" : "secondary"}
+                    className="w-100"
+                    onClick={() => toggleStatus(row)}
+                >
+                    {row.training_status === "Confirmed" ? "Confirmed" : "Attended"}
+                </Button>
+            ),
+            sortable: true,
+        },
+        {
+            name: 'First Name',
+            selector: row => row.fname,
+            sortable: true,
+        },
+        {
+            name: 'Last Name',
+            selector: row => row.lname,
+            sortable: true,
+        },
+        {
+            name: 'Category',
+            selector: row => row.category,
+            sortable: true,
+        },
+        {
+            name: 'Certificate No.',
+            selector: row => row.certificate_no,
+            sortable: true,
+        },
+        {
+            name: 'Training Status',
+            selector: row => row.training_status,
+            sortable: true,
+        },
+    ];
     return (
         <>
 
-            <Table striped bordered hover responsive="sm">
-                <tbody>
-                    {
-                        dataByDateAndCategory.length == 0 ? <p className="fw-bold ">No Data Found</p> :
-                            dataByDateAndCategory.map((a) => {
-                                console.log("a", a);
+            <h3>{category1}</h3><h3>{selectedDate}</h3>
 
-                                return (
-                                    <>
-                                        <tr onClick={() => { handleRowClick(a) }}>
-                                            <td>{a.slotsession}</td>
-                                            {/* <td>{a.user_id}</td> */}
-                                            <td> <Button variant="primary" className="w-100">
-                                                {a.status}
-                                            </Button></td>
-                                            <td>{a.fname}</td>
-                                            <td>{a.lname}</td>
-                                            <td>{a.category}</td>
-                                            <td>{a.certificate_no}</td>
-                                            <td>{a.training_status}</td>
-                                        </tr>
-                                    </>
-                                )
-                            })
-                    }
-                </tbody>
-            </Table>
+            {dataByDateAndCategory.length > 0 ? (
+                <DataTable
+                    columns={columns}
+                    data={dataByDateAndCategory}
+                    pagination
+                    responsive
+                    striped
+                    noDataComponent="No Data Available"
+                    onRowClicked={handleRowClick}
+                />
+            ) : (
+                <Alert variant="warning" className="text-center">
+                    No Data Found
+                </Alert>
+            )}
+
             <Modal
                 show={show}
                 onHide={handleClose}
