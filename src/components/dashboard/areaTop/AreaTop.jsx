@@ -195,6 +195,9 @@ const AreaTop = ({ buttonValue, tableView }) => {
     else if (window.location.pathname == "/bookpackg") {
       setHeader("Booking Packages");
     }
+    else if (window.location.pathname == "/bookseats") {
+      setHeader("Booking Packages");
+    }
      else if (window.location.pathname == "/requestcallbackform") {
       setHeader("Request Callback Form");
     } else if (window.location.pathname == "/office") {
