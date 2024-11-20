@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { Container, Table, Col, Row, Form, Alert } from "react-bootstrap";
-
+import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import './bookingpckg.css';
-
+import leftarrow from "../../assets/Holiday/leftarrow.png";
+import rightarrow from "../../assets/Holiday/rightarrow.png";
+import { confirmAlert } from "react-confirm-alert";
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import Tab from 'react-bootstrap/Tab';
@@ -11,27 +13,22 @@ import { jsPDF } from "jspdf"; // Import jsPDF
 import Categories from "../../components/Categories";
 import instance from "../../api/AxiosInstance";
 import { useLocation } from "react-router-dom";
-import DataTable from 'react-data-table-component';
+import DataTable from "react-data-table-component";
 
 const Bookcalender = ({ tabKey }) => {
     const [show, setShow] = useState(false);
     // const [selectedDate, setSelectedDate] = useState("");
     const [selectedDay, setSelectedDay] = useState("");
-
     const [dataByDateAndCategory, setDataByDateAndCategory] = useState([]);
+    const [filteredData, setFilteredData] = useState([]);
     const [formatedDateData, setFormatedDate] = useState();
+    const [searchQuery, setSearchQuery] = useState("");
+    const [showPrintModal, setShowPrintModal] = useState(false);
     const [currentDate, setCurrentDate] = useState(new Date());
+    const [printData, setPrintData] = useState([]);
     const [lgShow, setLgShow] = useState(false);
-
-
-    const [show2, setShow2] = useState(false);
-
-
-
-
-
     const location = useLocation();
-    const { selectedDate, selectedTime, category, slotsession } = location.state || {}; // Destructure with default to avoid undefined errors
+    const { selectedDate, selectedTime, category, slotsession } = location.state || {};
 
     useEffect(() => {
         if (!selectedDate || !selectedTime || !category) {
@@ -57,6 +54,7 @@ const Bookcalender = ({ tabKey }) => {
         instance.post("bookingform/get-bookingentries-by-date-category", data).then((result) => {
             console.log("result", result);
             setDataByDateAndCategory(result.data.responseData)
+            setFilteredData(result.data.responseData);
         }).catch((error) => {
             console.log("error", error);
 
@@ -67,8 +65,17 @@ const Bookcalender = ({ tabKey }) => {
         getUserDataByCategoryAndDate()
     }, [])
 
+    const handlePrintAll = () => {
+        // Filter out only rows with "Attended" status
+        const attendedRows = filteredData.filter((row) => row.training_status === "Attended");
 
-
+        if (attendedRows.length > 0) {
+            setPrintData(attendedRows);
+            setShowPrintModal(true);
+        } else {
+            alert("No rows with 'Attended' status found.");
+        }
+    };
 
 
     const [selectedBooking, setSelectedBooking] = useState(null); // New state for selected booking
@@ -84,22 +91,10 @@ const Bookcalender = ({ tabKey }) => {
         setIsEditing(false); // Disable edit mode
         let updatedBooking = { ...selectedBooking };
 
-        // if (typeof updatedBooking.vehicletype === "string") {
-        //     if (updatedBooking.vehicletype.includes(",")) {
-        //         // Split comma-separated string into an array
-        //         updatedBooking.vehicletype = updatedBooking.vehicletype.split(",").map(item => item.trim());
-        //     } else {
-        //         // Wrap single value string in an array
-        //         updatedBooking.vehicletype = [updatedBooking.vehicletype.trim()];
-        //     }
-        // } else if (!Array.isArray(updatedBooking.vehicletype)) {
-        //     // If vehicletype is neither string nor array, wrap it as a single-value array
-        //     updatedBooking.vehicletype = [updatedBooking.vehicletype];
-        // }
-
         instance.put(`bookingform/bookingform/${updatedBooking.id}`, updatedBooking).then((resp) => {
             console.log("resp", resp);
             getUserDataByCategoryAndDate(formatedDateData)
+
         }).catch((err) => {
             console.log("err", err);
 
@@ -107,34 +102,17 @@ const Bookcalender = ({ tabKey }) => {
     };
 
     const handleClose = () => setShow(false);
-    const handleShow = () => setShow(true);
+
 
     const handleShow1 = () => setShow1(true);
     const [show1, setShow1] = useState(false);
     const handleClose1 = () => setShow1(false);
 
 
-    const [loading, setLoading] = useState(false);
-    const [isMobileView, setIsMobileView] = useState(window.innerWidth <= 768);
-
-    const specialDates = [
-        { date: 18, label: "Holiday", style: { backgroundColor: "#742929", color: "#ecc2c2" } },
-        { date: 15, label: "Closed", style: { backgroundColor: "#ffd4d4", color: "red" } },
-        { date: 22, label: "Available", style: { backgroundColor: "#d4ffd4", color: "green" } },
-    ];
 
 
-    useEffect(() => {
 
-        const handleResize = () => {
-            setIsMobileView(window.innerWidth <= 768);
-        };
 
-        window.addEventListener("resize", handleResize);
-        return () => {
-            window.removeEventListener("resize", handleResize);
-        };
-    }, []);
 
 
 
@@ -190,63 +168,279 @@ const Bookcalender = ({ tabKey }) => {
 
 
     }
-    const handleDownloadCertificate = async () => {
-        const doc = new jsPDF();
 
-        // Add the certificate background image
-        // const image = await import('../../assets/Holiday/cirtification.jpg'); // Make sure the path is correct
+
+    const handlePrintCertificate = async () => {
+        // Dynamically select the image based on the booking category
+        let image;
+        if (selectedBooking.category === "RTO – Learner Driving License Holder Training") {
+            image = await import('../../assets/Holiday/learner.JPG'); // Adjust the path to your image
+        } else if (selectedBooking.category === "RTO – Training for School Bus Driver") {
+            image = await import('../../assets/Holiday/CERTIFICATE - BUS - Final.jpg'); // Adjust the path to your image
+        } else if (selectedBooking.category === "RTO – Suspended Driving License Holders Training") {
+            image = await import('../../assets/Holiday/suspended.jpg'); // Adjust the path to your image
+        } else if (selectedBooking.category === "College/Organization Training – Group") {
+            image = await import('../../assets/Holiday/suspended.jpg'); // Adjust the path to your image
+        }
         const imgData = image.default; // Get the image data
 
-        // Add the background image to the PDF
-        doc.addImage(imgData, 'PNG', 0, 0, 210, 270); // Adjust width and height as necessary
+        // Load the image to get its original dimensions
+        const img = new Image();
+        img.src = imgData;
+        img.onload = () => {
+            const imgWidthPx = img.width;
+            const imgHeightPx = img.height;
 
-        // Set font, color, and size for the user's name
-        doc.setFont("cursive");
-        doc.setFontSize(36);
-        doc.setTextColor("#4e4e95");
+            // Assume 96 DPI for web images and convert pixels to mm
+            const dpi = 96;
+            const imgWidthMm = (imgWidthPx / dpi) * 25.4;
+            const imgHeightMm = (imgHeightPx / dpi) * 25.4;
 
-        // Prepare user's name
-        const nameText = `${selectedBooking.fname} ${selectedBooking.lname}`;
-        const nameWidth = doc.getTextWidth(nameText);
+            // Create a custom-sized PDF to match the image aspect ratio
+            const doc = new jsPDF({
+                orientation: imgWidthMm > imgHeightMm ? 'landscape' : 'portrait',
+                unit: 'mm',
+                format: [imgWidthMm, imgHeightMm] // Custom page size matching the image dimensions
+            });
 
-        // Center the name horizontally
-        const xPositionName = (210 - nameWidth) / 2;
-        const yPositionName = 115; // Adjust as needed for vertical positioning
+            // Add the image to the PDF
+            doc.addImage(img, 'PNG', 0, 0, imgWidthMm, imgHeightMm);
 
-        // Draw the user's name
-        doc.text(nameText, xPositionName, yPositionName);
+            // Set font, color, and size for the user's name
+            doc.setFont("cursive");
+            doc.setFontSize(95);
+            doc.setTextColor("#4e4e95");
 
-        // Set font and size for Sr and slotdate
-        doc.setFont("Arial");
+            // Prepare user's name
+            const nameText = `${selectedBooking.fname} ${selectedBooking.lname}`;
+            const nameWidth = doc.getTextWidth(nameText);
 
-        // Set color and position for Sr (ID)
-        doc.setTextColor("#4e4e95"); // Set color for Sr (use any desired color code)
-        doc.setFontSize(17);
-        const srText = `00${selectedBooking.id}`;
-        const xPositionSr = 185; // Adjust x-position for Sr
-        const yPositionSr = 63; // Adjust y-position for Sr
-        doc.text(srText, xPositionSr, yPositionSr);
+            // Center the name horizontally
+            const xPositionName = (imgWidthMm - nameWidth) / 2;
+            const yPositionName = imgHeightMm * 0.52; // Adjust as needed for vertical positioning
 
-        // Set color and position for slotdate
-        doc.setTextColor("#4e4e95"); // Set color for slotdate (use any desired color code)
-        doc.setFontSize(15);
-        const slotDateText = `: ${selectedBooking.slotdate}`;
-        const xPositionSlotDate = 180; // Adjust x-position for slotdate
-        const yPositionSlotDate = 82; // Adjust y-position for slotdate
-        doc.text(slotDateText, xPositionSlotDate, yPositionSlotDate);
+            // Draw the user's name
+            doc.text(nameText, xPositionName, yPositionName);
 
-        // Save the PDF
-        doc.save(`${selectedBooking.fname}_certificate.pdf`);
+            // Set font and size for Sr and slotdate
+            doc.setFont("Arial");
+
+            // Set color and position for Sr (ID)
+            doc.setTextColor("#4e4e95");
+            doc.setFontSize(35);
+            const srText = `00${selectedBooking.id}`;
+            const xPositionSr = imgWidthMm - 80; // Adjust x-position for Sr
+            const yPositionSr = 45; // Adjust y-position for Sr
+            doc.text(srText, xPositionSr, yPositionSr);
+
+            // Set color and position for slotdate
+            doc.setTextColor("#4e4e95");
+            doc.setFontSize(35);
+            const slotDateText = `: ${selectedBooking.slotdate}`;
+            const xPositionSlotDate = imgWidthMm - 93; // Adjust x-position for slotdate
+            const yPositionSlotDate = 85; // Adjust y-position for slotdate
+            doc.text(slotDateText, xPositionSlotDate, yPositionSlotDate);
+
+            // doc.setTextColor("#4e4e95");
+            // doc.setFontSize(35);
+            // const slotTimeText = `: ${selectedBooking.slotdate}`;
+            // const xPositionSlotTime = imgWidthMm - 93; // Adjust x-position for slotdate
+            // const yPositionSlotTime = 95; // Adjust y-position for slotdate
+            // doc.text(slotTimeText, xPositionSlotTime, yPositionSlotTime);
+
+            // Open the PDF in a new window for printing
+            const pdfWindow = window.open("");
+            pdfWindow.document.write(
+                `<iframe width='100%' height='100%' src='${doc.output("bloburl")}'></iframe>`
+            );
+        };
+    };
+
+    const handleEmailCertificate = async () => {
+        // Dynamically select the image based on the booking category
+        let image;
+        if (selectedBooking.category === "RTO – Learner Driving License Holder Training") {
+            image = await import('../../assets/Holiday/learner.JPG');
+        } else if (selectedBooking.category === "RTO – Training for School Bus Driver") {
+            image = await import('../../assets/Holiday/CERTIFICATE - BUS - Final.jpg');
+        } else if (selectedBooking.category === "RTO – Suspended Driving License Holders Training") {
+            image = await import('../../assets/Holiday/suspended.jpg');
+        } else if (selectedBooking.category === "College/Organization Training – Group") {
+            image = await import('../../assets/Holiday/suspended.jpg');
+        }
+        const imgData = image.default;
+
+        // Load the image to get its original dimensions
+        const img = new Image();
+        img.src = imgData;
+
+        img.onload = async () => {
+            const imgWidthPx = img.width;
+            const imgHeightPx = img.height;
+
+            const dpi = 96; // DPI for web images
+            const imgWidthMm = (imgWidthPx / dpi) * 25.4;
+            const imgHeightMm = (imgHeightPx / dpi) * 25.4;
+
+            const doc = new jsPDF({
+                orientation: imgWidthMm > imgHeightMm ? 'landscape' : 'portrait',
+                unit: 'mm',
+                format: [imgWidthMm, imgHeightMm]
+            });
+
+            // Add image to PDF
+            doc.addImage(img, 'PNG', 0, 0, imgWidthMm, imgHeightMm);
+
+            // Add user details to the PDF
+            doc.setFont("cursive");
+            doc.setFontSize(95);
+            doc.setTextColor("#4e4e95");
+
+            const nameText = `${selectedBooking.fname} ${selectedBooking.lname}`;
+            const nameWidth = doc.getTextWidth(nameText);
+            const xPositionName = (imgWidthMm - nameWidth) / 2;
+            const yPositionName = imgHeightMm * 0.52;
+            doc.text(nameText, xPositionName, yPositionName);
+
+            doc.setFont("Arial");
+            doc.setTextColor("#4e4e95");
+            doc.setFontSize(35);
+
+            const srText = `00${selectedBooking.id}`;
+            const xPositionSr = imgWidthMm - 80;
+            const yPositionSr = 45;
+            doc.text(srText, xPositionSr, yPositionSr);
+
+            const slotDateText = `: ${selectedBooking.slotdate}`;
+            const xPositionSlotDate = imgWidthMm - 93;
+            const yPositionSlotDate = 85;
+            doc.text(slotDateText, xPositionSlotDate, yPositionSlotDate);
+
+            // Convert the generated PDF to a Blob for sending to backend
+            const pdfBlob = doc.output("blob");
+
+            // Prepare FormData to send PDF and email to the backend
+            const formData = new FormData();
+            formData.append('pdf', pdfBlob, 'certificate.pdf');
+            formData.append('email', selectedBooking.email); // Include email field
+
+            // Send the PDF and email to the backend API
+            try {
+                const response = await instance.post('/certificate/upload-certificate', formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                    },
+                });
+
+                // if (response.status === 200 && response.data.success) {
+                //     alert('Certificate sent successfully!');
+                // } else {
+                //     alert('Failed to send certificate.');
+                // }
+            } catch (error) {
+                console.error('Error uploading certificate:', error);
+                alert('An error occurred while sending the certificate.');
+            }
+        };
+    };
+
+
+    const handleEmailCertificatesingle = async (row) => {
+        // Dynamically select the image based on the booking category
+        let image;
+        if (row.category === "RTO – Learner Driving License Holder Training") {
+            image = await import('../../assets/Holiday/learner.JPG');
+        } else if (row.category === "RTO – Training for School Bus Driver") {
+            image = await import('../../assets/Holiday/CERTIFICATE - BUS - Final.jpg');
+        } else if (row.category === "RTO – Suspended Driving License Holders Training") {
+            image = await import('../../assets/Holiday/suspended.jpg');
+        } else if (row.category === "College/Organization Training – Group") {
+            image = await import('../../assets/Holiday/suspended.jpg');
+        }
+        const imgData = image.default;
+
+        // Load the image to get its original dimensions
+        const img = new Image();
+        img.src = imgData;
+
+        img.onload = async () => {
+            const imgWidthPx = img.width;
+            const imgHeightPx = img.height;
+
+            const dpi = 96; // DPI for web images
+            const imgWidthMm = (imgWidthPx / dpi) * 25.4;
+            const imgHeightMm = (imgHeightPx / dpi) * 25.4;
+
+            const doc = new jsPDF({
+                orientation: imgWidthMm > imgHeightMm ? 'landscape' : 'portrait',
+                unit: 'mm',
+                format: [imgWidthMm, imgHeightMm]
+            });
+
+            // Add image to PDF
+            doc.addImage(img, 'PNG', 0, 0, imgWidthMm, imgHeightMm);
+
+            // Add user details to the PDF
+            doc.setFont("cursive");
+            doc.setFontSize(95);
+            doc.setTextColor("#4e4e95");
+
+            const nameText = `${row.fname} ${row.lname}`;
+            const nameWidth = doc.getTextWidth(nameText);
+            const xPositionName = (imgWidthMm - nameWidth) / 2;
+            const yPositionName = imgHeightMm * 0.52;
+            doc.text(nameText, xPositionName, yPositionName);
+
+            doc.setFont("Arial");
+            doc.setTextColor("#4e4e95");
+            doc.setFontSize(35);
+
+            const srText = `00${row.id}`;
+            const xPositionSr = imgWidthMm - 80;
+            const yPositionSr = 45;
+            doc.text(srText, xPositionSr, yPositionSr);
+
+            const slotDateText = `: ${row.slotdate}`;
+            const xPositionSlotDate = imgWidthMm - 93;
+            const yPositionSlotDate = 85;
+            doc.text(slotDateText, xPositionSlotDate, yPositionSlotDate);
+
+            // Convert the generated PDF to a Blob for sending to backend
+            const pdfBlob = doc.output("blob");
+
+            // Prepare FormData to send PDF and email to the backend
+            const formData = new FormData();
+            formData.append('pdf', pdfBlob, 'certificate.pdf');
+            formData.append('email', row.email); // Include email field
+
+            // Send the PDF and email to the backend API
+            try {
+                const response = await instance.post('/certificate/upload-certificate', formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                    },
+                });
+
+                // if (response.status === 200 && response.data.success) {
+                //     alert('Certificate sent successfully!');
+                // } else {
+                //     alert('Failed to send certificate.');
+                // }
+            } catch (error) {
+                console.error('Error uploading certificate:', error);
+                alert('An error occurred while sending the certificate.');
+            }
+        };
     };
 
     const toggleStatus = (row) => {
         const newStatus = row.training_status === "Confirmed" ? "Attended" : "Confirmed";
 
         // Update backend
-        instance.put(`bookingform/bookingform/${row.id}`, { training_status: newStatus })
+        instance.put(`bookingform/updateTrainingStatus`, { trainingStatus: newStatus, bookingId: row.id })
             .then(() => {
                 // Update row status locally for immediate UI feedback
-                setDataByDateAndCategory(prevData =>
+                setFilteredData(prevData =>
                     prevData.map(item =>
                         item.id === row.id ? { ...item, training_status: newStatus } : item
                     )
@@ -255,45 +449,32 @@ const Bookcalender = ({ tabKey }) => {
             .catch((error) => console.error("Error updating status:", error));
     };
 
-
-    const handleRowClick = (a) => {
-        console.log("aaaa", a);
-
-        setSelectedBooking(a); // Set the selected booking data
-        handleShow1();
+    const handleSearch = (e) => {
+        const query = e.target.value.toLowerCase();
+        setSearchQuery(query);
+        const filtered = dataByDateAndCategory.filter((item) =>
+            item.fname.toLowerCase().includes(query) ||
+            item.lname.toLowerCase().includes(query) ||
+            item.email.toLowerCase().includes(query) ||
+            item.phone.includes(query)
+        );
+        setFilteredData(filtered);
     };
     const columns = [
         {
-            name: 'Session',
-            selector: row => row.slotsession,
+            name: 'Full Name',
+            selector: row => `${row.fname}   ${row.lname}`,
+            sortable: true,
+        },
+
+        {
+            name: 'Email',
+            selector: row => row.email,
             sortable: true,
         },
         {
-            name: 'Status',
-            cell: row => (
-                <Button
-                    variant={row.training_status === "Confirmed" ? "success" : "secondary"}
-                    className="w-100"
-                    onClick={() => toggleStatus(row)}
-                >
-                    {row.training_status === "Confirmed" ? "Confirmed" : "Attended"}
-                </Button>
-            ),
-            sortable: true,
-        },
-        {
-            name: 'First Name',
-            selector: row => row.fname,
-            sortable: true,
-        },
-        {
-            name: 'Last Name',
-            selector: row => row.lname,
-            sortable: true,
-        },
-        {
-            name: 'Category',
-            selector: row => row.category,
+            name: 'phone',
+            selector: row => row.phone,
             sortable: true,
         },
         {
@@ -303,19 +484,142 @@ const Bookcalender = ({ tabKey }) => {
         },
         {
             name: 'Training Status',
-            selector: row => row.training_status,
+            cell: row => (
+                <Button
+                    variant={row.training_status === "Confirmed" ? "success" : "secondary"}
+                    className="w-100"
+                    onClick={() => { toggleStatus(row); handleEmailCertificatesingle(row) }}
+                >
+                    {row.training_status === "Confirmed" ? "Confirmed" : "Attended"}
+                </Button>
+            ),
             sortable: true,
         },
     ];
+
+
+    const handleRowClick = (a) => {
+        console.log("aaaa", a);
+
+        setSelectedBooking(a); // Set the selected booking data
+        handleShow1();
+    };
+
+
+    const printPreview = async () => {
+        const pdfPromises = printData.map(async (row) => {
+            let image;
+
+            // Determine which image to use based on the category of the booking
+            if (row.category === "RTO – Learner Driving License Holder Training") {
+                image = await import('../../assets/Holiday/learner.JPG');
+            } else if (row.category === "RTO – Training for School Bus Driver") {
+                image = await import('../../assets/Holiday/CERTIFICATE - BUS - Final.jpg');
+            } else if (row.category === "RTO – Suspended Driving License Holders Training") {
+                image = await import('../../assets/Holiday/suspended.jpg');
+            } else if (row.category === "College/Organization Training – Group") {
+                image = await import('../../assets/Holiday/suspended.jpg');
+            }
+
+            const imgData = image.default; // Get the image data
+
+            // Load the image to get its original dimensions
+            const img = new Image();
+            img.src = imgData;
+            return new Promise((resolve) => {
+                img.onload = () => {
+                    const imgWidthPx = img.width;
+                    const imgHeightPx = img.height;
+
+                    // Assume 96 DPI for web images and convert pixels to mm
+                    const dpi = 96;
+                    const imgWidthMm = (imgWidthPx / dpi) * 25.4;
+                    const imgHeightMm = (imgHeightPx / dpi) * 25.4;
+
+                    // Create a custom-sized PDF to match the image aspect ratio
+                    const doc = new jsPDF({
+                        orientation: imgWidthMm > imgHeightMm ? 'landscape' : 'portrait',
+                        unit: 'mm',
+                        format: [imgWidthMm, imgHeightMm] // Custom page size matching the image dimensions
+                    });
+
+                    // Add the image to the PDF
+                    doc.addImage(img, 'PNG', 0, 0, imgWidthMm, imgHeightMm);
+
+                    // Set font, color, and size for the user's name
+                    doc.setFont("cursive");
+                    doc.setFontSize(95);
+                    doc.setTextColor("#4e4e95");
+
+                    // Prepare user's name
+                    const nameText = `${row.fname} ${row.lname}`;
+                    const nameWidth = doc.getTextWidth(nameText);
+
+                    // Center the name horizontally
+                    const xPositionName = (imgWidthMm - nameWidth) / 2;
+                    const yPositionName = imgHeightMm * 0.52; // Adjust as needed for vertical positioning
+
+                    // Draw the user's name
+                    doc.text(nameText, xPositionName, yPositionName);
+
+                    // Set font and size for Sr and slotdate
+                    doc.setFont("Arial");
+
+                    // Set color and position for Sr (ID)
+                    doc.setTextColor("#4e4e95");
+                    doc.setFontSize(35);
+                    const srText = `00${row.id}`;
+                    const xPositionSr = imgWidthMm - 80; // Adjust x-position for Sr
+                    const yPositionSr = 45; // Adjust y-position for Sr
+                    doc.text(srText, xPositionSr, yPositionSr);
+
+                    // Set color and position for slotdate
+                    doc.setTextColor("#4e4e95");
+                    doc.setFontSize(35);
+                    const slotDateText = `: ${row.slotdate}`;
+                    const xPositionSlotDate = imgWidthMm - 93; // Adjust x-position for slotdate
+                    const yPositionSlotDate = 85; // Adjust y-position for slotdate
+                    doc.text(slotDateText, xPositionSlotDate, yPositionSlotDate);
+
+                    // Resolve the generated PDF document
+                    resolve(doc);
+                };
+            });
+        });
+
+        // Wait for all PDFs to be generated and then open them for printing
+        const pdfDocuments = await Promise.all(pdfPromises);
+        const pdfWindow = window.open("", "", "width=800,height=600");
+
+        // Embed all PDFs into the new window for printing
+        pdfDocuments.forEach(doc => {
+            pdfWindow.document.write(
+                `<iframe width='100%' height='100%' src='${doc.output("bloburl")}'></iframe>`
+            );
+        });
+    };
+
     return (
         <>
-
             <h3>{category1}</h3><h3>{selectedDate}</h3>
+            <Row className="mb-3">
+                <Col className="d-flex justify-content-end">
+                    <Form.Control
+                        type="text"
+                        placeholder="Search by First Name, Last Name, or Email"
+                        value={searchQuery}
+                        onChange={handleSearch}
+                        style={{ width: '300px' }} // Optional: Set a custom width for the input
+                    /> <Button variant="primary" onClick={handlePrintAll} className="mb-3 ms-5">
+                        Print All
+                    </Button>
+                </Col>
 
-            {dataByDateAndCategory.length > 0 ? (
+            </Row>
+            {filteredData.length > 0 ? (
                 <DataTable
                     columns={columns}
-                    data={dataByDateAndCategory}
+                    data={filteredData}
                     pagination
                     responsive
                     striped
@@ -327,6 +631,7 @@ const Bookcalender = ({ tabKey }) => {
                     No Data Found
                 </Alert>
             )}
+
 
             <Modal
                 show={show}
@@ -367,13 +672,13 @@ const Bookcalender = ({ tabKey }) => {
                             <Row>
                                 <Col lg={6} md={6} sm={12} className="pb-4">
                                     <b>User Id</b><br />
-                                    {selectedBooking.user_id}<br />
+                                    {selectedBooking.id}<br />
                                 </Col>
-                                <Col lg={6} md={6} sm={12}>
+                                {/* <Col lg={6} md={6} sm={12}>
                                     <b>Status</b><br />
                                     <Button variant={selectedBooking.status === "APPROVED" ? "primary" : selectedBooking.status === "PENDING" ? "warning" : selectedBooking.status === "CANCELLED" && "danger"} onClick={() => setLgShow(true)} className="w-100">{selectedBooking.status}</Button>
-                                </Col>
-                                <hr></hr>
+                                </Col> */}
+                                {/* <hr></hr> */}
 
                                 <Col lg={6} md={6} sm={12} className="pb-4">
                                     <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
@@ -385,11 +690,7 @@ const Bookcalender = ({ tabKey }) => {
                                         )}
                                     </Form.Group>
                                 </Col>
-                                <Col lg={6} md={6} sm={12}>
-                                    <b>Payment Method</b><br />
-                                    {selectedBooking.payment_method}
-                                </Col>
-                                <hr></hr>
+                                <hr />
 
                                 <Col lg={6} md={6} sm={12} className="pb-4">
                                     <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
@@ -492,7 +793,7 @@ const Bookcalender = ({ tabKey }) => {
 
                                             <option value="Attended">Attended</option>
                                             <option value="Confirmed">Confirmed</option>
-                                      
+
                                             {/* Add other options as needed */}
                                         </Form.Select>
                                     ) : (
@@ -538,15 +839,30 @@ const Bookcalender = ({ tabKey }) => {
                                         )}
                                     </Form.Group>
                                 </Col>
+                                <Col lg={6} md={6} sm={12}>
+                                    <b>Payment Method</b><br />
+                                    {selectedBooking.payment_method}
+                                </Col>
+                                <hr>
+                                </hr>
+
                                 {/* <Col lg={6} md={6} sm={12}>
                                     <b>Vehical Type</b><br />
                                     {selectedBooking.vehicletype}
                                 </Col> */}
-                                <hr></hr>
+                                {/* <hr></hr> */}
 
-                                <Col lg={6} md={6} sm={12} className="pb-4">
+                                <Col lg={12} md={12} sm={12} className="pb-4">
                                     <b>Print </b><br />
-                                    <Button variant="danger" onClick={handleDownloadCertificate}>Print Cirtificate</Button>
+                                    <div>
+                                        <button
+                                            className="btn btn-success mx-2 mt-2 w-25"
+                                            onClick={handlePrintCertificate}
+                                        >
+                                            Print & Pdf
+                                        </button>
+                                        <Button variant="danger" className="mx-2 mt-2 w-25" onClick={handleEmailCertificate}>Email</Button>
+                                    </div>
                                 </Col>
 
                                 <Col lg={12} className="text-end">
@@ -607,6 +923,29 @@ const Bookcalender = ({ tabKey }) => {
                 <Modal.Footer>
                     <Button variant="secondary" onClick={() => setLgShow(false)}>
                         Close
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+
+            <Modal show={showPrintModal} onHide={() => setShowPrintModal(false)} size="lg">
+                <Modal.Header closeButton>
+                    <Modal.Title>Print All Attended Records</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <div>
+                        {printData.map((row, index) => (
+                            <div key={index}>
+                                <h6>{row.fname} {row.lname}</h6>
+                            </div>
+                        ))}
+                    </div>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={() => setShowPrintModal(false)}>
+                        Close
+                    </Button>
+                    <Button variant="primary" onClick={printPreview}>
+                        Print
                     </Button>
                 </Modal.Footer>
             </Modal>
