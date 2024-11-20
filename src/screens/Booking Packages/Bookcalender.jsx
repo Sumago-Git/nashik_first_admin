@@ -194,7 +194,7 @@ const Bookcalender = ({ tabKey }) => {
         const doc = new jsPDF();
 
         // Add the certificate background image
-        const image = await import('../../assets/Holiday/cirtification.jpg'); // Make sure the path is correct
+        // const image = await import('../../assets/Holiday/cirtification.jpg'); // Make sure the path is correct
         const imgData = image.default; // Get the image data
 
         // Add the background image to the PDF
@@ -492,8 +492,7 @@ const Bookcalender = ({ tabKey }) => {
 
                                             <option value="Attended">Attended</option>
                                             <option value="Confirmed">Confirmed</option>
-                                            <option value="Not Confirmed">Not Confirmed</option>
-                                            <option value="Absent">Absent</option>
+                                      
                                             {/* Add other options as needed */}
                                         </Form.Select>
                                     ) : (

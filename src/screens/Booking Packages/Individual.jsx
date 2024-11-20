@@ -106,15 +106,30 @@ function Individual() {
 
     const handleExportToExcel = () => {
         if (selectedRows.length > 0) {
-            const ws = XLSX.utils.json_to_sheet(selectedRows);
+            // Map selected rows to include only the specified fields
+            const exportData = selectedRows.map(row => ({
+                learningNo: "0  ", // Rename field to match desired header
+                fname: row.fname, 
+                mname: row.mname, 
+                lname: row.lname, 
+                email: row.email, 
+                phone: row.phone
+            }));
+    
+            // Create a worksheet from the mapped data
+            const ws = XLSX.utils.json_to_sheet(exportData);
+    
+            // Create a workbook and append the worksheet
             const wb = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(wb, ws, "Selected Data");
+    
+            // Write the workbook to a file
             XLSX.writeFile(wb, "selected_data.xlsx");
         } else {
             alert("No rows selected");
         }
     };
-
+    
     const handleSelectAll = () => {
         if (selectAll) {
             setSelectedRows([]); // Deselect all
