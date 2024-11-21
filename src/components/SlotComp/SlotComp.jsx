@@ -674,7 +674,7 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal, ha
                                         <option value="RTO – Training for School Bus Driver">RTO – Training for School Bus Driver</option>
                                         <option value="School Students Training – Group">School Students Training – Group</option>
                                         <option value="College/Organization Training – Group">College/Organization Training – Group</option>
-                                        <option value="College / Organization Training – Individual">College / Organization Training – Individual</option>
+                                       
                                     </Form.Select>
                                 </Form.Group>
 

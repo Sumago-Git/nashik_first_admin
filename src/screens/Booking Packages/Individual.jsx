@@ -104,32 +104,46 @@ function Individual() {
         setSelectedRows(state.selectedRows);
     };
 
-    const handleExportToExcel = () => {
+    const handleExportToExcel = async () => {
         if (selectedRows.length > 0) {
             // Map selected rows to include only the specified fields
             const exportData = selectedRows.map(row => ({
                 learningNo: "0  ", // Rename field to match desired header
-                fname: row.fname, 
-                mname: row.mname, 
-                lname: row.lname, 
-                email: row.email, 
+                fname: row.fname,
+                mname: row.mname,
+                lname: row.lname,
+                email: row.email,
                 phone: row.phone
             }));
-    
+
             // Create a worksheet from the mapped data
             const ws = XLSX.utils.json_to_sheet(exportData);
-    
+
             // Create a workbook and append the worksheet
             const wb = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(wb, ws, "Selected Data");
-    
+
             // Write the workbook to a file
             XLSX.writeFile(wb, "selected_data.xlsx");
+            try {
+                const deletePromises = selectedRows.map(row =>
+                    instance.delete(`Individuals/delete-Individuals/${row.id}`)
+                );
+                await Promise.all(deletePromises);
+
+                // Refresh the data after successful deletion
+                getdata_admin();
+                setSelectedRows([]); // Clear selected rows
+                alert("Exported and deleted successfully!");
+            } catch (error) {
+                console.error("Error deleting records:", error);
+                alert("Export successful, but some records could not be deleted.");
+            }
         } else {
             alert("No rows selected");
         }
     };
-    
+
     const handleSelectAll = () => {
         if (selectAll) {
             setSelectedRows([]); // Deselect all

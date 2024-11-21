@@ -24,10 +24,7 @@ const Categories = ({setCategoryName}) => {
             category: "College/Organization Training – Group",
             url: ""
         },
-        {
-            category: "College / Organization Training – Individual",
-            url: ""
-        },
+      
     ]
 
     const CategoryClick = (item, id) => {

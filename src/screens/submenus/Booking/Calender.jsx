@@ -15,7 +15,7 @@ const Calender = () => {
         { category: "RTO – Training for School Bus Driver", url: "" },
         { category: "School Students Training – Group", url: "" },
         { category: "College/Organization Training – Group", url: "" },
-        { category: "College / Organization Training – Individual", url: "" },
+     
     ];
 
     const title = ["Schedules", "Closed Days"];

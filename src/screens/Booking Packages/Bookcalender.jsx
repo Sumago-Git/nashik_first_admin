@@ -445,6 +445,7 @@ const Bookcalender = ({ tabKey }) => {
                         item.id === row.id ? { ...item, training_status: newStatus } : item
                     )
                 );
+                getUserDataByCategoryAndDate()
             })
             .catch((error) => console.error("Error updating status:", error));
     };
@@ -491,6 +492,7 @@ const Bookcalender = ({ tabKey }) => {
                     onClick={() => { toggleStatus(row); handleEmailCertificatesingle(row) }}
                 >
                     {row.training_status === "Confirmed" ? "Confirmed" : "Attended"}
+
                 </Button>
             ),
             sortable: true,
@@ -767,7 +769,6 @@ const Bookcalender = ({ tabKey }) => {
                                             <option value="RTO – Training for School Bus Driver">RTO – Training for School Bus Driver</option>
                                             <option value="School Students Training – Group">School Students Training – Group</option>
                                             <option value="College/Organization Training – Group">College/Organization Training – Group</option>
-                                            <option value="College / Organization Training – Individual">College / Organization Training – Individual</option>
                                             {/* Add other options as needed */}
                                         </Form.Select>
                                     ) : (
@@ -935,7 +936,7 @@ const Bookcalender = ({ tabKey }) => {
                     <div>
                         {printData.map((row, index) => (
                             <div key={index}>
-                                <h6>{row.fname} {row.lname}</h6>
+                                <h4>{row.fname} {row.lname}</h4>
                             </div>
                         ))}
                     </div>
