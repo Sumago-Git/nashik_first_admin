@@ -9,8 +9,8 @@ import {
   MdLogout,
   MdOutlinePermContactCalendar,
   MdOutlinePhotoSizeSelectLarge, MdInfoOutline, MdOutlineFlag, MdTimer, MdPhotoLibrary,
-  MdPeopleOutline,MdEvent,MdPlayCircleOutline,MdArticle,MdEventNote,MdAssessment,MdContactMail,
-  MdSchool,MdLocalOffer,MdSupervisorAccount,MdThumbUp
+  MdPeopleOutline, MdEvent, MdPlayCircleOutline, MdArticle, MdEventNote, MdAssessment, MdContactMail,
+  MdSchool, MdLocalOffer, MdSupervisorAccount, MdThumbUp
 } from "react-icons/md";
 import { RiTeamFill, RiContactsBookLine, RiFileListLine } from "react-icons/ri";
 import { FiUsers, FiList, FiFileText, FiUploadCloud } from "react-icons/fi";
@@ -31,6 +31,11 @@ const SidebarMenu = [
     url: "/dashboard",
     mainIcon: <MdHome size={24} />,
     subMenu: [
+      {
+        subMenus: "Home Banner",
+        url: "/homebanner",
+        icon: <AiOutlineAppstoreAdd style={{ color: "red" }} size={24} />,
+      },
       // {
       //   subMenus: "Header Contact",
       //   url: "/headercontact",
@@ -39,91 +44,28 @@ const SidebarMenu = [
       {
         subMenus: "Social Contacts",
         url: "/social-contact",
-        icon: <AiOutlineAppstoreAdd  style={{ color: "red" }} size={24} />,
+        icon: <AiOutlineAppstoreAdd style={{ color: "red" }} size={24} />,
       },
-    ],
-  },
-  {
-    menu: "Home Banner",
-    url: "/homebanner",
-    mainIcon: <MdOutlinePhotoSizeSelectLarge size={24} />,
-    subMenu: [
-      {
-        subMenus: "Home Banner",
-        url: "/homebanner",
-        icon: <AiOutlineAppstoreAdd  style={{ color: "red" }} size={24} />,
-      },
-
-    ],
-  },
-  // {
-  //   menu: "About",
-  //   url: "/about",
-  //   mainIcon: <MdInfoOutline size={24} />,
-  //   subMenu: [
-  //     {
-  //       subMenus: "Leadership",
-  //       url: "/leadership",
-  //       icon: <FiUsers style={{ color: "red" }} size={24} />,
-  //     },
-
-  //   ],
-  // },
-  {
-    menu: "Objective of ANF",
-    url: "/objective-of-anf",
-    mainIcon: <MdOutlineFlag size={24} />,
-    subMenu: [
       {
         subMenus: "Objective of ANF",
         url: "/objective-of-anf",
         icon: <AiOutlineAppstoreAdd style={{ color: "red" }} size={24} />,
       },
-
-    ],
-  },
-  {
-    menu: "Home Counter",
-    url: "/home-counter",
-    mainIcon: <MdTimer size={24} />,
-    subMenu: [
       {
         subMenus: "Home Counter",
         url: "/home-counter",
         icon: <AiOutlineAppstoreAdd style={{ color: "red" }} size={24} />,
       },
-
-    ],
-  },
-  {
-    menu: "Photo Gallary",
-    url: "/photo-gallary",
-    mainIcon: <MdPhotoLibrary size={24} />,
-    subMenu: [
       {
         subMenus: "Photo Gallary",
         url: "/photo-gallary",
         icon: <AiOutlineAppstoreAdd style={{ color: "red" }} size={24} />,
       },
-    ],
-  },
-  {
-    menu: "Directors",
-    url: "/directors",
-    mainIcon: <MdPeopleOutline size={24} />,
-    subMenu: [
       {
         subMenus: "Director",
         url: "/directors",
         icon: <AiOutlineAppstoreAdd style={{ color: "red" }} size={24} />,
       },
-    ],
-  },
-  {
-    menu: "Events",
-    url: "/masters",
-    mainIcon: <MdEvent size={24} />,
-    subMenu: [
       {
         subMenus: "Past Event",
         url: "/pastevents",
@@ -134,13 +76,6 @@ const SidebarMenu = [
         url: "/upcommingevents",
         icon: <AiOutlineAppstoreAdd style={{ color: "red" }} size={24} />,
       },
-    ],
-  },
-  {
-    menu: "Video",
-    url: "/tav",
-    mainIcon: <MdPlayCircleOutline size={24} />,
-    subMenu: [
       {
         subMenus: "Our Videos",
         url: "/trafficawarenessvideo",
@@ -151,38 +86,16 @@ const SidebarMenu = [
         url: "/home-videos",
         icon: <AiOutlineAppstoreAdd style={{ color: "red" }} size={24} />,
       },
-
-    ],
-  },
-  {
-    menu: "News",
-    url: "/news",
-    mainIcon: <MdArticle size={24} />,
-    subMenu: [
       {
         subMenus: "News",
         url: "/news",
         icon: <AiOutlineAppstoreAdd style={{ color: "red" }} size={24} />,
       },
-    ],
-  },
-  {
-    menu: "Booking Calender",
-    url: "/report",
-    mainIcon: <MdEventNote size={24} />,
-    subMenu: [
       {
         subMenus: "Calender",
         url: "/calender",
         icon: <AiOutlineAppstoreAdd style={{ color: "red" }} size={24} />,
       },
-    ],
-  },
-  {
-    menu: "Reports",
-    url: "/report",
-    mainIcon: <MdAssessment size={24} />,
-    subMenu: [
       {
         subMenus: "Annual Reports",
         url: "/annualreport",
@@ -193,19 +106,6 @@ const SidebarMenu = [
         url: "/annualreturn",
         icon: <AiOutlineAppstoreAdd style={{ color: "red" }} size={24} />,
       },
-
-    ],
-  },
-  {
-    menu: "Contact Us",
-    url: "/contactus",
-    mainIcon: <MdContactMail size={24} />,
-    subMenu: [
-      // {
-      //   subMenus: "Our Offices",
-      //   url: "/office",
-      //   icon: <BsBuilding style={{ color: "red" }} size={24} />,
-      // },
       {
         subMenus: "Contact Details",
         url: "/contactinfo",
@@ -220,21 +120,206 @@ const SidebarMenu = [
         subMenus: "Contact Form",
         url: "/conact-form",
         icon: <AiOutlineAppstoreAdd style={{ color: "red" }} size={24} />,
-      }
-    ],
-  },
-  {
-    menu: "Training",
-    url: "/training",
-    mainIcon: <MdSchool size={24} />,
-    subMenu: [
+      },
       {
-        subMenus: "Bookings",
-        url: "/bookings",
+        subMenus: "Thanks To",
+        url: "/thanksto",
         icon: <AiOutlineAppstoreAdd style={{ color: "red" }} size={24} />,
       },
     ],
   },
+  // {
+  //   menu: "Home Banner",
+  //   url: "/homebanner",
+  //   mainIcon: <MdOutlinePhotoSizeSelectLarge size={24} />,
+  //   subMenu: [
+  //     {
+  //       subMenus: "Home Banner",
+  //       url: "/homebanner",
+  //       icon: <AiOutlineAppstoreAdd  style={{ color: "red" }} size={24} />,
+  //     },
+
+  //   ],
+  // },
+  // {
+  //   menu: "About",
+  //   url: "/about",
+  //   mainIcon: <MdInfoOutline size={24} />,
+  //   subMenu: [
+  //     {
+  //       subMenus: "Leadership",
+  //       url: "/leadership",
+  //       icon: <FiUsers style={{ color: "red" }} size={24} />,
+  //     },
+
+  //   ],
+  // },
+  // {
+  //   menu: "Objective of ANF",
+  //   url: "/objective-of-anf",
+  //   mainIcon: <MdOutlineFlag size={24} />,
+  //   subMenu: [
+  //     {
+  //       subMenus: "Objective of ANF",
+  //       url: "/objective-of-anf",
+  //       icon: <AiOutlineAppstoreAdd style={{ color: "red" }} size={24} />,
+  //     },
+
+  //   ],
+  // },
+  // {
+  //   menu: "Home Counter",
+  //   url: "/home-counter",
+  //   mainIcon: <MdTimer size={24} />,
+  //   subMenu: [
+  //     {
+  //       subMenus: "Home Counter",
+  //       url: "/home-counter",
+  //       icon: <AiOutlineAppstoreAdd style={{ color: "red" }} size={24} />,
+  //     },
+
+  //   ],
+  // },
+  // {
+  //   menu: "Photo Gallary",
+  //   url: "/photo-gallary",
+  //   mainIcon: <MdPhotoLibrary size={24} />,
+  //   subMenu: [
+  //     {
+  //       subMenus: "Photo Gallary",
+  //       url: "/photo-gallary",
+  //       icon: <AiOutlineAppstoreAdd style={{ color: "red" }} size={24} />,
+  //     },
+  //   ],
+  // },
+  // {
+  //   menu: "Directors",
+  //   url: "/directors",
+  //   mainIcon: <MdPeopleOutline size={24} />,
+  //   subMenu: [
+  //     {
+  //       subMenus: "Director",
+  //       url: "/directors",
+  //       icon: <AiOutlineAppstoreAdd style={{ color: "red" }} size={24} />,
+  //     },
+  //   ],
+  // },
+  // {
+  //   menu: "Events",
+  //   url: "/masters",
+  //   mainIcon: <MdEvent size={24} />,
+  //   subMenu: [
+  //     {
+  //       subMenus: "Past Event",
+  //       url: "/pastevents",
+  //       icon: <AiOutlineAppstoreAdd style={{ color: "red" }} size={24} />,
+  //     },
+  //     {
+  //       subMenus: "Upcomming Events",
+  //       url: "/upcommingevents",
+  //       icon: <AiOutlineAppstoreAdd style={{ color: "red" }} size={24} />,
+  //     },
+  //   ],
+  // },
+  // {
+  //   menu: "Video",
+  //   url: "/tav",
+  //   mainIcon: <MdPlayCircleOutline size={24} />,
+  //   subMenu: [
+  //     {
+  //       subMenus: "Our Videos",
+  //       url: "/trafficawarenessvideo",
+  //       icon: <AiOutlineAppstoreAdd style={{ color: "red" }} size={24} />,
+  //     },
+  //     {
+  //       subMenus: "Home Video",
+  //       url: "/home-videos",
+  //       icon: <AiOutlineAppstoreAdd style={{ color: "red" }} size={24} />,
+  //     },
+
+  //   ],
+  // },
+  // {
+  //   menu: "News",
+  //   url: "/news",
+  //   mainIcon: <MdArticle size={24} />,
+  //   subMenu: [
+  //     {
+  //       subMenus: "News",
+  //       url: "/news",
+  //       icon: <AiOutlineAppstoreAdd style={{ color: "red" }} size={24} />,
+  //     },
+  //   ],
+  // },
+  {
+    menu: "Slot Booking",
+    url: "/report",
+    mainIcon: <MdEventNote size={24} />,
+    subMenu: [
+      {
+        subMenus: "Calender",
+        url: "/calender",
+        icon: <AiOutlineAppstoreAdd style={{ color: "red" }} size={24} />,
+      },
+    ],
+  },
+  // {
+  //   menu: "Reports",
+  //   url: "/report",
+  //   mainIcon: <MdAssessment size={24} />,
+  //   subMenu: [
+  //     {
+  //       subMenus: "Annual Reports",
+  //       url: "/annualreport",
+  //       icon: <AiOutlineAppstoreAdd style={{ color: "red" }} size={24} />,
+  //     },
+  //     {
+  //       subMenus: "Annual Returns",
+  //       url: "/annualreturn",
+  //       icon: <AiOutlineAppstoreAdd style={{ color: "red" }} size={24} />,
+  //     },
+
+  //   ],
+  // },
+  // {
+  //   menu: "Contact Us",
+  //   url: "/contactus",
+  //   mainIcon: <MdContactMail size={24} />,
+  //   subMenu: [
+  //     // {
+  //     //   subMenus: "Our Offices",
+  //     //   url: "/office",
+  //     //   icon: <BsBuilding style={{ color: "red" }} size={24} />,
+  //     // },
+  //     {
+  //       subMenus: "Contact Details",
+  //       url: "/contactinfo",
+  //       icon: <AiOutlineAppstoreAdd style={{ color: "red" }} size={24} />,
+  //     },
+  //     {
+  //       subMenus: "Follow on us",
+  //       url: "/follow-on-us",
+  //       icon: <AiOutlineAppstoreAdd style={{ color: "red" }} size={24} />,
+  //     },
+  //     {
+  //       subMenus: "Contact Form",
+  //       url: "/conact-form",
+  //       icon: <AiOutlineAppstoreAdd style={{ color: "red" }} size={24} />,
+  //     }
+  //   ],
+  // },
+  // {
+  //   menu: "Training",
+  //   url: "/training",
+  //   mainIcon: <MdSchool size={24} />,
+  //   subMenu: [
+  //     {
+  //       subMenus: "Bookings",
+  //       url: "/bookings",
+  //       icon: <AiOutlineAppstoreAdd style={{ color: "red" }} size={24} />,
+  //     },
+  //   ],
+  // },
   {
     menu: "Booking Package",
     url: "/bookseats",
@@ -245,11 +330,11 @@ const SidebarMenu = [
         url: "/bookseats",
         icon: <AiOutlineAppstoreAdd style={{ color: "red" }} size={24} />,
       },
-      {
-        subMenus: "Individual Entries",
-        url: "/Individual",
-        icon: <AiOutlineAppstoreAdd style={{ color: "red" }} size={24} />,
-      },
+      // {
+      //   subMenus: "Individual Entries",
+      //   url: "/Individual",
+      //   icon: <AiOutlineAppstoreAdd style={{ color: "red" }} size={24} />,
+      // },
     ],
   },
   {
@@ -265,18 +350,35 @@ const SidebarMenu = [
     ],
   },
   {
-    menu: "Thanks To ",
-    url: "/thanksto",
-    mainIcon: <MdThumbUp size={24} />,
+    menu: "Group registration",
+    url: "/groupbooking",
+    mainIcon: <MdLocalOffer size={24} />,
     subMenu: [
       {
-        subMenus: "Thanks To",
-        url: "/thanksto",
+        subMenus: "Booking Package",
+        url: "/groupbooking",
         icon: <AiOutlineAppstoreAdd style={{ color: "red" }} size={24} />,
       },
+      // {
+      //   subMenus: "Individual Entries",
+      //   url: "/Individual",
+      //   icon: <AiOutlineAppstoreAdd style={{ color: "red" }} size={24} />,
+      // },
     ],
   },
-  
+  // {
+  //   menu: "Thanks To ",
+  //   url: "/thanksto",
+  //   mainIcon: <MdThumbUp size={24} />,
+  //   subMenu: [
+  //     {
+  //       subMenus: "Thanks To",
+  //       url: "/thanksto",
+  //       icon: <AiOutlineAppstoreAdd style={{ color: "red" }} size={24} />,
+  //     },
+  //   ],
+  // },
+
   {
     menu: "Masters",
     url: "/masters",

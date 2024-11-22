@@ -45,6 +45,9 @@ import Slotlistpage from "./screens/Booking Packages/Slotlistpage";
 import Bookcalender from "./screens/Booking Packages/Bookcalender";
 import CalenderComp from "./components/Calender Component/CalenderComp";
 import Individual from "./screens/Booking Packages/Individual";
+import Training from "./components/Groupbooking/Training";
+import Bookingpage from "./components/Groupbooking/Bookingpage";
+import Slotpage from "./components/Groupbooking/Slotpage";
 
 function App() {
   return (
@@ -123,6 +126,14 @@ function App() {
             element={<ProtectedRoutes Component={Trainer} />}
           />
           <Route
+            path="/bookingpage"
+            element={<ProtectedRoutes Component={Bookingpage} />}
+          />
+          <Route
+            path="/Slotpage"
+            element={<ProtectedRoutes Component={Slotpage} />}
+          />
+          <Route
             path="/annualreturn"
             element={<ProtectedRoutes Component={AnnualReturn} />}
           />
@@ -130,6 +141,10 @@ function App() {
             path="/social-contact"
             element={<ProtectedRoutes Component={SocialContact} />}
           />
+          <Route
+            path="/groupbooking"
+            element={<ProtectedRoutes Component={Training} />} />
+
           <Route
             path="/pastevents"
             element={<ProtectedRoutes Component={PastEvents} />}
