@@ -7,7 +7,7 @@ import { confirmAlert } from "react-confirm-alert";
 import { toast } from "react-toastify";
 import NewResuableForm from "../../components/form/NewResuableForm";
 
-const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal, handleShowModal, realdata, isPast }) => {
+const SlotComp2 = ({ selectedDates, categoryName, showModal, handleCloseModal, handleShowModal, realdata, isPast }) => {
     const [currentPage, setCurrentPage] = useState(1);
     const [title, setTitle] = useState("");
     const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -46,7 +46,7 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal, ha
     }, [selectedDates]);
     console.log(selectedDates)
     const initialFormData = {
-        slotType: 'inhouse',
+        slotType: 'onsite',
         category: categoryName,
         time: '',
         deadlineTime: '',
@@ -94,7 +94,7 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal, ha
         setLoading(true);
         const accessToken = localStorage.getItem("accessToken"); // Retrieve access token
         try {
-            const response = await instance.post("Sessionslot/get-getSessionbySessionslot", { slotdate: selectedDates, category: categoryName,slotType:"inhouse" }, {
+            const response = await instance.post("Sessionslot/get-getSessionbySessionslot", { slotdate: selectedDates, category: categoryName,slotType:"onsite" }, {
                 headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },
             });
             const filteredData = response.data.responseData?.reverse()
@@ -820,7 +820,7 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal, ha
     );
 };
 
-export default SlotComp;
+export default SlotComp2;
 
 
 

@@ -5,10 +5,10 @@ import rightarrow from "../../assets/images/Holiday/rightarrow.png";
 import { confirmAlert } from "react-confirm-alert";
 import instance from "../../api/AxiosInstance";
 import { toast } from "react-toastify";
-import SlotComp from "../SlotComp/SlotComp";
+import SlotComp2 from "../SlotComp/SlotComp2";
 import { useLocation } from 'react-router-dom';
 
-const CalenderComp = () => {
+const CalenderComp2 = () => {
     const location = useLocation();
     const { categoryName, tabKey } = location.state || {};
     console.log("tabKey", tabKey);
@@ -183,7 +183,7 @@ const CalenderComp = () => {
         setLoading(true);
         const accessToken = localStorage.getItem("accessToken"); // Retrieve access token
         try {
-            const response = await instance.post("Sessionslot/get-getSessionbySessionslot", { slotdate: selectedDates, category: categoryName ,slotType:"inhouse"}, {
+            const response = await instance.post("Sessionslot/get-getSessionbySessionslot", { slotdate: selectedDates, category: categoryName,slotType:"onsite" }, {
                 headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },
             });
             const filteredData = response.data.responseData?.reverse()
@@ -216,7 +216,7 @@ const CalenderComp = () => {
 
     const getdata_here = () => {
         instance.post('/Sessionslot/getAvailableslotslots', {
-            slotType:'inhouse',
+            slotType: 'onsite',
             year: currentYear.toString(),
             month: (currentMonth + 1).toString(),
             category: savedCategory,
@@ -372,7 +372,7 @@ const CalenderComp = () => {
                     </Container>
                 </Container>
             </Container>
-            <SlotComp showModal={showModal}
+            <SlotComp2 showModal={showModal}
                 handleCloseModal={handleCloseModal}
                 handleShowModal={handleShowModal}
                 selectedDates={selectedDates}
@@ -383,4 +383,4 @@ const CalenderComp = () => {
     );
 };
 
-export default CalenderComp;
+export default CalenderComp2;
