@@ -253,7 +253,7 @@ const SidebarMenu = [
     subMenu: [
       {
         subMenus: "forinhouse",
-        url: "/calender",
+        url: "/CalenderComp",
         icon: <AiOutlineAppstoreAdd style={{ color: "red" }} size={24} />,
       },
       {

@@ -10,9 +10,7 @@ const Calender2 = () => {
     const navigate = useNavigate(); // New useNavigate hook
 
     const training_categories = [
-        { category: "RTO – Learner Driving License Holder Training", url: "" },
-        { category: "RTO – Suspended Driving License Holders Training", url: "" },
-        { category: "RTO – Training for School Bus Driver", url: "" },
+
         { category: "School Students Training – Group", url: "" },
         { category: "College/Organization Training – Group", url: "" },
 

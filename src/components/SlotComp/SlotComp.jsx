@@ -7,7 +7,7 @@ import { confirmAlert } from "react-confirm-alert";
 import { toast } from "react-toastify";
 import NewResuableForm from "../../components/form/NewResuableForm";
 
-const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal, handleShowModal, realdata, isPast }) => {
+const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal, handleShowModal, realdata, isPast, todayname }) => {
     const [currentPage, setCurrentPage] = useState(1);
     const [title, setTitle] = useState("");
     const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -94,7 +94,7 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal, ha
         setLoading(true);
         const accessToken = localStorage.getItem("accessToken"); // Retrieve access token
         try {
-            const response = await instance.post("Sessionslot/get-getSessionbySessionslot", { slotdate: selectedDates, category: categoryName,slotType:"inhouse" }, {
+            const response = await instance.post("Sessionslot/get-getSessionbySessionslot2", { slotdate: selectedDates, slotType: "inhouse" }, {
                 headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },
             });
             const filteredData = response.data.responseData?.reverse()
@@ -585,6 +585,81 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal, ha
         month: "long",
         year: "numeric",
     });
+    // Time slots for weekdays (Monday to Friday)
+
+    const weekendSlots = [
+        { value: "10:30-12:30", label: "10:30 AM to 12:30 PM" },
+        { value: "13:00-15:00", label: "1:00 PM to 3:00 PM" },
+        { value: "15:30-17:30", label: "3:30 PM to 5:30 PM" },
+    ];
+    const weekdaySlots = [
+        { value: "09:00-11:00", label: "9:00 AM to 11:00 AM" },
+        { value: "11:01-13:00", label: "11:00 AM to 1:00 PM" },
+        { value: "13:01-15:00", label: "1:00 PM to 3:00 PM" },
+        { value: "15:01-17:00", label: "3:00 PM to 5:00 PM" },
+    ];
+
+    // Time slots for weekends (Saturday/Sunday) with 15-minute adjustment
+
+    // Determine if today is Saturday or Sunday
+    const isWeekend = todayname === "Sat" || todayname === "Sun";
+
+    // RTO-related categories
+    const rtoCategories = [
+        "RTO – Learner Driving License Holder Training",
+        "RTO – Suspended Driving License Holders Training",
+        "RTO – Training for School Bus Driver",
+    ];
+
+    // Function to filter time slots based on the category and day
+    const getAvailableSlots = (category) => {
+        if (isWeekend) {
+            // Weekend logic: Only show the specific slots for RTO categories and 2nd slot for non-RTO
+            if (rtoCategories.includes(category)) {
+                return [
+                    { value: "10:30-12:30", label: "10:30 AM to 12:30 PM" },
+                    { value: "13:01-15:00", label: "1:00 PM to 3:00 PM" },
+                    { value: "15:30-17:30", label: "3:30 PM to 5:30 PM" },
+                ];
+            } else {
+                return [
+                    { value: "13:01-15:00", label: "1:00 PM to 3:00 PM" },
+                ];  // Only show the 2nd slot for non-RTO categories
+            }
+        } else {
+            // On weekdays or non-weekends, show all slots
+            return weekdaySlots;
+        }
+    };
+
+
+    // Get the available time slots based on the category
+    const timeSlots = getAvailableSlots(formData.category);
+
+    const handleTrainerChange = async (e) => {
+        const trainerName = e.target.value;
+        handleChange("trainer", trainerName); // Update the trainer field in the formData
+
+        if (trainerName) {
+            // Check for trainer conflict
+            const response = await instance.post("Sessionslot/checkTrainerConflict", {
+                trainer: trainerName,
+                slotdate: formData.slotdate, // Use the selected slot date for checking conflict
+            });
+
+            if (response.data.responseData.conflict === true) {
+                // Show confirmation popup if there's a conflict
+                const confirmMessage = `The trainer ${trainerName} is already assigned to another slot Today. Do you want to continue with this slot or choose a different time or trainer?`;
+                const proceed = await alert(confirmMessage);
+
+                if (!proceed) {
+                    // Reset the trainer field if user cancels
+                    handleChange("trainer", trainerName);
+                    return; // Exit early if the user chooses not to continue
+                }
+            }
+        }
+    };
 
     return (
         <>
@@ -682,7 +757,7 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal, ha
 
                             </Col>
 
-                            <Col md={10}>
+                            {/* <Col md={10}>
                                 <Form.Group controlId="trainingType">
                                     <Form.Label>Trainer Name</Form.Label>
                                     <Form.Select
@@ -703,8 +778,26 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal, ha
                                 </Form.Group>
 
 
-                            </Col>
+                            </Col> */}
                             <Col md={10}>
+                                <Form.Group controlId="trainingType">
+                                    <Form.Label>Trainer Name</Form.Label>
+                                    <Form.Select
+                                        name="trainer"
+                                        value={formData.trainer} // Use the trainer from formData
+                                        onChange={handleTrainerChange} // Use the new handleTrainerChange to trigger conflict check
+                                    >
+                                        <option value="">Choose trainer</option>
+                                        {traniners.map((trainer) => (
+                                            <option key={trainer.id} value={trainer.name}>
+                                                {trainer.name}
+                                            </option>
+                                        ))}
+                                    </Form.Select>
+                                </Form.Group>
+                            </Col>
+
+                            {/* <Col md={10}>
                                 <Form.Group controlId="time">
                                     <Form.Label>Time</Form.Label>
                                     <Form.Control
@@ -733,7 +826,34 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal, ha
                                         </Form.Text>
                                     )}
                                 </Form.Group>
+                            </Col> */}
+
+                            <Col md={10}>
+                                <Form.Group controlId="timeSlot">
+                                    <Form.Label>Select Time Slot</Form.Label>
+                                    <Form.Select
+                                        name="timeSlot"
+                                        value={`${formData.time}-${formData.deadlineTime}`}
+                                        onChange={(e) => {
+                                            const [startTime, endTime] = e.target.value.split("-");
+                                            setFormData({
+                                                ...formData,
+                                                time: startTime,
+                                                deadlineTime: endTime,
+                                            });
+                                        }}
+                                        required
+                                    >
+                                        <option value="">Select Time Slot</option>
+                                        {timeSlots.map((slot) => (
+                                            <option key={slot.value} value={slot.value}>
+                                                {slot.label}
+                                            </option>
+                                        ))}
+                                    </Form.Select>
+                                </Form.Group>
                             </Col>
+
                             <Col md={10}>
                                 <NewResuableForm
                                     label="Title"
@@ -775,35 +895,27 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal, ha
                 </Modal.Header>
                 <Modal.Body>
                     <Form onSubmit={handleSubmit2}>
-                        <Row className='justify-content-center'>
-
-
-
-
+                        <Row className="justify-content-center">
                             <Col md={10}>
                                 <Form.Group controlId="trainingType">
                                     <Form.Label>Trainer Name</Form.Label>
                                     <Form.Select
-                                        name="category"
-                                        value={formData.trainer} // Use "category" as it matches initialFormData
-                                        onChange={(e) => handleChange("trainer", e.target.value)} // Call handleChange with "category"
+                                        name="trainer"
+                                        value={formData.trainer} // Use the trainer from formData
+                                        onChange={handleTrainerChange} // Use handleTrainerChange for conflict check
                                     >
-                                        <option value="">choose trainer</option>
-                                        {traniners.map((a) => {
-                                            return (
-                                                <option key={a.id} value={a.name}>
-                                                    {a.name}
-                                                </option>
-                                            );
-                                        })}
-
+                                        <option value="">Choose trainer</option>
+                                        {traniners.map((trainer) => (
+                                            <option key={trainer.id} value={trainer.name}>
+                                                {trainer.name}
+                                            </option>
+                                        ))}
                                     </Form.Select>
                                 </Form.Group>
-
-
                             </Col>
+
                             <Col xs={12} className="d-flex justify-content-end mt-3">
-                                <Button variant="primary" type="submit" className='mx-3'>
+                                <Button variant="primary" type="submit" className="mx-3">
                                     Submit
                                 </Button>
                                 <Button variant="secondary" onClick={() => setShow2(false)}>

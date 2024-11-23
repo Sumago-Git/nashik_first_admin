@@ -13,6 +13,8 @@ const CalenderComp = () => {
     const { categoryName, tabKey } = location.state || {};
     console.log("tabKey", tabKey);
     const [team, setTeam] = useState([]);
+    const [myDay, setMyDay] = useState(""); // Add state for day name
+
     const [newdate, setnewdate] = useState("")
     const [specialDates, setSpecialDates] = useState([]);
     const [dateStatuses, setDateStatuses] = useState({}); // State to store date statuses
@@ -165,13 +167,16 @@ const CalenderComp = () => {
 
     // Function to handle day click
 
-    const handleDayClick = (day) => {
+    const handleDayClick = (day, weekday) => {
         if (day) {
             const clickedDate = new Date(currentYear, currentMonth, day);
             const newDateString = clickedDate.toLocaleDateString();
-            setSelectedDate(newDateString);  // Update selected date
-            setnewdate(newDateString);  // Update the new date string
+
+            setSelectedDate(newDateString); // Update selected date
+            setnewdate(newDateString); // Update the new date string
+            setMyDay(weekday); // Set the day name
             fetchTeam(); // Call fetchTeam() with updated selectedDates
+
             if (tabKey === "Closed Days") {
                 alertBox(newDateString); // Pass the date here
             } else {
@@ -179,11 +184,12 @@ const CalenderComp = () => {
             }
         }
     };
+
     const fetchTeam = async () => {
         setLoading(true);
         const accessToken = localStorage.getItem("accessToken"); // Retrieve access token
         try {
-            const response = await instance.post("Sessionslot/get-getSessionbySessionslot", { slotdate: selectedDates, category: categoryName ,slotType:"inhouse"}, {
+            const response = await instance.post("Sessionslot/get-getSessionbySessionslot2", { slotdate: selectedDates,  slotType: "inhouse" }, {
                 headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },
             });
             const filteredData = response.data.responseData?.reverse()
@@ -215,11 +221,11 @@ const CalenderComp = () => {
     const savedCategory = localStorage.getItem("categoryforslot");
 
     const getdata_here = () => {
-        instance.post('/Sessionslot/getAvailableslotslots', {
-            slotType:'inhouse',
+        instance.post('/Sessionslot/getAvailableslotslots2', {
+            slotType: 'inhouse',
             year: currentYear.toString(),
             month: (currentMonth + 1).toString(),
-            category: savedCategory,
+            // category: savedCategory,
         })
             .then((res) => {
                 const slotData = res.data.data.reduce((acc, slot) => {
@@ -259,7 +265,7 @@ const CalenderComp = () => {
     return (
         <>
             <Container fluid className="slotbg">
-                <div><h2>{savedCategory}</h2></div>
+                {/* <div><h2>{savedCategory}</h2></div> */}
                 <Container className="calender">
                     <Col lg={12} className="d-flex justify-content-center align-items-center bg-white">
                         <button
@@ -296,49 +302,51 @@ const CalenderComp = () => {
                                 </tr>
                             </thead>
                             <tbody>
-
                                 {weeks.map((week, weekIndex) => (
                                     <tr key={weekIndex} style={{ cursor: 'default' }}>
                                         {week.map((day, dayIndex) => {
                                             const isDisabled = day && isPastDate(day);
                                             const { label: dateLabel, color: textColor, bgColor, isHoliday } = getSpecialDateDetails(day, currentMonth);
                                             const isAvailable = dateStatuses[day] === "available"; // Check status from state
+                                            const weekday = day !== null ? daysOfWeek[new Date(currentYear, currentMonth, day).getDay()] : ""; // Calculate weekday
 
                                             return (
                                                 <td
                                                     key={dayIndex}
                                                     onMouseEnter={() => day && !isDisabled && setHoveredDay(day)}
                                                     onMouseLeave={() => day && !isDisabled && setHoveredDay(null)}
-                                                    onClick={() => dateStatuses[day] !== "Holiday" && handleDayClick(day)}
+                                                    onClick={() => day && dateStatuses[day] !== "Holiday" && handleDayClick(day, weekday)} // Pass weekday here
                                                     style={{
                                                         height: "100px",
                                                         textAlign: "end",
                                                         verticalAlign: "middle",
                                                         borderRight: "1px solid #ddd",
                                                         backgroundColor: day
-                                                            ? day.isNextMonth
-                                                                ? "#f0f0f0" // Next month's dates (light gray)
-                                                                : isDisabled
-                                                                    ? "#f9f9f9" // Disabled (past dates or holidays)
-                                                                    : dateStatuses[day] === "available"
-                                                                        ? "#d4ffd4" // Green for available
-                                                                        : dateStatuses[day] === "Holiday"
-                                                                            ? "#ea7777" // Light blue for holiday
-                                                                            : "#d4ffd4" // Red for closed or other statuses
+                                                            ? isDisabled
+                                                                ? "#f9f9f9" // Disabled (past dates or holidays)
+                                                                : dateStatuses[day] === "available"
+                                                                    ? "#d4ffd4" // Green for available
+                                                                    : dateStatuses[day] === "Holiday"
+                                                                        ? "#ea7777" // Light blue for holiday
+                                                                        : "#d4ffd4" // Red for closed or other statuses
                                                             : "white",
                                                         color: day
-                                                            ? day.isNextMonth
-                                                                ? "#ccc" // Light color for next month's dates
-                                                                : isDisabled || dateStatuses[day] === "Holiday"
-                                                                    ? "#999" // Gray for disabled or holiday
-                                                                    : "black"
-                                                            : "black", color: day && (day.isNextMonth ? "#ccc" : isDisabled || isHoliday ? "#999" : "black"),
-                                                        transition: "color 0.3s",
+                                                            ? isDisabled || dateStatuses[day] === "Holiday"
+                                                                ? "#999" // Gray for disabled or holiday
+                                                                : "black"
+                                                            : "black",
                                                         fontFamily: "Poppins",
                                                         fontWeight: "600",
                                                     }}
                                                 >
-                                                    {day && (day.isNextMonth ? day.day : day || "")}
+                                                    {day && (
+                                                        <>
+                                                            <div style={{ fontSize: "12px", color: "#555", fontWeight: "bold" }}>
+                                                                {weekday} {/* Display weekday */}
+                                                            </div>
+                                                            <div>{day}</div>
+                                                        </>
+                                                    )}
                                                     <br />
                                                     {specialDates &&
                                                         specialDates.length > 0 &&
@@ -348,7 +356,6 @@ const CalenderComp = () => {
                                                                 style={{
                                                                     fontSize: "10px",
                                                                     marginTop: "5px",
-
                                                                     padding: "3px 8px",
                                                                     borderRadius: "15px",
                                                                     display: "inline-block",
@@ -362,12 +369,12 @@ const CalenderComp = () => {
                                                         )}
                                                 </td>
                                             );
-
                                         })}
                                     </tr>
                                 ))}
 
                             </tbody>
+
                         </Table>
                     </Container>
                 </Container>
@@ -378,7 +385,9 @@ const CalenderComp = () => {
                 selectedDates={selectedDates}
                 realdata={team}
                 isPast={selectedDateIsPast}
-                categoryName={categoryName} />
+                categoryName={categoryName}
+                todayname={myDay}
+                />
         </>
     );
 };

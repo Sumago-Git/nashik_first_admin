@@ -183,7 +183,7 @@ const CalenderComp2 = () => {
         setLoading(true);
         const accessToken = localStorage.getItem("accessToken"); // Retrieve access token
         try {
-            const response = await instance.post("Sessionslot/get-getSessionbySessionslot", { slotdate: selectedDates, category: categoryName,slotType:"onsite" }, {
+            const response = await instance.post("Sessionslot/get-getSessionbySessionslot", { slotdate: selectedDates, category: categoryName, slotType: "onsite" }, {
                 headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },
             });
             const filteredData = response.data.responseData?.reverse()
@@ -338,7 +338,13 @@ const CalenderComp2 = () => {
                                                         fontWeight: "600",
                                                     }}
                                                 >
-                                                    {day && (day.isNextMonth ? day.day : day || "")}
+                                                    {day && (
+                                                        (() => {
+                                                            const clickedDate = new Date(currentYear, currentMonth, day);
+                                                            const dayOfWeek = clickedDate.getDay(); // Get the day of the week (0 = Sunday, 6 = Saturday)
+                                                            return dayOfWeek === 0 || dayOfWeek === 6 ? "Weekly Off" : day; // Show "Weekly Off" for weekend days
+                                                        })()
+                                                    )}
                                                     <br />
                                                     {specialDates &&
                                                         specialDates.length > 0 &&
