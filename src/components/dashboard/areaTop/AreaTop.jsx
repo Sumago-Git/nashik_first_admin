@@ -103,7 +103,8 @@ const AreaTop = ({ buttonValue, tableView }) => {
     "/CalenderComp",
     "/bookseats",
     "/Slotlistpage",
-    "/Bookcalender"
+    "/Bookcalender",
+    "/search"
   ];
   const isHiddenPath = hiddenPaths.includes(location.pathname);
 
@@ -232,6 +233,9 @@ const AreaTop = ({ buttonValue, tableView }) => {
     }
     else if (window.location.pathname == "/trafficawarenessvideo") {
       setHeader("Our Video");
+    }
+    else if (window.location.pathname == "/search") {
+      setHeader("Search");
     }
 
   }, [window.location.pathname]);

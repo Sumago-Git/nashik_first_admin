@@ -27,7 +27,7 @@ import { IoIosOptions, IoIosPeople } from "react-icons/io";
 // Sidebar menu structure
 const SidebarMenu = [
   {
-    menu: "Home",
+    menu: "CMS",
     url: "/dashboard",
     mainIcon: <MdHome size={24} />,
     subMenu: [
@@ -330,11 +330,6 @@ const SidebarMenu = [
         url: "/bookseats",
         icon: <AiOutlineAppstoreAdd style={{ color: "red" }} size={24} />,
       },
-      // {
-      //   subMenus: "Individual Entries",
-      //   url: "/Individual",
-      //   icon: <AiOutlineAppstoreAdd style={{ color: "red" }} size={24} />,
-      // },
     ],
   },
   {
@@ -359,26 +354,20 @@ const SidebarMenu = [
         url: "/groupbooking",
         icon: <AiOutlineAppstoreAdd style={{ color: "red" }} size={24} />,
       },
-      // {
-      //   subMenus: "Individual Entries",
-      //   url: "/Individual",
-      //   icon: <AiOutlineAppstoreAdd style={{ color: "red" }} size={24} />,
-      // },
     ],
   },
-  // {
-  //   menu: "Thanks To ",
-  //   url: "/thanksto",
-  //   mainIcon: <MdThumbUp size={24} />,
-  //   subMenu: [
-  //     {
-  //       subMenus: "Thanks To",
-  //       url: "/thanksto",
-  //       icon: <AiOutlineAppstoreAdd style={{ color: "red" }} size={24} />,
-  //     },
-  //   ],
-  // },
-
+  {
+    menu: "Search",
+    url: "/search",
+    mainIcon: <MdLocalOffer size={24} />,
+    subMenu: [
+      {
+        subMenus: "Search",
+        url: "/search",
+        icon: <AiOutlineAppstoreAdd style={{ color: "red" }} size={24} />,
+      },
+    ],
+  },
   {
     menu: "Masters",
     url: "/masters",
@@ -389,21 +378,6 @@ const SidebarMenu = [
         url: "/holiday",
         icon: <AiOutlineAppstoreAdd style={{ color: "red" }} size={24} />,
       },
-      // {
-      //   subMenus: "Slots",
-      //   url: "/slots",
-      //   icon: <BsBuilding style={{ color: "red" }} size={24} />,
-      // },
-      // {
-      //   subMenus: "Sessions",
-      //   url: "/session",
-      //   icon: <BsBuilding style={{ color: "red" }} size={24} />,
-      // },
-      // {
-      //   subMenus: "Seat Availability",
-      //   url: "/seat",
-      //   icon: <BsBuilding style={{ color: "red" }} size={24} />,
-      // },
     ],
   },
   {

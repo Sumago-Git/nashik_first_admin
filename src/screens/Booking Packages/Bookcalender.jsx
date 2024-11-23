@@ -666,7 +666,7 @@ const Bookcalender = ({ tabKey }) => {
 
             <Modal show={show1} onHide={handleClose1} size="lg" className="modaldetail">
                 <Modal.Header >
-                    <Modal.Title>Customer Details</Modal.Title>
+                    <Modal.Title>Candidate Details</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     {selectedBooking && (
