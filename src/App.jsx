@@ -49,6 +49,8 @@ import Training from "./components/Groupbooking/Training";
 import Bookingpage from "./components/Groupbooking/Bookingpage";
 import Slotpage from "./components/Groupbooking/Slotpage";
 import Search from "./screens/submenus/Search";
+import Calender2 from "./screens/submenus/Booking/Calender2";
+import CalenderComp2 from "./components/Calender Component/CalenderComp2";
 
 function App() {
   return (
@@ -107,8 +109,16 @@ function App() {
             element={<ProtectedRoutes Component={CalenderComp} />}
           />
           <Route
+            path="/CalenderComp2"
+            element={<ProtectedRoutes Component={CalenderComp2} />}
+          />
+          <Route
             path="/calender"
             element={<ProtectedRoutes Component={Calender} />}
+          />
+          <Route
+            path="/calender2"
+            element={<ProtectedRoutes Component={Calender2} />}
           />
           <Route
             path="/annualreport"

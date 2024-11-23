@@ -92,11 +92,6 @@ const SidebarMenu = [
         icon: <AiOutlineAppstoreAdd style={{ color: "red" }} size={24} />,
       },
       {
-        subMenus: "Calender",
-        url: "/calender",
-        icon: <AiOutlineAppstoreAdd style={{ color: "red" }} size={24} />,
-      },
-      {
         subMenus: "Annual Reports",
         url: "/annualreport",
         icon: <AiOutlineAppstoreAdd style={{ color: "red" }} size={24} />,
@@ -257,10 +252,15 @@ const SidebarMenu = [
     mainIcon: <MdEventNote size={24} />,
     subMenu: [
       {
-        subMenus: "Calender",
-        url: "/calender",
+        subMenus: "forinhouse",
+        url: "/CalenderComp",
         icon: <AiOutlineAppstoreAdd style={{ color: "red" }} size={24} />,
       },
+      {
+        subMenus: "foronsite",
+        url: "/calender2",
+        icon: <AiOutlineAppstoreAdd style={{ color: "red" }} size={24} />,
+      }
     ],
   },
   // {
