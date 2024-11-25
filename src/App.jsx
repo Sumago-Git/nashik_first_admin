@@ -48,6 +48,7 @@ import Individual from "./screens/Booking Packages/Individual";
 import Training from "./components/Groupbooking/Training";
 import Bookingpage from "./components/Groupbooking/Bookingpage";
 import Slotpage from "./components/Groupbooking/Slotpage";
+import Search from "./screens/submenus/Search";
 import Calender2 from "./screens/submenus/Booking/Calender2";
 import CalenderComp2 from "./components/Calender Component/CalenderComp2";
 
@@ -218,6 +219,10 @@ function App() {
           <Route
             path="/contactinfo"
             element={<ProtectedRoutes Component={ContactInfo} />}
+          />
+          <Route
+            path="/search"
+            element={<ProtectedRoutes Component={Search} />}
           />
           <Route
             path="/logout"
