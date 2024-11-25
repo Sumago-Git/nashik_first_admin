@@ -3,7 +3,7 @@ import { Container, Row, Col, Card, Button, Form, Modal } from "react-bootstrap"
 import DataTable from "react-data-table-component";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import instance from "../../api/AxiosInstance";
-
+import InputMask from 'react-input-mask';
 const Search = () => {
     const [searchQuery, setSearchQuery] = useState("");
     const [selectedCategory, setSelectedCategory] = useState("");
@@ -303,26 +303,25 @@ const Search = () => {
                 </Col>
             </Row>
             <Modal show={show1} onHide={handleClose1} size="lg" className="modaldetail">
-                <Modal.Header >
+                <Modal.Header closeButton>
                     <Modal.Title>Candidate Details</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     {selectedBooking && (
                         <div>
                             <Row>
-                                <Col lg={6} md={6} sm={12} className="pb-4">
+                                <Col lg={6} md={6} sm={12} className="">
                                     <b>User Id</b><br />
                                     {selectedBooking.id}<br />
                                 </Col>
-                                <Col lg={6} md={6} sm={12} className="pb-4">
+                                <Col lg={6} md={6} sm={12} className="">
                                     <b>Certificate Number</b><br />
                                     {selectedBooking.certificate_no}
                                 </Col>
-                                <hr />
 
-                                <Col lg={6} md={6} sm={12} className="pb-4">
+                                <Col lg={6} md={6} sm={12} className="">
                                     <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-                                        <b>Booking Date</b><br />
+                                        <Form.Label><b>Booking Date</b></Form.Label><br />
                                         <Form.Control
                                             type="date"
                                             value={selectedBooking.slotdate ? formatDateForInput(selectedBooking.slotdate) : ''} // Convert MM/DD/YYYY to YYYY-MM-DD
@@ -330,8 +329,45 @@ const Search = () => {
                                         />
                                     </Form.Group>
                                 </Col>
-
-                                <Col lg={6} md={6} sm={12} className="pb-4">
+                                <Col lg={6} md={6} sm={12} className="">
+                                    <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+                                        <Form.Label><b>Slot Session</b></Form.Label><br />
+                                        <Form.Control
+                                            type="text"
+                                            value={selectedBooking.slotsession} // Convert MM/DD/YYYY to YYYY-MM-DD
+                                            onChange={(e) => setSelectedBooking({ ...selectedBooking, slotsession: e.target.value })}
+                                        />
+                                    </Form.Group>
+                                </Col>
+                                <Col lg={6} md={6} sm={12}>
+                                    <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+                                        <Form.Label><b>License No.</b></Form.Label><br />
+                                        {selectedBooking.category === "RTO – Suspended Driving License Holders Training" ? (
+                                            <InputMask
+                                                mask="**/**/**/****"
+                                                value={selectedBooking.learningNo || ""}
+                                                onChange={(e) => {
+                                                    const inputValue = e.target.value.toUpperCase();
+                                                    setSelectedBooking({ ...selectedBooking, learningNo: inputValue });
+                                                }}
+                                                placeholder="XX/XX/XX/XXXX"
+                                                className="form-control"
+                                            />
+                                        ) : (
+                                            <InputMask
+                                                mask="****/*******/****"
+                                                value={selectedBooking.learningNo || ""}
+                                                onChange={(e) => {
+                                                    const inputValue = e.target.value.toUpperCase();
+                                                    setSelectedBooking({ ...selectedBooking, learningNo: inputValue });
+                                                }}
+                                                placeholder="XXXX/XXXXXXX/XXXX"
+                                                className="form-control"
+                                            />
+                                        )}
+                                    </Form.Group>
+                                </Col>
+                                {/* <Col lg={6} md={6} sm={12} className="pb-4">
                                     <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
                                         <b>Submission Date</b><br />
 
@@ -341,22 +377,27 @@ const Search = () => {
                                             onChange={(e) => setSelectedBooking({ ...selectedBooking, submission_date: e.target.value })}
                                         />
                                     </Form.Group>
-                                </Col>
+                                </Col> */}
                                 <Col lg={6} md={6} sm={12}>
                                     <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
                                         <b>First Name:</b><br />
                                         <Form.Control type="text" defaultValue={selectedBooking.fname} onChange={(e) => setSelectedBooking({ ...selectedBooking, fname: e.target.value })} />
                                     </Form.Group>
                                 </Col>
-                                <hr></hr>
+                                <Col lg={6} md={6} sm={12}>
+                                    <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+                                        <b>Middle Name:</b><br />
+                                        <Form.Control type="text" defaultValue={selectedBooking.mname} onChange={(e) => setSelectedBooking({ ...selectedBooking, mname: e.target.value })} />
+                                    </Form.Group>
+                                </Col>
 
-                                <Col lg={6} md={6} sm={12} className="pb-4">
+                                <Col lg={6} md={6} sm={12} className="">
                                     <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
                                         <b>Last Name</b><br />
                                         <Form.Control type="text" defaultValue={selectedBooking.lname} onChange={(e) => setSelectedBooking({ ...selectedBooking, lname: e.target.value })} />
                                     </Form.Group>
                                 </Col>
-                                <Col lg={6} md={6} sm={12}>
+                                {/* <Col lg={6} md={6} sm={12}>
                                     <b>Training For</b><br />
                                     <Form.Select
                                         defaultValue={selectedBooking.category}
@@ -367,14 +408,11 @@ const Search = () => {
                                         <option value="RTO – Training for School Bus Driver">RTO – Training for School Bus Driver</option>
                                         <option value="School Students Training – Group">School Students Training – Group</option>
                                         <option value="College/Organization Training – Group">College/Organization Training – Group</option>
-                                        {/* Add other options as needed */}
+                               
                                     </Form.Select>
-
-
-
-                                </Col>
-                                <hr></hr>
-                                <Col lg={6} md={6} sm={12}>
+                                </Col> */}
+                                {/* <hr></hr> */}
+                                {/* <Col lg={6} md={6} sm={12}>
                                     <b>Tranning Status</b><br />
 
                                     <Form.Select aria-label="Default select example" defaultValue={selectedBooking.training_status} onChange={(e) => setSelectedBooking({ ...selectedBooking, training_status: e.target.value })}>
@@ -382,16 +420,15 @@ const Search = () => {
                                         <option value="Attended">Attended</option>
                                         <option value="Confirmed">Confirmed</option>
 
-                                        {/* Add other options as needed */}
                                     </Form.Select>
 
                                 </Col>
-                                <hr></hr>
-
+                                <hr></hr> */}
+                                {/* 
                                 <Col lg={6} md={6} sm={12} className="pb-4">
                                     <b>Learining Licenses Number</b><br />
                                     {selectedBooking.learningNo}
-                                </Col>
+                                </Col> */}
                                 <Col lg={6} md={6} sm={12}>
                                     <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
                                         {/* <b>Email</b><br /> */}
@@ -399,9 +436,8 @@ const Search = () => {
                                         <Form.Control type="text" defaultValue={selectedBooking.email} onChange={(e) => setSelectedBooking({ ...selectedBooking, email: e.target.value })} />
                                     </Form.Group>
                                 </Col>
-                                <hr></hr>
 
-                                <Col lg={6} md={6} sm={12} className="pb-4">
+                                <Col lg={6} md={6} sm={12} className="">
                                     <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
                                         <Form.Label><b>Phone Number</b></Form.Label><br />
                                         <Form.Control type="text" defaultValue={selectedBooking.phone} onChange={(e) => setSelectedBooking({ ...selectedBooking, phone: e.target.value })} />
@@ -419,7 +455,7 @@ const Search = () => {
                 <Modal.Footer>
 
                     <Button variant="primary" onClick={handleSave}>
-                        Edit
+                        Update
                     </Button>
 
                 </Modal.Footer>

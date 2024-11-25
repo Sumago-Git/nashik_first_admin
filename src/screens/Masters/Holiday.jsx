@@ -108,7 +108,7 @@ const Holiday = () => {
                     >
                         Yes
                     </button>
-                    <button className="btn btn-secondary" onClick={onClose}>
+                    <button className="btn btn-secondary mx-2" onClick={onClose}>
                         No
                     </button>
                 </div>
