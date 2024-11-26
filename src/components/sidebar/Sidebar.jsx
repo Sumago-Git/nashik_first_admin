@@ -252,12 +252,12 @@ const SidebarMenu = [
     mainIcon: <MdEventNote size={24} />,
     subMenu: [
       {
-        subMenus: "forinhouse",
+        subMenus: "TEP",
         url: "/CalenderComp",
         icon: <AiOutlineAppstoreAdd style={{ color: "red" }} size={24} />,
       },
       {
-        subMenus: "foronsite",
+        subMenus: "On Site",
         url: "/calender2",
         icon: <AiOutlineAppstoreAdd style={{ color: "red" }} size={24} />,
       }
