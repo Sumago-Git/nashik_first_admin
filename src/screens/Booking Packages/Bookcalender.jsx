@@ -12,11 +12,13 @@ import Tabs from 'react-bootstrap/Tabs';
 import { jsPDF } from "jspdf"; // Import jsPDF
 import Categories from "../../components/Categories";
 import instance from "../../api/AxiosInstance";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import DataTable from "react-data-table-component";
 
 const Bookcalender = ({ tabKey }) => {
     const [show, setShow] = useState(false);
+    const [slotInfo, setSlotInfo] = useState(null); // State to store slot data
+    const navigate = useNavigate();
     // const [selectedDate, setSelectedDate] = useState("");
     const [selectedDay, setSelectedDay] = useState("");
     const [dataByDateAndCategory, setDataByDateAndCategory] = useState([]);
@@ -111,7 +113,25 @@ const Bookcalender = ({ tabKey }) => {
 
 
 
+    const getSlotInfo = () => {
 
+        let data = {
+            sessionSlotId: sessionSlotId,
+            category: category1
+        };
+        instance.post("bookingform/getSlotInfo", data).then((result) => {
+            setSlotInfo(result.data.data)
+            console.log(result.data.data)
+
+        }).catch((error) => {
+            console.log("error", error);
+
+        })
+    }
+
+    useEffect(() => {
+        getSlotInfo()
+    }, [])
 
 
 
@@ -603,7 +623,95 @@ const Bookcalender = ({ tabKey }) => {
 
     return (
         <>
-            <h3>{category1}</h3><h3>{selectedDate}</h3>
+            <div className=" text-center pb-2"> <h5>{category1}--{selectedDate}</h5></div>
+
+
+            <div className="row">
+                {slotInfo ? (
+                    <>
+                        <div className="col-md-3">
+                            <div><strong>Institution Name:</strong> {slotInfo.institution_name}</div>
+                            <div><strong>Institution Email:</strong> {slotInfo.institution_email}</div>
+                            <div><strong>Institution Phone:</strong> {slotInfo.institution_phone}</div>
+
+                        </div>
+                        <div className="col-md-3">
+                            <div><strong>Coordinator Name:</strong> {slotInfo.coordinator_name}</div>
+                            <div><strong>Coordinator Mobile:</strong> {slotInfo.coordinator_mobile}</div>
+
+
+                        </div>
+                        <div className="col-md-3">
+
+                            <div><strong>Principal Name:</strong> {slotInfo.hm_principal_manager_name}</div>
+                            <div><strong>Principal Mobile:</strong> {slotInfo.hm_principal_manager_mobile}</div>
+
+                        </div>
+                    </>
+                ) : (
+                    <p></p>
+                )}
+                <div className="col-md-2">
+                    {
+                        filteredData.length < 0 ? (
+                            <button
+
+                                onClick={() => {
+                                    localStorage.setItem('slotsids', sessionSlotId)
+
+                                    // Categories that navigate to "/bookingpage2"
+                                    const bookingPage2Categories = [
+                                        "RTO – Training for School Bus Driver",
+                                        "RTO – Suspended Driving License Holders Training",
+                                        "RTO – Learner Driving License Holder Training"
+                                    ];
+
+                                    // Categories that navigate to "/Sessionslotdetails"
+                                    const sessionSlotDetailsCategories = [
+                                        "College/Organization Training – Group",
+                                        "School Students Training – Group"
+                                    ];
+
+                                    if (bookingPage2Categories.includes(category1)) {
+                                        navigate("/bookingpage2", {
+                                            state: {
+                                                selectedDate: selectedDate,
+                                                selectedTime: selectedTime,
+                                                category: category1
+                                            }
+                                        });
+                                    } else if (sessionSlotDetailsCategories.includes(category1)) {
+                                        navigate("/bookingpage", {
+                                            state: {
+                                                selectedDate: selectedDate,
+                                                selectedTime: selectedTime,
+                                                category: category1
+                                            }
+                                        });
+                                    } else {
+                                        console.log("Navigation prevented: Invalid category");
+                                    }
+
+                                    // Ensure window scrolls to top after navigation
+
+                                }}
+
+                                className="returnbutton"
+
+
+
+
+
+
+                            >add group slotInfo</button >) : <></>}
+                </div>
+            </div>
+
+
+
+
+
+
             <Row className="mb-3">
                 <Col className="d-flex justify-content-end">
                     <Form.Control
@@ -618,21 +726,23 @@ const Bookcalender = ({ tabKey }) => {
                 </Col>
 
             </Row>
-            {filteredData.length > 0 ? (
-                <DataTable
-                    columns={columns}
-                    data={filteredData}
-                    pagination
-                    responsive
-                    striped
-                    noDataComponent="No Data Available"
-                    onRowClicked={handleRowClick}
-                />
-            ) : (
-                <Alert variant="warning" className="text-center">
-                    No Data Found
-                </Alert>
-            )}
+            {
+                filteredData.length > 0 ? (
+                    <DataTable
+                        columns={columns}
+                        data={filteredData}
+                        pagination
+                        responsive
+                        striped
+                        noDataComponent="No Data Available"
+                        onRowClicked={handleRowClick}
+                    />
+                ) : (
+                    <Alert variant="warning" className="text-center">
+                        No Data Found
+                    </Alert>
+                )
+            }
 
 
             <Modal

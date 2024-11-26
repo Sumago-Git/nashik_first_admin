@@ -104,7 +104,9 @@ const AreaTop = ({ buttonValue, tableView }) => {
     "/bookseats",
     "/Slotlistpage",
     "/Bookcalender",
-    "/search"
+    "/search",
+    "/Bookcalender",
+    "/bookingpage2"
   ];
   const isHiddenPath = hiddenPaths.includes(location.pathname);
 
@@ -115,7 +117,7 @@ const AreaTop = ({ buttonValue, tableView }) => {
       setHeader("Header Contact");
     } else if (window.location.pathname == "/homeslider") {
       setHeader("Image Slider");
-    } 
+    }
     else if (window.location.pathname == "/news") {
       setHeader("News");
     }
@@ -199,7 +201,7 @@ const AreaTop = ({ buttonValue, tableView }) => {
     else if (window.location.pathname == "/bookseats") {
       setHeader("Booking Packages");
     }
-     else if (window.location.pathname == "/requestcallbackform") {
+    else if (window.location.pathname == "/requestcallbackform") {
       setHeader("Request Callback Form");
     } else if (window.location.pathname == "/office") {
       setHeader("Our Offices");

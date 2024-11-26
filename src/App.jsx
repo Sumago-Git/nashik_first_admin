@@ -51,6 +51,8 @@ import Slotpage from "./components/Groupbooking/Slotpage";
 import Search from "./screens/submenus/Search";
 import Calender2 from "./screens/submenus/Booking/Calender2";
 import CalenderComp2 from "./components/Calender Component/CalenderComp2";
+import Sessionslotdetails from "./components/Groupbooking/Sessionslotdetails";
+import Bookingpage2 from "./components/Groupbooking/Bookingpage2";
 
 function App() {
   return (
@@ -137,8 +139,16 @@ function App() {
             element={<ProtectedRoutes Component={Trainer} />}
           />
           <Route
+            path="/Sessionslotdetails"
+            element={<ProtectedRoutes Component={Sessionslotdetails} />}
+          />
+          <Route
             path="/bookingpage"
             element={<ProtectedRoutes Component={Bookingpage} />}
+          />
+          <Route
+            path="/bookingpage2"
+            element={<ProtectedRoutes Component={Bookingpage2} />}
           />
           <Route
             path="/Slotpage"
