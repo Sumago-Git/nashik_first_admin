@@ -65,16 +65,16 @@ function HomeCounter() {
                     <Button variant="primary" className="m-2" onClick={() => edit(row.id)}>
                         <FaEdit />
                     </Button>
-                    <Button variant="danger" className="m-2" onClick={() => delete_data(row.id)}>
+                    {/* <Button variant="danger" className="m-2" onClick={() => delete_data(row.id)}>
                         <MdDelete />
-                    </Button>
-                    <Button
+                    </Button> */}
+                    {/* <Button
                         variant={activeStatus[row.id] ? 'success' : 'warning'}
                         className="m-2"
                         onClick={() => toggleActiveStatus(row.id)}
                     >
                         {activeStatus[row.id] ? <FaRegEye color="white" /> : <FaEyeSlash color="white" />}
-                    </Button>
+                    </Button> */}
                 </>
             ),
             width: '200px'
