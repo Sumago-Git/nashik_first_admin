@@ -14,7 +14,7 @@ import Categories from "../../components/Categories";
 import instance from "../../api/AxiosInstance";
 import { useLocation, useNavigate } from "react-router-dom";
 import DataTable from "react-data-table-component";
-
+import { base64String } from "../../assets/base64font"
 const Bookcalender = ({ tabKey }) => {
     const [show, setShow] = useState(false);
     const [slotInfo, setSlotInfo] = useState(null); // State to store slot data
@@ -133,12 +133,6 @@ const Bookcalender = ({ tabKey }) => {
         getSlotInfo()
     }, [])
 
-
-
-
-
-
-
     const daysInMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).getDate();
     const startingDay = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1).getDay();
 
@@ -227,9 +221,13 @@ const Bookcalender = ({ tabKey }) => {
             doc.addImage(img, 'PNG', 0, 0, imgWidthMm, imgHeightMm);
 
             // Set font, color, and size for the user's name
-            doc.setFont("cursive");
+
+            doc.addFileToVFS("MyCustomFont.ttf", base64String);  // Add the font
+            doc.addFont("MyCustomFont.ttf", "MyCustomFont", "normal"); // Register the font
+
+            doc.setFont("MyCustomFont");
             doc.setFontSize(95);
-            doc.setTextColor("#4e4e95");
+            doc.setTextColor("#f48633");
 
             // Prepare user's name
             const nameText = `${selectedBooking.fname} ${selectedBooking.lname}`;
@@ -261,12 +259,12 @@ const Bookcalender = ({ tabKey }) => {
             const yPositionSlotDate = 85; // Adjust y-position for slotdate
             doc.text(slotDateText, xPositionSlotDate, yPositionSlotDate);
 
-            // doc.setTextColor("#4e4e95");
-            // doc.setFontSize(35);
-            // const slotTimeText = `: ${selectedBooking.slotdate}`;
-            // const xPositionSlotTime = imgWidthMm - 93; // Adjust x-position for slotdate
-            // const yPositionSlotTime = 95; // Adjust y-position for slotdate
-            // doc.text(slotTimeText, xPositionSlotTime, yPositionSlotTime);
+            doc.setTextColor("#4e4e95");
+            doc.setFontSize(35);
+            const slotTimeText = ` ${selectedBooking.sessionSlotTime}`;
+            const xPositionSlotTime = imgWidthMm - 93; // Adjust x-position for slotdate
+            const yPositionSlotTime = 100; // Adjust y-position for slotdate
+            doc.text(slotTimeText, xPositionSlotTime, yPositionSlotTime);
 
             // Open the PDF in a new window for printing
             const pdfWindow = window.open("");
@@ -311,10 +309,12 @@ const Bookcalender = ({ tabKey }) => {
             // Add image to PDF
             doc.addImage(img, 'PNG', 0, 0, imgWidthMm, imgHeightMm);
 
-            // Add user details to the PDF
-            doc.setFont("cursive");
+            doc.addFileToVFS("MyCustomFont.ttf", base64String);  // Add the font
+            doc.addFont("MyCustomFont.ttf", "MyCustomFont", "normal"); // Register the font
+
+            doc.setFont("MyCustomFont");
             doc.setFontSize(95);
-            doc.setTextColor("#4e4e95");
+            doc.setTextColor("#f48633");
 
             const nameText = `${selectedBooking.fname} ${selectedBooking.lname}`;
             const nameWidth = doc.getTextWidth(nameText);
@@ -335,6 +335,14 @@ const Bookcalender = ({ tabKey }) => {
             const xPositionSlotDate = imgWidthMm - 93;
             const yPositionSlotDate = 85;
             doc.text(slotDateText, xPositionSlotDate, yPositionSlotDate);
+
+            doc.setTextColor("#4e4e95");
+            doc.setFontSize(35);
+            const slotTimeText = `  ${selectedBooking.sessionSlotTime}`;
+            const xPositionSlotTime = imgWidthMm - 93; // Adjust x-position for slotdate
+            const yPositionSlotTime = 100; // Adjust y-position for slotdate
+            doc.text(slotTimeText, xPositionSlotTime, yPositionSlotTime);
+
 
             // Convert the generated PDF to a Blob for sending to backend
             const pdfBlob = doc.output("blob");
@@ -400,10 +408,12 @@ const Bookcalender = ({ tabKey }) => {
             // Add image to PDF
             doc.addImage(img, 'PNG', 0, 0, imgWidthMm, imgHeightMm);
 
-            // Add user details to the PDF
-            doc.setFont("cursive");
+            doc.addFileToVFS("MyCustomFont.ttf", base64String);  // Add the font
+            doc.addFont("MyCustomFont.ttf", "MyCustomFont", "normal"); // Register the font
+
+            doc.setFont("MyCustomFont");
             doc.setFontSize(95);
-            doc.setTextColor("#4e4e95");
+            doc.setTextColor("#f48633");
 
             const nameText = `${row.fname} ${row.lname}`;
             const nameWidth = doc.getTextWidth(nameText);
@@ -424,6 +434,14 @@ const Bookcalender = ({ tabKey }) => {
             const xPositionSlotDate = imgWidthMm - 93;
             const yPositionSlotDate = 85;
             doc.text(slotDateText, xPositionSlotDate, yPositionSlotDate);
+
+            doc.setTextColor("#4e4e95");
+            doc.setFontSize(35);
+            const slotTimeText = `  ${selectedBooking.sessionSlotTime}`;
+            const xPositionSlotTime = imgWidthMm - 93; // Adjust x-position for slotdate
+            const yPositionSlotTime = 100; // Adjust y-position for slotdate
+            doc.text(slotTimeText, xPositionSlotTime, yPositionSlotTime);
+
 
             // Convert the generated PDF to a Blob for sending to backend
             const pdfBlob = doc.output("blob");
