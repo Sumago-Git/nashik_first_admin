@@ -239,15 +239,10 @@ const Sessionslotdetails = () => {
 
 
             <div className='text-center'>
-              <Button type="submit" disabled={isSubmitting}>
-                {isSubmitting ? (
-                  <span>
-                    <span className="spinner-border spinner-border-sm me-2"></span>
-                    Submitting...
-                  </span>
-                ) : (
-                  "Submit"
-                )}
+              <Button type="submit">
+
+                "Submit"
+
               </Button>                </div>
           </Row>
         </form>

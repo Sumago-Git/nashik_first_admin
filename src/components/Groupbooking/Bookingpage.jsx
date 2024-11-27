@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Container, Row, Col, Button } from 'react-bootstrap';
 import { useNavigate, useLocation } from 'react-router-dom';
-
+import {Link} from 'react-router-dom'
 import Form from 'react-bootstrap/Form';
 import * as XLSX from 'xlsx';
 
@@ -308,7 +308,11 @@ const Bookingpage = () => {
 
 
 
-
+        <Col lg={12} className='mt-md-5 pt-lg-3 pb-5 mb-lg-2 mt-4'>
+          <Link to='/groupbooking'><button className='returnbutton p-lg-3'>
+            Return
+          </button></Link>
+        </Col>
 
       </Container>
 

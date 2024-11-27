@@ -670,9 +670,9 @@ const SlotComp2 = ({ selectedDates, categoryName, showModal, handleCloseModal, h
                                         onChange={(e) => handleChange("category", e.target.value)} // Call handleChange with "category"
                                     >
                                         <option value={categoryName}>{categoryName}</option>
-                                        <option value="RTO – Learner Driving License Holder Training">RTO – Learner Driving License Holder Training</option>
+                                        {/* <option value="RTO – Learner Driving License Holder Training">RTO – Learner Driving License Holder Training</option>
                                         <option value="RTO – Suspended Driving License Holders Training">RTO – Suspended Driving License Holders Training</option>
-                                        <option value="RTO – Training for School Bus Driver">RTO – Training for School Bus Driver</option>
+                                        <option value="RTO – Training for School Bus Driver">RTO – Training for School Bus Driver</option> */}
                                         <option value="School Students Training – Group">School Students Training – Group</option>
                                         <option value="College/Organization Training – Group">College/Organization Training – Group</option>
 

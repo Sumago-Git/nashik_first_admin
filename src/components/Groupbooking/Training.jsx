@@ -53,6 +53,7 @@ const Training = () => {
           color: slot.status === "Holiday" ? "#ff0000" : (slot.status === "available" ? "green" : "red"),
           bgColor: slot.status === "Holiday" ? "#ea7777" : (slot.status === "available" ? "#d4ffd4" : "#ffd4d4"),
           isHoliday: slot.status === "Holiday",
+          slots: slot.slots
         })));
       })
       .catch((err) => {
@@ -112,7 +113,7 @@ const Training = () => {
   const isCurrentMonth = currentMonth === today.getMonth() && currentYear === today.getFullYear();
 
   const handleDateClick = (day) => {
-    if (dateStatuses[day] === "available") { // Only handle click if the status is "Available"
+    if (dateStatuses[day] !== "Holiday") { // Only handle click if the status is "Available"
       const clickedDate = new Date(currentYear, currentMonth, day);
       window.scrollTo(0, 700);
       navigate("/Slotpage", { state: { selectedDate: clickedDate, category: selectedButton } });
@@ -234,7 +235,7 @@ const Training = () => {
                                 : isDisabled
                                   ? "#f9f9f9" // Disabled (past dates or holidays)
                                   : dateStatuses[day] === "available"
-                                    ? "#d4ffd4" // Green for available
+                                    ? "#d4ffd" // Green for available
                                     : dateStatuses[day] === "Holiday"
                                       ? "#ea7777" // Light blue for holiday
                                       : "#ffd4d4" // Red for closed or other statuses
@@ -246,7 +247,7 @@ const Training = () => {
                                   ? "#999" // Gray for disabled or holiday
                                   : "black"
                               : "black", color: day && (day.isNextMonth ? "#ccc" : isDisabled || isHoliday ? "#999" : "black"),
-                            pointerEvents: day && (isDisabled || isHoliday ? "none" : "auto"),
+                            pointerEvents: day && (isHoliday ? "none" : "auto"),
                             transition: 'color 0.3s',
                             fontFamily: "Poppins",
                             fontWeight: "600",
@@ -254,21 +255,52 @@ const Training = () => {
                         >
                           {day && (day.isNextMonth ? day.day : day || "")}
                           <br />
-                          {specialDates && specialDates.length > 0 && specialDates.find((date) => date.day === day) && !isPastDate(day) && (
-                            <div style={{
-                              fontSize: '10px',
-                              marginTop: '5px',
-                              color: specialDates.find((date) => date.day === day)?.color, // Use color based on status
-                              backgroundColor: specialDates.find((date) => date.day === day)?.bgColor,
-                              padding: '3px 8px',
-                              borderRadius: '15px',
-                              display: 'inline-block',
-                              fontWeight: 'bold',
-                            }}>
-                              {specialDates.find((date) => date.day === day)?.label}
-                            </div>
-                          )}
-
+                          {specialDates &&
+                            specialDates.length > 0 &&
+                            dateStatuses[day] !== "Holiday" && // Check if the day is NOT a holiday
+                            specialDates.find((date) => date.day === day) &&
+                            !isPastDate(day) && (
+                              <div>
+                                {specialDates.find((date) => date.day === day)?.slots.length > 0 ? (
+                                  specialDates
+                                    .find((date) => date.day === day)
+                                    ?.slots.map((a) => (
+                                      <div
+                                        key={a.time} // Ensure unique keys for React elements
+                                        style={{
+                                          fontSize: "12px",
+                                          width: "50%",
+                                          marginTop: "2px",
+                                          color: a.availableSeats === 0 ? "red" : "green",
+                                          backgroundColor: a.availableSeats === 0 ? "#ffd4d4" : "#d4ffd4", // Dynamically set background color
+                                          padding: "3px 8px",
+                                          borderRadius: "15px",
+                                          display: "grid",
+                                          fontWeight: "bold",
+                                        }}
+                                      >
+                                        {a.time}
+                                      </div>
+                                    ))
+                                ) : (
+                                  <div
+                                    style={{
+                                      fontSize: "12px",
+                                      width: "100%",
+                                      marginTop: "2px",
+                                      color: "gray",
+                                      backgroundColor: "#f0f0f0",
+                                      padding: "3px 8px",
+                                      borderRadius: "15px",
+                                      textAlign: "center",
+                                      fontWeight: "bold",
+                                    }}
+                                  >
+                                    No slot available
+                                  </div>
+                                )}
+                              </div>
+                            )}
                         </td>
 
                       );

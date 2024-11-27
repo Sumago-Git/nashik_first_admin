@@ -161,7 +161,7 @@ const CalenderComp = () => {
     const today = new Date();
     const isPastDate = (day) => {
         const dateToCheck = new Date(currentYear, currentMonth, day);
-        return dateToCheck < today.setHours(0, 0, 0, 0);
+        return dateToCheck <= today.setHours(0, 0, 0, 0);
     };
 
 
@@ -189,7 +189,7 @@ const CalenderComp = () => {
         setLoading(true);
         const accessToken = localStorage.getItem("accessToken"); // Retrieve access token
         try {
-            const response = await instance.post("Sessionslot/get-getSessionbySessionslot2", { slotdate: selectedDates,  slotType: "inhouse" }, {
+            const response = await instance.post("Sessionslot/get-getSessionbySessionslot2", { slotdate: selectedDates, slotType: "inhouse" }, {
                 headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },
             });
             const filteredData = response.data.responseData?.reverse()
@@ -387,7 +387,7 @@ const CalenderComp = () => {
                 isPast={selectedDateIsPast}
                 categoryName={categoryName}
                 todayname={myDay}
-                />
+            />
         </>
     );
 };

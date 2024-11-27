@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useSyncExternalStore } from 'react';
-import { Container, Row, Col } from 'react-bootstrap';
+import { Container, Row, Col, Card } from 'react-bootstrap';
 import instance from '../../api/AxiosInstance';
 
 import { Link, useLocation } from 'react-router-dom';
@@ -82,7 +82,7 @@ const Slotpage = () => {
         <>
 
 
-            <h1 className='daydate mt-5'>{slotDate}</h1>
+            <h1 className='daydate mt-5'>{slotDate} - {category}</h1>
 
             <Container className='mt-md-5'>
                 <Row>
@@ -114,55 +114,51 @@ const Slotpage = () => {
 
                                 const buttonStyle = {
                                     border: "0px",
-                                    cursor: isAvailable ? 'pointer' : 'not-allowed',
-                                    opacity: isAvailable ? 1 : 0.5, // Make the button slightly transparent when unavailable
                                 };
                                 return (
                                     <Col key={index} lg={6} sm={6} md={6} className={index === 0 ? 'pe-lg-5' : 'ps-lg-5'}>
                                         <button
                                             onClick={() => {
-                                                if (isAvailable) {
-                                                    localStorage.setItem('slotsid', session.id);
+                                                // if (isAvailable) {
+                                                localStorage.setItem('slotsid', session.id);
 
-                                                    // Categories that navigate to "/bookingpage2"
-                                                    const bookingPage2Categories = [
-                                                        "RTO – Training for School Bus Driver",
-                                                        "RTO – Suspended Driving License Holders Training",
-                                                        "RTO – Learner Driving License Holder Training"
-                                                    ];
+                                                // Categories that navigate to "/bookingpage2"
+                                                const bookingPage2Categories = [
+                                                    "RTO – Training for School Bus Driver",
+                                                    "RTO – Suspended Driving License Holders Training",
+                                                    "RTO – Learner Driving License Holder Training"
+                                                ];
 
-                                                    // Categories that navigate to "/Sessionslotdetails"
-                                                    const sessionSlotDetailsCategories = [
-                                                        "College/Organization Training – Group",
-                                                        "School Students Training – Group"
-                                                    ];
+                                                // Categories that navigate to "/Sessionslotdetails"
+                                                const sessionSlotDetailsCategories = [
+                                                    "College/Organization Training – Group",
+                                                    "School Students Training – Group"
+                                                ];
 
-                                                    if (bookingPage2Categories.includes(category)) {
-                                                        navigate("/bookingpage2", {
-                                                            state: {
-                                                                selectedDate: slotDate,
-                                                                selectedTime: `${formattedTime}-${session.title}`,
-                                                                category: category
-                                                            }
-                                                        });
-                                                    } else if (sessionSlotDetailsCategories.includes(category)) {
-                                                        
-                                                        navigate("/Sessionslotdetails", {
-                                                            state: {
-                                                                selectedDate: slotDate,
-                                                                selectedTime: `${formattedTime}-${session.title}`,
-                                                                category: category
-                                                            }
-                                                        });
-                                                    } else {
-                                                        console.log("Navigation prevented: Invalid category");
-                                                    }
+                                                if (bookingPage2Categories.includes(category)) {
+                                                    navigate("/bookingpage2", {
+                                                        state: {
+                                                            selectedDate: slotDate,
+                                                            selectedTime: `${formattedTime}-${session.title}`,
+                                                            category: category
+                                                        }
+                                                    });
+                                                } else if (sessionSlotDetailsCategories.includes(category) && isAvailable) {
 
-                                                    // Ensure window scrolls to top after navigation
-                                                    setTimeout(() => window.scrollTo(0, 790), 0);
+                                                    navigate("/Sessionslotdetails", {
+                                                        state: {
+                                                            selectedDate: slotDate,
+                                                            selectedTime: `${formattedTime}-${session.title}`,
+                                                            category: category
+                                                        }
+                                                    });
                                                 } else {
-                                                    console.log("Navigation prevented: No available seats");
+                                                    console.log("Navigation prevented: Invalid category");
                                                 }
+
+                                                // Ensure window scrolls to top after navigation
+                                                setTimeout(() => window.scrollTo(0, 790), 0);
+
                                             }}
 
                                             className='w-100'
@@ -172,8 +168,36 @@ const Slotpage = () => {
 
                                             style={buttonStyle}
                                         >
-                                            <Container className='session p-lg-3'>
-                                                {formattedTime} - {session.title}{session.id}
+                                            <Container className='session text-start p-lg-3 '>
+                                                {formattedTime} - {session.title}
+
+
+
+
+
+                                                <strong>Trainer:</strong> {session.trainer} <br />
+                                                <strong>Category:</strong> {session.category} <br />
+                                                <strong>Date:</strong> {session.slotdate} <br />
+                                                <strong>Time:</strong> {session.time} <br />
+                                                <strong>Deadline:</strong> {session.deadlineTime} <br />
+                                                <strong>Capacity:</strong> {session.capacity} <br />
+                                                <strong>Available Seats:</strong> {session.available_seats} <br />
+
+
+                                                {session.slotDetails.map((detail, index) => (
+                                                    <div key={index} style={{ marginTop: "10px" }}>
+                                                        <strong>Name:</strong> {detail.institution_name} <br />
+                                                        <strong>Email:</strong> {detail.institution_email} <br />
+                                                        <strong>Phone:</strong> {detail.institution_phone} <br />
+                                                        <strong>Coordinator Name:</strong> {detail.coordinator_name} <br />
+                                                        <strong>Coordinator Mobile:</strong> {detail.coordinator_mobile} <br />
+                                                        <strong>Principal/Manager Name:</strong> {detail.hm_principal_manager_name} <br />
+                                                        <strong>Principal/Manager Mobile:</strong> {detail.hm_principal_manager_mobile} <br />
+                                                    </div>
+                                                ))}
+
+
+
                                             </Container>
                                         </button>
                                     </Col>
