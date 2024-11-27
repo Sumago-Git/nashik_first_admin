@@ -122,24 +122,54 @@ const Slotpage = () => {
                                         <button
                                             onClick={() => {
                                                 if (isAvailable) {
-                                                    // Check if category is either 'abc' or 'xyz'
-
                                                     localStorage.setItem('slotsid', session.id);
-                                                    navigate("/bookingpage", {
-                                                        state: {
-                                                            selectedDate: slotDate,
-                                                            selectedTime: `${formattedTime}-${session.title}`,
-                                                            category: category
-                                                        }
-                                                    });
+
+                                                    // Categories that navigate to "/bookingpage2"
+                                                    const bookingPage2Categories = [
+                                                        "RTO – Training for School Bus Driver",
+                                                        "RTO – Suspended Driving License Holders Training",
+                                                        "RTO – Learner Driving License Holder Training"
+                                                    ];
+
+                                                    // Categories that navigate to "/Sessionslotdetails"
+                                                    const sessionSlotDetailsCategories = [
+                                                        "College/Organization Training – Group",
+                                                        "School Students Training – Group"
+                                                    ];
+
+                                                    if (bookingPage2Categories.includes(category)) {
+                                                        navigate("/bookingpage2", {
+                                                            state: {
+                                                                selectedDate: slotDate,
+                                                                selectedTime: `${formattedTime}-${session.title}`,
+                                                                category: category
+                                                            }
+                                                        });
+                                                    } else if (sessionSlotDetailsCategories.includes(category)) {
+                                                        
+                                                        navigate("/Sessionslotdetails", {
+                                                            state: {
+                                                                selectedDate: slotDate,
+                                                                selectedTime: `${formattedTime}-${session.title}`,
+                                                                category: category
+                                                            }
+                                                        });
+                                                    } else {
+                                                        console.log("Navigation prevented: Invalid category");
+                                                    }
+
                                                     // Ensure window scrolls to top after navigation
                                                     setTimeout(() => window.scrollTo(0, 790), 0);
                                                 } else {
-                                                    console.log("Navigation prevented: Invalid category");
+                                                    console.log("Navigation prevented: No available seats");
                                                 }
-
                                             }}
+
                                             className='w-100'
+
+
+
+
                                             style={buttonStyle}
                                         >
                                             <Container className='session p-lg-3'>
@@ -151,7 +181,7 @@ const Slotpage = () => {
                             })}
 
                     <Col lg={12} className='mt-md-5 pt-lg-3 pb-5 mb-lg-2 mt-4'>
-                        <Link to='/training'><button className='returnbutton p-lg-3'>
+                        <Link to='/groupbooking'><button className='returnbutton p-lg-3'>
                             Return
                         </button></Link>
                     </Col>

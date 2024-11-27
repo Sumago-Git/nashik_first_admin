@@ -19,7 +19,7 @@ const Training = () => {
   const navigate = useNavigate();
   const [selectedButton, setSelectedButton] = useState("College/Organization Training – Group");
   const [specialDates, setspecialDates] = useState([]);
-  const [btno, setbrno] = useState( "College/Organization Training – Group");
+  const [btno, setbrno] = useState("College/Organization Training – Group");
   const [dateStatuses, setDateStatuses] = useState({}); // State to store date statuses
 
   useEffect(() => {
@@ -30,7 +30,7 @@ const Training = () => {
   useEffect(() => {
     getdata_here();
   }, [currentDate]);
-  const getdata_here = ({ category = selectedButton} = {}) => {
+  const getdata_here = ({ category = selectedButton } = {}) => {
     instance.post('/Sessionslot/getAvailableslotslots', {
       year: currentYear.toString(),
       month: (currentMonth + 1).toString(),
@@ -138,8 +138,14 @@ const Training = () => {
 
 
   const tabsData = [
-    { id: 5, label: "College/Organization Training – Group" },
-    { id: 4, label: "School Students Training – Group" },
+
+    { id: 1, label: "College/Organization Training – Group" },
+    { id: 2, label: "School Students Training – Group" },
+    { id: 3, label: "RTO – Learner Driving License Holder Training" },
+    { id: 4, label: "RTO – Suspended Driving License Holders Training" },
+    { id: 5, label: "RTO – Training for School Bus Driver" },
+
+
 
   ];
   return (
@@ -154,7 +160,7 @@ const Training = () => {
           <Nav variant="tabs" defaultActiveKey="/home" className="mt-lg-4 mx-auto">
             <Row>
               {tabsData.map((tab) => (
-                <Col md={4} className="p-0" key={tab.id} onClick={() => handleButtonClick(tab.id, tab.label)}>
+                <Col md={2} className="p-0" key={tab.id} onClick={() => handleButtonClick(tab.id, tab.label)}>
                   <Nav.Item className="calendertabs">
                     <Nav.Link eventKey={`link-${tab.id}`} className="text-black">
                       <button

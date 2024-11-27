@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { Container, Row, Col, Button } from 'react-bootstrap';
 import { useNavigate, useLocation } from 'react-router-dom';
+import InputMask from 'react-input-mask';
 
 import Form from 'react-bootstrap/Form';
 import * as XLSX from 'xlsx';
 
 import instance from '../../api/AxiosInstance';
 
-const Bookingpage = () => {
+const Bookingpage2 = () => {
   const [formData, setFormData] = useState({
-    learningNo: '____/_______/____',
+    learningNo: '_/__/__',
     fname: '',
     mname: '',
     lname: '',
@@ -157,9 +158,9 @@ const Bookingpage = () => {
 
 
   const handleSubmit = async (e) => {
+
+
     e.preventDefault();
-
-
 
 
     setIsSubmitting(true); // Start loading
@@ -177,13 +178,14 @@ const Bookingpage = () => {
 
     try {
       // Create a new FormData instance
-      const sessionSlotId = localStorage.getItem('slotsids');
+      const sessionSlotId = localStorage.getItem('slotsid');
 
       const data = new FormData();
 
       // Append all form fields to the FormData instance
       data.append('learningNo', formData.learningNo);
       data.append('fname', formData.fname);
+
       data.append('mname', formData.mname);
       data.append('lname', formData.lname);
       data.append('email', formData.email);
@@ -191,35 +193,32 @@ const Bookingpage = () => {
       data.append('category', category);
       data.append('slotsession', slotsession);
       data.append('slotdate', formattedDate);
-
+      data.append('institution_name', formData.institution_name);
+      data.append('institution_email', formData.institution_email);
+      data.append('institution_phone', formData.institution_phone);
+      data.append('hm_principal_manager_name', formData.hm_principal_manager_name);
+      data.append('hm_principal_manager_mobile', formData.hm_principal_manager_mobile);
+      data.append('coordinator_mobile', formData.coordinator_mobile);
+      data.append('coordinator_name', formData.coordinator_name);
       data.append('sessionSlotId', sessionSlotId);
 
-
+      // Append the Excel file if it exists
       if (formData.excel) {
         data.append('file', formData.excel);
       }
 
+      // Append the vehicle types as a comma-separated string
+      // data.append('vehicletype', formData.vehicletype.join(','));
+
+      // Make the axios request to the combined endpoint
       const response = await instance.post('bookingform/create-uploadOrAddBookingForm', data, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       });
 
+      // Show success message
       alert('Booking successfully created!');
-      const records = response.data.data;
-      for (const record of records) {
-        try {
-          const updateResponse = await instance.put('bookingform/updateTrainingStatus', {
-            trainingStatus: 'Attended',
-            bookingId: record.id,
-            certificate_no: Math.floor(100000 + Math.random() * 900000), // Generate a random 6-digit certificate number
-          });
-
-          console.log(`Record ${record.id} updated successfully:`, updateResponse.data);
-        } catch (updateError) {
-          console.error(`Error updating record ${record.id}:`, updateError);
-        }
-      }
 
       // Resetting the form
       setFormData({
@@ -273,38 +272,131 @@ const Bookingpage = () => {
 
 
       <Container className='bookingdetails mt-5 pt-4 pb-3 '>
-        <h1 className='bookingheadline mt-3 mx-auto'>Please fill in your details</h1>
-        <form onSubmit={handleSubmit}>
-          <Row className=''>
+        <div className='form-group mb-4'>
+          <p className='detailtext text-black text-start ms-lg-4 mb-4'>{slotdate}</p>
+          <form onSubmit={handleSubmit}>
+            <Row className='justify-content-center'>
+              <Col lg={6} md={7} sm={12}>
+                <p className='bookingdate text-black text-start ms-lg-4 ms-sm-3 mt-3'>
+                  {category === "RTO – Suspended Driving License Holders Training" ? "Permanant License Number*" : "Learning License Number*"}
+                </p>
+                {category === "RTO – Suspended Driving License Holders Training" ?
+                  <InputMask
+                    mask="**/**/**/****"
+                    value={formData.learningNo || ""} // Ensure controlled value
+                    onChange={(e) => {
+                      // Get the input value and convert it to uppercase
+                      const inputValue = e.target.value.toUpperCase();
 
-            <Col lg={7} className='mb-3'>
-              <Form.Group controlId="uploadExcel">
+                      // Update state in real-time
+                      setFormData((prevFormData) => ({
+                        ...prevFormData,
+                        learningNo: inputValue,
+                      }));
+                    }}
+                    placeholder="____/_______/____"
+                    className="dateinput p-3 m-0 mt-0 ms-lg-3 custom-placeholder"
+                  >
+                    {(inputProps) => <input {...inputProps} />}
+                  </InputMask>
+                  :
+                  <InputMask
+                    mask="****/*******/****"
+                    value={formData.learningNo || ""} // Ensure controlled value
+                    onChange={(e) => {
+                      // Get the input value and convert it to uppercase
+                      const inputValue = e.target.value.toUpperCase();
 
-                <Form.Control
-                  type="file"
-                  name='excel'
-                  accept=".xls,.xlsx"
-                  onChange={handleChange}
-                />
-                {errors.excel && <p className='text-start ms-md-1 mt-1 text-danger'>{errors.excel}</p>}
-              </Form.Group>
-            </Col>
+                      // Update state in real-time
+                      setFormData((prevFormData) => ({
+                        ...prevFormData,
+                        learningNo: inputValue,
+                      }));
+                    }}
+                    placeholder="____/_______/____"
+                    className="dateinput p-3 m-0 mt-0 ms-lg-3 custom-placeholder"
+                  >
+                    {(inputProps) => <input {...inputProps} />}
+                  </InputMask>
+                }
 
-
-
-            <div className='text-center'>
-              <Button type="submit" disabled={isSubmitting}>
-                {isSubmitting ? (
-                  <span>
-                    <span className="spinner-border spinner-border-sm me-2"></span>
-                    Submitting...
-                  </span>
-                ) : (
-                  "Submit"
+                {errors.learningNo && (
+                  <p className='text-start ms-md-4 mt-1 text-danger'>{errors.learningNo}</p>
                 )}
-              </Button>                </div>
-          </Row>
-        </form>
+              </Col>
+              <Col lg={6} md={7}>
+                <p className='bookingdate text-black text-start ms-lg-4 ms-sm-3 mt-3'>{"First Name*"}</p>
+                <input
+                  name='fname'
+                  value={formData.fname}
+                  onChange={handleChange}
+                  placeholder={"First Name"}
+                  className='dateinput p-3 m-0 mt-0 ms-lg-3'
+                />
+                {errors.fname && <p className='text-start ms-md-4 mt-1 text-danger'>{errors.fname}</p>}
+              </Col>
+              <Col lg={6} md={7}>
+                <p className='bookingdate text-black text-start ms-lg-4 ms-sm-3 mt-3'>{"Middle Name"}</p>
+                <input
+                  name='mname'
+                  value={formData.mname}
+                  onChange={handleChange}
+                  placeholder={"Middle Name"}
+                  className='dateinput p-3 m-0 mt-0 ms-lg-3'
+                />
+                {errors.mname && <p className='text-start ms-md-4 mt-1 text-danger'>{errors.mname}</p>}
+              </Col>
+              <Col lg={6} md={7}>
+                <p className='bookingdate text-black text-start ms-lg-4 ms-sm-3 mt-3'>{"Last Name*"}</p>
+                <input
+                  name='lname'
+                  value={formData.lname}
+                  onChange={handleChange}
+                  placeholder={"Last Name"}
+                  className='dateinput p-3 m-0 mt-0 ms-lg-3'
+                />
+                {errors.lname && <p className='text-start ms-md-4 mt-1 text-danger'>{errors.lname}</p>}
+              </Col>
+              <Col lg={6} md={7}>
+                <p className='bookingdate text-black text-start ms-lg-4 ms-sm-3 mt-3'>{"Email*"}</p>
+                <input
+                  name='email'
+                  value={formData.email}
+                  onChange={handleChange}
+                  placeholder={"email"}
+                  className='dateinput p-3 m-0 mt-0 ms-lg-3'
+                />
+                {errors.email && <p className='text-start ms-md-4 mt-1 text-danger'>{errors.email}</p>}
+              </Col>
+              <Col lg={6} md={7}>
+                <p className='bookingdate text-black text-start ms-lg-4 ms-sm-3 mt-3'>{"Phone*"}</p>
+                <input
+                  name='phone'
+                  maxlength="10"
+                  value={formData.phone}
+                  onChange={handleChange}
+                  placeholder={"phone"}
+                  className='dateinput p-3 m-0 mt-0 ms-lg-3 ms-md-0'
+                />
+                {errors.phone && <p className='text-start ms-md-4 mt-1 text-danger'>{errors.phone}</p>}
+              </Col>
+
+
+              <div className='text-center mt-4'>
+                <button type="submit " className='returnbutton' disabled={isSubmitting} onClick={() => setShowModal(true)}>
+                  {isSubmitting ? (
+                    <span>
+                      <span className="spinner-border returnbutton spinner-border-sm me-2"></span>
+                      Submitting...
+                    </span>
+                  ) : (
+                    "Submit"
+                  )}
+                </button>
+              </div>
+            </Row>
+          </form>
+        </div>
 
 
 
@@ -318,4 +410,4 @@ const Bookingpage = () => {
   );
 }
 
-export default Bookingpage;
+export default Bookingpage2;

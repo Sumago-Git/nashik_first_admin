@@ -2,5 +2,181 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    max-width: 200px; /* Adjust the max-width as per your requirement */
+    max-width: 200px;
+    /* Adjust the max-width as per your requirement */
+}
+
+
+.slotheadline {
+    font-family: "Poppins";
+    font-size: 30px;
+
+    font-weight: 600;
+}
+
+.slotpagepara {
+    font-family: 'Century Gothic Paneuropean', sans-serif;
+}
+
+.datetime {
+    background: linear-gradient(90deg, #FFA088 21.08%, rgba(255, 214, 204, 0.658439) 85.93%, rgba(255, 255, 255, 0.4) 100%);
+    font-size: 23px;
+    font-family: "Poppins";
+    font-weight: 600;
+}
+
+.daydate {
+    font-weight: 800;
+    font-family: "Poppins";
+}
+
+
+.returnbutton {
+    border-radius: 20px;
+    font-size: 20px;
+    font-weight: 600;
+    width: 230px;
+    border: 0px;
+    font-family: "Poppins";
+    box-shadow: 4px 4px 4px 0px #00000040;
+}
+
+.session {
+    border-radius: 20px;
+    font-size: 20px;
+    font-weight: 600;
+    width: 230px;
+    border: 0px;
+    font-family: "Poppins";
+    box-shadow: 4px 4px 4px 0px #00000040;
+}
+
+.bookingdetails {
+    /* height: 300px; */
+    width: 950px !important;
+    background-color: white;
+    box-shadow: 4px 4px 4px 0px #00000040;
+    border-radius: 20px;
+}
+
+@media (max-width: 576px) {
+
+    .bookingdetails {
+        width: 340px !important;
+    }
+
+    .bookingheadline {
+        font-size: 26px !important;
+    }
+
+    .detailtext {
+        font-size: 15px !important;
+    }
+
+    .bookingdate {
+        font-size: 20px !important;
+    }
+
+    .dateinput {
+        width: 310px !important;
+    }
+
+    .radiobtn {
+        height: 20px !important;
+        width: 20px !important;
+    }
+
+    .btntext {
+        font-size: 22px !important;
+    }
+
+    .slotheadline {
+        line-height: 1.1;
+    }
+
+    .session {
+        font-size: 26px;
+        margin: 10px;
+    }
+
+    .returnbutton {
+        font-size: 25px;
+    }
+}
+
+.bookingheadline {
+    font-size: 35px;
+    color: #F96945;
+    font-weight: 600;
+    font-family: "Poppins";
+}
+
+.bookingdate {
+    font-family: "Poppins";
+    /* font-weight: 600;
+    font-size: 20px; */
+
+}
+
+.detailtext {
+    font-family: "Poppins";
+    font-size: 29px;
+    font-weight: 500;
+    line-height: 0.5;
+
+}
+
+.dateinput {
+    width: 416px;
+    border: 2px solid #54504f;
+    border-radius: 4px;
+    font-weight: 700;
+    font-size: 15px
+}
+
+.radiobtn {
+    height: 25px;
+    width: 25px;
+    background-color: #F96945;
+    /* margin-left: -455px; */
+}
+
+.btntext {
+    font-size: 25px;
+    font-weight: 600;
+}
+
+
+
+.custom-placeholder {
+    letter-spacing: 1px;
+
+}
+
+/* Add this CSS in your stylesheet */
+@keyframes typing {
+    0% {
+        width: 0;
+    }
+
+    100% {
+        width: 100%;
+    }
+}
+
+.input-typing {
+    display: inline-block;
+    overflow: hidden;
+    white-space: nowrap;
+    border-right: 2px solid black;
+    /* You can change the color of the cursor */
+    animation: typing 2s steps(30) 1s 1 normal both;
+    /* Adjust the timing and steps for the effect */
+}
+
+
+.btn.focus,
+.btn:focus {
+    outline: 0;
+    box-shadow: none !important;
 }
