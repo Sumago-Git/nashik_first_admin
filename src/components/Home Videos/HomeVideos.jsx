@@ -122,7 +122,7 @@ function HomeVideos() {
 
     const toggleActiveStatus = async (id) => {
         try {
-            const response = await instance.put(`/${id}`);
+            const response = await instance.put(`homeyoutube/isactive-homeyoutube/${id}`);
             if (response.data) {
                 setActiveStatus(prev => ({
                     ...prev,

@@ -86,7 +86,7 @@ function FollowonUs() {
     };
 
     const getDataAdmin = () => {
-        instance.get('social-contact/find-socialcontacts')
+        instance.get('social-contact/socialcontacts')
             .then((res) => {
                 setAdminData(res.data.responseData || []);
                 const initialStatus = {};
@@ -169,18 +169,13 @@ function FollowonUs() {
             width: '150px',
         },
         {
-            name: 'Email',
-            selector: row => row.email,
+            name: 'Twitter',
+            selector: row => row.twitter,
             width: '200px',
         },
         {
-            name: 'WhatsApp',
-            selector: row => row.whatsapp,
-            width: '150px',
-        },
-        {
-            name: 'LinkedIn',
-            selector: row => row.linkedin,
+            name: 'Youtube',
+            selector: row => row.youtube,
             width: '150px',
         },
         {
@@ -190,16 +185,16 @@ function FollowonUs() {
                     <Button variant="primary" className="m-1" onClick={() => edit(row.id)}>
                         <FaEdit />
                     </Button>
-                    <Button variant="danger" className="m-1" onClick={() => deleteData(row.id)}>
+                    {/* <Button variant="danger" className="m-1" onClick={() => deleteData(row.id)}>
                         <MdDelete />
-                    </Button>
-                    <Button
+                    </Button> */}
+                    {/* <Button
                         variant={activeStatus[row.id] ? "success" : "warning"}
                         className="m-1"
                         onClick={() => toggleActiveStatus(row.id)}
                     >
                         {activeStatus[row.id] ? <FaRegEye /> : <FaEyeSlash />}
-                    </Button>
+                    </Button> */}
                 </div>
             ),
             width: '200px',

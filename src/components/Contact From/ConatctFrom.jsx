@@ -78,6 +78,12 @@ function ContactForm() {
             cell: row => <div className="ellipsis">{row.suggestions}</div>,
         },
         {
+            name: 'Suggestion File',
+            selector: row => row.suggestionfile,
+            sortable: true,
+            cell: row => <div className="ellipsis">{row.suggestionfile}</div>,
+        },
+        {
             name: 'Action',
             button: true,
             cell: (row) => (
