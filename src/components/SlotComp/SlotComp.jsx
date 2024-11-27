@@ -531,44 +531,48 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal, ha
         {
             name: <CustomHeader name="Actions" />,
             cell: (row) => (
-                <div className="d-flex">
-                    <OverlayTrigger
-                        placement="top"
-                        overlay={<Tooltip id="edit-tooltip">Edit</Tooltip>}
-                    >
-                        <Button className="ms-1" onClick={() => toggleEdit(row.id, row)}>
-                            <FaEdit />
-                        </Button>
-                    </OverlayTrigger>
-                    <OverlayTrigger
-                        placement="top"
-                        overlay={<Tooltip id="delete-tooltip">Delete</Tooltip>}
-                    >
-                        <Button
-                            className="ms-1"
-                            style={{ backgroundColor: "red", color: "white", borderColor: "red" }}
-                            onClick={() => { handleDelete(row.id); handleCloseModal() }}
+                <>
+                    <div className="d-flex">  {!isPast && (
+                        <OverlayTrigger
+                            placement="top"
+                            overlay={<Tooltip id="edit-tooltip">Edit</Tooltip>}
                         >
-                            <FaTrash />
-                        </Button>
-                    </OverlayTrigger>
-                    <OverlayTrigger
-                        placement="top"
-                        overlay={<Tooltip id="visibility-tooltip">{eyeVisibilityById[row.id] ? 'Hide' : 'Show'}</Tooltip>}
-                    >
-                        <Button
-                            className="ms-1"
-                            style={{
-                                backgroundColor: eyeVisibilityById[row.id] ? 'red' : 'green',
-                                borderColor: eyeVisibilityById[row.id] ? 'red' : 'green',
-                                color: 'white',
-                            }}
-                            onClick={() => { handleIsActive(row.id, !eyeVisibilityById[row.id]); handleCloseModal() }}
+                            <Button className="ms-1" onClick={() => toggleEdit(row.id, row)}>
+                                <FaEdit />
+                            </Button>
+                        </OverlayTrigger>)}
+                        <OverlayTrigger
+                            placement="top"
+                            overlay={<Tooltip id="delete-tooltip">Delete</Tooltip>}
                         >
-                            {eyeVisibilityById[row.id] ? <FaEyeSlash /> : <FaEye />}
-                        </Button>
-                    </OverlayTrigger>
-                </div>
+                            <Button
+                                className="ms-1"
+                                style={{ backgroundColor: "red", color: "white", borderColor: "red" }}
+                                onClick={() => { handleDelete(row.id); handleCloseModal() }}
+                            >
+                                <FaTrash />
+                            </Button>
+                        </OverlayTrigger>
+                        {!isPast && (<OverlayTrigger
+                            placement="top"
+                            overlay={<Tooltip id="visibility-tooltip">{eyeVisibilityById[row.id] ? 'Hide' : 'Show'}</Tooltip>}
+                        >
+                            <Button
+                                className="ms-1"
+                                style={{
+                                    backgroundColor: eyeVisibilityById[row.id] ? 'red' : 'green',
+                                    borderColor: eyeVisibilityById[row.id] ? 'red' : 'green',
+                                    color: 'white',
+                                }}
+                                onClick={() => { handleIsActive(row.id, !eyeVisibilityById[row.id]); handleCloseModal() }}
+                            >
+                                {eyeVisibilityById[row.id] ? <FaEyeSlash /> : <FaEye />}
+                            </Button>
+                        </OverlayTrigger>)}
+                    </div>
+
+
+                </>
             ),
         },
 
@@ -593,10 +597,10 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal, ha
         { value: "15:30-17:30", label: "3:30 PM to 5:30 PM" },
     ];
     const weekdaySlots = [
-        { value: "09:00-11:00", label: "9:00 AM to 11:00 AM" },
-        { value: "11:01-13:00", label: "11:00 AM to 1:00 PM" },
-        { value: "13:01-15:00", label: "1:00 PM to 3:00 PM" },
-        { value: "15:01-17:00", label: "3:00 PM to 5:00 PM" },
+        { value: "09:00-10:59", label: "9:00 AM to 11:00 AM" },
+        { value: "11:00-12:59", label: "11:00 AM to 1:00 PM" },
+        { value: "13:00-14:59", label: "1:00 PM to 3:00 PM" },
+        { value: "15:00-16:59", label: "3:00 PM to 5:00 PM" },
     ];
 
     // Time slots for weekends (Saturday/Sunday) with 15-minute adjustment
@@ -618,7 +622,7 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal, ha
             if (rtoCategories.includes(category)) {
                 return [
                     { value: "10:30-12:30", label: "10:30 AM to 12:30 PM" },
-                    { value: "13:01-15:00", label: "1:00 PM to 3:00 PM" },
+
                     { value: "15:30-17:30", label: "3:30 PM to 5:30 PM" },
                 ];
             } else {

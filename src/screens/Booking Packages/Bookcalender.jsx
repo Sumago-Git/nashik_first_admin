@@ -621,115 +621,165 @@ const Bookcalender = ({ tabKey }) => {
         });
     };
 
+
+    const getColumns = () => {
+        // Check if all rows belong to the specific category
+        const isSchoolTrainingCategory = (category1 == "School Students Training – Group");
+
+        if (isSchoolTrainingCategory) {
+            // Show only the "Full Name" column
+            return [
+                {
+                    name: 'Full Name',
+                    selector: row => `${row.fname} ${row.lname}`,
+                    sortable: true,
+                },
+                {
+                    name: 'Training Status',
+                    cell: row => (
+                        <Button
+                            variant={row.training_status === "Confirmed" ? "success" : "secondary"}
+                            className="w-100"
+                            onClick={() => { toggleStatus(row); handleEmailCertificatesingle(row) }}
+                        >
+                            {row.training_status === "Confirmed" ? "Confirmed" : "Attended"}
+
+                        </Button>
+                    ),
+                    sortable: true,
+                },
+            ];
+        }
+
+        // Otherwise, show all columns
+        return columns;
+    };
+    const sessionSlotDetailsCategories = [
+        "College/Organization Training – Group",
+        "School Students Training – Group"
+    ];
+    const bookingPage2Categories = [
+        "RTO – Training for School Bus Driver",
+        "RTO – Suspended Driving License Holders Training",
+        "RTO – Learner Driving License Holder Training"
+    ];
     return (
         <>
-            <div className=" text-center pb-2"> <h5>{category1}--{selectedDate}</h5></div>
+            <div className=" text-center pb-2 d-flex">
+                <div>
+                    <h5>{category1}--{selectedDate}</h5>
+                </div>
+                <div className="col">
+                    {bookingPage2Categories.includes(category1) ? <><Button
+
+                        onClick={() => {
+                            localStorage.setItem('slotsids', sessionSlotId)
+                            if (bookingPage2Categories.includes(category1)) {
+                                navigate("/bookingpage2", {
+                                    state: {
+                                        selectedDate: selectedDate,
+                                        selectedTime: selectedTime,
+                                        category: category1
+                                    }
+                                });
+                            }
+                        }}
+
+                    >Register</Button ></> : <></>}
+
+                    {sessionSlotDetailsCategories.includes(category1) && filteredData.length == 0 && slotInfo ? <>    <Button
+
+                        onClick={() => {
+                            localStorage.setItem('slotsids', sessionSlotId)
+                            navigate("/bookingpage", {
+                                state: {
+                                    selectedDate: selectedDate,
+                                    selectedTime: selectedTime,
+                                    category: category1
+                                }
+                            });
+                        }}
+
+                    >add group slotInfo</Button ></> : <></>}
+
+                </div></div>
 
 
             <div className="row">
-                {slotInfo ? (
+                {sessionSlotDetailsCategories.includes(category1) ?
                     <>
-                        <div className="col-md-3">
-                            <div><strong>Institution Name:</strong> {slotInfo.institution_name}</div>
-                            <div><strong>Institution Email:</strong> {slotInfo.institution_email}</div>
-                            <div><strong>Institution Phone:</strong> {slotInfo.institution_phone}</div>
+                        {slotInfo ? (
+                            <>
+                                <div className="col">
+                                    <div><strong>Institution Name:</strong> {slotInfo.institution_name}</div>
+                                    <div><strong>Institution Email:</strong> {slotInfo.institution_email}</div>
+                                    <div><strong>Institution Phone:</strong> {slotInfo.institution_phone}</div>
 
-                        </div>
-                        <div className="col-md-3">
-                            <div><strong>Coordinator Name:</strong> {slotInfo.coordinator_name}</div>
-                            <div><strong>Coordinator Mobile:</strong> {slotInfo.coordinator_mobile}</div>
+                                </div>
+                                <div className="col">
+                                    <div><strong>Coordinator Name:</strong> {slotInfo.coordinator_name}</div>
+                                    <div><strong>Coordinator Mobile:</strong> {slotInfo.coordinator_mobile}</div>
 
 
-                        </div>
-                        <div className="col-md-3">
+                                </div>
+                                <div className="col">
 
-                            <div><strong>Principal Name:</strong> {slotInfo.hm_principal_manager_name}</div>
-                            <div><strong>Principal Mobile:</strong> {slotInfo.hm_principal_manager_mobile}</div>
+                                    <div><strong>Principal Name:</strong> {slotInfo.hm_principal_manager_name}</div>
+                                    <div><strong>Principal Mobile:</strong> {slotInfo.hm_principal_manager_mobile}</div>
 
-                        </div>
-                    </>
-                ) : (
-                    <p></p>
-                )}
-                <div className="col-md-2">
-                    {
-                        filteredData.length < 0 ? (
-                            <button
+                                </div>
+                            </>
+                        ) : (
+                            <p>Slot is not booked                          <Button onClick={() => {
+                                navigate("/Sessionslotdetails", {
+                                    state: {
 
-                                onClick={() => {
-                                    localStorage.setItem('slotsids', sessionSlotId)
-
-                                    // Categories that navigate to "/bookingpage2"
-                                    const bookingPage2Categories = [
-                                        "RTO – Training for School Bus Driver",
-                                        "RTO – Suspended Driving License Holders Training",
-                                        "RTO – Learner Driving License Holder Training"
-                                    ];
-
-                                    // Categories that navigate to "/Sessionslotdetails"
-                                    const sessionSlotDetailsCategories = [
-                                        "College/Organization Training – Group",
-                                        "School Students Training – Group"
-                                    ];
-
-                                    if (bookingPage2Categories.includes(category1)) {
-                                        navigate("/bookingpage2", {
-                                            state: {
-                                                selectedDate: selectedDate,
-                                                selectedTime: selectedTime,
-                                                category: category1
-                                            }
-                                        });
-                                    } else if (sessionSlotDetailsCategories.includes(category1)) {
-                                        navigate("/bookingpage", {
-                                            state: {
-                                                selectedDate: selectedDate,
-                                                selectedTime: selectedTime,
-                                                category: category1
-                                            }
-                                        });
-                                    } else {
-                                        console.log("Navigation prevented: Invalid category");
+                                        selectedDate: selectedDate,
+                                        selectedTime: selectedTime,
+                                        category: category1
                                     }
-
-                                    // Ensure window scrolls to top after navigation
-
-                                }}
-
-                                className="returnbutton"
-
-
-
-
+                                });
+                            }
+                            }>book a slot</Button>
+                            </p>
+                        )}
+                    </> :
+                    <></>
+                }
 
 
-                            >add group slotInfo</button >) : <></>}
-                </div>
             </div>
 
 
 
+            {
+                category1 !== "School Students Training – Group" ? (
+                    <Row className="mb-3">
+                        <Col className="d-flex justify-content-end">
+                            <Form.Control
+                                type="text"
+                                placeholder="Search by First Name, Last Name, or Email"
+                                value={searchQuery}
+                                onChange={handleSearch}
+                                style={{ width: '300px' }} // Optional: Set a custom width for the input
+                            /> <Button variant="primary" onClick={handlePrintAll} className="mb-3 ms-5">
+                                Print All
+                            </Button>
+                        </Col>
+
+                    </Row>
+                ) : (
+                    <></>
+                )
+            }
 
 
 
-            <Row className="mb-3">
-                <Col className="d-flex justify-content-end">
-                    <Form.Control
-                        type="text"
-                        placeholder="Search by First Name, Last Name, or Email"
-                        value={searchQuery}
-                        onChange={handleSearch}
-                        style={{ width: '300px' }} // Optional: Set a custom width for the input
-                    /> <Button variant="primary" onClick={handlePrintAll} className="mb-3 ms-5">
-                        Print All
-                    </Button>
-                </Col>
 
-            </Row>
             {
                 filteredData.length > 0 ? (
                     <DataTable
-                        columns={columns}
+                        columns={getColumns(filteredData)}
                         data={filteredData}
                         pagination
                         responsive
@@ -962,8 +1012,7 @@ const Bookcalender = ({ tabKey }) => {
                                     {selectedBooking.vehicletype}
                                 </Col> */}
                                 {/* <hr></hr> */}
-
-                                <Col lg={12} md={12} sm={12} className="pb-4">
+                                {category1 == "School Students Training – Group" ? <></> : <>  <Col lg={12} md={12} sm={12} className="pb-4">
                                     <b>Print </b><br />
                                     <div>
                                         <button
@@ -974,7 +1023,8 @@ const Bookcalender = ({ tabKey }) => {
                                         </button>
                                         <Button variant="danger" className="mx-2 mt-2 w-25" onClick={handleEmailCertificate}>Email</Button>
                                     </div>
-                                </Col>
+                                </Col></>}
+
 
                                 <Col lg={12} className="text-end">
 

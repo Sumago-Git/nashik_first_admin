@@ -51,7 +51,7 @@ const Bookpackages = ({ tabKey }) => {
     const savedCategory = localStorage.getItem("category");
     const getdata_here = () => {
         instance.post('/Sessionslot/getAvailableslotslots', {
-            slotType:'inhouse',
+            slotType: 'inhouse',
             year: currentYear.toString(),
             month: (currentMonth + 1).toString(),
             category: savedCategory,
@@ -73,6 +73,7 @@ const Bookpackages = ({ tabKey }) => {
                     color: slot.status === "Holiday" ? "red" : (slot.status === "available" ? "green" : "red"),
                     bgColor: slot.status === "Holiday" ? "#ea7777" : (slot.status === "available" ? "#d4ffd4" : "#ffd4d4"),
                     isHoliday: slot.status === "Holiday",
+                    slots: slot.slots
                 })));
             })
             .catch((err) => {
@@ -223,25 +224,48 @@ const Bookpackages = ({ tabKey }) => {
                                                         dateStatuses[day] !== "Holiday" && // Check if the day is NOT a holiday
                                                         specialDates.find((date) => date.day === day) &&
                                                         !isPastDate(day) && (
-                                                            <div
-                                                                style={{
-                                                                    fontSize: '10px',
-                                                                    marginTop: '5px',
-                                                                    color: specialDates.find((date) => date.day === day)?.color,
-                                                                    backgroundColor: specialDates.find((date) => date.day === day)?.bgColor,
-                                                                    padding: '3px 8px',
-                                                                    borderRadius: '15px',
-                                                                    display: 'inline-block',
-                                                                    fontWeight: 'bold',
-                                                                }}
-                                                            >
-                                                                <h6>
-                                                                    Available: {specialDates.find((date) => date.day === day)?.totalAvailableSeats}
-                                                                    <br />
-                                                                    Capacity: {specialDates.find((date) => date.day === day)?.totalCapacity}
-                                                                </h6>
+                                                            <div>
+                                                                {specialDates.find((date) => date.day === day)?.slots.length > 0 ? (
+                                                                    specialDates
+                                                                        .find((date) => date.day === day)
+                                                                        ?.slots.map((a) => (
+                                                                            <div
+                                                                                key={a.time} // Ensure unique keys for React elements
+                                                                                style={{
+                                                                                    fontSize: "12px",
+                                                                                    width: "50%",
+                                                                                    marginTop: "2px",
+                                                                                    color: a.availableSeats === 0 ? "red" : "green",
+                                                                                    backgroundColor: a.availableSeats === 0 ? "#ffd4d4" : "#d4ffd4", // Dynamically set background color
+                                                                                    padding: "3px 8px",
+                                                                                    borderRadius: "15px",
+                                                                                    display: "grid",
+                                                                                    fontWeight: "bold",
+                                                                                }}
+                                                                            >
+                                                                                {a.time}
+                                                                            </div>
+                                                                        ))
+                                                                ) : (
+                                                                    <div
+                                                                        style={{
+                                                                            fontSize: "12px",
+                                                                            width: "100%",
+                                                                            marginTop: "2px",
+                                                                            color: "gray",
+                                                                            backgroundColor: "#f0f0f0",
+                                                                            padding: "3px 8px",
+                                                                            borderRadius: "15px",
+                                                                            textAlign: "center",
+                                                                            fontWeight: "bold",
+                                                                        }}
+                                                                    >
+                                                                        No slot available
+                                                                    </div>
+                                                                )}
                                                             </div>
                                                         )}
+
                                                 </td>
                                             );
                                         })}
