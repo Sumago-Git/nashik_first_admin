@@ -372,7 +372,7 @@ const Bookingpage2 = () => {
                 <p className='bookingdate text-black text-start ms-lg-4 ms-sm-3 mt-3'>{"Phone*"}</p>
                 <input
                   name='phone'
-                  maxlength="10"
+                  maxLength="10"
                   value={formData.phone}
                   onChange={handleChange}
                   placeholder={"phone"}

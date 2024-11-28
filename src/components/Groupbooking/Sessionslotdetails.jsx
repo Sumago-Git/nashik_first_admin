@@ -202,7 +202,7 @@ const Sessionslotdetails = () => {
               <p className='bookingdate text-black text-start ms-lg-4 ms-sm-3 mt-3'>{"Principal/Manager Mobile*"}</p>
               <input
                 name='hm_principal_manager_mobile'
-                maxlength="10"
+                maxLength="10"
                 value={formData.hm_principal_manager_mobile}
                 onChange={handleChange}
                 placeholder={"Principal/Manager Mobile"}
@@ -226,7 +226,7 @@ const Sessionslotdetails = () => {
 
               <input
                 name='coordinator_mobile'
-                maxlength="10"
+                maxLength="10"
                 value={formData.coordinator_mobile}
                 onChange={handleChange}
                 placeholder={"Cordinator Mobile"}

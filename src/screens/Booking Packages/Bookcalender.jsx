@@ -53,7 +53,7 @@ const Bookcalender = ({ tabKey }) => {
             sessionSlotId: sessionSlotId,
             category: category1
         };
-        instance.post("bookingform/get-bookingentries-by-date-category", data).then((result) => {
+        instance.post("bookingform/get-bookingentries-by-date-category1", data).then((result) => {
             console.log("result", result);
             setDataByDateAndCategory(result.data.responseData)
             setFilteredData(result.data.responseData);

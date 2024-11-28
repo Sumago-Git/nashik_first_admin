@@ -37,13 +37,14 @@ const Slotlistpage = () => {
     const savedCategory = localStorage.getItem("category");
     useEffect(() => {
         if (category && slotDate) {
+
             const parts = slotDate.split(' ');
             const dateParts = parts[1].split('/');
-            const day = dateParts[0];
-            const month = dateParts[1];
+            const day = parseInt(dateParts[0], 10); // Remove leading zero by converting to integer
+            const month = parseInt(dateParts[1], 10); // Remove leading zero by converting to integer
             const year = dateParts[2];
-            const formattedDate = `${month}/${day}/${year}`;
 
+            const formattedDate = `${month}/${day}/${year}`;
             const data = { slotdate: formattedDate, category: savedCategory };
             instance.post(`/Sessionslot/get-getSessionbySessionslot`, data, {
                 headers: { "Content-Type": "application/json" }

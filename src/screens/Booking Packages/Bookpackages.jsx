@@ -225,7 +225,7 @@ const Bookpackages = ({ tabKey }) => {
                                                         specialDates.find((date) => date.day === day) &&
                                                         !isPastDate(day) && (
                                                             <div>
-                                                                {specialDates.find((date) => date.day === day)?.slots.length > 0 ? (
+                                                                {specialDates.find((date) => date.day === day)?.slots?.length > 0 ? (
                                                                     specialDates
                                                                         .find((date) => date.day === day)
                                                                         ?.slots.map((a) => (

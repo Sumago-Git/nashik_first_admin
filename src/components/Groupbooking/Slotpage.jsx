@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useSyncExternalStore } from 'react';
 import { Container, Row, Col, Card } from 'react-bootstrap';
 import instance from '../../api/AxiosInstance';
+import { toast } from "react-toastify";
 
 import { Link, useLocation } from 'react-router-dom';
 import { useNavigate } from "react-router-dom"; // Import useNavigate from react-router-dom
@@ -39,22 +40,25 @@ const Slotpage = () => {
     useEffect(() => {
         if (category && slotDate) {
 
-            let value = slotDate
+            let value = slotDate;
             const parts = value.split(' '); // Split the string by space
             const dateParts = parts[1].split('/'); // Split the date part (e.g., "27/11/2024") by "/"
 
             // Extract day, month, and year
-            const day = dateParts[0];
-            const month = dateParts[1];
+            const day = parseInt(dateParts[0], 10); // Convert to integer to remove leading zero
+            const month = parseInt(dateParts[1], 10); // Convert to integer to remove leading zero
             const year = dateParts[2];
 
-            // Format to YYYY-MM-DD
+            // Format to MM/DD/YYYY
             const formattedDate = `${month}/${day}/${year}`;
 
             let data = {
                 slotdate: formattedDate,
                 category: category
-            }
+            };
+
+            console.log(data);
+
             instance.post(`/Sessionslot/get-getSessionbySessionslot`, data, {
                 headers: {
                     "Content-Type": "application/json",
@@ -153,7 +157,8 @@ const Slotpage = () => {
                                                         }
                                                     });
                                                 } else {
-                                                    console.log("Navigation prevented: Invalid category");
+                                                    toast.error("this slot capacity is full now ");
+
                                                 }
 
                                                 // Ensure window scrolls to top after navigation
@@ -184,7 +189,7 @@ const Slotpage = () => {
                                                 <strong>Available Seats:</strong> {session.available_seats} <br />
 
 
-                                                {session.slotDetails.map((detail, index) => (
+                                                {session?.slotDetails?.map((detail, index) => (
                                                     <div key={index} style={{ marginTop: "10px" }}>
                                                         <strong>Name:</strong> {detail.institution_name} <br />
                                                         <strong>Email:</strong> {detail.institution_email} <br />
