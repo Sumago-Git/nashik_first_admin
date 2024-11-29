@@ -527,10 +527,10 @@ const Bookcalender = ({ tabKey }) => {
                 <Button
                     variant={row.training_status === "Confirmed" ? "success" : "secondary"}
                     className="w-100"
-                    onClick={() => { toggleStatus(row); handleEmailCertificatesingle(row) }}
+                    onClick={() => { toggleStatus(row); handleEmailCertificatesingle(row); }}
+                    disabled={row.training_status === "Attended"} // Disable the button if the status is "Attended"
                 >
                     {row.training_status === "Confirmed" ? "Confirmed" : "Attended"}
-
                 </Button>
             ),
             sortable: true,
@@ -658,15 +658,15 @@ const Bookcalender = ({ tabKey }) => {
                         <Button
                             variant={row.training_status === "Confirmed" ? "success" : "secondary"}
                             className="w-100"
-                            onClick={() => { toggleStatus(row); handleEmailCertificatesingle(row) }}
+                            onClick={() => { toggleStatus(row); handleEmailCertificatesingle(row); }}
+                            disabled={row.training_status === "Attended"} // Disable the button if the status is "Attended"
                         >
                             {row.training_status === "Confirmed" ? "Confirmed" : "Attended"}
-
                         </Button>
                     ),
                     sortable: true,
-                },
-            ];
+                }
+            ]
         }
 
         // Otherwise, show all columns

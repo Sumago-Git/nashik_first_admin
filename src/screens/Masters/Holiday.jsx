@@ -100,7 +100,8 @@ const Holiday = () => {
                                 onClose();
                             } catch (error) {
                                 console.error("Error adding data:", error);
-                                toast.error("Error adding data");
+                                toast.error("Cannot add holiday. A session slot is already scheduled on t");
+                                onClose();
                             } finally {
                                 setLoading(false);
                             }
@@ -195,15 +196,15 @@ const Holiday = () => {
                                                 backgroundColor: isHoliday(day)
                                                     ? "rgb(240, 240, 240)"
                                                     : isPastDate(day)
-                                                    ? "#e0e0e0" // Light gray for past dates
-                                                    : day
-                                                    ? "white"
-                                                    : "#f0f0f0",
+                                                        ? "#e0e0e0" // Light gray for past dates
+                                                        : day
+                                                            ? "white"
+                                                            : "#f0f0f0",
                                                 color: isHoliday(day)
                                                     ? "red"
                                                     : isPastDate(day)
-                                                    ? "gray" // Gray color for past dates
-                                                    : "black",
+                                                        ? "gray" // Gray color for past dates
+                                                        : "black",
                                                 cursor: isPastDate(day) || !day ? "default" : "pointer",
                                                 fontWeight: isHoliday(day) ? "bold" : "600",
                                             }}

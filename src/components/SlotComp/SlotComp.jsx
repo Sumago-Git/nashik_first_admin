@@ -273,7 +273,7 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal, ha
                                     fetchTeam();
                                 } catch (error) {
                                     console.error("Error deleting data:", error);
-                                    toast.error("Error deleting data");
+                                    toast.error("Cannot delete slot because bookings are associated with it");
                                 } finally {
                                     setLoading(false);
                                 }
@@ -746,6 +746,7 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal, ha
                                     <Form.Select
                                         name="category"
                                         value={formData.category} // Use "category" as it matches initialFormData
+                                        disabled={editMode}
                                         onChange={(e) => handleChange("category", e.target.value)} // Call handleChange with "category"
                                     >
                                         <option value={categoryName}>{categoryName}</option>
@@ -847,6 +848,8 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal, ha
                                             });
                                         }}
                                         required
+                                        disabled={editMode} // Disable in edit mode
+
                                     >
                                         <option value="">Select Time Slot</option>
                                         {timeSlots.map((slot) => (
@@ -866,6 +869,7 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal, ha
                                     name="title"
                                     onChange={handleChange}
                                     initialData={formData}
+
                                 />
                             </Col>
                             <Col md={10}>

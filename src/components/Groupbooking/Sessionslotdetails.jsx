@@ -241,7 +241,7 @@ const Sessionslotdetails = () => {
             <div className='text-center'>
               <Button type="submit">
 
-                "Submit"
+                Submit
 
               </Button>                </div>
           </Row>

@@ -341,9 +341,7 @@ const CalenderComp = () => {
                                                 >
                                                     {day && (
                                                         <>
-                                                            <div style={{ fontSize: "12px", color: "#555", fontWeight: "bold" }}>
-                                                                {weekday} {/* Display weekday */}
-                                                            </div>
+                                                       
                                                             <div>{day}</div>
                                                         </>
                                                     )}
@@ -351,12 +349,11 @@ const CalenderComp = () => {
                                                     {specialDates &&
                                                         specialDates.length > 0 &&
                                                         dateStatuses[day] !== "Holiday" && // Ensure the day is not a holiday
-                                                        specialDates.find((date) => date.day === day) && (
+                                                        specialDates.find((date) => date.day === day && date.totalSlots > 0) && ( // Check if totalSlots is greater than 0
                                                             <div
                                                                 style={{
                                                                     fontSize: "10px",
-                                                                    marginTop: "5px",
-                                                                    padding: "3px 8px",
+                                                              
                                                                     borderRadius: "15px",
                                                                     display: "inline-block",
                                                                     fontWeight: "bold",
@@ -367,6 +364,7 @@ const CalenderComp = () => {
                                                                 </h6>
                                                             </div>
                                                         )}
+
                                                 </td>
                                             );
                                         })}
