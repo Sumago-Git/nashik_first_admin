@@ -67,18 +67,87 @@ const Bookcalender = ({ tabKey }) => {
         getUserDataByCategoryAndDate()
     }, [])
 
-    const handlePrintAll = () => {
-        // Filter out only rows with "Attended" status
+    const handlePrintAll = async () => {
         const attendedRows = filteredData.filter((row) => row.training_status === "Attended");
-        console.log(attendedRows)
-        if (attendedRows.length > 0) {
-            setPrintData(attendedRows);
-            setShowPrintModal(true);
-        } else {
+    
+        if (attendedRows.length === 0) {
             alert("No rows with 'Attended' status found.");
+            return;
         }
+    
+        const loadImage = (src) => {
+            return new Promise((resolve, reject) => {
+                const img = new Image();
+                img.src = src;
+                img.onload = () => resolve(img);
+                img.onerror = (err) => reject(err);
+            });
+        };
+    
+        const doc = new jsPDF();
+    
+        for (const [index, item] of attendedRows.entries()) {
+            try {
+                let image;
+                if (item.category === "RTO – Learner Driving License Holder Training") {
+                    image = (await import('../../assets/Holiday/learner.JPG')).default;
+                } else if (item.category === "RTO – Training for School Bus Driver") {
+                    image = (await import('../../assets/Holiday/CERTIFICATE - BUS - Final.jpg')).default;
+                } else if (item.category === "RTO – Suspended Driving License Holders Training") {
+                    image = (await import('../../assets/Holiday/suspended.jpg')).default;
+                } else if (item.category === "College/Organization Training – Group") {
+                    image = (await import('../../assets/Holiday/suspended.jpg')).default;
+                }
+    
+                const img = await loadImage(image);
+    
+                // Get original dimensions of the certificate image
+                const imgWidthPx = img.width;
+                const imgHeightPx = img.height;
+    
+                // Calculate dimensions in millimeters
+                const dpi = 96; // Assuming 96 DPI (dots per inch)
+                const imgWidthMm = (imgWidthPx / dpi) * 25.4;
+                const imgHeightMm = (imgHeightPx / dpi) * 25.4;
+    
+                // Add a new page with exact dimensions matching the certificate
+                if (index > 0) {
+                    doc.addPage([imgWidthMm, imgHeightMm]);
+                } else {
+                    doc.setPageSize([imgWidthMm, imgHeightMm]); // Set the size of the first page
+                }
+    
+                // Add the certificate image to the page
+                doc.addImage(img, 'JPEG', 0, 0, imgWidthMm, imgHeightMm);
+    
+                // Add user details
+                doc.setFont("Arial");
+                doc.setFontSize(35);
+                doc.setTextColor("#4e4e95");
+    
+                // Center text dynamically
+                const nameText = `${item.fname} ${item.lname}`;
+                const xPositionName = (imgWidthMm - doc.getTextWidth(nameText)) / 2;
+                const yPositionName = imgHeightMm * 0.85; // Adjust based on where the text should appear
+    
+                doc.text(nameText, xPositionName, yPositionName);
+            } catch (err) {
+                console.error("Error generating PDF for entry:", item, err);
+            }
+        }
+    
+        // Open the print dialog directly
+        doc.autoPrint();
+        const pdfBlob = doc.output('blob');
+        const pdfURL = URL.createObjectURL(pdfBlob);
+        window.open(pdfURL, '_blank');
     };
-
+    
+    
+    
+       
+   
+    
 
     const [selectedBooking, setSelectedBooking] = useState(null); // New state for selected booking
 
