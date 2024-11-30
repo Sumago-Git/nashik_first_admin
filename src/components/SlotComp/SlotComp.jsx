@@ -124,10 +124,10 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal, ha
         }
 
         // Convert capacity to a string before calling trim() and check if it's empty
-        if (!String(formData.capacity).trim()) {
-            errors.capacity = 'Capacity is required';
-            isValid = false;
-        }
+        // if (!String(formData.capacity).trim()) {
+        //     errors.capacity = 'Capacity is required';
+        //     isValid = false;
+        // }
 
         // Check if deadlineTime is empty
         if (!formData.deadlineTime.trim()) {
@@ -343,16 +343,13 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal, ha
             const data = new FormData();
 
             for (const key in formData) {
-
-                if (formData[key] instanceof File || typeof formData[key] === "string") {
-                    if (key == "capacity") {
-                        data.append(key, formData[key] == null ? 50 : formData[key]);
-                    }
+                // Check if the key is "capacity" and set default to 50 if not provided
+                if (key === "capacity" && (formData[key] === null || formData[key] === undefined)) {
+                    data.append(key, 50);
+                } else if (formData[key] instanceof File || typeof formData[key] === "string") {
                     data.append(key, formData[key]);
-
                 }
             }
-
             try {
                 if (editMode) {
                     await instance.put(`Sessionslot/Sessionslot/${editingId}`, formData, {
@@ -377,23 +374,23 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal, ha
                     toast.success("Slot Added Successfully");
                 }
                 fetchTeam();
-                setShow1(false)
-
+                setShow1(false);
                 setEditMode(false);
                 setFormData(initialFormData); // Reset formData to initial state
                 setImagePreview("");
                 setShowTable(true);
-
+    
             } catch (error) {
                 if (error.response && error.response.data && error.response.data.message) {
                     toast.error(error.response.data.message); // Show error message in toast
                 }
-                console.log(error)
+                console.log(error);
             } finally {
                 setLoading(false);
             }
         }
     };
+    
     const handleSubmit2 = async (e) => {
         e.preventDefault();
         const requiredFields = ["category", "time", "deadlineTime", "title", "capacity"];
