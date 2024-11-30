@@ -70,7 +70,7 @@ const Bookcalender = ({ tabKey }) => {
     const handlePrintAll = () => {
         // Filter out only rows with "Attended" status
         const attendedRows = filteredData.filter((row) => row.training_status === "Attended");
-
+        console.log(attendedRows)
         if (attendedRows.length > 0) {
             setPrintData(attendedRows);
             setShowPrintModal(true);
@@ -246,7 +246,7 @@ const Bookcalender = ({ tabKey }) => {
             // Set color and position for Sr (ID)
             doc.setTextColor("#4e4e95");
             doc.setFontSize(35);
-            const srText = `00${selectedBooking.id}`;
+            const srText = `${selectedBooking.certificate_no}`;
             const xPositionSr = imgWidthMm - 80; // Adjust x-position for Sr
             const yPositionSr = 45; // Adjust y-position for Sr
             doc.text(srText, xPositionSr, yPositionSr);
@@ -261,7 +261,14 @@ const Bookcalender = ({ tabKey }) => {
 
             doc.setTextColor("#4e4e95");
             doc.setFontSize(35);
-            const slotTimeText = ` ${selectedBooking.sessionSlotTime}`;
+            const formatTimeTo12Hour = (time) => {
+                const [hour, minute] = time.split(':');
+                const hours = parseInt(hour, 10);
+                const period = hours >= 12 ? 'PM' : 'AM';
+                const formattedHour = hours % 12 || 12; // Convert 0 to 12 for 12-hour format
+                return `${formattedHour}:${minute} ${period}`;
+            };
+            const slotTimeText = ` ${formatTimeTo12Hour(selectedBooking.sessionSlotTime)}`;
             const xPositionSlotTime = imgWidthMm - 93; // Adjust x-position for slotdate
             const yPositionSlotTime = 100; // Adjust y-position for slotdate
             doc.text(slotTimeText, xPositionSlotTime, yPositionSlotTime);
@@ -326,7 +333,7 @@ const Bookcalender = ({ tabKey }) => {
             doc.setTextColor("#4e4e95");
             doc.setFontSize(35);
 
-            const srText = `00${selectedBooking.id}`;
+            const srText = `${selectedBooking.certificate_no}`;
             const xPositionSr = imgWidthMm - 80;
             const yPositionSr = 45;
             doc.text(srText, xPositionSr, yPositionSr);
@@ -338,7 +345,14 @@ const Bookcalender = ({ tabKey }) => {
 
             doc.setTextColor("#4e4e95");
             doc.setFontSize(35);
-            const slotTimeText = `  ${selectedBooking.sessionSlotTime}`;
+            const formatTimeTo12Hour = (time) => {
+                const [hour, minute] = time.split(':');
+                const hours = parseInt(hour, 10);
+                const period = hours >= 12 ? 'PM' : 'AM';
+                const formattedHour = hours % 12 || 12; // Convert 0 to 12 for 12-hour format
+                return `${formattedHour}:${minute} ${period}`;
+            };
+            const slotTimeText = ` ${formatTimeTo12Hour(selectedBooking.sessionSlotTime)}`;
             const xPositionSlotTime = imgWidthMm - 93; // Adjust x-position for slotdate
             const yPositionSlotTime = 100; // Adjust y-position for slotdate
             doc.text(slotTimeText, xPositionSlotTime, yPositionSlotTime);
@@ -425,7 +439,7 @@ const Bookcalender = ({ tabKey }) => {
             doc.setTextColor("#4e4e95");
             doc.setFontSize(35);
 
-            const srText = `00${row.id}`;
+            const srText = `${selectedBooking.certificate_no}`;
             const xPositionSr = imgWidthMm - 80;
             const yPositionSr = 45;
             doc.text(srText, xPositionSr, yPositionSr);
@@ -437,7 +451,14 @@ const Bookcalender = ({ tabKey }) => {
 
             doc.setTextColor("#4e4e95");
             doc.setFontSize(35);
-            const slotTimeText = `  ${selectedBooking.sessionSlotTime}`;
+            const formatTimeTo12Hour = (time) => {
+                const [hour, minute] = time.split(':');
+                const hours = parseInt(hour, 10);
+                const period = hours >= 12 ? 'PM' : 'AM';
+                const formattedHour = hours % 12 || 12; // Convert 0 to 12 for 12-hour format
+                return `${formattedHour}:${minute} ${period}`;
+            };
+            const slotTimeText = ` ${formatTimeTo12Hour(selectedBooking.sessionSlotTime)}`;
             const xPositionSlotTime = imgWidthMm - 93; // Adjust x-position for slotdate
             const yPositionSlotTime = 100; // Adjust y-position for slotdate
             doc.text(slotTimeText, xPositionSlotTime, yPositionSlotTime);
@@ -586,13 +607,17 @@ const Bookcalender = ({ tabKey }) => {
                     // Add the image to the PDF
                     doc.addImage(img, 'PNG', 0, 0, imgWidthMm, imgHeightMm);
 
-                    // Set font, color, and size for the user's name
-                    doc.setFont("cursive");
+                    doc.addFileToVFS("MyCustomFont.ttf", base64String);  // Add the font
+                    doc.addFont("MyCustomFont.ttf", "MyCustomFont", "normal"); // Register the font
+
+                    doc.setFont("MyCustomFont");
+                    doc.setFontSize(95);
+                    doc.setTextColor("#f48633");
                     doc.setFontSize(95);
                     doc.setTextColor("#4e4e95");
 
                     // Prepare user's name
-                    const nameText = `${row.fname} ${row.lname}`;
+                    const nameText = `${row?.fname} ${row?.lname}`;
                     const nameWidth = doc.getTextWidth(nameText);
 
                     // Center the name horizontally
@@ -608,7 +633,7 @@ const Bookcalender = ({ tabKey }) => {
                     // Set color and position for Sr (ID)
                     doc.setTextColor("#4e4e95");
                     doc.setFontSize(35);
-                    const srText = `00${row.id}`;
+                    const srText = `${row?.certificate_no}`;
                     const xPositionSr = imgWidthMm - 80; // Adjust x-position for Sr
                     const yPositionSr = 45; // Adjust y-position for Sr
                     doc.text(srText, xPositionSr, yPositionSr);
@@ -616,10 +641,23 @@ const Bookcalender = ({ tabKey }) => {
                     // Set color and position for slotdate
                     doc.setTextColor("#4e4e95");
                     doc.setFontSize(35);
-                    const slotDateText = `: ${row.slotdate}`;
+                    const slotDateText = row?.slotdate ? `: ${new Date(row?.slotdate).toLocaleDateString('en-GB')}` : '';
                     const xPositionSlotDate = imgWidthMm - 93; // Adjust x-position for slotdate
                     const yPositionSlotDate = 85; // Adjust y-position for slotdate
                     doc.text(slotDateText, xPositionSlotDate, yPositionSlotDate);
+                    doc.setTextColor("#4e4e95");
+                    doc.setFontSize(35);
+                    const formatTimeTo12Hour = (time) => {
+                        const [hour, minute] = time.split(':');
+                        const hours = parseInt(hour, 10);
+                        const period = hours >= 12 ? 'PM' : 'AM';
+                        const formattedHour = hours % 12 || 12; // Convert 0 to 12 for 12-hour format
+                        return `${formattedHour}:${minute} ${period}`;
+                    };
+                    const slotTimeText = ` ${formatTimeTo12Hour(row.sessionSlotTime)}`;
+                    const xPositionSlotTime = imgWidthMm - 93; // Adjust x-position for slotdate
+                    const yPositionSlotTime = 100; // Adjust y-position for slotdate
+                    doc.text(slotTimeText, xPositionSlotTime, yPositionSlotTime);
 
                     // Resolve the generated PDF document
                     resolve(doc);
@@ -683,11 +721,11 @@ const Bookcalender = ({ tabKey }) => {
     ];
     return (
         <>
-            <div className=" text-center pb-2 d-flex">
+            <div className=" text-center pb-2 d-flex justify-content-between">
                 <div>
                     <h5>{category1}--{selectedDate}</h5>
                 </div>
-                <div className="col">
+                <div className="d-flex justify-content-end ">
                     {bookingPage2Categories.includes(category1) ? <><Button
 
                         onClick={() => {
@@ -720,10 +758,11 @@ const Bookcalender = ({ tabKey }) => {
 
                     >add group slotInfo</Button ></> : <></>}
 
-                </div></div>
+                </div>
+            </div>
 
 
-            <div className="row">
+            <div className="mb-3 d-flex justify-content-end">
                 {sessionSlotDetailsCategories.includes(category1) ?
                     <>
                         {slotInfo ? (
@@ -748,7 +787,7 @@ const Bookcalender = ({ tabKey }) => {
                                 </div>
                             </>
                         ) : (
-                            <p>Slot is not booked                          <Button onClick={() => {
+                            <Button onClick={() => {
                                 navigate("/Sessionslotdetails", {
                                     state: {
 
@@ -759,7 +798,7 @@ const Bookcalender = ({ tabKey }) => {
                                 });
                             }
                             }>book a slot</Button>
-                            </p>
+
                         )}
                     </> :
                     <></>
@@ -850,17 +889,17 @@ const Bookcalender = ({ tabKey }) => {
                     {selectedBooking && (
                         <div>
                             <Row>
-                                <Col lg={6} md={6} sm={12} className="pb-4">
+                                {/* <Col lg={6} md={6} sm={12} className="pb-4">
                                     <b>User Id</b><br />
                                     {selectedBooking.id}<br />
-                                </Col>
+                                </Col> */}
                                 {/* <Col lg={6} md={6} sm={12}>
                                     <b>Status</b><br />
                                     <Button variant={selectedBooking.status === "APPROVED" ? "primary" : selectedBooking.status === "PENDING" ? "warning" : selectedBooking.status === "CANCELLED" && "danger"} onClick={() => setLgShow(true)} className="w-100">{selectedBooking.status}</Button>
                                 </Col> */}
                                 {/* <hr></hr> */}
 
-                                <Col lg={6} md={6} sm={12} className="pb-4">
+                                {/* <Col lg={6} md={6} sm={12} className="pb-4">
                                     <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
                                         <b>Booking Date</b><br />
                                         {isEditing ? (
@@ -869,10 +908,10 @@ const Bookcalender = ({ tabKey }) => {
                                             selectedBooking.slotdate
                                         )}
                                     </Form.Group>
-                                </Col>
+                                </Col> */}
                                 <hr />
 
-                                <Col lg={6} md={6} sm={12} className="pb-4">
+                                {/* <Col lg={6} md={6} sm={12} className="pb-4">
                                     <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
                                         <b>Submission Date</b><br />
                                         {isEditing ? (
@@ -901,7 +940,7 @@ const Bookcalender = ({ tabKey }) => {
                                             </span>
                                         )}
                                     </Form.Group>
-                                </Col>
+                                </Col> */}
                                 <Col lg={6} md={6} sm={12}>
                                     <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
                                         <b>First Name:</b><br />
@@ -917,9 +956,24 @@ const Bookcalender = ({ tabKey }) => {
                                         )}
                                     </Form.Group>
                                 </Col>
-                                <hr></hr>
+                                <Col lg={6} md={6} sm={12}>
+                                    <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+                                        <b>Middle Name:</b><br />
+                                        {isEditing ? (
+                                            // <input
+                                            //     type="text"
+                                            //     defaultValue={selectedBooking.fname}
+                                            //     onChange={(e) => setSelectedBooking({ ...selectedBooking, fname: e.target.value })}
+                                            // />
+                                            <Form.Control type="text" defaultValue={selectedBooking.mname} onChange={(e) => setSelectedBooking({ ...selectedBooking, mname: e.target.value })} />
+                                        ) : (
+                                            selectedBooking.mname
+                                        )}
+                                    </Form.Group>
+                                </Col>
+                                <hr />
 
-                                <Col lg={6} md={6} sm={12} className="pb-4">
+                                <Col lg={6} md={6} sm={12} className="">
                                     <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
                                         <b>Last Name</b><br />
                                         {isEditing ? (
@@ -934,7 +988,7 @@ const Bookcalender = ({ tabKey }) => {
                                         )}
                                     </Form.Group>
                                 </Col>
-                                <Col lg={6} md={6} sm={12}>
+                                {/* <Col lg={6} md={6} sm={12}>
                                     <b>Training For</b><br />
 
                                     {isEditing ? (
@@ -947,7 +1001,6 @@ const Bookcalender = ({ tabKey }) => {
                                             <option value="RTO – Training for School Bus Driver">RTO – Training for School Bus Driver</option>
                                             <option value="School Students Training – Group">School Students Training – Group</option>
                                             <option value="College/Organization Training – Group">College/Organization Training – Group</option>
-                                            {/* Add other options as needed */}
                                         </Form.Select>
                                     ) : (
                                         selectedBooking.category
@@ -955,12 +1008,12 @@ const Bookcalender = ({ tabKey }) => {
 
 
                                 </Col>
-                                <hr></hr>
+                                 */}
 
-                                <Col lg={6} md={6} sm={12} className="pb-4">
+                                {/* <Col lg={6} md={6} sm={12} className="pb-4">
                                     <b>Certificate Number</b><br />
                                     {selectedBooking.certificate_no}
-                                </Col>
+                                </Col> */}
                                 <Col lg={6} md={6} sm={12}>
                                     <b>Tranning Status</b><br />
                                     {isEditing ? (
@@ -1006,7 +1059,7 @@ const Bookcalender = ({ tabKey }) => {
                                 </Col>
                                 <hr></hr>
 
-                                <Col lg={6} md={6} sm={12} className="pb-4">
+                                <Col lg={6} md={6} sm={12} className="">
                                     <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
                                         <Form.Label><b>Phone Number</b></Form.Label><br />
 
@@ -1018,35 +1071,36 @@ const Bookcalender = ({ tabKey }) => {
                                         )}
                                     </Form.Group>
                                 </Col>
-                                <Col lg={6} md={6} sm={12}>
-                                    <b>Payment Method</b><br />
-                                    {selectedBooking.payment_method}
-                                </Col>
-                                <hr>
-                                </hr>
 
-                                {/* <Col lg={6} md={6} sm={12}>
-                                    <b>Vehical Type</b><br />
-                                    {selectedBooking.vehicletype}
-                                </Col> */}
-                                {/* <hr></hr> */}
-                                {category1 == "School Students Training – Group" ? <></> : <>  <Col lg={12} md={12} sm={12} className="pb-4">
-                                    <b>Print </b><br />
-                                    <div>
-                                        <button
-                                            className="btn btn-success mx-2 mt-2 w-25"
-                                            onClick={handlePrintCertificate}
-                                        >
-                                            Print & Pdf
-                                        </button>
-                                        <Button variant="danger" className="mx-2 mt-2 w-25" onClick={handleEmailCertificate}>Email</Button>
-                                    </div>
-                                </Col></>}
+                                <hr />
+
+                                {category1 === "School Students Training – Group" ? <></> : (
+                                    <>
+                                        <Col lg={12} md={12} sm={12} className="pb-4">
+
+                                            <div>
+                                                {/* Check if not in editing mode and training_status is not 'Confirmed' */}
+                                                {!(isEditing || selectedBooking?.training_status === "Confirmed") && (
+                                                    <>
+                                                        <button
+                                                            className="btn btn-success mx-2 mt-2 w-25"
+                                                            onClick={handlePrintCertificate}
+                                                        >
+                                                            Print & Pdf
+                                                        </button>
+                                                        <Button variant="danger" className="mx-2 mt-2 w-25" onClick={handleEmailCertificate}>
+                                                            Email
+                                                        </Button>
+                                                    </>
+                                                )}
+                                            </div>
+                                        </Col>
+                                    </>
+                                )}
 
 
-                                <Col lg={12} className="text-end">
 
-                                </Col>
+
                             </Row>
                         </div>
                     )}

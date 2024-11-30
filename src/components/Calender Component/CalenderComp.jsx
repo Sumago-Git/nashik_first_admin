@@ -255,7 +255,7 @@ const CalenderComp = () => {
     useEffect(() => {
         // Fetch holidays on component mount
         getdata_here()
-    }, [currentDate]);
+    }, [currentDate, showModal]);
     useEffect(() => {
         if (selectedDates) {
             fetchTeam();
@@ -341,7 +341,7 @@ const CalenderComp = () => {
                                                 >
                                                     {day && (
                                                         <>
-                                                       
+
                                                             <div>{day}</div>
                                                         </>
                                                     )}
@@ -353,7 +353,7 @@ const CalenderComp = () => {
                                                             <div
                                                                 style={{
                                                                     fontSize: "10px",
-                                                              
+
                                                                     borderRadius: "15px",
                                                                     display: "inline-block",
                                                                     fontWeight: "bold",
