@@ -84,9 +84,7 @@ const Bookcalender = ({ tabKey }) => {
             });
         };
     
-        const doc = new jsPDF();
-    
-        for (const [index, item] of attendedRows.entries()) {
+        for (const item of attendedRows) {
             try {
                 let image;
                 if (item.category === "RTO – Learner Driving License Holder Training") {
@@ -101,49 +99,40 @@ const Bookcalender = ({ tabKey }) => {
     
                 const img = await loadImage(image);
     
-                // Get original dimensions of the certificate image
                 const imgWidthPx = img.width;
                 const imgHeightPx = img.height;
     
-                // Calculate dimensions in millimeters
-                const dpi = 96; // Assuming 96 DPI (dots per inch)
+                const dpi = 96;
                 const imgWidthMm = (imgWidthPx / dpi) * 25.4;
                 const imgHeightMm = (imgHeightPx / dpi) * 25.4;
     
-                // Add a new page with exact dimensions matching the certificate
-                if (index > 0) {
-                    doc.addPage([imgWidthMm, imgHeightMm]);
-                } else {
-                    doc.setPageSize([imgWidthMm, imgHeightMm]); // Set the size of the first page
-                }
+                const doc = new jsPDF({
+                    orientation: imgWidthMm > imgHeightMm ? 'landscape' : 'portrait',
+                    unit: 'mm',
+                    format: [imgWidthMm, imgHeightMm],
+                });
     
-                // Add the certificate image to the page
-                doc.addImage(img, 'JPEG', 0, 0, imgWidthMm, imgHeightMm);
+                doc.addImage(img, 'PNG', 0, 0, imgWidthMm, imgHeightMm);
     
                 // Add user details
+                const xPositionName = (imgWidthMm - doc.getTextWidth(`${item.fname} ${item.lname}`)) / 2;
+                const yPositionName = imgHeightMm * 0.52;
+    
                 doc.setFont("Arial");
                 doc.setFontSize(35);
                 doc.setTextColor("#4e4e95");
+                doc.text(`${item.fname} ${item.lname}`, xPositionName, yPositionName);
     
-                // Center text dynamically
-                const nameText = `${item.fname} ${item.lname}`;
-                const xPositionName = (imgWidthMm - doc.getTextWidth(nameText)) / 2;
-                const yPositionName = imgHeightMm * 0.85; // Adjust based on where the text should appear
-    
-                doc.text(nameText, xPositionName, yPositionName);
+                const pdfBlob = doc.output("blob");
+                const downloadLink = document.createElement('a');
+                downloadLink.href = URL.createObjectURL(pdfBlob);
+                downloadLink.download = `${item.fname}_${item.lname}_certificate.pdf`;
+                downloadLink.click();
             } catch (err) {
-                console.error("Error generating PDF for entry:", item, err);
+                console.error("Error generating PDF:", err);
             }
         }
-    
-        // Open the print dialog directly
-        doc.autoPrint();
-        const pdfBlob = doc.output('blob');
-        const pdfURL = URL.createObjectURL(pdfBlob);
-        window.open(pdfURL, '_blank');
     };
-    
-    
     
        
    
