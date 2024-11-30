@@ -440,13 +440,13 @@ const SocialContact = () => {
                       onExport={handleExport}
                       showExportButton={false}
                     />
-                    <Button
+                    {/* <Button
                       variant="outline-success"
                       onClick={handleAdd}
                       className="ms-2 mb-3"
                     >
                       Add
-                    </Button>
+                    </Button> */}
                   </Col>
                 ) : (
                   <Col className="d-flex justify-content-end align-items-center">

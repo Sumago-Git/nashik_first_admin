@@ -343,8 +343,13 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal, ha
             const data = new FormData();
 
             for (const key in formData) {
+
                 if (formData[key] instanceof File || typeof formData[key] === "string") {
+                    if (key == "capacity") {
+                        data.append(key, formData[key] == null ? 50 : formData[key]);
+                    }
                     data.append(key, formData[key]);
+
                 }
             }
 
@@ -369,7 +374,7 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal, ha
                             "Content-Type": "application/json",
                         },
                     });
-
+                    toast.success("Slot Added Successfully");
                 }
                 fetchTeam();
                 setShow1(false)
@@ -553,7 +558,7 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal, ha
                                 <FaTrash />
                             </Button>
                         </OverlayTrigger>
-                        {!isPast && (<OverlayTrigger
+                        {/* {!isPast && (<OverlayTrigger
                             placement="top"
                             overlay={<Tooltip id="visibility-tooltip">{eyeVisibilityById[row.id] ? 'Hide' : 'Show'}</Tooltip>}
                         >
@@ -568,7 +573,7 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal, ha
                             >
                                 {eyeVisibilityById[row.id] ? <FaEyeSlash /> : <FaEye />}
                             </Button>
-                        </OverlayTrigger>)}
+                        </OverlayTrigger>)} */}
                     </div>
 
 
@@ -681,7 +686,7 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal, ha
 
 
                     {!isPast && (
-                        <Button variant="success" className="rounded-5" onClick={handleClose1}>
+                        <Button variant="success" className="rounded-5 mx-2" onClick={handleClose1}>
                             Create New Slot
                         </Button>
                     )}

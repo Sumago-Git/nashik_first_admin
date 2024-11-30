@@ -223,9 +223,9 @@ function ContactInfo() {
         <Container>
             <Card>
                 <Card.Header className="d-flex justify-content-end">
-                    <Button variant={editMode ? "primary" : "success"} onClick={handleToggle}>
+                    {/* <Button variant={editMode ? "primary" : "success"} onClick={handleToggle}>
                         {showAdd ? 'Add' : 'View'}
-                    </Button>
+                    </Button> */}
                 </Card.Header>
                 <Card.Body>
                     {showAdd ? (

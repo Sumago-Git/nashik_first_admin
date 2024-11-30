@@ -51,11 +51,11 @@ const SidebarMenu = [
         url: "/objective-of-anf",
         icon: <AiOutlineAppstoreAdd style={{ color: "red" }} size={24} />,
       },
-      {
-        subMenus: "Home Counter",
-        url: "/home-counter",
-        icon: <AiOutlineAppstoreAdd style={{ color: "red" }} size={24} />,
-      },
+      // {
+      //   subMenus: "Home Counter",
+      //   url: "/home-counter",
+      //   icon: <AiOutlineAppstoreAdd style={{ color: "red" }} size={24} />,
+      // },
       {
         subMenus: "Photo Gallary",
         url: "/photo-gallary",
