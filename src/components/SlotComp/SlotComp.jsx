@@ -668,7 +668,7 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal, ha
             if (response.data.responseData.conflict === true) {
                 // Show confirmation popup if there's a conflict
                 const confirmMessage = `The trainer ${trainerName} is already assigned to another slot Today. Do you want to continue with this slot or choose a different time or trainer?`;
-                const proceed = await alert(confirmMessage);
+                const proceed = await confirm(confirmMessage);
 
                 if (!proceed) {
                     // Reset the trainer field if user cancels
