@@ -1,7 +1,9 @@
 import React, { useEffect, useState, useSyncExternalStore } from 'react';
-import { Container, Row, Col, Card } from 'react-bootstrap';
+import { Container, Row, Col, Button } from 'react-bootstrap';
 import instance from '../../api/AxiosInstance';
 import { toast } from "react-toastify";
+import { FaEdit, FaTrash, FaEye, FaEyeSlash } from "react-icons/fa";
+
 
 import { Link, useLocation } from 'react-router-dom';
 import { useNavigate } from "react-router-dom"; // Import useNavigate from react-router-dom
@@ -37,7 +39,8 @@ const Slotpage = () => {
     console.log("category", category);
     console.log("slotdate", slotDate);
 
-    useEffect(() => {
+
+    const featchdata = () => {
         if (category && slotDate) {
 
             let value = slotDate;
@@ -72,6 +75,9 @@ const Slotpage = () => {
 
             })
         }
+    }
+    useEffect(() => {
+        featchdata()
     }, [category, slotDate])
 
     // const sessions = [
@@ -79,6 +85,21 @@ const Slotpage = () => {
     //     { time: "03:30 P.M.", session: "Session 2" }
     // ];
 
+
+    const handleDeleteSlot = async (id) => {
+        try {
+            const response = await instance.delete(`/bookingform/deleteSlotInfo/${id}`);
+
+            toast.success("Slot deleted successfully!");
+
+            featchdata()
+
+
+        } catch (error) {
+            console.error('Error deleting slot:', error);
+            toast.error('Failed to delete the slot.');
+        }
+    };
 
 
 
@@ -120,91 +141,135 @@ const Slotpage = () => {
                                     border: "0px",
                                 };
                                 return (
-                                    <Col key={index} lg={6} sm={6} md={6} className={index === 0 ? 'pe-lg-5' : 'ps-lg-5'}>
-                                        <button
-                                            onClick={() => {
-                                                // if (isAvailable) {
-                                                localStorage.setItem('slotsid', session.id);
-
-                                                // Categories that navigate to "/bookingpage2"
-                                                const bookingPage2Categories = [
-                                                    "RTO – Training for School Bus Driver",
-                                                    "RTO – Suspended Driving License Holders Training",
-                                                    "RTO – Learner Driving License Holder Training"
-                                                ];
-
-                                                // Categories that navigate to "/Sessionslotdetails"
-                                                const sessionSlotDetailsCategories = [
-                                                    "College/Organization Training – Group",
-                                                    "School Students Training – Group"
-                                                ];
-
-                                                if (bookingPage2Categories.includes(category)) {
-                                                    navigate("/bookingpage2", {
-                                                        state: {
-                                                            selectedDate: slotDate,
-                                                            selectedTime: `${formattedTime}-${session.title}`,
-                                                            category: category
-                                                        }
-                                                    });
-                                                } else if (sessionSlotDetailsCategories.includes(category) && isAvailable) {
-
-                                                    navigate("/Sessionslotdetails", {
-                                                        state: {
-                                                            selectedDate: slotDate,
-                                                            selectedTime: `${formattedTime}-${session.title}`,
-                                                            category: category
-                                                        }
-                                                    });
-                                                } else {
-                                                    toast.error("this slot capacity is full now ");
-
-                                                }
-
-                                                // Ensure window scrolls to top after navigation
-                                                setTimeout(() => window.scrollTo(0, 790), 0);
-
-                                            }}
-
-                                            className='w-100'
+                                    <Col key={index} lg={4} sm={6} md={6} className={index === 0 ? 'pe-lg-5' : 'ps-lg-5'}>
 
 
 
-
-                                            style={buttonStyle}
-                                        >
-                                            <Container className='session text-start p-lg-3 '>
-                                                {formattedTime} - {session.title}
+                                        <Container className='session text-start p-lg-3 '>
+                                            {formattedTime} - {session.title}
 
 
 
 
 
-                                                <strong>Trainer:</strong> {session.trainer} <br />
-                                                <strong>Category:</strong> {session.category} <br />
-                                                <strong>Date:</strong> {session.slotdate} <br />
-                                                <strong>Time:</strong> {session.time} <br />
-                                                <strong>Deadline:</strong> {session.deadlineTime} <br />
-                                                <strong>Capacity:</strong> {session.capacity} <br />
-                                                <strong>Available Seats:</strong> {session.available_seats} <br />
+                                            <strong>Trainer:</strong> {session.trainer} <br />
+                                            <strong>Category:</strong> {session.category} <br />
+                                            <strong>Date:</strong> {session.slotdate} <br />
+                                            <strong>Time:</strong> {session.time} <br />
+                                            <strong>Deadline:</strong> {session.deadlineTime} <br />
+                                            <strong>Capacity:</strong> {session.capacity} <br />
+                                            <strong>Available Seats:</strong> {session.available_seats} <br />
+                                            <div className=' d-flex justify-content-end'>
+
+                                                {session.available_seats != 0 ? <>
+                                                    <Button
+                                                        onClick={() => {
+                                                            // if (isAvailable) {
+                                                            localStorage.setItem('slotsid', session.id);
+
+                                                            // Categories that navigate to "/bookingpage2"
+                                                            const bookingPage2Categories = [
+                                                                "RTO – Training for School Bus Driver",
+                                                                "RTO – Suspended Driving License Holders Training",
+                                                                "RTO – Learner Driving License Holder Training"
+                                                            ];
+
+                                                            // Categories that navigate to "/Sessionslotdetails"
+                                                            const sessionSlotDetailsCategories = [
+                                                                "College/Organization Training – Group",
+                                                                "School Students Training – Group"
+                                                            ];
+
+                                                            if (bookingPage2Categories.includes(category)) {
+                                                                navigate("/bookingpage2", {
+                                                                    state: {
+                                                                        selectedDate: slotDate,
+                                                                        selectedTime: `${formattedTime}-${session.title}`,
+                                                                        category: category
+                                                                    }
+                                                                });
+                                                            } else if (sessionSlotDetailsCategories.includes(category) && isAvailable) {
+
+                                                                navigate("/Sessionslotdetails", {
+                                                                    state: {
+                                                                        selectedDate: slotDate,
+                                                                        selectedTime: `${formattedTime}-${session.title}`,
+                                                                        category: category
+                                                                    }
+                                                                });
+                                                            } else {
+                                                                toast.error("this slot capacity is full now ");
+
+                                                            }
+
+                                                            // Ensure window scrolls to top after navigation
+                                                            setTimeout(() => window.scrollTo(0, 790), 0);
+
+                                                        }}
 
 
-                                                {session?.slotDetails?.map((detail, index) => (
-                                                    <div key={index} style={{ marginTop: "10px" }}>
-                                                        <strong>Name:</strong> {detail.institution_name} <br />
-                                                        <strong>Email:</strong> {detail.institution_email} <br />
-                                                        <strong>Phone:</strong> {detail.institution_phone} <br />
-                                                        <strong>Coordinator Name:</strong> {detail.coordinator_name} <br />
-                                                        <strong>Coordinator Mobile:</strong> {detail.coordinator_mobile} <br />
-                                                        <strong>Principal/Manager Name:</strong> {detail.hm_principal_manager_name} <br />
-                                                        <strong>Principal/Manager Mobile:</strong> {detail.hm_principal_manager_mobile} <br />
+                                                    >
+                                                        book a sesion
+                                                    </Button></> : <>
+                                                </>}
+                                            </div>
+
+
+
+
+
+
+                                        </Container>
+
+                                        <Container className='session'>
+                                            {session?.slotRegisterInfos?.map((detail, index) => (
+                                                <div key={index} style={{ marginTop: "10px" }}>
+                                                    <div className=' d-flex justify-content-end'>
+                                                        <Button onClick={() => handleDeleteSlot(detail.id)}><FaTrash /></Button>
+                                                        <Button
+                                                            onClick={() => {
+                                                                // if (isAvailable) {
+                                                                localStorage.setItem('slotsid', session.id);
+
+                                                                // Categories that navigate to "/bookingpage2"
+
+                                                                // Categories that navigate to "/Sessionslotdetails"
+
+
+                                                                navigate(`/Sessionslotdetails2/${detail.id}`, {
+                                                                    state: {
+                                                                        selectedDate: slotDate,
+                                                                        selectedTime: `${formattedTime}-${session.title}`,
+                                                                        category: category
+                                                                    }
+                                                                });
+
+
+                                                                // Ensure window scrolls to top after navigation
+
+                                                            }
+
+                                                            }
+                                                            style={{ backgroundColor: "red", color: "white", borderColor: "red" }}
+                                                        >
+                                                            <FaEdit />
+                                                        </Button>
                                                     </div>
-                                                ))}
+                                                    <strong>Name:</strong> {detail.institution_name} <br />
+                                                    <strong>Email:</strong> {detail.institution_email} <br />
+                                                    <strong>Phone:</strong> {detail.institution_phone} <br />
+                                                    <strong>Coordinator Name:</strong> {detail.coordinator_name} <br />
+                                                    <strong>Coordinator Mobile:</strong> {detail.coordinator_mobile} <br />
+                                                    <strong>Principal/Manager Name:</strong> {detail.hm_principal_manager_name} <br />
+                                                    <strong>Principal/Manager Mobile:</strong> {detail.hm_principal_manager_mobile} <br />
+
+                                                </div>
+                                            ))}
 
 
 
-                                            </Container>
-                                        </button>
+                                        </Container>
+
                                     </Col>
                                 );
                             })}

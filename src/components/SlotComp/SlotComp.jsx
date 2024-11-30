@@ -51,7 +51,7 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal, ha
         time: '',
         deadlineTime: '',
         title: '',
-        capacity: '',
+        capacity: '50',
         trainer: '',
         slotdate: selectedDates
     };
@@ -273,7 +273,7 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal, ha
                                     fetchTeam();
                                 } catch (error) {
                                     console.error("Error deleting data:", error);
-                                    toast.error("Error deleting data");
+                                    toast.error("Cannot delete slot because bookings are associated with it");
                                 } finally {
                                     setLoading(false);
                                 }
@@ -488,7 +488,13 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal, ha
             }
         }
     };
-
+    const formatTimeTo12Hour = (time) => {
+        const [hour, minute] = time.split(':');
+        const hours = parseInt(hour, 10);
+        const period = hours >= 12 ? 'PM' : 'AM';
+        const formattedHour = hours % 12 || 12; // Convert 0 to 12 for 12-hour format
+        return `${formattedHour}:${minute} ${period}`;
+    };
     const tableColumns = (currentPage, rowsPerPage) => [
         {
             name: <CustomHeader name="Sr. No." />,
@@ -508,12 +514,18 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal, ha
         },
         {
             name: <CustomHeader name="Time" />,
-            cell: (row) => <span>{row.time}</span>,
+            cell: (row) => <span>{formatTimeTo12Hour(row.time)}</span>, // Convert time to 12-hour format
+            sortable: true,
+            sortFunction: (rowA, rowB) => {
+                const timeA = new Date(`1970-01-01T${rowA.time}:00`);
+                const timeB = new Date(`1970-01-01T${rowB.time}:00`);
+                return timeA - timeB; // Ascending order
+            },
         },
-        {
-            name: <CustomHeader name="deadlineTime" />,
-            cell: (row) => <span>{row.deadlineTime}</span>,
-        },
+        // {
+        //     name: <CustomHeader name="deadlineTime" />,
+        //     cell: (row) => <span>{row.deadlineTime}</span>,
+        // },
         {
             name: <CustomHeader name="Trainer" />,
             cell: (row) => (
@@ -632,7 +644,7 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal, ha
                 ];
             } else {
                 return [
-                    { value: "13:01-15:00", label: "1:00 PM to 3:00 PM" },
+                    { value: "13:00-15:00", label: "1:00 PM to 3:00 PM" },
                 ];  // Only show the 2nd slot for non-RTO categories
             }
         } else {
@@ -751,6 +763,7 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal, ha
                                     <Form.Select
                                         name="category"
                                         value={formData.category} // Use "category" as it matches initialFormData
+                                        disabled={editMode}
                                         onChange={(e) => handleChange("category", e.target.value)} // Call handleChange with "category"
                                     >
                                         <option value={categoryName}>{categoryName}</option>
@@ -852,6 +865,8 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal, ha
                                             });
                                         }}
                                         required
+                                        disabled={editMode} // Disable in edit mode
+
                                     >
                                         <option value="">Select Time Slot</option>
                                         {timeSlots.map((slot) => (
@@ -871,6 +886,7 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal, ha
                                     name="title"
                                     onChange={handleChange}
                                     initialData={formData}
+
                                 />
                             </Col>
                             <Col md={10}>
@@ -887,7 +903,7 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal, ha
                                 <Button variant="primary" type="submit" className='mx-3'>
                                     Submit
                                 </Button>
-                                <Button variant="secondary" onClick={() => setShow1(false)}>
+                                <Button variant="secondary" onClick={() => { setShow1(false); setFormData(initialFormData); setEditMode(false) }}>
                                     Close
                                 </Button>
                             </Col>
@@ -942,13 +958,3 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal, ha
 };
 
 export default SlotComp;
-
-
-
-
-
-
-
-
-
-

@@ -53,6 +53,7 @@ import Calender2 from "./screens/submenus/Booking/Calender2";
 import CalenderComp2 from "./components/Calender Component/CalenderComp2";
 import Sessionslotdetails from "./components/Groupbooking/Sessionslotdetails";
 import Bookingpage2 from "./components/Groupbooking/Bookingpage2";
+import Sessionslotdetails2 from "./components/Groupbooking/Sessionslotdetails2";
 
 function App() {
   return (
@@ -137,6 +138,10 @@ function App() {
           <Route
             path="/trainer"
             element={<ProtectedRoutes Component={Trainer} />}
+          />
+          <Route
+            path="/Sessionslotdetails2/:id"
+            element={<ProtectedRoutes Component={Sessionslotdetails2} />}
           />
           <Route
             path="/Sessionslotdetails"

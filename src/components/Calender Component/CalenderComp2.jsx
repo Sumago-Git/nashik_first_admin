@@ -159,7 +159,7 @@ const CalenderComp2 = () => {
     const today = new Date();
     const isPastDate = (day) => {
         const dateToCheck = new Date(currentYear, currentMonth, day);
-        return dateToCheck < today.setHours(0, 0, 0, 0);
+        return dateToCheck <= today.setHours(0, 0, 0, 0);
     };
 
 
@@ -239,6 +239,7 @@ const CalenderComp2 = () => {
                     color: slot.status === "Holiday" ? "#ff0000" : (slot.status === "available" ? "green" : "red"),
                     bgColor: slot.status === "Holiday" ? "#ea7777" : (slot.status === "available" ? "#d4ffd4" : "#ffd4d4"),
                     isHoliday: slot.status === "Holiday",
+                    slots: slot.slots
                 })));
             })
             .catch((err) => {
@@ -300,7 +301,10 @@ const CalenderComp2 = () => {
                                 {weeks.map((week, weekIndex) => (
                                     <tr key={weekIndex} style={{ cursor: 'default' }}>
                                         {week.map((day, dayIndex) => {
-                                            const isDisabled = day && isPastDate(day);
+                                            const clickedDate = day ? new Date(currentYear, currentMonth, day) : null;
+                                            const dayOfWeek = clickedDate ? clickedDate.getDay() : null; // Get the day of the week (0 = Sunday, 6 = Saturday)
+                                            const isWeekend = dayOfWeek === 0 || dayOfWeek === 6; // Check if it's Saturday or Sunday
+                                            const isDisabled = day && (isPastDate(day) || isWeekend); // Include weekend days in disabled condition
                                             const { label: dateLabel, color: textColor, bgColor, isHoliday } = getSpecialDateDetails(day, currentMonth);
                                             const isAvailable = dateStatuses[day] === "available"; // Check status from state
 
@@ -309,7 +313,7 @@ const CalenderComp2 = () => {
                                                     key={dayIndex}
                                                     onMouseEnter={() => day && !isDisabled && setHoveredDay(day)}
                                                     onMouseLeave={() => day && !isDisabled && setHoveredDay(null)}
-                                                    onClick={() => dateStatuses[day] !== "Holiday" && handleDayClick(day)}
+                                                    onClick={() => day && !isDisabled && handleDayClick(day)} // Disable clicking for weekends and other disabled days
                                                     style={{
                                                         height: "100px",
                                                         textAlign: "end",
@@ -319,43 +323,40 @@ const CalenderComp2 = () => {
                                                             ? day.isNextMonth
                                                                 ? "#f0f0f0" // Next month's dates (light gray)
                                                                 : isDisabled
-                                                                    ? "#f9f9f9" // Disabled (past dates or holidays)
+                                                                    ? "#f9f9f9" // Disabled (past dates or holidays or weekends)
                                                                     : dateStatuses[day] === "available"
                                                                         ? "#d4ffd4" // Green for available
                                                                         : dateStatuses[day] === "Holiday"
-                                                                            ? "#ea7777" // Light blue for holiday
-                                                                            : "#d4ffd4" // Red for closed or other statuses
+                                                                            ? "#ea7777" // Red for holiday
+                                                                            : "#d4ffd4" // Default for other statuses
                                                             : "white",
                                                         color: day
                                                             ? day.isNextMonth
                                                                 ? "#ccc" // Light color for next month's dates
-                                                                : isDisabled || dateStatuses[day] === "Holiday"
-                                                                    ? "#999" // Gray for disabled or holiday
+                                                                : isDisabled
+                                                                    ? "#999" // Gray for disabled days
                                                                     : "black"
-                                                            : "black", color: day && (day.isNextMonth ? "#ccc" : isDisabled || isHoliday ? "#999" : "black"),
+                                                            : "black",
                                                         transition: "color 0.3s",
                                                         fontFamily: "Poppins",
                                                         fontWeight: "600",
+                                                        cursor: isDisabled ? "not-allowed" : "pointer", // Show disabled cursor for weekends
                                                     }}
                                                 >
                                                     {day && (
-                                                        (() => {
-                                                            const clickedDate = new Date(currentYear, currentMonth, day);
-                                                            const dayOfWeek = clickedDate.getDay(); // Get the day of the week (0 = Sunday, 6 = Saturday)
-                                                            return dayOfWeek === 0 || dayOfWeek === 6 ? "Weekly Off" : day; // Show "Weekly Off" for weekend days
-                                                        })()
+                                                        isWeekend
+                                                            ? "Weekly Off" // Show "Weekly Off" for weekends
+                                                            : day // Show the day number for other days
                                                     )}
                                                     <br />
                                                     {specialDates &&
                                                         specialDates.length > 0 &&
                                                         dateStatuses[day] !== "Holiday" && // Ensure the day is not a holiday
-                                                        specialDates.find((date) => date.day === day) && (
+                                                        specialDates.find((date) => date.day === day && date.totalSlots > 0) && ( // Check if totalSlots is greater than 0
                                                             <div
                                                                 style={{
                                                                     fontSize: "10px",
-                                                                    marginTop: "5px",
 
-                                                                    padding: "3px 8px",
                                                                     borderRadius: "15px",
                                                                     display: "inline-block",
                                                                     fontWeight: "bold",
@@ -366,12 +367,13 @@ const CalenderComp2 = () => {
                                                                 </h6>
                                                             </div>
                                                         )}
+
                                                 </td>
                                             );
-
                                         })}
                                     </tr>
                                 ))}
+
 
                             </tbody>
                         </Table>
