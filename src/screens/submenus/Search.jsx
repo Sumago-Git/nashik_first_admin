@@ -344,13 +344,13 @@ const Search = () => {
                                         <Form.Label><b>License No.</b></Form.Label><br />
                                         {selectedBooking.category === "RTO – Suspended Driving License Holders Training" ? (
                                             <InputMask
-                                                mask="**/**/**/****"
+                                                mask="**** ***********"
                                                 value={selectedBooking.learningNo || ""}
                                                 onChange={(e) => {
                                                     const inputValue = e.target.value.toUpperCase();
                                                     setSelectedBooking({ ...selectedBooking, learningNo: inputValue });
                                                 }}
-                                                placeholder="XX/XX/XX/XXXX"
+                                                placeholder="xxxx xxxxxxxxxxx"
                                                 className="form-control"
                                             />
                                         ) : (
