@@ -151,10 +151,10 @@ const Bookcalender = ({ tabKey }) => {
             });
         };
     
-        const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+        try {
+            let combinedDoc;
     
-        for (const item of attendedRows) {
-            try {
+            for (const [index, item] of attendedRows.entries()) {
                 let image;
                 if (item.category === "RTO – Learner Driving License Holder Training") {
                     image = (await import('../../assets/Holiday/learner.JPG')).default;
@@ -175,41 +175,46 @@ const Bookcalender = ({ tabKey }) => {
                 const imgWidthMm = (imgWidthPx / dpi) * 25.4;
                 const imgHeightMm = (imgHeightPx / dpi) * 25.4;
     
-                const doc = new jsPDF({
-                    orientation: imgWidthMm > imgHeightMm ? 'landscape' : 'portrait',
-                    unit: 'mm',
-                    format: [imgWidthMm, imgHeightMm],
-                });
+                const orientation = imgWidthMm > imgHeightMm ? 'landscape' : 'portrait';
     
-                doc.addImage(img, 'PNG', 0, 0, imgWidthMm, imgHeightMm);
+                // Initialize the PDF document with correct dimensions and orientation for the first certificate
+                if (index === 0) {
+                    combinedDoc = new jsPDF({
+                        orientation,
+                        unit: 'mm',
+                        format: [imgWidthMm, imgHeightMm],
+                    });
+                } else {
+                    // Add a new page for subsequent certificates
+                    combinedDoc.addPage([imgWidthMm, imgHeightMm], orientation);
+                }
+    
+                combinedDoc.addImage(img, 'PNG', 0, 0, imgWidthMm, imgHeightMm);
     
                 // Add user details
-                const xPositionName = (imgWidthMm - doc.getTextWidth(`${item.fname} ${item.lname}`)) / 2;
+                const xPositionName = (imgWidthMm - combinedDoc.getTextWidth(`${item.fname} ${item.lname}`)) / 2;
                 const yPositionName = imgHeightMm * 0.52;
     
-                doc.setFont("Arial");
-                doc.setFontSize(35);
-                doc.setTextColor("#4e4e95");
-                doc.text(`${item.fname} ${item.lname}`, xPositionName, yPositionName);
-    
-                // Open PDF in a new tab for printing
-                const pdfBlob = doc.output("blob");
-                const pdfUrl = URL.createObjectURL(pdfBlob);
-                const newWindow = window.open(pdfUrl);
-    
-                if (newWindow) {
-                    newWindow.onload = () => {
-                        newWindow.print(); // Automatically trigger the print dialog
-                    };
-                    // Wait for the print dialog to complete before processing the next one
-                    await delay(3000); // Adjust delay based on expected printing time
-                    newWindow.close();
-                }
-            } catch (err) {
-                console.error("Error generating or printing certificate:", err);
+                combinedDoc.setFont("Arial");
+                combinedDoc.setFontSize(35);
+                combinedDoc.setTextColor("#4e4e95");
+                combinedDoc.text(`${item.fname} ${item.lname}`, xPositionName, yPositionName);
             }
+    
+            // Open the combined PDF in a new tab
+            const pdfBlob = combinedDoc.output("blob");
+            const pdfUrl = URL.createObjectURL(pdfBlob);
+    
+            const newWindow = window.open(pdfUrl);
+            if (!newWindow) {
+                alert("Please allow pop-ups for this site to view the PDF.");
+            }
+        } catch (err) {
+            console.error("Error generating combined PDF:", err);
         }
     };
+    
+    
     
    
     
