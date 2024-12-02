@@ -177,7 +177,7 @@ const Sessionslotdetails = () => {
               {errors.institution_email && <p className='text-start ms-md-4 mt-1 text-danger'>{errors.institution_email}</p>}
             </Col>
             <Col lg={6}>
-              <p className='bookingdate text-black text-start ms-lg-4 ms-sm-3 mt-3'>{"Institution Landline No.*"}</p>
+              <p className='bookingdate text-black text-start ms-lg-4 ms-sm-3 mt-3'>{"Institution Landline No."}</p>
               <input
                 name='institution_phone'
                 value={formData.institution_phone}
@@ -238,7 +238,7 @@ const Sessionslotdetails = () => {
 
 
 
-            <div className='text-center'>
+            <div className='text-center my-2'>
               <Button type="submit">
 
                 Submit

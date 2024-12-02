@@ -56,6 +56,11 @@ import Bookingpage2 from "./components/Groupbooking/Bookingpage2";
 import Sessionslotdetails2 from "./components/Groupbooking/Sessionslotdetails2";
 
 function App() {
+  useEffect(() => {
+    window.addEventListener('popstate', (e) => {
+      window.history.go(1);
+    });
+  }, []);
   return (
     <>
       <ToastContainer autoClose={2000} />

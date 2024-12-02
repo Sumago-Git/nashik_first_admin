@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Container, Row, Col, Button } from 'react-bootstrap';
 import { useNavigate, useLocation } from 'react-router-dom';
-import {Link} from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import Form from 'react-bootstrap/Form';
 import * as XLSX from 'xlsx';
 
@@ -292,7 +292,7 @@ const Bookingpage = () => {
 
 
 
-            <div className='text-center'>
+            <div className='text-left'>
               <Button type="submit" disabled={isSubmitting}>
                 {isSubmitting ? (
                   <span>
@@ -302,17 +302,21 @@ const Bookingpage = () => {
                 ) : (
                   "Submit"
                 )}
-              </Button>                </div>
+              </Button>
+              <Link to='/groupbooking'><Button variant='secondary' className='mx-3'>
+                Back
+              </Button></Link>
+            </div>
           </Row>
         </form>
 
 
 
-        <Col lg={12} className='mt-md-5 pt-lg-3 pb-5 mb-lg-2 mt-4'>
+        {/* <Col lg={12} className='mt-md-5 pt-lg-3 pb-5 mb-lg-2 mt-4'>
           <Link to='/groupbooking'><button className='returnbutton p-lg-3'>
-            Return
+            Returndfgdfg
           </button></Link>
-        </Col>
+        </Col> */}
 
       </Container>
 

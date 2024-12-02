@@ -68,11 +68,13 @@ function PastEvenets() {
                 if (editMode && editId) {
                     await instance.put(`PostEvents/update-PostEvents/${editId}`, formData);
                     alert('Data updated successfully!');
+                    getdata_admin()
                 } else {
                     await instance.post('PostEvents/create-PostEvents', formData, {
                         headers: { 'Content-Type': 'multipart/form-data' }
                     });
                     alert('Data submitted successfully!');
+                    getdata_admin()
                 }
 
                 setTitle("");
@@ -173,6 +175,7 @@ function PastEvenets() {
                     ...prevStatus,
                     [id]: !prevStatus[id] // Toggle the isActive status
                 }));
+                getdata_admin()
             }
         } catch (error) {
             console.error("Error updating status:", error);
@@ -204,11 +207,13 @@ function PastEvenets() {
                 if (editMode && editId) {
                     await instance.put(`EventGallary/update-EventGallary/${editId}`, formData);
                     alert('Data updated successfully!');
+                    eventgallrydata()
                 } else {
                     await instance.post('EventGallary/create-EventGallary', formData, {
                         headers: { 'Content-Type': 'multipart/form-data' }
                     });
                     alert('Data submitted successfully!');
+                    eventgallrydata()
                 }
 
                 setTitle("");
@@ -236,7 +241,7 @@ function PastEvenets() {
                     onClick: async () => {
                         try {
                             await instance.delete(`EventGallary/EventGallary-delete/${id}`);
-                            getdata_admin(); // Refresh the data after deletion
+                            eventgallrydata(); // Refresh the data after deletion
                         } catch (error) {
                             console.error("Error deleting data:", error);
                             alert("There was an error deleting the data.");
@@ -259,6 +264,7 @@ function PastEvenets() {
                     ...prevStatus,
                     [id]: !prevStatus[id] // Toggle the isActive status
                 }));
+                eventgallrydata()
             }
         } catch (error) {
             console.error("Error updating status:", error);

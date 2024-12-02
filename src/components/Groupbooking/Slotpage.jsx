@@ -225,6 +225,7 @@ const Slotpage = () => {
                                             {session?.slotRegisterInfos?.map((detail, index) => (
                                                 <div key={index} style={{ marginTop: "10px" }}>
                                                     <div className=' d-flex justify-content-end'>
+                                                        {detail.id}
                                                         <Button onClick={() => handleDeleteSlot(detail.id)}><FaTrash /></Button>
                                                         <Button
                                                             onClick={() => {

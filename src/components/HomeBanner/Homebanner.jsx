@@ -124,7 +124,7 @@ function Homebanner() {
   };
 
   const getdata_admin = () => {
-    instance.get('homeBanner/get-homeBanners')
+    instance.get('homeBanner/find-homeBanners')
       .then((res) => {
         setadmin_data(res.data.responseData || []);
         const initialStatus = {};

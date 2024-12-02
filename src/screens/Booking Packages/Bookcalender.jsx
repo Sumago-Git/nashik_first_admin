@@ -67,6 +67,73 @@ const Bookcalender = ({ tabKey }) => {
         getUserDataByCategoryAndDate()
     }, [])
 
+    // const handlePrintAll = async () => {
+    //     const attendedRows = filteredData.filter((row) => row.training_status === "Attended");
+    
+    //     if (attendedRows.length === 0) {
+    //         alert("No rows with 'Attended' status found.");
+    //         return;
+    //     }
+    
+    //     const loadImage = (src) => {
+    //         return new Promise((resolve, reject) => {
+    //             const img = new Image();
+    //             img.src = src;
+    //             img.onload = () => resolve(img);
+    //             img.onerror = (err) => reject(err);
+    //         });
+    //     };
+    
+    //     for (const item of attendedRows) {
+    //         try {
+    //             let image;
+    //             if (item.category === "RTO – Learner Driving License Holder Training") {
+    //                 image = (await import('../../assets/Holiday/learner.JPG')).default;
+    //             } else if (item.category === "RTO – Training for School Bus Driver") {
+    //                 image = (await import('../../assets/Holiday/CERTIFICATE - BUS - Final.jpg')).default;
+    //             } else if (item.category === "RTO – Suspended Driving License Holders Training") {
+    //                 image = (await import('../../assets/Holiday/suspended.jpg')).default;
+    //             } else if (item.category === "College/Organization Training – Group") {
+    //                 image = (await import('../../assets/Holiday/suspended.jpg')).default;
+    //             }
+    
+    //             const img = await loadImage(image);
+    
+    //             const imgWidthPx = img.width;
+    //             const imgHeightPx = img.height;
+    
+    //             const dpi = 96;
+    //             const imgWidthMm = (imgWidthPx / dpi) * 25.4;
+    //             const imgHeightMm = (imgHeightPx / dpi) * 25.4;
+    
+    //             const doc = new jsPDF({
+    //                 orientation: imgWidthMm > imgHeightMm ? 'landscape' : 'portrait',
+    //                 unit: 'mm',
+    //                 format: [imgWidthMm, imgHeightMm],
+    //             });
+    
+    //             doc.addImage(img, 'PNG', 0, 0, imgWidthMm, imgHeightMm);
+    
+    //             // Add user details
+    //             const xPositionName = (imgWidthMm - doc.getTextWidth(`${item.fname} ${item.lname}`)) / 2;
+    //             const yPositionName = imgHeightMm * 0.52;
+    
+    //             doc.setFont("Arial");
+    //             doc.setFontSize(35);
+    //             doc.setTextColor("#4e4e95");
+    //             doc.text(`${item.fname} ${item.lname}`, xPositionName, yPositionName);
+    
+    //             const pdfBlob = doc.output("blob");
+    //             const downloadLink = document.createElement('a');
+    //             downloadLink.href = URL.createObjectURL(pdfBlob);
+    //             downloadLink.download = `${item.fname}_${item.lname}_certificate.pdf`;
+    //             downloadLink.click();
+    //         } catch (err) {
+    //             console.error("Error generating PDF:", err);
+    //         }
+    //     }
+    // };
+    
     const handlePrintAll = async () => {
         const attendedRows = filteredData.filter((row) => row.training_status === "Attended");
     
@@ -83,6 +150,8 @@ const Bookcalender = ({ tabKey }) => {
                 img.onerror = (err) => reject(err);
             });
         };
+    
+        const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
     
         for (const item of attendedRows) {
             try {
@@ -123,18 +192,25 @@ const Bookcalender = ({ tabKey }) => {
                 doc.setTextColor("#4e4e95");
                 doc.text(`${item.fname} ${item.lname}`, xPositionName, yPositionName);
     
+                // Open PDF in a new tab for printing
                 const pdfBlob = doc.output("blob");
-                const downloadLink = document.createElement('a');
-                downloadLink.href = URL.createObjectURL(pdfBlob);
-                downloadLink.download = `${item.fname}_${item.lname}_certificate.pdf`;
-                downloadLink.click();
+                const pdfUrl = URL.createObjectURL(pdfBlob);
+                const newWindow = window.open(pdfUrl);
+    
+                if (newWindow) {
+                    newWindow.onload = () => {
+                        newWindow.print(); // Automatically trigger the print dialog
+                    };
+                    // Wait for the print dialog to complete before processing the next one
+                    await delay(3000); // Adjust delay based on expected printing time
+                    newWindow.close();
+                }
             } catch (err) {
-                console.error("Error generating PDF:", err);
+                console.error("Error generating or printing certificate:", err);
             }
         }
     };
     
-       
    
     
 
@@ -580,6 +656,11 @@ const Bookcalender = ({ tabKey }) => {
     };
     const columns = [
         {
+            name: 'Sr No.',
+            selector: (row,id) => id + 1,
+            sortable: true,
+        },
+        {
             name: 'Full Name',
             selector: row => `${row.fname}   ${row.lname}`,
             sortable: true,
@@ -781,7 +862,7 @@ const Bookcalender = ({ tabKey }) => {
         <>
             <div className=" text-center pb-2 d-flex justify-content-between">
                 <div>
-                    <h5>{category1}--{selectedDate}</h5>
+                    <h5>{category1}-{selectedDate}</h5>
                 </div>
                 <div className="d-flex justify-content-end ">
                     {bookingPage2Categories.includes(category1) ? <><Button
@@ -814,7 +895,7 @@ const Bookcalender = ({ tabKey }) => {
                             });
                         }}
 
-                    >add group slotInfo</Button ></> : <></>}
+                    >Add Group Slot Info</Button ></> : <></>}
 
                 </div>
             </div>
