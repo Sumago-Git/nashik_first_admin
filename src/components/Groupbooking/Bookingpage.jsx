@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Container, Row, Col, Button } from 'react-bootstrap';
 import { useNavigate, useLocation } from 'react-router-dom';
-import {Link} from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import Form from 'react-bootstrap/Form';
 import * as XLSX from 'xlsx';
 
@@ -35,9 +35,22 @@ const Bookingpage = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
+  const [slotDatefortest, setslotDatefortest] = useState("")
+  console.log(slotDatefortest)
 
 
-
+  useEffect(() => {
+    if (location && location.state) {
+      console.log("location state : ", location.state);
+      const selectedSession = location.state.selectedTime.split('-')[1];
+      setSlotSession(selectedSession)
+      setSlotDate(location.state.selectedDate)
+      setslotDatefortest(location.state.temodate)
+      // console.log("location.selectedTime", location.state.selectedTime);
+      setCategory(location.state.category || ""); // Assume category comes from the location state
+      setSlotTime(`${location.state.selectedDate} ${location.state.selectedTime}`);
+    }
+  }, [location])
 
 
   const validate = () => {
@@ -182,7 +195,7 @@ const Bookingpage = () => {
       const data = new FormData();
 
       // Append all form fields to the FormData instance
-      data.append('learningNo', formData.learningNo);
+      data.append('learningNo', 0);
       data.append('fname', formData.fname);
       data.append('mname', formData.mname);
       data.append('lname', formData.lname);
@@ -191,7 +204,7 @@ const Bookingpage = () => {
       data.append('category', category);
       data.append('slotsession', slotsession);
       data.append('slotdate', formattedDate);
-
+      data.append('tempdate', slotDatefortest);
       data.append('sessionSlotId', sessionSlotId);
 
 
@@ -248,17 +261,6 @@ const Bookingpage = () => {
   };
 
 
-  useEffect(() => {
-    if (location && location.state) {
-      console.log("location state : ", location.state);
-      const selectedSession = location.state.selectedTime.split('-')[1];
-      setSlotSession(selectedSession)
-      setSlotDate(location.state.selectedDate)
-      // console.log("location.selectedTime", location.state.selectedTime);
-      setCategory(location.state.category || ""); // Assume category comes from the location state
-      setSlotTime(`${location.state.selectedDate} ${location.state.selectedTime}`);
-    }
-  }, [location])
 
 
 

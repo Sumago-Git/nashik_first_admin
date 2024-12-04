@@ -7,7 +7,7 @@ import { confirmAlert } from "react-confirm-alert";
 import { toast } from "react-toastify";
 import NewResuableForm from "../../components/form/NewResuableForm";
 
-const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal, handleShowModal, realdata, isPast, todayname }) => {
+const SlotComp = ({ selectedDates, slotDatefortest, categoryName, showModal, handleCloseModal, handleShowModal, realdata, isPast, todayname }) => {
     const [currentPage, setCurrentPage] = useState(1);
     const [title, setTitle] = useState("");
     const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -44,8 +44,14 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal, ha
             setFormData((prev) => ({ ...prev, slotdate: selectedDates }));
         }
     }, [selectedDates]);
+    useEffect(() => {
+        setFormData((prev) => ({ ...prev, tempdate: slotDatefortest  }));
+    }, [slotDatefortest]);
+
     console.log(selectedDates)
+    console.log(slotDatefortest)
     const initialFormData = {
+        tempdate: slotDatefortest,
         slotType: 'inhouse',
         category: categoryName,
         time: '',
@@ -73,22 +79,8 @@ const SlotComp = ({ selectedDates, categoryName, showModal, handleCloseModal, ha
     }, [eyeVisibilityById]);
 
 
-    useEffect(() => {
-        if (formData.img && formData.img instanceof File) {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setImagePreview(reader.result);
-            };
-            reader.readAsDataURL(formData.img);
-        } else if (formData.img && typeof formData.img === "string") {
-            setImagePreview(formData.img);
-        } else {
-            setImagePreview("");
-        }
-    }, [formData.img]);
-    const handleCreateNewSlot = () => {
-        setShow1()
-    }
+
+
     const fetchTeam = async () => {
 
         setLoading(true);

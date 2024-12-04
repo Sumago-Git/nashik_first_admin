@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Container, Row, Col, Card, Button, Form, Modal } from "react-bootstrap";
 import DataTable from "react-data-table-component";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import instance from "../../api/AxiosInstance";
 import InputMask from 'react-input-mask';
+import Bookpackagesmodal from "../Booking Packages/Bookpackagesmodal";
 const Search = () => {
+
     const [searchQuery, setSearchQuery] = useState("");
     const [selectedCategory, setSelectedCategory] = useState("");
     const [user, setUser] = useState([])
@@ -12,7 +14,11 @@ const Search = () => {
     const [show1, setShow1] = useState(false);
     const handleClose1 = () => setShow1(false);
     const [selectedBooking, setSelectedBooking] = useState(null); // New state for selected booking
+    const [showModal, setShowModal] = useState(false);
+    const [selectedDate, setSelectedDate] = useState(null); // This will hold the selected date
 
+    const handleShow = () => setShowModal(true);
+    const handleClose = () => setShowModal(false);
     const formatDateForInput = (dateString) => {
         if (!dateString) return ''; // Handle empty or undefined values
 
@@ -20,21 +26,12 @@ const Search = () => {
         return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`; // Reformat to YYYY-MM-DD
     };
 
-    const EditDate = (e) => {
-        let value = e.target.value
-        console.log("value", value);
-
-        if (!value) return '';
-
-        const [year, month, day] = value.split('-');
-        setSelectedBooking({ ...selectedBooking, slotdate: `${month}/${day}/${year}` })
-    }
 
     const selectCategory = (e) => {
         setSelectedCategory(e.target.value)
         instance.post("bookingform/get-bookingentries-by-category", { category: e.target.value }).then((result) => {
             setUser(result.data.responseData)
-            console.log("result", result.data.responseData);
+            console.log("result setUser", result.data.responseData);
 
         }).catch((err) => {
             console.log("err", err);
@@ -63,20 +60,36 @@ const Search = () => {
     }
     const handleSave = () => {
         // Here you can add logic to save changes to your state or backend
+        if (sessions.length !== 0 && !selectedBooking.slotsession) {
+            // If no session is selected, show an error or prevent submission
+            alert('Please select a session.'); // You can replace this with more user-friendly UI feedback
+            return;
+        }
+
+        if (!selectedBooking.slotdate) {
+            // If no slotdate is selected, show an error or prevent submission
+            alert('Please select a booking date.'); // You can replace this with more user-friendly UI feedback
+            return;
+        }
+
         let updatedBooking = { ...selectedBooking };
+        console.log("selectedBooking==========>", selectedBooking);
 
         if (updatedBooking.submission_date) {
             const date = new Date(updatedBooking.submission_date); // `submission_date` from input (yyyy-MM-dd)
             updatedBooking.submission_date = date.toISOString();  // Convert to ISO format (yyyy-MM-ddTHH:mm:ss.sssZ)
         }
-
+        alert("inside update")
+        console.log("updatedBooking", updatedBooking)
         instance.put(`bookingform/bookingform/${updatedBooking.id}`, updatedBooking).then((resp) => {
             setShow1(false)
             instance.post("bookingform/get-bookingentries-by-category", { category: selectedCategory }).then((result) => {
                 setUser(result.data.responseData)
+                alert("true")
                 console.log("result", result.data.responseData);
 
             }).catch((err) => {
+                alert("flase")
                 console.log("err", err);
 
             })
@@ -127,16 +140,9 @@ const Search = () => {
             selector: (row, index) => index + 1,
         },
         {
-            name: "First Name",
-            selector: (row) => row.fname,
-        },
-        {
-            name: "Middle Name",
-            selector: (row) => row.mname,
-        },
-        {
-            name: "Last Name",
-            selector: (row) => row.lname,
+            name: 'Full Name',
+            selector: row => `${row.fname}   ${row.lname}`,
+            sortable: true,
         },
         {
             name: "Learning No",
@@ -154,14 +160,11 @@ const Search = () => {
             name: "Slot Date",
             selector: (row) => row.slotdate,
         },
-        {
-            name: "Slot Session",
-            selector: (row) => row.slotsession,
-        },
-        {
-            name: "Submission Date",
-            selector: (row) => new Date(row.submission_date).toLocaleString(),
-        },
+
+        // {
+        //     name: "Submission Date",
+        //     selector: (row) => new Date(row.submission_date).toLocaleString(),
+        // },
         {
             name: "Training Status",
             selector: (row) => row.training_status,
@@ -244,12 +247,52 @@ const Search = () => {
             row.submission_date.toLowerCase().includes(searchQuery.toLowerCase()) ||
             row.training_status.toLowerCase().includes(searchQuery.toLowerCase())
         );
-        // else {
-        //     return (
-        //         row[selectedCategory].toLowerCase().includes(searchQuery.toLowerCase())
-        //     );
-        // }
+
     });
+    const [dateforslot, setdateforslote] = useState("")
+    const [sessions, setSessions] = useState([]);
+
+    const handleDateSelected = (date) => {
+
+        setSelectedDate(date);
+        console.log("Selected Date:", date);
+        const selectedDate = new Date(date);
+
+        const formattedDate = selectedDate.toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+        });
+
+        console.log("Formatted Selected Date:", formattedDate);
+        const formattedDate2 = selectedDate.toLocaleDateString();
+        setdateforslote(formattedDate2)
+        setSelectedBooking({ ...selectedBooking, slotdate: formattedDate, tempdate: selectedDate })
+        setSelectedBooking({ ...selectedBooking, slotsession: "" })
+    };
+    useEffect(() => {
+
+
+        const data = { slotdate: dateforslot, category: selectedCategory };
+        instance.post(`/Sessionslot/get-getSessionbySessionslot`, data, {
+            headers: { "Content-Type": "application/json" }
+        })
+            .then((result) => {
+                setSessions(result.data.responseData);
+                console.log("slotdata:", result.data.responseData);
+
+            })
+            .catch((err) => {
+                console.log("Error fetching sessions:", err);
+            });
+
+    }, [selectedDate]);
+
+    const EditDate = (e) => {
+
+        setSelectedBooking({ ...selectedBooking, slotdate: dateforslot, tempdate: selectedDate })
+
+    }
 
     return (
         <Container fluid>
@@ -320,25 +363,98 @@ const Search = () => {
                                 </Col>
 
                                 <Col lg={6} md={6} sm={12} className="">
-                                    <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+                                    {/* <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
                                         <Form.Label><b>Booking Date</b></Form.Label><br />
                                         <Form.Control
                                             type="date"
                                             value={selectedBooking.slotdate ? formatDateForInput(selectedBooking.slotdate) : ''} // Convert MM/DD/YYYY to YYYY-MM-DD
-                                            onChange={EditDate}
+                                            onChange={(e) => {
+                                                if (selectedBooking.category !== "School Students Training – Group" && selectedBooking.category !== "College/Organization Training – Group") {
+                                                    EditDate(e);
+                                                }
+                                            }}
+                                            disabled={selectedBooking.category === "School Students Training – Group" || selectedBooking.category === "College/Organization Training – Group"}
                                         />
+                                    </Form.Group> */}
+                                    <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+                                        <Form.Label><b>Booking Date</b></Form.Label><br />
+
+                                        {sessions && sessions.length === 0 ? (
+                                            // If sessions array is empty, show a date input field for booking date
+                                            <Form.Control
+                                                type="date"
+                                                value={selectedDate ? selectedDate : selectedBooking.slotdate ? formatDateForInput(selectedBooking.slotdate) : ''}
+                                                onChange={(e) => {
+                                                    if (selectedBooking.category !== "School Students Training – Group" && selectedBooking.category !== "College/Organization Training – Group") {
+                                                        EditDate(e);
+                                                        // setSelectedBooking({ ...selectedBooking, slotdate: dateforslot, tempdate: selectedDate });
+
+                                                    }
+                                                }}
+                                                disabled={selectedBooking.category === "School Students Training – Group" || selectedBooking.category === "College/Organization Training – Group"}
+                                            />
+                                        ) : (
+                                            // If sessions array is not empty, you could handle it differently (maybe pre-selecting a date from session data)
+                                            <Form.Control
+                                                type="date"
+                                                value={selectedDate ? selectedDate : selectedBooking.slotdate ? formatDateForInput(selectedBooking.slotdate) : ''}
+
+                                                onChange={(e) => {
+                                                    if (selectedBooking.category !== "School Students Training – Group" && selectedBooking.category !== "College/Organization Training – Group") {
+                                                        EditDate(e);
+                                                        setSelectedBooking({ ...selectedBooking, slotdate: dateforslot, tempdate: selectedDate });
+                                                    }
+                                                }}
+                                                disabled={selectedBooking.category === "School Students Training – Group" || selectedBooking.category === "College/Organization Training – Group"}
+                                            />
+                                        )}
                                     </Form.Group>
+                                    <Button onClick={handleShow}>Open Calendar</Button>
+
+                                    <Bookpackagesmodal showModal={showModal} handleClose={handleClose} savedCategory={selectedCategory} passSelectedDate={handleDateSelected} // Pass the function to handle date selection
+                                    />
                                 </Col>
                                 <Col lg={6} md={6} sm={12} className="">
                                     <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
                                         <Form.Label><b>Slot Session</b></Form.Label><br />
-                                        <Form.Control
-                                            type="text"
-                                            value={selectedBooking.slotsession} // Convert MM/DD/YYYY to YYYY-MM-DD
-                                            onChange={(e) => setSelectedBooking({ ...selectedBooking, slotsession: e.target.value })}
-                                        />
+
+                                        {sessions && sessions.length === 0 ? (
+                                            // If sessions array is empty, show the text input
+                                            <Form.Control
+                                                type="text"
+                                                value={selectedBooking.slotsession}
+                                                onChange={(e) => {
+                                                    if (selectedBooking.category !== "School Students Training – Group" && selectedBooking.category !== "College/Organization Training – Group") {
+                                                        setSelectedBooking({ ...selectedBooking, slotsession: e.target.value });
+                                                    }
+                                                }}
+                                                disabled={selectedBooking.category === "School Students Training – Group" || selectedBooking.category === "College/Organization Training – Group"}
+                                            />
+                                        ) : (
+                                            // If sessions array is not empty, show the dropdown
+                                            <Form.Select
+                                                value={selectedBooking.slotsession}
+                                                onChange={(e) => {
+                                                    // Find the selected session object based on the title and set its ID as sessionSlotId
+                                                    const selectedSession = sessions.find((session) => session.title === e.target.value);
+                                                    setSelectedBooking({
+                                                        ...selectedBooking,
+                                                        slotsession: e.target.value,
+                                                        sessionSlotId: selectedSession ? selectedSession.id : null, // Store the session ID
+                                                    });
+                                                }}
+                                                disabled={selectedBooking.category === "School Students Training – Group" || selectedBooking.category === "College/Organization Training – Group"}
+                                            >
+                                                <option value="">Select a Session</option>
+                                                {sessions.map((session, index) => (
+                                                    <option key={index} value={session.title}>{session.title}</option>
+                                                ))}
+                                            </Form.Select>
+
+                                        )}
                                     </Form.Group>
                                 </Col>
+
                                 <Col lg={6} md={6} sm={12}>
                                     <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
                                         <Form.Label><b>License No.</b></Form.Label><br />
@@ -367,17 +483,7 @@ const Search = () => {
                                         )}
                                     </Form.Group>
                                 </Col>
-                                {/* <Col lg={6} md={6} sm={12} className="pb-4">
-                                    <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-                                        <b>Submission Date</b><br />
 
-                                        <Form.Control
-                                            type="date"
-                                            value={selectedBooking.submission_date?.split('T')[0]} // Extract date part for input (yyyy-MM-dd)
-                                            onChange={(e) => setSelectedBooking({ ...selectedBooking, submission_date: e.target.value })}
-                                        />
-                                    </Form.Group>
-                                </Col> */}
                                 <Col lg={6} md={6} sm={12}>
                                     <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
                                         <b>First Name:</b><br />
@@ -397,38 +503,7 @@ const Search = () => {
                                         <Form.Control type="text" defaultValue={selectedBooking.lname} onChange={(e) => setSelectedBooking({ ...selectedBooking, lname: e.target.value })} />
                                     </Form.Group>
                                 </Col>
-                                {/* <Col lg={6} md={6} sm={12}>
-                                    <b>Training For</b><br />
-                                    <Form.Select
-                                        defaultValue={selectedBooking.category}
-                                        onChange={(e) => { setSelectedBooking({ ...selectedBooking, category: e.target.value }); }}
-                                    >
-                                        <option value="RTO – Learner Driving License Holder Training">RTO – Learner Driving License Holder Training</option>
-                                        <option value="RTO – Suspended Driving License Holders Training">RTO – Suspended Driving License Holders Training</option>
-                                        <option value="RTO – Training for School Bus Driver">RTO – Training for School Bus Driver</option>
-                                        <option value="School Students Training – Group">School Students Training – Group</option>
-                                        <option value="College/Organization Training – Group">College/Organization Training – Group</option>
-                               
-                                    </Form.Select>
-                                </Col> */}
-                                {/* <hr></hr> */}
-                                {/* <Col lg={6} md={6} sm={12}>
-                                    <b>Tranning Status</b><br />
 
-                                    <Form.Select aria-label="Default select example" defaultValue={selectedBooking.training_status} onChange={(e) => setSelectedBooking({ ...selectedBooking, training_status: e.target.value })}>
-
-                                        <option value="Attended">Attended</option>
-                                        <option value="Confirmed">Confirmed</option>
-
-                                    </Form.Select>
-
-                                </Col>
-                                <hr></hr> */}
-                                {/* 
-                                <Col lg={6} md={6} sm={12} className="pb-4">
-                                    <b>Learining Licenses Number</b><br />
-                                    {selectedBooking.learningNo}
-                                </Col> */}
                                 <Col lg={6} md={6} sm={12}>
                                     <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
                                         {/* <b>Email</b><br /> */}

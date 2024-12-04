@@ -30,28 +30,38 @@ const Bookcalender = ({ tabKey }) => {
     const [printData, setPrintData] = useState([]);
     const [lgShow, setLgShow] = useState(false);
     const location = useLocation();
-    const { selectedDate, selectedTime, category, slotsession } = location.state || {};
+    const { selectedDate, selectedTime, category, slotsession, slotDatefortest } = location.state || {};
 
     useEffect(() => {
-        if (!selectedDate || !selectedTime || !category) {
-            console.log("State values are missing:", { selectedDate, selectedTime, category });
+        if (!selectedDate || !selectedTime || !category || !slotDatefortest) {
+            console.log("State values are missing:", { selectedDate, selectedTime, category,slotDatefortest });
         } else {
             console.log("Selected Date:", selectedDate);
             console.log("Selected Time:", selectedTime);
             console.log("Category:", category);
+            console.log("slotDatefortest", slotDatefortest)
         }
-    }, [selectedDate, selectedTime, category]);
+    }, [selectedDate, selectedTime, category, slotDatefortest]);
 
 
     const sessionSlotId = localStorage.getItem('slotsid');
     const category1 = localStorage.getItem('category')
+
+    const dateOnly = selectedDate.split(' ')[1];
+    function convertDate(dateStr) {
+        // Split the date string into day, month, and year
+        const [day, month, year] = dateStr.split('/');
+
+        // Return the new format as MM/DD/YYYY
+        return `${month}/${day}/${year}`;
+    }
     const getUserDataByCategoryAndDate = () => {
 
-        const dateOnly = selectedDate.split(' ')[1];
         let data = {
             slotsession: slotsession,// Use the formatted date here
             sessionSlotId: sessionSlotId,
-            category: category1
+            category: category1,
+            slotdate: convertDate(dateOnly)
         };
         instance.post("bookingform/get-bookingentries-by-date-category1", data).then((result) => {
             console.log("result", result);
@@ -543,6 +553,11 @@ const Bookcalender = ({ tabKey }) => {
             sortable: true,
         },
         {
+            name: 'Certificate No.',
+            selector: row => row.slotdate,
+            sortable: true,
+        },
+        {
             name: 'Training Status',
             cell: row => (
                 <Button
@@ -735,7 +750,8 @@ const Bookcalender = ({ tabKey }) => {
                                     state: {
                                         selectedDate: selectedDate,
                                         selectedTime: selectedTime,
-                                        category: category1
+                                        category: category1,
+                                        temodate: slotDatefortest,
                                     }
                                 });
                             }
@@ -793,7 +809,9 @@ const Bookcalender = ({ tabKey }) => {
 
                                         selectedDate: selectedDate,
                                         selectedTime: selectedTime,
-                                        category: category1
+                                        category: category1,
+                                        temodate: slotDatefortest,
+
                                     }
                                 });
                             }

@@ -33,8 +33,21 @@ const Sessionslotdetails = () => {
   const [slotdate, setSlotDate] = useState("")
   const [category, setCategory] = useState(""); // Add a state for category
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-
+  const [slotDatefortest, setslotDatefortest] = useState("")
+  console.log(slotDatefortest)
+  useEffect(() => {
+    if (location && location.state) {
+      console.log("location state : ", location.state);
+      const selectedSession = location.state.selectedTime.split('-')[1];
+      setSlotSession(selectedSession)
+      setSlotDate(location.state.selectedDate)
+      setslotDatefortest(location.state.temodate)
+      console.log(location.state.temodate)
+      // console.log("location.selectedTime", location.state.selectedTime);
+      setCategory(location.state.category || ""); // Assume category comes from the location state
+      setSlotTime(`${location.state.selectedDate} ${location.state.selectedTime}`);
+    }
+  }, [location])
 
 
 
@@ -108,7 +121,9 @@ const Sessionslotdetails = () => {
           state: {
             selectedDate: slotdate,
             selectedTime: `${slotTime}`,
-            category: category
+            category: category,
+            temodate: slotDatefortest
+
           }
         }
       );
@@ -126,17 +141,6 @@ const Sessionslotdetails = () => {
 
 
 
-  useEffect(() => {
-    if (location && location.state) {
-      console.log("location state : ", location.state);
-      const selectedSession = location.state.selectedTime.split('-')[1];
-      setSlotSession(selectedSession)
-      setSlotDate(location.state.selectedDate)
-      // console.log("location.selectedTime", location.state.selectedTime);
-      setCategory(location.state.category || ""); // Assume category comes from the location state
-      setSlotTime(`${location.state.selectedDate} ${location.state.selectedTime}`);
-    }
-  }, [location])
 
 
 

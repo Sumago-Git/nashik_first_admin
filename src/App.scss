@@ -168,8 +168,9 @@ ul {
 
 // content
 .content-area {
-  & > section {
+  &>section {
     margin-bottom: 16px;
+
     &:last-child {
       margin-bottom: 0;
     }
@@ -191,6 +192,7 @@ ul {
   -ms-transform: rotate(-45deg);
   transform: rotate(-45deg);
 }
+
 .css-jn69v9 {
   display: inline-block;
   -webkit-transition: -webkit-transform 0.3s;
@@ -204,6 +206,7 @@ ul {
   -ms-transform: rotate(45deg);
   transform: rotate(45deg);
 }
+
 .css-1wvake5 {
   position: relative;
   border-right-width: 0px !important;
@@ -214,6 +217,7 @@ ul {
   width: 240px !important;
   min-width: 240px !important;
 }
+
 .ps-menu-label {
   display: inline-flex !important;
 }
@@ -268,6 +272,66 @@ input[type="number"] {
   color: black;
 }
 
-.react-confirm-alert-overlay{
+.react-confirm-alert-overlay {
   z-index: 1 !important;
+}
+
+.react-datepicker__day--available-slot {
+  background-color: #28a745;
+  /* Green background */
+  color: white;
+  /* White text */
+  border-radius: 50%;
+  /* Circular background */
+}
+
+.react-datepicker__day--available-slot:hover {
+  background-color: #218838;
+  /* Darker green on hover */
+}
+
+/* Full-screen overlay to block clicks */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(255, 255, 255, 0.8);
+  /* Semi-transparent white background */
+  z-index: 9999;
+  /* Ensure the overlay is on top of all content */
+  display: none;
+  /* Initially hidden */
+  justify-content: center;
+  align-items: center;
+}
+
+.overlay.active {
+  display: flex;
+  /* Show the overlay when active */
+}
+
+/* Optional: Loading spinner styling */
+.loading-spinner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #3498db;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }

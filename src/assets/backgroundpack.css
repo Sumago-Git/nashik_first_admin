@@ -23,3 +23,14 @@
 .modaldetail{
     box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
 }
+
+
+/* Custom styling for available slots */
+.react-datepicker__day--available-slot {
+    background-color: #28a745; /* Green background */
+    color: white; /* White text */
+    border-radius: 50%; /* Circular background */
+}
+.react-datepicker__day--available-slot:hover {
+    background-color: #218838; /* Darker green on hover */
+}

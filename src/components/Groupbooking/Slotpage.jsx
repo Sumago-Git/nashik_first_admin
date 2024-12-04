@@ -4,17 +4,20 @@ import instance from '../../api/AxiosInstance';
 import { toast } from "react-toastify";
 import { FaEdit, FaTrash, FaEye, FaEyeSlash } from "react-icons/fa";
 
-
+import { confirmAlert } from "react-confirm-alert";
 import { Link, useLocation } from 'react-router-dom';
 import { useNavigate } from "react-router-dom"; // Import useNavigate from react-router-dom
 
 
 const Slotpage = () => {
     const [slotDate, setSlotDate] = useState("")
+    const [slotDatefortest, setslotDatefortest] = useState("")
+    console.log(slotDatefortest)
     const location = useLocation()
     const navigate = useNavigate(); // Get the navigate function from useNavigate hook
     const [category, setcategory] = useState("");
     const [sessions, setSessions] = useState([]);
+    const [loading, setLoading] = useState(false)
 
     // useEffect(() => {
     //     window.scrollTo(0, 0)
@@ -26,6 +29,13 @@ const Slotpage = () => {
             setcategory(location.state.category)
 
             const date = new Date(location.state.selectedDate);
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0'); // Month is 0-indexed
+            const day = String(date.getDate()).padStart(2, '0'); // Ensure two digits for day
+
+            const formattedDate2 = `${year}-${month}-${day}`;
+            setslotDatefortest(formattedDate2);
+            console.log(formattedDate2)
             // Format options
             const options = { weekday: 'long', day: '2-digit', month: '2-digit', year: 'numeric' };
 
@@ -86,21 +96,103 @@ const Slotpage = () => {
     // ];
 
 
-    const handleDeleteSlot = async (id) => {
-        try {
-            const response = await instance.delete(`/bookingform/deleteSlotInfo/${id}`);
+    // const handleDeleteSlot = async (id) => {
+    //     try {
+    //         const response = await instance.delete(`/bookingform/deleteSlotInfo/${id}`);
 
-            toast.success("Slot deleted successfully!");
+    //         // If the deletion was successful, show success message
+    //         toast.success("Slot deleted successfully!");
 
-            featchdata()
+    //         // Optionally, refetch data if necessary
+    //         featchdata();
 
+    //     } catch (error) {
+    //         console.error('Error deleting slot:', error);
 
-        } catch (error) {
-            console.error('Error deleting slot:', error);
-            toast.error('Failed to delete the slot.');
-        }
+    //         // Check if the error response exists and the status code is 400 (bad request)
+    //         if (error.response && error.response.status === 400) {
+    //             // Display the custom error message from the API
+    //             toast.error(error.response.data.message || 'An error occurred.');
+    //         } else {
+    //             // Fallback to generic error message for other types of errors
+    //             toast.error('An error occurred while deleting the slot.');
+    //         }
+    //     }
+    // };
+
+    const handleDelete = async (id) => {
+        confirmAlert({
+            title: "Confirm to delete",
+            message: "Are you sure you want to delete this data?",
+            customUI: ({ onClose }) => (
+                <div
+                    style={{
+                        textAlign: "left",
+                        padding: "20px",
+                        backgroundColor: "white",
+                        borderRadius: "8px",
+                        boxShadow: "0 4px 8px rgba(5, 5, 5, 0.2)",
+                        maxWidth: "400px",
+                        margin: "0 auto",
+                    }}
+                >
+                    <h2>Confirm to delete</h2>
+                    <p>Are you sure you want to delete this data?</p>
+                    <div
+                        style={{
+                            display: "flex",
+                            justifyContent: "flex-end",
+                            marginTop: "20px",
+                        }}
+                    >
+                        <button
+                            style={{ marginRight: "10px" }}
+                            className="btn btn-primary"
+                            onClick={async () => {
+                                setLoading(true); // Start loading animation
+                                const accessToken = localStorage.getItem("accessToken"); // Get the access token
+                                try {
+                                    // Call the delete API endpoint
+                                    const response = await instance.delete(`/bookingform/deleteSlotInfo/${id}`, {
+                                        headers: {
+                                            Authorization: `Bearer ${accessToken}`,
+                                            "Content-Type": "application/json",
+                                        },
+                                    });
+
+                                    // On success, show a success message
+                                    toast.success("Slot deleted successfully!");
+
+                                    // Optionally, refetch data after deletion
+                                    featchdata();
+
+                                } catch (error) {
+                                    console.error("Error deleting slot:", error);
+
+                                    // Handle errors, with a specific case for a bad request (400)
+                                    if (error.response && error.response.status === 400) {
+                                        toast.error(error.response.data.message || 'An error occurred.');
+                                    } else {
+                                        toast.error('An error occurred while deleting the slot.');
+                                    }
+                                } finally {
+                                    setLoading(false); // Stop loading animation
+                                }
+
+                                onClose(); // Close the confirmation dialog
+                                handleShowModal(); // Optionally, show a modal after deletion
+                            }}
+                        >
+                            Yes
+                        </button>
+                        <button className="btn btn-secondary" onClick={() => { onClose(); handleShowModal(); }}>
+                            No
+                        </button>
+                    </div>
+                </div>
+            ),
+        });
     };
-
 
 
     return (
@@ -185,7 +277,8 @@ const Slotpage = () => {
                                                                     state: {
                                                                         selectedDate: slotDate,
                                                                         selectedTime: `${formattedTime}-${session.title}`,
-                                                                        category: category
+                                                                        category: category,
+                                                                        temodate: slotDatefortest
                                                                     }
                                                                 });
                                                             } else if (sessionSlotDetailsCategories.includes(category) && isAvailable) {
@@ -194,7 +287,8 @@ const Slotpage = () => {
                                                                     state: {
                                                                         selectedDate: slotDate,
                                                                         selectedTime: `${formattedTime}-${session.title}`,
-                                                                        category: category
+                                                                        category: category,
+                                                                        temodate: slotDatefortest
                                                                     }
                                                                 });
                                                             } else {
@@ -225,7 +319,7 @@ const Slotpage = () => {
                                             {session?.slotRegisterInfos?.map((detail, index) => (
                                                 <div key={index} style={{ marginTop: "10px" }}>
                                                     <div className=' d-flex justify-content-end'>
-                                                        <Button onClick={() => handleDeleteSlot(detail.id)}><FaTrash /></Button>
+                                                        <Button onClick={() => handleDelete(detail.id)}><FaTrash /></Button>
                                                         <Button
                                                             onClick={() => {
                                                                 // if (isAvailable) {

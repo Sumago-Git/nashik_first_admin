@@ -7,6 +7,8 @@ const Slotlistpage = () => {
     const [slotDate, setSlotDate] = useState("");
     const [category, setCategory] = useState("");
     const [sessions, setSessions] = useState([]);
+    const [slotDatefortest, setslotDatefortest] = useState("")
+    console.log(slotDatefortest)
     const location = useLocation();
     const navigate = useNavigate();
 
@@ -24,6 +26,7 @@ const Slotlistpage = () => {
             const options = { weekday: 'long', day: '2-digit', month: '2-digit', year: 'numeric' };
             const formattedDate = date.toLocaleDateString('en-GB', options).replace(',', '');
             setSlotDate(formattedDate);
+
 
             // Save values to localStorage
             localStorage.setItem("Bookcalendercategory", category);
@@ -57,7 +60,15 @@ const Slotlistpage = () => {
                 });
         }
     }, [category, slotDate]);
+    useEffect(() => {
+        const date = new Date(slotDate);
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0'); // Month is 0-indexed
+        const day = String(date.getDate()).padStart(2, '0'); // Ensure two digits for day
 
+        const formattedDate2 = `${year}-${day}-${month}`;
+        setslotDatefortest(formattedDate2);
+    }, [slotDate])
     return (
         <Container>
             <h1 className='daydate mt-5'>{slotDate}</h1>
@@ -91,7 +102,8 @@ const Slotlistpage = () => {
                                                     selectedDate: slotDate,
                                                     selectedTime: `${formattedTime}-${session.title}`,
                                                     category: category,
-                                                    slotsession: session.title
+                                                    slotsession: session.title,
+                                                    slotDatefortest: slotDatefortest
                                                 }
                                             });
                                             setTimeout(() => window.scrollTo(0, 790), 0);

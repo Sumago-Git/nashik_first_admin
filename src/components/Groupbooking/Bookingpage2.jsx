@@ -36,48 +36,24 @@ const Bookingpage2 = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
+  const [slotDatefortest, setslotDatefortest] = useState("")
+  console.log(slotDatefortest)
 
 
 
 
-
-  const validate = () => {
-    const newErrors = {};
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Email regex
-    const phoneRegex = /^[0-9]{10}$/; // 10-digit phone number regex
-    const landlineRegex = /^(?:\+91[-.\s]?)?(\(?\d{2,4}\)?[-.\s]?)?\d{6,8}$/; // Landline number regex
-    const nameRegex = /^[A-Za-z\s]+$/; // Only letters and spaces for name fields
-    const licenseRegex = /^[A-Z]{2}\d{2}\/\d{7}\/\d{4}$/; // Format like "MH15/0012345/3456"
-    const charOnlyRegex = /^[A-Za-z]+$/; // Only letters, no spaces or special characters
-    const numberOnlyRegex = /^\d+$/; // Only numbers
-
-    // Validate for group training category
-    if (!formData.excel) {
-      newErrors.excel = 'Please upload an Excel file.';
+  useEffect(() => {
+    if (location && location.state) {
+      console.log("location state : ", location.state);
+      const selectedSession = location.state.selectedTime.split('-')[1];
+      setSlotSession(selectedSession)
+      setSlotDate(location.state.selectedDate)
+      setslotDatefortest(location.state.temodate)
+      // console.log("location.selectedTime", location.state.selectedTime);
+      setCategory(location.state.category || ""); // Assume category comes from the location state
+      setSlotTime(`${location.state.selectedDate} ${location.state.selectedTime}`);
     }
-    if (!formData.institution_name) {
-      newErrors.institution_name = 'Institution name is required';
-    } else if (!nameRegex.test(formData.institution_name)) {
-      newErrors.institution_name = 'Institution name should only contain letters and spaces';
-    }
-    if (!formData.institution_email) {
-      newErrors.institution_email = 'Institution email is required';
-    } else if (!emailRegex.test(formData.institution_email)) {
-      newErrors.institution_email = 'Please enter a valid institution email address';
-    }
-    if (!formData.institution_phone) {
-      newErrors.institution_phone = 'Institution phone is required';
-    } else if (!landlineRegex.test(formData.institution_phone)) {
-      newErrors.institution_phone = 'Institution phone number must be a valid format (e.g., +1-800-123-4567 or 8001234567)';
-    }
-
-
-    // Validate the ReCAPTCHA
-
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
+  }, [location])
 
 
 
@@ -193,6 +169,8 @@ const Bookingpage2 = () => {
       data.append('category', category);
       data.append('slotsession', slotsession);
       data.append('slotdate', formattedDate);
+      data.append('tempdate', slotDatefortest);
+
       data.append('institution_name', formData.institution_name);
       data.append('institution_email', formData.institution_email);
       data.append('institution_phone', formData.institution_phone);
@@ -247,17 +225,6 @@ const Bookingpage2 = () => {
   };
 
 
-  useEffect(() => {
-    if (location && location.state) {
-      console.log("location state : ", location.state);
-      const selectedSession = location.state.selectedTime.split('-')[1];
-      setSlotSession(selectedSession)
-      setSlotDate(location.state.selectedDate)
-      // console.log("location.selectedTime", location.state.selectedTime);
-      setCategory(location.state.category || ""); // Assume category comes from the location state
-      setSlotTime(`${location.state.selectedDate} ${location.state.selectedTime}`);
-    }
-  }, [location])
 
 
 
