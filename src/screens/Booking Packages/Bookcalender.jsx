@@ -79,12 +79,12 @@ const Bookcalender = ({ tabKey }) => {
 
     // const handlePrintAll = async () => {
     //     const attendedRows = filteredData.filter((row) => row.training_status === "Attended");
-    
+
     //     if (attendedRows.length === 0) {
     //         alert("No rows with 'Attended' status found.");
     //         return;
     //     }
-    
+
     //     const loadImage = (src) => {
     //         return new Promise((resolve, reject) => {
     //             const img = new Image();
@@ -93,7 +93,7 @@ const Bookcalender = ({ tabKey }) => {
     //             img.onerror = (err) => reject(err);
     //         });
     //     };
-    
+
     //     for (const item of attendedRows) {
     //         try {
     //             let image;
@@ -106,33 +106,33 @@ const Bookcalender = ({ tabKey }) => {
     //             } else if (item.category === "College/Organization Training – Group") {
     //                 image = (await import('../../assets/Holiday/suspended.jpg')).default;
     //             }
-    
+
     //             const img = await loadImage(image);
-    
+
     //             const imgWidthPx = img.width;
     //             const imgHeightPx = img.height;
-    
+
     //             const dpi = 96;
     //             const imgWidthMm = (imgWidthPx / dpi) * 25.4;
     //             const imgHeightMm = (imgHeightPx / dpi) * 25.4;
-    
+
     //             const doc = new jsPDF({
     //                 orientation: imgWidthMm > imgHeightMm ? 'landscape' : 'portrait',
     //                 unit: 'mm',
     //                 format: [imgWidthMm, imgHeightMm],
     //             });
-    
+
     //             doc.addImage(img, 'PNG', 0, 0, imgWidthMm, imgHeightMm);
-    
+
     //             // Add user details
     //             const xPositionName = (imgWidthMm - doc.getTextWidth(`${item.fname} ${item.lname}`)) / 2;
     //             const yPositionName = imgHeightMm * 0.52;
-    
+
     //             doc.setFont("Arial");
     //             doc.setFontSize(35);
     //             doc.setTextColor("#4e4e95");
     //             doc.text(`${item.fname} ${item.lname}`, xPositionName, yPositionName);
-    
+
     //             const pdfBlob = doc.output("blob");
     //             const downloadLink = document.createElement('a');
     //             downloadLink.href = URL.createObjectURL(pdfBlob);
@@ -143,7 +143,7 @@ const Bookcalender = ({ tabKey }) => {
     //         }
     //     }
     // };
-    
+
     const handlePrintAll = async () => {
         const attendedRows = filteredData.filter((row) => row.training_status === "Attended");
     
@@ -199,16 +199,37 @@ const Bookcalender = ({ tabKey }) => {
                     combinedDoc.addPage([imgWidthMm, imgHeightMm], orientation);
                 }
     
-                combinedDoc.addImage(img, 'PNG', 0, 0, imgWidthMm, imgHeightMm);
+                // Skip adding the image but retain its dimensions for layout
     
                 // Add user details
-                const xPositionName = (imgWidthMm - combinedDoc.getTextWidth(`${item.fname} ${item.lname}`)) / 2;
+                const nameText = `${item.fname} ${item.lname}`;
+                const xPositionName = (imgWidthMm - combinedDoc.getTextWidth(nameText)) / 2.2;
                 const yPositionName = imgHeightMm * 0.52;
     
-                combinedDoc.setFont("Arial");
-                combinedDoc.setFontSize(35);
-                combinedDoc.setTextColor("#4e4e95");
-                combinedDoc.text(`${item.fname} ${item.lname}`, xPositionName, yPositionName);
+                combinedDoc.addFileToVFS("MyCustomFont.ttf", base64String); // Add the font
+                combinedDoc.addFont("MyCustomFont.ttf", "MyCustomFont", "normal"); // Register the font
+                combinedDoc.setFont("MyCustomFont");
+                combinedDoc.setFontSize(95);
+                combinedDoc.setTextColor("#f48633");
+                combinedDoc.text(nameText, xPositionName, yPositionName);
+    
+                // Add certificate number (simple font)
+                const certNoText = `${item.certificate_no}`;
+                const xPositionCertNo = (imgWidthMm - combinedDoc.getTextWidth(certNoText)) / 1.09;
+                const yPositionCertNo = imgHeightMm * 0.072;
+    
+                combinedDoc.setFont("helvetica", "normal"); // Use simple font
+                combinedDoc.setFontSize(40);
+                combinedDoc.setTextColor("#333333");
+                combinedDoc.text(certNoText, xPositionCertNo, yPositionCertNo);
+    
+                // Add date (simple font)
+                const dateText = `${new Date().toLocaleDateString()}`;
+                const xPositionDate = (imgWidthMm - combinedDoc.getTextWidth(dateText)) / 1.03;
+                const yPositionDate = imgHeightMm * 0.135;
+    
+                combinedDoc.setFont("helvetica", "normal"); // Use simple font
+                combinedDoc.text(dateText, xPositionDate, yPositionDate);
             }
     
             // Open the combined PDF in a new tab
@@ -225,9 +246,12 @@ const Bookcalender = ({ tabKey }) => {
     };
     
     
-    
-   
-    
+
+
+
+
+
+
 
     const [selectedBooking, setSelectedBooking] = useState(null); // New state for selected booking
 
@@ -672,7 +696,7 @@ const Bookcalender = ({ tabKey }) => {
     const columns = [
         {
             name: 'Sr No.',
-            selector: (row,id) => id + 1,
+            selector: (row, id) => id + 1,
             sortable: true,
         },
         {
