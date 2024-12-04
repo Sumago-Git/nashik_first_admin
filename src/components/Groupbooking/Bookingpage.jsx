@@ -195,7 +195,7 @@ const Bookingpage = () => {
       const data = new FormData();
 
       // Append all form fields to the FormData instance
-      data.append('learningNo', 0);
+      data.append('learningNo', formData.learningNo);
       data.append('fname', formData.fname);
       data.append('mname', formData.mname);
       data.append('lname', formData.lname);

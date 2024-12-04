@@ -98,7 +98,13 @@ const Search = () => {
 
         })
     };
+    function convertDateFormat(date) {
+        // Split the input date by "/"
+        const [month, day, year] = date.split('/');
 
+        // Return the formatted date in MM/DD/YYYY format
+        return `${day}/${month}/${year}`;
+    }
     const customStyles = {
         headCells: {
             style: {
@@ -158,7 +164,7 @@ const Search = () => {
         },
         {
             name: "Slot Date",
-            selector: (row) => row.slotdate,
+            selector: (row) => convertDateFormat(row.slotdate),
         },
 
         // {
@@ -293,6 +299,16 @@ const Search = () => {
         setSelectedBooking({ ...selectedBooking, slotdate: dateforslot, tempdate: selectedDate })
 
     }
+    const formatTimeTo12Hour = (time) => {
+        const [hour, minute] = time.split(':');
+        const hours = parseInt(hour, 10);
+        const period = hours >= 12 ? 'PM' : 'AM';
+        const formattedHour = hours % 12 || 12; // Convert 0 to 12 for 12-hour format
+        return `${formattedHour}:${minute} ${period}`;
+    };
+
+    // Example usage:
+    // Output: "05/12/2024"
 
     return (
         <Container fluid>
@@ -447,7 +463,7 @@ const Search = () => {
                                             >
                                                 <option value="">Select a Session</option>
                                                 {sessions.map((session, index) => (
-                                                    <option key={index} value={session.title}>{session.title}</option>
+                                                    <option key={index} value={session.title}>{session.title}--{formatTimeTo12Hour(session.time)}</option>
                                                 ))}
                                             </Form.Select>
 
@@ -460,13 +476,13 @@ const Search = () => {
                                         <Form.Label><b>License No.</b></Form.Label><br />
                                         {selectedBooking.category === "RTO – Suspended Driving License Holders Training" ? (
                                             <InputMask
-                                                mask="**/**/**/****"
+                                                mask="**** ***********"
                                                 value={selectedBooking.learningNo || ""}
                                                 onChange={(e) => {
                                                     const inputValue = e.target.value.toUpperCase();
                                                     setSelectedBooking({ ...selectedBooking, learningNo: inputValue });
                                                 }}
-                                                placeholder="XX/XX/XX/XXXX"
+                                                placeholder="xxxx xxxxxxxxxxx"
                                                 className="form-control"
                                             />
                                         ) : (

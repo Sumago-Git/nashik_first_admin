@@ -116,10 +116,10 @@ const SlotComp = ({ selectedDates, slotDatefortest, categoryName, showModal, han
         }
 
         // Convert capacity to a string before calling trim() and check if it's empty
-        if (!String(formData.capacity).trim()) {
-            errors.capacity = 'Capacity is required';
-            isValid = false;
-        }
+        // if (!String(formData.capacity).trim()) {
+        //     errors.capacity = 'Capacity is required';
+        //     isValid = false;
+        // }
 
         // Check if deadlineTime is empty
         if (!formData.deadlineTime.trim()) {
@@ -335,16 +335,13 @@ const SlotComp = ({ selectedDates, slotDatefortest, categoryName, showModal, han
             const data = new FormData();
 
             for (const key in formData) {
-
-                if (formData[key] instanceof File || typeof formData[key] === "string") {
-                    if (key == "capacity") {
-                        data.append(key, formData[key] == null ? 50 : formData[key]);
-                    }
+                // Check if the key is "capacity" and set default to 50 if not provided
+                if (key === "capacity" && (formData[key] === null || formData[key] === undefined)) {
+                    data.append(key, 50);
+                } else if (formData[key] instanceof File || typeof formData[key] === "string") {
                     data.append(key, formData[key]);
-
                 }
             }
-
             try {
                 if (editMode) {
                     await instance.put(`Sessionslot/Sessionslot/${editingId}`, formData, {
@@ -369,23 +366,23 @@ const SlotComp = ({ selectedDates, slotDatefortest, categoryName, showModal, han
                     toast.success("Slot Added Successfully");
                 }
                 fetchTeam();
-                setShow1(false)
-
+                setShow1(false);
                 setEditMode(false);
                 setFormData(initialFormData); // Reset formData to initial state
                 setImagePreview("");
                 setShowTable(true);
-
+    
             } catch (error) {
                 if (error.response && error.response.data && error.response.data.message) {
                     toast.error(error.response.data.message); // Show error message in toast
                 }
-                console.log(error)
+                console.log(error);
             } finally {
                 setLoading(false);
             }
         }
     };
+    
     const handleSubmit2 = async (e) => {
         e.preventDefault();
         const requiredFields = ["category", "time", "deadlineTime", "title", "capacity"];
@@ -487,6 +484,13 @@ const SlotComp = ({ selectedDates, slotDatefortest, categoryName, showModal, han
         const formattedHour = hours % 12 || 12; // Convert 0 to 12 for 12-hour format
         return `${formattedHour}:${minute} ${period}`;
     };
+    function convertDateFormat(date) {
+        // Split the input date by "/"
+        const [month, day, year] = date.split('/');
+
+        // Return the formatted date in MM/DD/YYYY format
+        return `${day}/${month}/${year}`;
+    }
     const tableColumns = (currentPage, rowsPerPage) => [
         {
             name: <CustomHeader name="Sr. No." />,
@@ -502,7 +506,7 @@ const SlotComp = ({ selectedDates, slotDatefortest, categoryName, showModal, han
         },
         {
             name: <CustomHeader name="Slot Date" />,
-            cell: (row) => <span>{row.slotdate}</span>,
+            cell: (row) => <span>{convertDateFormat(row.slotdate)}</span>,
         },
         {
             name: <CustomHeader name="Time" />,
@@ -663,7 +667,7 @@ const SlotComp = ({ selectedDates, slotDatefortest, categoryName, showModal, han
             if (response.data.responseData.conflict === true) {
                 // Show confirmation popup if there's a conflict
                 const confirmMessage = `The trainer ${trainerName} is already assigned to another slot Today. Do you want to continue with this slot or choose a different time or trainer?`;
-                const proceed = await alert(confirmMessage);
+                const proceed = await confirm(confirmMessage);
 
                 if (!proceed) {
                     // Reset the trainer field if user cancels

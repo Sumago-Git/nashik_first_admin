@@ -36,7 +36,13 @@ const Bookings = () => {
             {name}
         </div>
     );
+    function convertDateFormat(date) {
+        // Split the input date by "/"
+        const [month, day, year] = date.split('/');
 
+        // Return the formatted date in MM/DD/YYYY format
+        return `${day}/${month}/${year}`;
+    }
     const tableColumns = (currentPage, rowsPerPage) => [
         {
             name: <CustomHeader name="Sr. No." />,
@@ -78,7 +84,7 @@ const Bookings = () => {
         },
         {
             name: <CustomHeader name="Slot Date" />,
-            cell: (row) => <span>{row.slotdate}</span>,
+            cell: (row) => <span>{convertDateFormat(row.slotdate)}</span>,
         },
         {
             name: <CustomHeader name="Slot Session" />,

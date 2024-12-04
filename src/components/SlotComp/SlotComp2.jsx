@@ -94,7 +94,7 @@ const SlotComp2 = ({ selectedDates, categoryName, showModal, handleCloseModal, h
         setLoading(true);
         const accessToken = localStorage.getItem("accessToken"); // Retrieve access token
         try {
-            const response = await instance.post("Sessionslot/get-getSessionbySessionslot", { slotdate: selectedDates, category: categoryName,slotType:"onsite" }, {
+            const response = await instance.post("Sessionslot/get-getSessionbySessionslot", { slotdate: selectedDates, category: categoryName, slotType: "onsite" }, {
                 headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },
             });
             const filteredData = response.data.responseData?.reverse()
@@ -483,7 +483,13 @@ const SlotComp2 = ({ selectedDates, categoryName, showModal, handleCloseModal, h
             }
         }
     };
+    function convertDateFormat(date) {
+        // Split the input date by "/"
+        const [month, day, year] = date.split('/');
 
+        // Return the formatted date in MM/DD/YYYY format
+        return `${day}/${month}/${year}`;
+    }
     const tableColumns = (currentPage, rowsPerPage) => [
         {
             name: <CustomHeader name="Sr. No." />,
@@ -499,7 +505,7 @@ const SlotComp2 = ({ selectedDates, categoryName, showModal, handleCloseModal, h
         },
         {
             name: <CustomHeader name="Slot Date" />,
-            cell: (row) => <span>{row.slotdate}</span>,
+            cell: (row) => <span>{convertDateFormat(row.slotdate)}</span>,
         },
         {
             name: <CustomHeader name="Time" />,

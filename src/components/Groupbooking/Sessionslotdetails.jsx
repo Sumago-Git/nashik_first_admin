@@ -114,19 +114,20 @@ const Sessionslotdetails = () => {
           'Content-Type': 'application/json', // Set content type to application/json
         },
       });
+      localStorage.setItem('slotsids', sessionSlotId),
+        // Redirect after successful submission
+        navigate('/bookingpage',
 
-      // Redirect after successful submission
-      navigate('/bookingpage',
-        {
-          state: {
-            selectedDate: slotdate,
-            selectedTime: `${slotTime}`,
-            category: category,
-            temodate: slotDatefortest
+          {
+            state: {
+              selectedDate: slotdate,
+              selectedTime: `${slotTime}`,
+              category: category,
+              temodate: slotDatefortest
 
+            }
           }
-        }
-      );
+        );
     } catch (error) {
       console.error('Error submitting form:', error);
       if (error.response) {
@@ -181,7 +182,7 @@ const Sessionslotdetails = () => {
               {errors.institution_email && <p className='text-start ms-md-4 mt-1 text-danger'>{errors.institution_email}</p>}
             </Col>
             <Col lg={6}>
-              <p className='bookingdate text-black text-start ms-lg-4 ms-sm-3 mt-3'>{"Institution Landline No.*"}</p>
+              <p className='bookingdate text-black text-start ms-lg-4 ms-sm-3 mt-3'>{"Institution Landline No."}</p>
               <input
                 name='institution_phone'
                 value={formData.institution_phone}
@@ -242,7 +243,7 @@ const Sessionslotdetails = () => {
 
 
 
-            <div className='text-center'>
+            <div className='text-center my-2'>
               <Button type="submit">
 
                 Submit

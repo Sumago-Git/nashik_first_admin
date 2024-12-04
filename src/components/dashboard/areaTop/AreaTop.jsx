@@ -101,12 +101,18 @@ const AreaTop = ({ buttonValue, tableView }) => {
     "/trainer",
     "/conact-form",
     "/CalenderComp",
+    "/calender2",
+    "/Sessionslotdetails",
+    "/bookingpage",
     "/bookseats",
     "/Slotlistpage",
     "/Bookcalender",
     "/search",
     "/Bookcalender",
-    "/bookingpage2"
+    "/bookingpage2",
+    "/slotpage",
+    "/Slotpage",
+    "/groupbooking"
   ];
   const isHiddenPath = hiddenPaths.includes(location.pathname);
 
@@ -201,12 +207,19 @@ const AreaTop = ({ buttonValue, tableView }) => {
     else if (window.location.pathname == "/bookseats") {
       setHeader("Booking Packages");
     }
+    else if (window.location.pathname == "/Sessionslotdetails") {
+      setHeader("Booking Packages");
+    }
     else if (window.location.pathname == "/requestcallbackform") {
       setHeader("Request Callback Form");
     } else if (window.location.pathname == "/office") {
       setHeader("Our Offices");
     } else if (window.location.pathname == "/calender") {
       setHeader("Calender");
+    } else if (window.location.pathname == "/CalenderComp") {
+      setHeader("Slot Booking");
+    } else if (window.location.pathname == "/calender2") {
+      setHeader("Slot Booking");
     } else if (window.location.pathname == "/bookings") {
       setHeader("Bookings");
     } else if (window.location.pathname == "/contactinfo") {
@@ -254,11 +267,11 @@ const AreaTop = ({ buttonValue, tableView }) => {
         <h2 className="area-top-title text-capitalize">{headerName}</h2>
       </div>
       <div className="area-top-r">
-        {!isHiddenPath && (
+        {/* {!isHiddenPath && (
           <Button onClick={handleButtonClick} variant="outline-danger">
             {buttonText}
           </Button>
-        )}
+        )} */}
       </div>
     </section>
   );
