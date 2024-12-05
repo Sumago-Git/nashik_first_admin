@@ -11,13 +11,15 @@ import { useLocation } from 'react-router-dom';
 const CalenderComp2 = () => {
     const location = useLocation();
     const { categoryName, tabKey } = location.state || {};
-    console.log("tabKey", tabKey);
     const [team, setTeam] = useState([]);
     const [newdate, setnewdate] = useState("")
     const [specialDates, setSpecialDates] = useState([]);
     const [dateStatuses, setDateStatuses] = useState({}); // State to store date statuses
     const [hoveredDay, setHoveredDay] = useState(null);
     const [comp, setComp] = useState("false")
+    const [slotDatefortest, setslotDatefortest] = useState("")
+    console.log("tabKey", slotDatefortest); // Update the new date string
+
     const [currentDate, setCurrentDate] = useState(new Date());
     const [loading, setLoading] = useState(false)
     const [selectedDates, setSelectedDate] = useState("")
@@ -164,14 +166,24 @@ const CalenderComp2 = () => {
 
 
     // Function to handle day click
+    const [myDay, setMyDay] = useState(""); // Add state for day name
 
-    const handleDayClick = (day) => {
+    const handleDayClick = (day, weekday) => {
         if (day) {
             const clickedDate = new Date(currentYear, currentMonth, day);
             const newDateString = clickedDate.toLocaleDateString();
-            setSelectedDate(newDateString);  // Update selected date
-            setnewdate(newDateString);  // Update the new date string
+
+            setSelectedDate(newDateString);
+            setnewdate(newDateString);
+            const year = clickedDate.getFullYear();
+            const month = String(clickedDate.getMonth() + 1).padStart(2, '0'); // Month is 0-indexed
+            const day2 = String(clickedDate.getDate()).padStart(2, '0'); // Ensure two digits for day
+
+            const formattedDate2 = `${year}-${month}-${day2}`;
+            setslotDatefortest(formattedDate2);
+            setMyDay(weekday); // Set the day name
             fetchTeam(); // Call fetchTeam() with updated selectedDates
+
             if (tabKey === "Closed Days") {
                 alertBox(newDateString); // Pass the date here
             } else {
@@ -386,7 +398,9 @@ const CalenderComp2 = () => {
                 selectedDates={selectedDates}
                 realdata={team}
                 isPast={selectedDateIsPast}
-                categoryName={categoryName} />
+                categoryName={categoryName}
+                slotDatefortest={slotDatefortest}
+            />
         </>
     );
 };

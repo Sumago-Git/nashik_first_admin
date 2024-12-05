@@ -83,7 +83,7 @@ const Sessionslotdetails2 = () => {
       });
 
       // Navigate back or show success message
-      navigate('/bookingpage');
+      navigate('/groupbooking');
       alert("Slot registration updated successfully.");
     } catch (error) {
       console.error('Error updating form:', error);

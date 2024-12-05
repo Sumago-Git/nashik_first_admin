@@ -228,7 +228,6 @@ const Bookingpage = () => {
             certificate_no: Math.floor(100000 + Math.random() * 900000), // Generate a random 6-digit certificate number
           });
 
-          console.log(`Record ${record.id} updated successfully:`, updateResponse.data);
         } catch (updateError) {
           console.error(`Error updating record ${record.id}:`, updateError);
         }

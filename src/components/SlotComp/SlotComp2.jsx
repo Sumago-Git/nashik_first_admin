@@ -7,7 +7,7 @@ import { confirmAlert } from "react-confirm-alert";
 import { toast } from "react-toastify";
 import NewResuableForm from "../../components/form/NewResuableForm";
 
-const SlotComp2 = ({ selectedDates, categoryName, showModal, handleCloseModal, handleShowModal, realdata, isPast }) => {
+const SlotComp2 = ({ selectedDates, slotDatefortest, categoryName, showModal, handleCloseModal, handleShowModal, realdata, isPast }) => {
     const [currentPage, setCurrentPage] = useState(1);
     const [title, setTitle] = useState("");
     const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -44,8 +44,12 @@ const SlotComp2 = ({ selectedDates, categoryName, showModal, handleCloseModal, h
             setFormData((prev) => ({ ...prev, slotdate: selectedDates }));
         }
     }, [selectedDates]);
+    useEffect(() => {
+        setFormData((prev) => ({ ...prev, tempdate: slotDatefortest }));
+    }, [slotDatefortest]);
     console.log(selectedDates)
     const initialFormData = {
+        tempdate: slotDatefortest,
         slotType: 'onsite',
         category: categoryName,
         time: '',
@@ -674,8 +678,9 @@ const SlotComp2 = ({ selectedDates, categoryName, showModal, handleCloseModal, h
                                         name="category"
                                         value={formData.category} // Use "category" as it matches initialFormData
                                         onChange={(e) => handleChange("category", e.target.value)} // Call handleChange with "category"
-                                    >
-                                        <option value={categoryName}>{categoryName}</option>
+                                    >                                      
+                                      <option >Select category</option>
+
                                         {/* <option value="RTO – Learner Driving License Holder Training">RTO – Learner Driving License Holder Training</option>
                                         <option value="RTO – Suspended Driving License Holders Training">RTO – Suspended Driving License Holders Training</option>
                                         <option value="RTO – Training for School Bus Driver">RTO – Training for School Bus Driver</option> */}

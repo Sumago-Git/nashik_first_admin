@@ -54,6 +54,7 @@ import CalenderComp2 from "./components/Calender Component/CalenderComp2";
 import Sessionslotdetails from "./components/Groupbooking/Sessionslotdetails";
 import Bookingpage2 from "./components/Groupbooking/Bookingpage2";
 import Sessionslotdetails2 from "./components/Groupbooking/Sessionslotdetails2";
+import Bycategories from "./components/Reports/Bycategories";
 
 function App() {
   useEffect(() => {
@@ -243,6 +244,10 @@ function App() {
           <Route
             path="/search"
             element={<ProtectedRoutes Component={Search} />}
+          />
+          <Route
+            path="/Bycategories"
+            element={<ProtectedRoutes Component={Bycategories} />}
           />
           <Route
             path="/logout"

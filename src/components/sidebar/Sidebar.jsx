@@ -381,6 +381,18 @@ const SidebarMenu = [
     ],
   },
   {
+    menu: "Reports",
+
+    mainIcon: <MdSchool size={24} />,
+    subMenu: [
+      {
+        subMenus: "Bycategories",
+        url: "/Bycategories",
+        icon: <AiOutlineAppstoreAdd style={{ color: "red" }} size={24} />,
+      },
+    ],
+  },
+  {
     menu: "Logout",
     url: "/logout",
     mainIcon: <MdLogout size={24} />,
