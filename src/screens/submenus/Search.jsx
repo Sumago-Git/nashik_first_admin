@@ -16,6 +16,7 @@ const Search = () => {
     const [selectedBooking, setSelectedBooking] = useState(null); // New state for selected booking
     const [showModal, setShowModal] = useState(false);
     const [selectedDate, setSelectedDate] = useState(null); // This will hold the selected date
+    const [dateforslot, setdateforslote] = useState("")
 
     const handleShow = () => setShowModal(true);
     const handleClose = () => setShowModal(false);
@@ -72,7 +73,7 @@ const Search = () => {
             return;
         }
 
-        let updatedBooking = { ...selectedBooking };
+        let updatedBooking = { ...selectedBooking, slotdate: dateforslot};
         console.log("selectedBooking==========>", selectedBooking);
 
         if (updatedBooking.submission_date) {
@@ -255,7 +256,6 @@ const Search = () => {
         );
 
     });
-    const [dateforslot, setdateforslote] = useState("")
     const [sessions, setSessions] = useState([]);
 
     const handleDateSelected = (date) => {
