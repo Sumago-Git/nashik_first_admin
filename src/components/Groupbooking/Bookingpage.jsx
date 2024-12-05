@@ -268,32 +268,59 @@ const Bookingpage = () => {
 
   return (
     <>
+      {/* Full-screen overlay with loader */}
+      {isSubmitting && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            zIndex: 9999, // Ensure it appears above all other elements
+          }}
+        >
+          <div
+            style={{
+              width: "60px",
+              height: "60px",
+              border: "6px solid #f3f3f3",
+              borderRadius: "50%",
+              borderTop: "6px solid #3498db",
+              animation: "spin 1s linear infinite",
+            }}
+          />
+        </div>
+      )}
 
 
 
 
-
-      <Container className='bookingdetails mt-5 pt-4 pb-3 '>
-        <h1 className='bookingheadline mt-3 mx-auto'>Please fill in your details</h1>
+      <Container className="bookingdetails mt-5 pt-4 pb-3">
+        <h1 className="bookingheadline mt-3 mx-auto">Please fill in your details</h1>
         <form onSubmit={handleSubmit}>
-          <Row className=''>
-
-            <Col lg={7} className='mb-3'>
+          <Row>
+            <Col lg={7} className="mb-3">
               <Form.Group controlId="uploadExcel">
-
                 <Form.Control
                   type="file"
-                  name='excel'
+                  name="excel"
                   accept=".xls,.xlsx"
                   onChange={handleChange}
                 />
-                {errors.excel && <p className='text-start ms-md-1 mt-1 text-danger'>{errors.excel}</p>}
+                {errors.excel && (
+                  <p className="text-start ms-md-1 mt-1 text-danger">
+                    {errors.excel}
+                  </p>
+                )}
               </Form.Group>
             </Col>
 
-
-
-            <div className='text-center'>
+            <div className="text-center">
               <Button type="submit" disabled={isSubmitting}>
                 {isSubmitting ? (
                   <span>
@@ -303,20 +330,24 @@ const Bookingpage = () => {
                 ) : (
                   "Submit"
                 )}
-              </Button>                </div>
+              </Button>
+              <Link to="/groupbooking">
+                <Button variant="secondary" className="mx-3">
+                  Back
+                </Button>
+              </Link>
+            </div>
           </Row>
         </form>
-
-
-
-        <Col lg={12} className='mt-md-5 pt-lg-3 pb-5 mb-lg-2 mt-4'>
-          <Link to='/groupbooking'><button className='returnbutton p-lg-3'>
-            Return
-          </button></Link>
-        </Col>
-
       </Container>
-
+      <style>
+        {`
+          @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+          }
+        `}
+      </style>
 
 
     </>
