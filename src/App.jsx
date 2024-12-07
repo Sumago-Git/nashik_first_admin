@@ -4,7 +4,9 @@ import { Routes, Route, useNavigate } from "react-router-dom";
 import "./App.scss";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
+import 'primereact/resources/themes/lara-light-indigo/theme.css';  // Choose your theme
+import 'primereact/resources/primereact.min.css';  // Import PrimeReact styles
+import 'primeicons/primeicons.css';
 import BaseLayout from "./layout/BaseLayout";
 import { Dashboard, PageNotFound } from "./screens";
 import Leadership from "./screens/submenus/Leadership";
