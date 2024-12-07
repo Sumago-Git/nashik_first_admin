@@ -16,7 +16,6 @@ const CalenderComp = () => {
     const [myDay, setMyDay] = useState(""); // Add state for day name
     const [slotDatefortest, setslotDatefortest] = useState("")
     const [newdate, setnewdate] = useState("")
-    console.log("tabKey", slotDatefortest); // Update the new date string
 
     const [specialDates, setSpecialDates] = useState([]);
     const [dateStatuses, setDateStatuses] = useState({}); // State to store date statuses

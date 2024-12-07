@@ -446,6 +446,8 @@ const Bookcalender = ({ tabKey }) => {
             const yPositionSlotTime = 100; // Adjust y-position for slotdate
             doc.text(slotTimeText, xPositionSlotTime, yPositionSlotTime);
 
+            const fileName = `${selectedBooking.certificate_no}_${selectedBooking.fname}_${selectedBooking.lname}.pdf`;
+            doc.save(fileName);
             // Open the PDF in a new window for printing
             const pdfWindow = window.open("");
             pdfWindow.document.write(
@@ -979,7 +981,7 @@ const Bookcalender = ({ tabKey }) => {
                                     }
                                 });
                             }
-                            }>book a slot</Button>
+                            }>Book Slot</Button>
 
                         )}
                     </> :

@@ -13,6 +13,7 @@ const SlotComp = ({ selectedDates, slotDatefortest, categoryName, showModal, han
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [eyeVisibilityById, setEyeVisibilityById] = useState({});
     const [data, setData] = useState(realdata);
+    const [isSubmit, SetIsSubmit] = useState(false)
     console.log("cbvdf", isPast)
     useEffect(() => {
         setData(realdata);
@@ -45,7 +46,7 @@ const SlotComp = ({ selectedDates, slotDatefortest, categoryName, showModal, han
         }
     }, [selectedDates]);
     useEffect(() => {
-        setFormData((prev) => ({ ...prev, tempdate: slotDatefortest  }));
+        setFormData((prev) => ({ ...prev, tempdate: slotDatefortest }));
     }, [slotDatefortest]);
 
     console.log(selectedDates)
@@ -110,10 +111,10 @@ const SlotComp = ({ selectedDates, slotDatefortest, categoryName, showModal, han
         let isValid = true;
 
         // Check if the title is empty
-        if (!formData.title.trim()) {
-            errors.title = 'Title is required';
-            isValid = false;
-        }
+        // if (!formData.title.trim()) {
+        //     errors.title = 'Title is required';
+        //     isValid = false;
+        // }
 
         // Convert capacity to a string before calling trim() and check if it's empty
         // if (!String(formData.capacity).trim()) {
@@ -313,7 +314,7 @@ const SlotComp = ({ selectedDates, slotDatefortest, categoryName, showModal, han
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const requiredFields = ["category", "time", "deadlineTime", "title", "capacity"];
+        const requiredFields = ["category", "time", "deadlineTime", "capacity"];
         for (const field of requiredFields) {
             if (!formData[field]) {
                 toast.error(`${field} is required`); // Show error for each missing required field
@@ -356,6 +357,7 @@ const SlotComp = ({ selectedDates, slotDatefortest, categoryName, showModal, han
                     );
                     setTeam(updatedTeam);
                     fetchTeam();
+                    SetIsSubmit(true)
                 } else {
                     await instance.post("Sessionslot/create-Sessionslot", data, {
                         headers: {
@@ -371,7 +373,7 @@ const SlotComp = ({ selectedDates, slotDatefortest, categoryName, showModal, han
                 setFormData(initialFormData); // Reset formData to initial state
                 setImagePreview("");
                 setShowTable(true);
-    
+                SetIsSubmit(true)
             } catch (error) {
                 if (error.response && error.response.data && error.response.data.message) {
                     toast.error(error.response.data.message); // Show error message in toast
@@ -379,13 +381,14 @@ const SlotComp = ({ selectedDates, slotDatefortest, categoryName, showModal, han
                 console.log(error);
             } finally {
                 setLoading(false);
+                SetIsSubmit(false)
             }
         }
     };
-    
+
     const handleSubmit2 = async (e) => {
         e.preventDefault();
-        const requiredFields = ["category", "time", "deadlineTime", "title", "capacity"];
+        const requiredFields = ["category", "time", "deadlineTime", "capacity"];
         for (const field of requiredFields) {
             if (!formData[field]) {
                 toast.error(`${field} is required`); // Show error for each missing required field
@@ -598,6 +601,7 @@ const SlotComp = ({ selectedDates, slotDatefortest, categoryName, showModal, han
 
     // Format the date to "DD Month YYYY"
     const formattedDate = date.toLocaleDateString("en-GB", {
+        weekday: "long",
         day: "numeric",
         month: "long",
         year: "numeric",
@@ -896,7 +900,7 @@ const SlotComp = ({ selectedDates, slotDatefortest, categoryName, showModal, han
                                 />
                             </Col>
                             <Col xs={12} className="d-flex justify-content-end mt-3">
-                                <Button variant="primary" type="submit" className='mx-3'>
+                                <Button variant="primary" disabled={isSubmit} type="submit" className='mx-3'>
                                     Submit
                                 </Button>
                                 <Button variant="secondary" onClick={() => { setShow1(false); setFormData(initialFormData); setEditMode(false) }}>
