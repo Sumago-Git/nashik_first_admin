@@ -34,7 +34,7 @@ const Bookcalender = ({ tabKey }) => {
 
     useEffect(() => {
         if (!selectedDate || !selectedTime || !category || !slotDatefortest) {
-            console.log("State values are missing:", { selectedDate, selectedTime, category,slotDatefortest });
+            console.log("State values are missing:", { selectedDate, selectedTime, category, slotDatefortest });
         } else {
             console.log("Selected Date:", selectedDate);
             console.log("Selected Time:", selectedTime);
@@ -146,12 +146,12 @@ const Bookcalender = ({ tabKey }) => {
 
     const handlePrintAll = async () => {
         const attendedRows = filteredData.filter((row) => row.training_status === "Attended");
-    
+
         if (attendedRows.length === 0) {
             alert("No rows with 'Attended' status found.");
             return;
         }
-    
+
         const loadImage = (src) => {
             return new Promise((resolve, reject) => {
                 const img = new Image();
@@ -160,10 +160,10 @@ const Bookcalender = ({ tabKey }) => {
                 img.onerror = (err) => reject(err);
             });
         };
-    
+
         try {
             let combinedDoc;
-    
+
             for (const [index, item] of attendedRows.entries()) {
                 let image;
                 if (item.category === "RTO – Learner Driving License Holder Training") {
@@ -175,18 +175,18 @@ const Bookcalender = ({ tabKey }) => {
                 } else if (item.category === "College/Organization Training – Group") {
                     image = (await import('../../assets/Holiday/suspended.jpg')).default;
                 }
-    
+
                 const img = await loadImage(image);
-    
+
                 const imgWidthPx = img.width;
                 const imgHeightPx = img.height;
-    
+
                 const dpi = 96;
                 const imgWidthMm = (imgWidthPx / dpi) * 25.4;
                 const imgHeightMm = (imgHeightPx / dpi) * 25.4;
-    
+
                 const orientation = imgWidthMm > imgHeightMm ? 'landscape' : 'portrait';
-    
+
                 // Initialize the PDF document with correct dimensions and orientation for the first certificate
                 if (index === 0) {
                     combinedDoc = new jsPDF({
@@ -198,44 +198,44 @@ const Bookcalender = ({ tabKey }) => {
                     // Add a new page for subsequent certificates
                     combinedDoc.addPage([imgWidthMm, imgHeightMm], orientation);
                 }
-    
+
                 // Skip adding the image but retain its dimensions for layout
-    
+
                 // Add user details
                 const nameText = `${item.fname} ${item.lname}`;
                 const xPositionName = (imgWidthMm - combinedDoc.getTextWidth(nameText)) / 2.2;
                 const yPositionName = imgHeightMm * 0.52;
-    
+
                 combinedDoc.addFileToVFS("MyCustomFont.ttf", base64String); // Add the font
                 combinedDoc.addFont("MyCustomFont.ttf", "MyCustomFont", "normal"); // Register the font
                 combinedDoc.setFont("MyCustomFont");
                 combinedDoc.setFontSize(95);
                 combinedDoc.setTextColor("#f48633");
                 combinedDoc.text(nameText, xPositionName, yPositionName);
-    
+
                 // Add certificate number (simple font)
                 const certNoText = `${item.certificate_no}`;
                 const xPositionCertNo = (imgWidthMm - combinedDoc.getTextWidth(certNoText)) / 1.09;
                 const yPositionCertNo = imgHeightMm * 0.072;
-    
+
                 combinedDoc.setFont("helvetica", "normal"); // Use simple font
                 combinedDoc.setFontSize(40);
                 combinedDoc.setTextColor("#333333");
                 combinedDoc.text(certNoText, xPositionCertNo, yPositionCertNo);
-    
+
                 // Add date (simple font)
                 const dateText = `${new Date().toLocaleDateString()}`;
                 const xPositionDate = (imgWidthMm - combinedDoc.getTextWidth(dateText)) / 1.03;
                 const yPositionDate = imgHeightMm * 0.135;
-    
+
                 combinedDoc.setFont("helvetica", "normal"); // Use simple font
                 combinedDoc.text(dateText, xPositionDate, yPositionDate);
             }
-    
+
             // Open the combined PDF in a new tab
             const pdfBlob = combinedDoc.output("blob");
             const pdfUrl = URL.createObjectURL(pdfBlob);
-    
+
             const newWindow = window.open(pdfUrl);
             if (!newWindow) {
                 alert("Please allow pop-ups for this site to view the PDF.");
@@ -244,8 +244,8 @@ const Bookcalender = ({ tabKey }) => {
             console.error("Error generating combined PDF:", err);
         }
     };
-    
-    
+
+
 
 
 
@@ -357,104 +357,302 @@ const Bookcalender = ({ tabKey }) => {
     }
 
 
-    const handlePrintCertificate = async () => {
-        // Dynamically select the image based on the booking category
-        let image;
-        if (selectedBooking.category === "RTO – Learner Driving License Holder Training") {
-            image = await import('../../assets/Holiday/learner.JPG'); // Adjust the path to your image
-        } else if (selectedBooking.category === "RTO – Training for School Bus Driver") {
-            image = await import('../../assets/Holiday/CERTIFICATE - BUS - Final.jpg'); // Adjust the path to your image
-        } else if (selectedBooking.category === "RTO – Suspended Driving License Holders Training") {
-            image = await import('../../assets/Holiday/suspended.jpg'); // Adjust the path to your image
-        } else if (selectedBooking.category === "College/Organization Training – Group") {
-            image = await import('../../assets/Holiday/suspended.jpg'); // Adjust the path to your image
-        }
-        const imgData = image.default; // Get the image data
+//     const handlePrintCertificate = async () => {
+//         // Dynamically select the image based on the booking category
+//         let image;
+//         if (selectedBooking.category === "RTO – Learner Driving License Holder Training") {
+//             image = await import('../../assets/Holiday/learner.JPG'); // Adjust the path to your image
+//         } else if (selectedBooking.category === "RTO – Training for School Bus Driver") {
+//             image = await import('../../assets/Holiday/CERTIFICATE - BUS - Final.jpg'); // Adjust the path to your image
+//         } else if (selectedBooking.category === "RTO – Suspended Driving License Holders Training") {
+//             image = await import('../../assets/Holiday/suspended.jpg'); // Adjust the path to your image
+//         } else if (selectedBooking.category === "College/Organization Training – Group") {
+//             image = await import('../../assets/Holiday/suspended.jpg'); // Adjust the path to your image
+//         }
+//         const imgData = image.default; // Get the image data
 
-        // Load the image to get its original dimensions
-        const img = new Image();
-        img.src = imgData;
-        img.onload = () => {
-            const imgWidthPx = img.width;
-            const imgHeightPx = img.height;
+//         // Load the image to get its original dimensions
+//         const img = new Image();
+//         img.src = imgData;
+//         img.onload = () => {
+//             const imgWidthPx = img.width;
+//             const imgHeightPx = img.height;
 
-            // Assume 96 DPI for web images and convert pixels to mm
-            const dpi = 96;
-            const imgWidthMm = (imgWidthPx / dpi) * 25.4;
-            const imgHeightMm = (imgHeightPx / dpi) * 25.4;
+//             // Assume 96 DPI for web images and convert pixels to mm
+//             const dpi = 96;
+//             const imgWidthMm = (imgWidthPx / dpi) * 25.4;
+//             const imgHeightMm = (imgHeightPx / dpi) * 25.4;
 
-            // Create a custom-sized PDF to match the image aspect ratio
-            const doc = new jsPDF({
-                orientation: imgWidthMm > imgHeightMm ? 'landscape' : 'portrait',
-                unit: 'mm',
-                format: [imgWidthMm, imgHeightMm] // Custom page size matching the image dimensions
-            });
+//             // Create a custom-sized PDF to match the image aspect ratio
+//             const doc = new jsPDF({
+//                 orientation: imgWidthMm > imgHeightMm ? 'landscape' : 'portrait',
+//                 unit: 'mm',
+//                 format: [imgWidthMm, imgHeightMm] // Custom page size matching the image dimensions
+//             });
 
-            // Add the image to the PDF
-            doc.addImage(img, 'PNG', 0, 0, imgWidthMm, imgHeightMm);
+//             // Add the image to the PDF
+//             doc.addImage(img, 'PNG', 0, 0, imgWidthMm, imgHeightMm);
 
-            // Set font, color, and size for the user's name
+//             // Set font, color, and size for the user's name
 
-            doc.addFileToVFS("MyCustomFont.ttf", base64String);  // Add the font
-            doc.addFont("MyCustomFont.ttf", "MyCustomFont", "normal"); // Register the font
+//             doc.addFileToVFS("MyCustomFont.ttf", base64String);  // Add the font
+//             doc.addFont("MyCustomFont.ttf", "MyCustomFont", "normal"); // Register the font
 
-            doc.setFont("MyCustomFont");
-            doc.setFontSize(95);
-            doc.setTextColor("#f48633");
+//             doc.setFont("MyCustomFont");
+//             doc.setFontSize(95);
+//             doc.setTextColor("#f48633");
 
-            // Prepare user's name
-            const nameText = `${selectedBooking.fname} ${selectedBooking.lname}`;
-            const nameWidth = doc.getTextWidth(nameText);
+//             // Prepare user's name
+//             const nameText = `${selectedBooking.fname} ${selectedBooking.lname}`;
+//             const nameWidth = doc.getTextWidth(nameText);
 
-            // Center the name horizontally
-            const xPositionName = (imgWidthMm - nameWidth) / 2;
-            const yPositionName = imgHeightMm * 0.52; // Adjust as needed for vertical positioning
+//             // Center the name horizontally
+//             const xPositionName = (imgWidthMm - nameWidth) / 2;
+//             const yPositionName = imgHeightMm * 0.52; // Adjust as needed for vertical positioning
 
-            // Draw the user's name
-            doc.text(nameText, xPositionName, yPositionName);
+//             // Draw the user's name
+//             doc.text(nameText, xPositionName, yPositionName);
 
-            // Set font and size for Sr and slotdate
-            doc.setFont("Arial");
+//             // Set font and size for Sr and slotdate
+//             doc.setFont("Arial");
 
-            // Set color and position for Sr (ID)
-            doc.setTextColor("#4e4e95");
-            doc.setFontSize(35);
-            const srText = `${selectedBooking.certificate_no}`;
-            const xPositionSr = imgWidthMm - 80; // Adjust x-position for Sr
-            const yPositionSr = 45; // Adjust y-position for Sr
-            doc.text(srText, xPositionSr, yPositionSr);
+//             // Set color and position for Sr (ID)
+//             doc.setTextColor("#4e4e95");
+//             doc.setFontSize(35);
+//             const srText = `${selectedBooking.certificate_no}`;
+//             const xPositionSr = imgWidthMm - 80; // Adjust x-position for Sr
+//             const yPositionSr = 45; // Adjust y-position for Sr
+//             doc.text(srText, xPositionSr, yPositionSr);
 
-            // Set color and position for slotdate
-            doc.setTextColor("#4e4e95");
-            doc.setFontSize(35);
-            const slotDateText = `: ${selectedBooking.slotdate}`;
-            const xPositionSlotDate = imgWidthMm - 93; // Adjust x-position for slotdate
-            const yPositionSlotDate = 85; // Adjust y-position for slotdate
-            doc.text(slotDateText, xPositionSlotDate, yPositionSlotDate);
+//             // Set color and position for slotdate
+//             doc.setTextColor("#4e4e95");
+//             doc.setFontSize(35);
+//             const slotDateText = `: ${selectedBooking.slotdate}`;
+//             const xPositionSlotDate = imgWidthMm - 93; // Adjust x-position for slotdate
+//             const yPositionSlotDate = 85; // Adjust y-position for slotdate
+//             doc.text(slotDateText, xPositionSlotDate, yPositionSlotDate);
 
-            doc.setTextColor("#4e4e95");
-            doc.setFontSize(35);
-            const formatTimeTo12Hour = (time) => {
-                const [hour, minute] = time.split(':');
-                const hours = parseInt(hour, 10);
-                const period = hours >= 12 ? 'PM' : 'AM';
-                const formattedHour = hours % 12 || 12; // Convert 0 to 12 for 12-hour format
-                return `${formattedHour}:${minute} ${period}`;
-            };
-            const slotTimeText = ` ${formatTimeTo12Hour(selectedBooking.sessionSlotTime)}`;
-            const xPositionSlotTime = imgWidthMm - 93; // Adjust x-position for slotdate
-            const yPositionSlotTime = 100; // Adjust y-position for slotdate
-            doc.text(slotTimeText, xPositionSlotTime, yPositionSlotTime);
+//             doc.setTextColor("#4e4e95");
+//             doc.setFontSize(35);
+//             const formatTimeTo12Hour = (time) => {
+//                 const [hour, minute] = time.split(':');
+//                 const hours = parseInt(hour, 10);
+//                 const period = hours >= 12 ? 'PM' : 'AM';
+//                 const formattedHour = hours % 12 || 12; // Convert 0 to 12 for 12-hour format
+//                 return `${formattedHour}:${minute} ${period}`;
+//             };
+//             const slotTimeText = ` ${formatTimeTo12Hour(selectedBooking.sessionSlotTime)}`;
+//             const xPositionSlotTime = imgWidthMm - 93; // Adjust x-position for slotdate
+//             const yPositionSlotTime = 100; // Adjust y-position for slotdate
+//             doc.text(slotTimeText, xPositionSlotTime, yPositionSlotTime);
 
-            const fileName = `${selectedBooking.certificate_no}_${selectedBooking.fname}_${selectedBooking.lname}.pdf`;
-            doc.save(fileName);
-            // Open the PDF in a new window for printing
-            const pdfWindow = window.open("");
-            pdfWindow.document.write(
-                `<iframe width='100%' height='100%' src='${doc.output("bloburl")}'></iframe>`
-            );
+//             // const fileName = `${selectedBooking.certificate_no}_${selectedBooking.fname}_${selectedBooking.lname}.pdf`;
+//             // doc.save(fileName);
+
+//             const customFileName = `${selectedBooking.certificate_no}_${selectedBooking.fname}_${selectedBooking.lname}.pdf`;
+
+//             const pdfBlob = doc.output("blob"); // Generate a Blob object
+//             const blobUrl = URL.createObjectURL(pdfBlob);
+
+//             const pdfWindows = window.open("");
+//             pdfWindows.document.write(`
+//     <iframe width='100%' height='100%' src='${blobUrl}'></iframe>
+// `);
+
+//             // Open the PDF in a new window for printing
+//             const pdfWindow = window.open("");
+//             pdfWindow.document.write(
+//                 `<iframe width='100%' height='100%' src='${doc.output("bloburl")}'></iframe>`
+//             );
+//             // Trigger download with the dynamic file name
+//             const link = document.createElement("a");
+//             link.href = blobUrl;
+//             link.download = customFileName; // Set the dynamic file name
+//             link.click();
+//         };
+//     };
+
+const handlePrintCertificate = async () => {
+    let image;
+    if (selectedBooking.category === "RTO – Learner Driving License Holder Training") {
+        image = await import('../../assets/Holiday/learner.JPG');
+    } else if (selectedBooking.category === "RTO – Training for School Bus Driver") {
+        image = await import('../../assets/Holiday/CERTIFICATE - BUS - Final.jpg');
+    } else if (selectedBooking.category === "RTO – Suspended Driving License Holders Training") {
+        image = await import('../../assets/Holiday/suspended.jpg');
+    } else if (selectedBooking.category === "College/Organization Training – Group") {
+        image = await import('../../assets/Holiday/suspended.jpg');
+    }
+    const imgData = image.default;
+
+    const img = new Image();
+    img.src = imgData;
+    img.onload = () => {
+        const imgWidthPx = img.width;
+        const imgHeightPx = img.height;
+
+        const dpi = 96;
+        const imgWidthMm = (imgWidthPx / dpi) * 25.4;
+        const imgHeightMm = (imgHeightPx / dpi) * 25.4;
+
+        const doc = new jsPDF({
+            orientation: imgWidthMm > imgHeightMm ? 'landscape' : 'portrait',
+            unit: 'mm',
+            format: [imgWidthMm, imgHeightMm]
+        });
+
+        doc.addImage(img, 'PNG', 0, 0, imgWidthMm, imgHeightMm);
+
+        doc.addFileToVFS("MyCustomFont.ttf", base64String);
+        doc.addFont("MyCustomFont.ttf", "MyCustomFont", "normal");
+
+        doc.setFont("MyCustomFont");
+        doc.setFontSize(95);
+        doc.setTextColor("#f48633");
+
+        const nameText = `${selectedBooking.fname} ${selectedBooking.lname}`;
+        const nameWidth = doc.getTextWidth(nameText);
+        const xPositionName = (imgWidthMm - nameWidth) / 2;
+        const yPositionName = imgHeightMm * 0.52;
+
+        doc.text(nameText, xPositionName, yPositionName);
+
+        doc.setFont("Arial");
+        doc.setTextColor("#4e4e95");
+        doc.setFontSize(35);
+
+        const srText = `${selectedBooking.certificate_no}`;
+        const xPositionSr = imgWidthMm - 70;
+        const yPositionSr = 40;
+        doc.text(srText, xPositionSr, yPositionSr);
+
+        const slotDateText = `${selectedBooking.slotdate}`;
+        const xPositionSlotDate = imgWidthMm - 70;
+        const yPositionSlotDate = 77;
+        doc.text(slotDateText, xPositionSlotDate, yPositionSlotDate);
+
+        const formatTimeTo12Hour = (time) => {
+            const [hour, minute] = time.split(':');
+            const hours = parseInt(hour, 10);
+            const period = hours >= 12 ? 'PM' : 'AM';
+            const formattedHour = hours % 12 || 12;
+            return `${formattedHour}:${minute} ${period}`;
         };
+
+        const slotTimeText = `${formatTimeTo12Hour(selectedBooking.sessionSlotTime)}`;
+        const xPositionSlotTime = imgWidthMm - 70;
+        const yPositionSlotTime = 90;
+        doc.text(slotTimeText, xPositionSlotTime, yPositionSlotTime);
+
+        // Generate the PDF as a data URI
+        const pdfDataUri = doc.output('datauri');
+
+        // Open the PDF in a new window/tab for preview
+        const previewWindow = window.open('', '_blank');
+        if (previewWindow) {
+            previewWindow.document.write(`
+                <html>
+                    <head>
+                        <title>Print Preview</title>
+                    </head>
+                    <body style="text-align: center;">
+                        <embed src="${pdfDataUri}" type="application/pdf" width="100%" height="600px" />
+                    </body>
+                </html>
+            `);
+            previewWindow.document.close();
+        }
     };
+};
+
+const handlePdfCertificate = async () => {
+    let image;
+    if (selectedBooking.category === "RTO – Learner Driving License Holder Training") {
+        image = await import('../../assets/Holiday/learner.JPG');
+    } else if (selectedBooking.category === "RTO – Training for School Bus Driver") {
+        image = await import('../../assets/Holiday/CERTIFICATE - BUS - Final.jpg');
+    } else if (selectedBooking.category === "RTO – Suspended Driving License Holders Training") {
+        image = await import('../../assets/Holiday/suspended.jpg');
+    } else if (selectedBooking.category === "College/Organization Training – Group") {
+        image = await import('../../assets/Holiday/suspended.jpg');
+    }
+    const imgData = image.default;
+
+    const img = new Image();
+    img.src = imgData;
+    img.onload = () => {
+        const imgWidthPx = img.width;
+        const imgHeightPx = img.height;
+
+        const dpi = 96;
+        const imgWidthMm = (imgWidthPx / dpi) * 25.4;
+        const imgHeightMm = (imgHeightPx / dpi) * 25.4;
+
+        const doc = new jsPDF({
+            orientation: imgWidthMm > imgHeightMm ? 'landscape' : 'portrait',
+            unit: 'mm',
+            format: [imgWidthMm, imgHeightMm]
+        });
+
+        doc.addImage(img, 'PNG', 0, 0, imgWidthMm, imgHeightMm);
+
+        doc.addFileToVFS("MyCustomFont.ttf", base64String);
+        doc.addFont("MyCustomFont.ttf", "MyCustomFont", "normal");
+
+        doc.setFont("MyCustomFont");
+        doc.setFontSize(95);
+        doc.setTextColor("#f48633");
+
+        const nameText = `${selectedBooking.fname} ${selectedBooking.lname}`;
+        const nameWidth = doc.getTextWidth(nameText);
+        const xPositionName = (imgWidthMm - nameWidth) / 2;
+        const yPositionName = imgHeightMm * 0.52;
+
+        doc.text(nameText, xPositionName, yPositionName);
+
+        doc.setFont("Arial");
+        doc.setTextColor("#4e4e95");
+        doc.setFontSize(35);
+
+        const srText = `${selectedBooking.certificate_no}`;
+        const xPositionSr = imgWidthMm - 80;
+        const yPositionSr = 45;
+        doc.text(srText, xPositionSr, yPositionSr);
+
+        const slotDateText = `: ${selectedBooking.slotdate}`;
+        const xPositionSlotDate = imgWidthMm - 93;
+        const yPositionSlotDate = 85;
+        doc.text(slotDateText, xPositionSlotDate, yPositionSlotDate);
+
+        const formatTimeTo12Hour = (time) => {
+            const [hour, minute] = time.split(':');
+            const hours = parseInt(hour, 10);
+            const period = hours >= 12 ? 'PM' : 'AM';
+            const formattedHour = hours % 12 || 12;
+            return `${formattedHour}:${minute} ${period}`;
+        };
+
+        const slotTimeText = ` ${formatTimeTo12Hour(selectedBooking.sessionSlotTime)}`;
+        const xPositionSlotTime = imgWidthMm - 93;
+        const yPositionSlotTime = 100;
+        doc.text(slotTimeText, xPositionSlotTime, yPositionSlotTime);
+
+        const customFileName = `${selectedBooking.certificate_no}_${selectedBooking.fname}_${selectedBooking.lname}.pdf`;
+
+        // Save the PDF and trigger the download
+        const pdfBlob = doc.output("blob");
+        const blobUrl = URL.createObjectURL(pdfBlob);
+
+        // Trigger download with the dynamic file name
+        const link = document.createElement("a");
+        link.href = blobUrl;
+        link.download = customFileName;
+        document.body.appendChild(link); // Append the link to the document
+        link.click(); // Simulate a click to trigger download
+        document.body.removeChild(link); // Remove the link after download
+        URL.revokeObjectURL(blobUrl); // Free up memory
+    };
+};
 
     const handleEmailCertificate = async () => {
         // Dynamically select the image based on the booking category
@@ -722,7 +920,7 @@ const Bookcalender = ({ tabKey }) => {
             selector: row => row.certificate_no,
             sortable: true,
         },
-       
+
         {
             name: 'Training Status',
             cell: row => (
@@ -1268,9 +1466,15 @@ const Bookcalender = ({ tabKey }) => {
                                                     <>
                                                         <button
                                                             className="btn btn-success mx-2 mt-2 w-25"
+                                                            onClick={handlePdfCertificate}
+                                                        >
+                                                            Pdf
+                                                        </button>
+                                                        <button
+                                                            className="btn btn-primary mx-2 mt-2 w-25"
                                                             onClick={handlePrintCertificate}
                                                         >
-                                                            Print & Pdf
+                                                            Print
                                                         </button>
                                                         <Button variant="danger" className="mx-2 mt-2 w-25" onClick={handleEmailCertificate}>
                                                             Email
