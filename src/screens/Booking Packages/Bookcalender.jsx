@@ -472,6 +472,99 @@ const Bookcalender = ({ tabKey }) => {
 //         };
 //     };
 
+// const handlePrintCertificate = async () => {
+//     let image;
+//     if (selectedBooking.category === "RTO – Learner Driving License Holder Training") {
+//         image = await import('../../assets/Holiday/learner.JPG');
+//     } else if (selectedBooking.category === "RTO – Training for School Bus Driver") {
+//         image = await import('../../assets/Holiday/CERTIFICATE - BUS - Final.jpg');
+//     } else if (selectedBooking.category === "RTO – Suspended Driving License Holders Training") {
+//         image = await import('../../assets/Holiday/suspended.jpg');
+//     } else if (selectedBooking.category === "College/Organization Training – Group") {
+//         image = await import('../../assets/Holiday/suspended.jpg');
+//     }
+//     const imgData = image.default;
+
+//     const img = new Image();
+//     img.src = imgData;
+//     img.onload = () => {
+//         const imgWidthPx = img.width;
+//         const imgHeightPx = img.height;
+
+//         const dpi = 96;
+//         const imgWidthMm = (imgWidthPx / dpi) * 25.4;
+//         const imgHeightMm = (imgHeightPx / dpi) * 25.4;
+
+//         const doc = new jsPDF({
+//             orientation: imgWidthMm > imgHeightMm ? 'landscape' : 'portrait',
+//             unit: 'mm',
+//             format: [imgWidthMm, imgHeightMm]
+//         });
+
+//         doc.addImage(img, 'PNG', 0, 0, imgWidthMm, imgHeightMm);
+
+//         doc.addFileToVFS("MyCustomFont.ttf", base64String);
+//         doc.addFont("MyCustomFont.ttf", "MyCustomFont", "normal");
+
+//         doc.setFont("MyCustomFont");
+//         doc.setFontSize(95);
+//         doc.setTextColor("#f48633");
+
+//         const nameText = `${selectedBooking.fname} ${selectedBooking.lname}`;
+//         const nameWidth = doc.getTextWidth(nameText);
+//         const xPositionName = (imgWidthMm - nameWidth) / 2;
+//         const yPositionName = imgHeightMm * 0.52;
+
+//         doc.text(nameText, xPositionName, yPositionName);
+
+//         doc.setFont("Arial");
+//         doc.setTextColor("#4e4e95");
+//         doc.setFontSize(35);
+
+//         const srText = `${selectedBooking.certificate_no}`;
+//         const xPositionSr = imgWidthMm - 70;
+//         const yPositionSr = 40;
+//         doc.text(srText, xPositionSr, yPositionSr);
+
+//         const slotDateText = `${selectedBooking.slotdate}`;
+//         const xPositionSlotDate = imgWidthMm - 70;
+//         const yPositionSlotDate = 77;
+//         doc.text(slotDateText, xPositionSlotDate, yPositionSlotDate);
+
+//         const formatTimeTo12Hour = (time) => {
+//             const [hour, minute] = time.split(':');
+//             const hours = parseInt(hour, 10);
+//             const period = hours >= 12 ? 'PM' : 'AM';
+//             const formattedHour = hours % 12 || 12;
+//             return `${formattedHour}:${minute} ${period}`;
+//         };
+
+//         const slotTimeText = `${formatTimeTo12Hour(selectedBooking.sessionSlotTime)}`;
+//         const xPositionSlotTime = imgWidthMm - 70;
+//         const yPositionSlotTime = 90;
+//         doc.text(slotTimeText, xPositionSlotTime, yPositionSlotTime);
+
+//         // Generate the PDF as a data URI
+//         const pdfDataUri = doc.output('datauri');
+
+//         // Open the PDF in a new window/tab for preview
+//         const previewWindow = window.open('', '_blank');
+//         if (previewWindow) {
+//             previewWindow.document.write(`
+//                 <html>
+//                     <head>
+//                         <title>Print Preview</title>
+//                     </head>
+//                     <body style="text-align: center;">
+//                         <embed src="${pdfDataUri}" type="application/pdf" width="100%" height="600px" />
+//                     </body>
+//                 </html>
+//             `);
+//             previewWindow.document.close();
+//         }
+//     };
+// };
+
 const handlePrintCertificate = async () => {
     let image;
     if (selectedBooking.category === "RTO – Learner Driving License Holder Training") {
@@ -501,7 +594,7 @@ const handlePrintCertificate = async () => {
             format: [imgWidthMm, imgHeightMm]
         });
 
-        doc.addImage(img, 'PNG', 0, 0, imgWidthMm, imgHeightMm);
+        // Add text to the PDF without including the image as a background
 
         doc.addFileToVFS("MyCustomFont.ttf", base64String);
         doc.addFont("MyCustomFont.ttf", "MyCustomFont", "normal");
