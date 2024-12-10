@@ -303,7 +303,7 @@ const Slotpage = () => {
 
 
                                                     >
-                                                        book a sesion
+                                                        Book Session
                                                     </Button></> : <>
                                                 </>}
                                             </div>

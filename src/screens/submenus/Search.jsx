@@ -74,21 +74,15 @@ const Search = () => {
         }
 
         let updatedBooking = { ...selectedBooking, slotdate: dateforslot};
-        console.log("selectedBooking==========>", selectedBooking);
-
         if (updatedBooking.submission_date) {
             const date = new Date(updatedBooking.submission_date); // `submission_date` from input (yyyy-MM-dd)
             updatedBooking.submission_date = date.toISOString();  // Convert to ISO format (yyyy-MM-ddTHH:mm:ss.sssZ)
         }
-        alert("inside update")
-        console.log("updatedBooking", updatedBooking)
         instance.put(`bookingform/bookingform/${updatedBooking.id}`, updatedBooking).then((resp) => {
             setShow1(false)
             instance.post("bookingform/get-bookingentries-by-category", { category: selectedCategory }).then((result) => {
                 setUser(result.data.responseData)
-                alert("true")
-                console.log("result", result.data.responseData);
-
+                alert("Data Updated Successfully")
             }).catch((err) => {
                 alert("flase")
                 console.log("err", err);

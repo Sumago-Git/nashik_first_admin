@@ -55,7 +55,7 @@ const SlotComp2 = ({ selectedDates, slotDatefortest, categoryName, showModal, ha
         time: '',
         deadlineTime: '',
         title: '',
-        capacity: '',
+        capacity: '50',
         trainer: '',
         slotdate: selectedDates
     };
@@ -122,10 +122,10 @@ const SlotComp2 = ({ selectedDates, slotDatefortest, categoryName, showModal, ha
         let isValid = true;
 
         // Check if the title is empty
-        if (!formData.title.trim()) {
-            errors.title = 'Title is required';
-            isValid = false;
-        }
+        // if (!formData.title.trim()) {
+        //     errors.title = 'Title is required';
+        //     isValid = false;
+        // }
 
         // Convert capacity to a string before calling trim() and check if it's empty
         if (!String(formData.capacity).trim()) {
@@ -325,7 +325,7 @@ const SlotComp2 = ({ selectedDates, slotDatefortest, categoryName, showModal, ha
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const requiredFields = ["category", "time", "deadlineTime", "title", "capacity"];
+        const requiredFields = ["category", "time", "deadlineTime", "capacity"];
         for (const field of requiredFields) {
             if (!formData[field]) {
                 toast.error(`${field} is required`); // Show error for each missing required field
@@ -395,7 +395,7 @@ const SlotComp2 = ({ selectedDates, slotDatefortest, categoryName, showModal, ha
     };
     const handleSubmit2 = async (e) => {
         e.preventDefault();
-        const requiredFields = ["category", "time", "deadlineTime", "title", "capacity"];
+        const requiredFields = ["category", "time", "deadlineTime", "capacity"];
         for (const field of requiredFields) {
             if (!formData[field]) {
                 toast.error(`${field} is required`); // Show error for each missing required field

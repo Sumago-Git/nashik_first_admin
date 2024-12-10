@@ -184,9 +184,7 @@ const Sessionslotdetails2 = () => {
 
           <div className='text-center my-2'>
             <Button type="submit">
-
-              Edit
-
+              Update
             </Button>                </div>
         </Row>
       </form>
