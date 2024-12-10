@@ -24,7 +24,7 @@ const WeekTable = ({ weeks }) => (
   />
 );
 
-const Bycategories = () => {
+const Bycategoriesandinstitudename = () => {
   const [data, setData] = useState([]); // Data state
   const [yearFilter, setYearFilter] = useState([]); // Year filter state
   const [monthFilter, setMonthFilter] = useState([]); // Month filter state
@@ -310,4 +310,7 @@ const Bycategories = () => {
   );
 }
 
-export default Bycategories;
+
+
+
+export default Bycategoriesandinstitudename

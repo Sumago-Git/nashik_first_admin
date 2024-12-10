@@ -57,6 +57,7 @@ import Sessionslotdetails from "./components/Groupbooking/Sessionslotdetails";
 import Bookingpage2 from "./components/Groupbooking/Bookingpage2";
 import Sessionslotdetails2 from "./components/Groupbooking/Sessionslotdetails2";
 import Bycategories from "./components/Reports/Bycategories";
+import Bycategoriesandinstitudename from "./components/Reports/Bycategoriesandinstitudename";
 
 function App() {
   useEffect(() => {
@@ -250,6 +251,10 @@ function App() {
           <Route
             path="/Bycategories"
             element={<ProtectedRoutes Component={Bycategories} />}
+          />
+          <Route
+            path="/Bycategoriesandinstitudename"
+            element={<ProtectedRoutes Component={Bycategoriesandinstitudename} />}
           />
           <Route
             path="/logout"
