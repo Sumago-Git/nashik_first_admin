@@ -390,6 +390,11 @@ const SidebarMenu = [
         url: "/Bycategories",
         icon: <AiOutlineAppstoreAdd style={{ color: "red" }} size={24} />,
       },
+      {
+        subMenus: "ByTrainer",
+        url: "/bytrainer",
+        icon: <AiOutlineAppstoreAdd style={{ color: "red" }} size={24} />,
+      },
     ],
   },
   {

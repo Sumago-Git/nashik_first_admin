@@ -393,6 +393,7 @@ const CalenderComp2 = () => {
                 </Container>
             </Container>
             <SlotComp2 showModal={showModal}
+                fetchSlotData={getdata_here}
                 handleCloseModal={handleCloseModal}
                 handleShowModal={handleShowModal}
                 selectedDates={selectedDates}

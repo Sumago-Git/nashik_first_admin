@@ -350,7 +350,7 @@ const Bookingpage2 = () => {
 
 
               <div className='text-center mt-4'>
-                <button type="submit " className='returnbutton' disabled={isSubmitting} onClick={() => setShowModal(true)}>
+                <Button type="submit "  className='' disabled={isSubmitting} onClick={() => setShowModal(true)}>
                   {isSubmitting ? (
                     <span>
                       <span className="spinner-border returnbutton spinner-border-sm me-2"></span>
@@ -359,7 +359,7 @@ const Bookingpage2 = () => {
                   ) : (
                     "Submit"
                   )}
-                </button>
+                </Button>
               </div>
             </Row>
           </form>

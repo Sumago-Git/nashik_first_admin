@@ -100,7 +100,7 @@ const Holiday = () => {
                                 onClose();
                             } catch (error) {
                                 console.error("Error adding data:", error);
-                                toast.error("Cannot add holiday. A session slot is already scheduled on t");
+                                toast.error("Cannot add holiday. A session slot is already scheduled on this date");
                                 onClose();
                             } finally {
                                 setLoading(false);

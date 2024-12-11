@@ -7,13 +7,12 @@ import { confirmAlert } from "react-confirm-alert";
 import { toast } from "react-toastify";
 import NewResuableForm from "../../components/form/NewResuableForm";
 
-const SlotComp2 = ({ selectedDates, slotDatefortest, categoryName, showModal, handleCloseModal, handleShowModal, realdata, isPast }) => {
+const SlotComp2 = ({ selectedDates, slotDatefortest, categoryName, showModal, handleCloseModal, handleShowModal, realdata, isPast, fetchSlotData }) => {
     const [currentPage, setCurrentPage] = useState(1);
     const [title, setTitle] = useState("");
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [eyeVisibilityById, setEyeVisibilityById] = useState({});
     const [data, setData] = useState(realdata);
-    console.log("cbvdf", isPast)
     useEffect(() => {
         setData(realdata);
     }, [realdata]);
@@ -29,7 +28,9 @@ const SlotComp2 = ({ selectedDates, slotDatefortest, categoryName, showModal, ha
     const [team, setTeam] = useState([]);
     const [errors, setErrors] = useState({});
     const [loading, setLoading] = useState(false);
-    const handleClose = () => setShow(false);
+    const handleClose = () => {
+        setShow(false)
+    };
     const [editingId, setEditingId] = useState(null);
     const [selectedBooking, setSelectedBooking] = useState(null); // New state for selected booking
     const [isEditing, setIsEditing] = useState(false); // State for edit mode
@@ -366,6 +367,7 @@ const SlotComp2 = ({ selectedDates, slotDatefortest, categoryName, showModal, ha
                     );
                     setTeam(updatedTeam);
                     fetchTeam();
+                    fetchSlotData()
                 } else {
                     await instance.post("Sessionslot/create-Sessionslot", data, {
                         headers: {
@@ -678,8 +680,8 @@ const SlotComp2 = ({ selectedDates, slotDatefortest, categoryName, showModal, ha
                                         name="category"
                                         value={formData.category} // Use "category" as it matches initialFormData
                                         onChange={(e) => handleChange("category", e.target.value)} // Call handleChange with "category"
-                                    >                                      
-                                      <option >Select category</option>
+                                    >
+                                        <option >Select category</option>
 
                                         {/* <option value="RTO – Learner Driving License Holder Training">RTO – Learner Driving License Holder Training</option>
                                         <option value="RTO – Suspended Driving License Holders Training">RTO – Suspended Driving License Holders Training</option>

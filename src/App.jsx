@@ -58,6 +58,7 @@ import Bookingpage2 from "./components/Groupbooking/Bookingpage2";
 import Sessionslotdetails2 from "./components/Groupbooking/Sessionslotdetails2";
 import Bycategories from "./components/Reports/Bycategories";
 import Bycategoriesandinstitudename from "./components/Reports/Bycategoriesandinstitudename";
+import ByTrainer from "./components/Reports/ByTrainer";
 
 function App() {
   useEffect(() => {
@@ -252,6 +253,11 @@ function App() {
             path="/Bycategories"
             element={<ProtectedRoutes Component={Bycategories} />}
           />
+          <Route
+            path="/bytrainer"
+            element={<ProtectedRoutes Component={ByTrainer} />}
+          />
+          
           <Route
             path="/Bycategoriesandinstitudename"
             element={<ProtectedRoutes Component={Bycategoriesandinstitudename} />}

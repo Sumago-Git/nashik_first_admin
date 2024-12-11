@@ -257,6 +257,12 @@ const AreaTop = ({ buttonValue, tableView }) => {
     else if (window.location.pathname == "/search") {
       setHeader("Search");
     }
+    else if (window.location.pathname == "/bytrainer") {
+      setHeader("Filter By Trainer");
+    }
+    else if (window.location.pathname == "/Bycategories") {
+      setHeader("Filter By Category");
+    }
 
   }, [window.location.pathname]);
   return (
