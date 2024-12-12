@@ -7,14 +7,13 @@ import { confirmAlert } from "react-confirm-alert";
 import { toast } from "react-toastify";
 import NewResuableForm from "../../components/form/NewResuableForm";
 
-const SlotComp = ({ selectedDates, slotDatefortest, categoryName, showModal, handleCloseModal, handleShowModal, realdata, isPast, todayname }) => {
+const SlotComp = ({ selectedDates, slotDatefortest, categoryName, showModal, handleCloseModal, handleShowModal, realdata, isPast, todayname, fetchSlot }) => {
     const [currentPage, setCurrentPage] = useState(1);
     const [title, setTitle] = useState("");
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [eyeVisibilityById, setEyeVisibilityById] = useState({});
     const [data, setData] = useState(realdata);
     const [isSubmit, SetIsSubmit] = useState(false)
-    console.log("cbvdf", isPast)
     useEffect(() => {
         setData(realdata);
     }, [realdata]);
@@ -91,9 +90,14 @@ const SlotComp = ({ selectedDates, slotDatefortest, categoryName, showModal, han
                 headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },
             });
             const filteredData = response.data.responseData?.reverse()
-            setTeam(filteredData);
-            setData(filteredData)
-            console.log('dfh', filteredData)
+            const sortedSlots = [...filteredData].sort((a, b) => {
+                const timeA = new Date(`1970-01-01T${a.time}:00`);
+                const timeB = new Date(`1970-01-01T${b.time}:00`);
+                return timeA - timeB;
+              });
+            
+            setTeam(sortedSlots);
+            setData(sortedSlots)
 
 
         } catch (error) {
@@ -374,6 +378,7 @@ const SlotComp = ({ selectedDates, slotDatefortest, categoryName, showModal, han
                 setImagePreview("");
                 setShowTable(true);
                 SetIsSubmit(true)
+                fetchSlot()
             } catch (error) {
                 if (error.response && error.response.data && error.response.data.message) {
                     toast.error(error.response.data.message); // Show error message in toast
@@ -515,11 +520,6 @@ const SlotComp = ({ selectedDates, slotDatefortest, categoryName, showModal, han
             name: <CustomHeader name="Time" />,
             cell: (row) => <span>{formatTimeTo12Hour(row.time)}</span>, // Convert time to 12-hour format
             sortable: true,
-            sortFunction: (rowA, rowB) => {
-                const timeA = new Date(`1970-01-01T${rowA.time}:00`);
-                const timeB = new Date(`1970-01-01T${rowB.time}:00`);
-                return timeA - timeB; // Ascending order
-            },
         },
         // {
         //     name: <CustomHeader name="deadlineTime" />,

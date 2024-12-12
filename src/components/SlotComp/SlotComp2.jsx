@@ -384,7 +384,7 @@ const SlotComp2 = ({ selectedDates, slotDatefortest, categoryName, showModal, ha
                 setFormData(initialFormData); // Reset formData to initial state
                 setImagePreview("");
                 setShowTable(true);
-
+                fetchSlotData()
             } catch (error) {
                 if (error.response && error.response.data && error.response.data.message) {
                     toast.error(error.response.data.message); // Show error message in toast
@@ -489,6 +489,15 @@ const SlotComp2 = ({ selectedDates, slotDatefortest, categoryName, showModal, ha
             }
         }
     };
+
+    const formatTimeTo12Hour = (time) => {
+        const [hour, minute] = time.split(':');
+        const hours = parseInt(hour, 10);
+        const period = hours >= 12 ? 'PM' : 'AM';
+        const formattedHour = hours % 12 || 12; // Convert 0 to 12 for 12-hour format
+        return `${formattedHour}:${minute} ${period}`;
+    };
+
     function convertDateFormat(date) {
         // Split the input date by "/"
         const [month, day, year] = date.split('/');
@@ -515,12 +524,13 @@ const SlotComp2 = ({ selectedDates, slotDatefortest, categoryName, showModal, ha
         },
         {
             name: <CustomHeader name="Time" />,
-            cell: (row) => <span>{row.time}</span>,
+            cell: (row) => <span>{formatTimeTo12Hour(row.time)}</span>, // Convert time to 12-hour format
+            sortable: true,
         },
-        {
-            name: <CustomHeader name="deadlineTime" />,
-            cell: (row) => <span>{row.deadlineTime}</span>,
-        },
+        // {
+        //     name: <CustomHeader name="deadlineTime" />,
+        //     cell: (row) => <span>{row.deadlineTime}</span>,
+        // },
         {
             name: <CustomHeader name="Trainer" />,
             cell: (row) => (

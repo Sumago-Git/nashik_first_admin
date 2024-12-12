@@ -201,7 +201,6 @@ const CalenderComp = () => {
             });
             const filteredData = response.data.responseData?.reverse()
             setTeam(filteredData);
-            console.log('dfh', filteredData)
 
 
         } catch (error) {
@@ -367,7 +366,7 @@ const CalenderComp = () => {
                                                                 }}
                                                             >
                                                                 <h6>
-                                                                    totalSlots: {specialDates.find((date) => date.day === day)?.totalSlots}
+                                                                    Total Slots: {specialDates.find((date) => date.day === day)?.totalSlots}
                                                                 </h6>
                                                             </div>
                                                         )}
@@ -385,6 +384,7 @@ const CalenderComp = () => {
                 </Container>
             </Container>
             <SlotComp showModal={showModal}
+                fetchSlot={getdata_here}
                 handleCloseModal={handleCloseModal}
                 handleShowModal={handleShowModal}
                 selectedDates={selectedDates}

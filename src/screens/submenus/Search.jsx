@@ -166,9 +166,22 @@ const Search = () => {
         //     name: "Submission Date",
         //     selector: (row) => new Date(row.submission_date).toLocaleString(),
         // },
+        // {
+        //     name: "Training Status",
+        //     selector: (row) => row.training_status,
+        // },
         {
-            name: "Training Status",
-            selector: (row) => row.training_status,
+            name: 'Training Status',
+            cell: row => (
+                <Button
+                    variant={row.training_status !== "Confirmed" ? "success" : "secondary"}
+                    className="w-100"
+                    disabled={row.training_status === "Attended"} // Disable the button if the status is "Attended"
+                >
+                    {row.training_status === "Confirmed" ? "Confirmed" : "Attended"}
+                </Button>
+            ),
+            sortable: true,
         },
         // Conditional columns
         {

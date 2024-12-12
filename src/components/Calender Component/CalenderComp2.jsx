@@ -94,6 +94,7 @@ const CalenderComp2 = () => {
         });
     };
 
+    
 
     function alertBox(selectedDate) {
         confirmAlert({
@@ -199,8 +200,13 @@ const CalenderComp2 = () => {
                 headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },
             });
             const filteredData = response.data.responseData?.reverse()
-            setTeam(filteredData);
-            console.log('dfh', filteredData)
+            const sortedSlots = [...filteredData].sort((a, b) => {
+                const timeA = new Date(`1970-01-01T${a.time}:00`);
+                const timeB = new Date(`1970-01-01T${b.time}:00`);
+                return timeA - timeB;
+              });
+            
+            setTeam(sortedSlots);
 
 
         } catch (error) {
@@ -357,7 +363,7 @@ const CalenderComp2 = () => {
                                                 >
                                                     {day && (
                                                         isWeekend
-                                                            ? "Weekly Off" // Show "Weekly Off" for weekends
+                                                            ? "" // Show "Weekly Off" for weekends
                                                             : day // Show the day number for other days
                                                     )}
                                                     <br />
@@ -375,7 +381,7 @@ const CalenderComp2 = () => {
                                                                 }}
                                                             >
                                                                 <h6>
-                                                                    totalSlots: {specialDates.find((date) => date.day === day)?.totalSlots}
+                                                                    Total Slots: {specialDates.find((date) => date.day === day)?.totalSlots}
                                                                 </h6>
                                                             </div>
                                                         )}

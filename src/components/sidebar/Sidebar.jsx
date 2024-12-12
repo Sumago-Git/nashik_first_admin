@@ -247,7 +247,7 @@ const SidebarMenu = [
   //   ],
   // },
   {
-    menu: "Slot Booking",
+    menu: "Slot Creation",
     url: "/report",
     mainIcon: <MdEventNote size={24} />,
     subMenu: [
@@ -261,6 +261,19 @@ const SidebarMenu = [
         url: "/calender2",
         icon: <AiOutlineAppstoreAdd style={{ color: "red" }} size={24} />,
       }
+    ],
+  },
+  {
+    menu: "Slot Booking",
+    // menu: "Group registration",
+    url: "/groupbooking",
+    mainIcon: <MdLocalOffer size={24} />,
+    subMenu: [
+      {
+        subMenus: "Booking Package",
+        url: "/groupbooking",
+        icon: <AiOutlineAppstoreAdd style={{ color: "red" }} size={24} />,
+      },
     ],
   },
   // {
@@ -333,30 +346,6 @@ const SidebarMenu = [
     ],
   },
   {
-    menu: "Trainer",
-    url: "/trainer",
-    mainIcon: <MdSupervisorAccount size={24} />,
-    subMenu: [
-      {
-        subMenus: "Trainer",
-        url: "/trainer",
-        icon: <AiOutlineAppstoreAdd style={{ color: "red" }} size={24} />,
-      },
-    ],
-  },
-  {
-    menu: "Group registration",
-    url: "/groupbooking",
-    mainIcon: <MdLocalOffer size={24} />,
-    subMenu: [
-      {
-        subMenus: "Booking Package",
-        url: "/groupbooking",
-        icon: <AiOutlineAppstoreAdd style={{ color: "red" }} size={24} />,
-      },
-    ],
-  },
-  {
     menu: "Search",
     url: "/search",
     mainIcon: <MdLocalOffer size={24} />,
@@ -376,6 +365,11 @@ const SidebarMenu = [
       {
         subMenus: "Holiday",
         url: "/holiday",
+        icon: <AiOutlineAppstoreAdd style={{ color: "red" }} size={24} />,
+      },
+      {
+        subMenus: "Trainer",
+        url: "/trainer",
         icon: <AiOutlineAppstoreAdd style={{ color: "red" }} size={24} />,
       },
     ],
