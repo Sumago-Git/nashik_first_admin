@@ -551,7 +551,7 @@ const Infrastructure = () => {
                   <Col md={6}>
                     <NewResuableForm
                       label="Description"
-                      placeholder="Enter description"
+                      placeholder="Enter Description"
                       name="desc"
                       type="text"
                       onChange={handleChange}

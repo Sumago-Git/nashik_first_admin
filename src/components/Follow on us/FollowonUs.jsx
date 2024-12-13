@@ -239,7 +239,7 @@ function FollowonUs() {
                                         <Form.Label>Instagram</Form.Label>
                                         <Form.Control
                                             type="text"
-                                            placeholder="Enter Instagram link"
+                                            placeholder="Enter Instagram Link"
                                             value={instagram}
                                             onChange={(e) => setInstagram(e.target.value)}
                                         />
@@ -251,7 +251,7 @@ function FollowonUs() {
                                         <Form.Label>Facebook</Form.Label>
                                         <Form.Control
                                             type="text"
-                                            placeholder="Enter Facebook link"
+                                            placeholder="Enter Facebook Link"
                                             value={facebook}
                                             onChange={(e) => setFacebook(e.target.value)}
                                         />
@@ -275,7 +275,7 @@ function FollowonUs() {
                                         <Form.Label>WhatsApp</Form.Label>
                                         <Form.Control
                                             type="text"
-                                            placeholder="Enter WhatsApp link"
+                                            placeholder="Enter WhatsApp Link"
                                             value={whatsapp}
                                             onChange={(e) => setWhatsapp(e.target.value)}
                                         />
@@ -287,7 +287,7 @@ function FollowonUs() {
                                         <Form.Label>LinkedIn</Form.Label>
                                         <Form.Control
                                             type="text"
-                                            placeholder="Enter LinkedIn link"
+                                            placeholder="Enter LinkedIn Link"
                                             value={linkedin}
                                             onChange={(e) => setLinkedin(e.target.value)}
                                         />

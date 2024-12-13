@@ -110,7 +110,7 @@ const Login = () => {
                     </Form.Label>
                     <Form.Control
                       type="email"
-                      placeholder="Enter email"
+                      placeholder="Enter Email"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       required
@@ -129,7 +129,7 @@ const Login = () => {
                     <InputGroup className="bg-light border-0 shadow-sm rounded-pill">
                       <Form.Control
                         type={showPassword ? "text" : "password"}
-                        placeholder="Password"
+                        placeholder="Enter Password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         required

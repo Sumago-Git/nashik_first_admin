@@ -828,7 +828,7 @@ const SlotComp = ({ selectedDates, slotDatefortest, categoryName, showModal, han
                             <Col md={10}>
                                 <NewResuableForm
                                     label="Title"
-                                    placeholder="Enter title"
+                                    placeholder="Enter Title"
                                     type="text"
                                     name="title"
                                     onChange={handleChange}
@@ -839,7 +839,7 @@ const SlotComp = ({ selectedDates, slotDatefortest, categoryName, showModal, han
                             <Col md={10}>
                                 <NewResuableForm
                                     label="Capacity"
-                                    placeholder="Enter capacity"
+                                    placeholder="Enter Capacity"
                                     type="number"
                                     name="capacity"
                                     onChange={handleChange}

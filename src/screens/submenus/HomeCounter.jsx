@@ -503,7 +503,7 @@ const HomeCounter = () => {
                                         <Col md={6}>
                                             <NewResuableForm
                                                 label="Title"
-                                                placeholder="training session"
+                                                placeholder="Training Session"
                                                 name="training_imparted"
                                                 type="text"
                                                 onChange={handleChange}
@@ -513,7 +513,7 @@ const HomeCounter = () => {
                                         </Col> <Col md={6}>
                                             <NewResuableForm
                                                 label="Link"
-                                                placeholder="lives changed"
+                                                placeholder="Lives Changed"
                                                 name="lives_changed"
                                                 type="text"
                                                 onChange={handleChange}
@@ -524,7 +524,7 @@ const HomeCounter = () => {
                                         <Col md={6}>
                                             <NewResuableForm
                                                 label="Link"
-                                                placeholder="children"
+                                                placeholder="Children"
                                                 name="children"
                                                 type="text"
                                                 onChange={handleChange}
@@ -535,7 +535,7 @@ const HomeCounter = () => {
                                         <Col md={6}>
                                             <NewResuableForm
                                                 label="Link"
-                                                placeholder="adult"
+                                                placeholder="Adult"
                                                 name="adult"
                                                 type="text"
                                                 onChange={handleChange}

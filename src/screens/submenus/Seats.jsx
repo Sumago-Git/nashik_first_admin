@@ -216,7 +216,7 @@ const Seats = () => {
                                             <Col md={6}>
                                                 <NewResuableForm
                                                     label={"Available Seat"}
-                                                    placeholder={"Enter Available Seat number"}
+                                                    placeholder={"Enter Available Seat Number"}
                                                     type={"text"}
                                                     name={"seatCount"}
                                                     onChange={handleChange}

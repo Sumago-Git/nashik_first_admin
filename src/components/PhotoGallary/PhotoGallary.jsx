@@ -241,7 +241,7 @@ function Thanksto() {
                                         <Form.Label>Enter Paragraph</Form.Label>
                                         <Form.Control
                                             type="text"
-                                            placeholder="Enter paragraph"
+                                            placeholder="Enter Paragraph"
                                             value={title}
                                             onChange={(e) => setTitle(e.target.value)}
                                         />

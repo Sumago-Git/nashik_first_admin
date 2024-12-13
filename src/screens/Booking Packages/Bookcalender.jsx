@@ -1299,7 +1299,7 @@ const Bookcalender = ({ tabKey }) => {
                         <Col className="d-flex justify-content-end">
                             <Form.Control
                                 type="text"
-                                placeholder="Search by First Name, Last Name, or Email"
+                                placeholder="Search By First Name, Last Name, or Email"
                                 value={searchQuery}
                                 onChange={handleSearch}
                                 style={{ width: '300px' }} // Optional: Set a custom width for the input

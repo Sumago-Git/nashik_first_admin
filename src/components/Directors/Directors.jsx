@@ -232,7 +232,7 @@ function Directors() {
                     <Form.Label>Enter Designation</Form.Label>
                     <Form.Control
                       type="text"
-                      placeholder="Enter designation"
+                      placeholder="Enter Designation"
                       value={designation}
                       onChange={(e) => setdesignation(e.target.value)}
                     />

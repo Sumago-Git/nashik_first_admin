@@ -223,7 +223,7 @@ const ByTrainer = () => {
                         options={yearOptions}
                         value={yearFilter.map((year) => ({ label: year, value: year }))}
                         onChange={(selectedOptions) => setYearFilter(selectedOptions.map((option) => option.value))}
-                        placeholder="Select years"
+                        placeholder="Select Years"
                     />
                 </div>
 
@@ -234,7 +234,7 @@ const ByTrainer = () => {
                         options={monthOptions}
                         value={monthFilter.map((month) => ({ label: month, value: month }))}
                         onChange={(selectedOptions) => setMonthFilter(selectedOptions.map((option) => option.value))}
-                        placeholder="Select months"
+                        placeholder="Select Months"
                     />
                 </div>
 
@@ -245,7 +245,7 @@ const ByTrainer = () => {
                         options={weekOptions}
                         value={weekFilter.map((week) => ({ label: week, value: week }))}
                         onChange={(selectedOptions) => setWeekFilter(selectedOptions.map((option) => option.value))}
-                        placeholder="Select weeks"
+                        placeholder="Select Weeks"
                     />
                 </div>
 
