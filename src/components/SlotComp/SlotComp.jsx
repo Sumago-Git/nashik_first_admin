@@ -94,8 +94,8 @@ const SlotComp = ({ selectedDates, slotDatefortest, categoryName, showModal, han
                 const timeA = new Date(`1970-01-01T${a.time}:00`);
                 const timeB = new Date(`1970-01-01T${b.time}:00`);
                 return timeA - timeB;
-              });
-            
+            });
+
             setTeam(sortedSlots);
             setData(sortedSlots)
 
@@ -612,12 +612,14 @@ const SlotComp = ({ selectedDates, slotDatefortest, categoryName, showModal, han
         { value: "10:30-12:30", label: "10:30 AM to 12:30 PM" },
         { value: "13:00-15:00", label: "1:00 PM to 3:00 PM" },
         { value: "15:30-17:30", label: "3:30 PM to 5:30 PM" },
+        { value: "17:30-19:30", label: "5:30 PM to 7:30 PM" },
     ];
     const weekdaySlots = [
         { value: "09:00-10:59", label: "9:00 AM to 11:00 AM" },
         { value: "11:00-12:59", label: "11:00 AM to 1:00 PM" },
         { value: "13:00-14:59", label: "1:00 PM to 3:00 PM" },
         { value: "15:00-16:59", label: "3:00 PM to 5:00 PM" },
+        { value: "17:00-19:00", label: "5:00 PM to 7:00 PM" },
     ];
 
     // Time slots for weekends (Saturday/Sunday) with 15-minute adjustment
@@ -750,7 +752,7 @@ const SlotComp = ({ selectedDates, slotDatefortest, categoryName, showModal, han
 
             <Modal show={show1} onHide={handleClose1}>
                 <Modal.Header >
-                    <Modal.Title>Add Slot</Modal.Title>
+                    <Modal.Title>{editMode ? "Edit Slot" : "Add Slot"}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <Form onSubmit={handleSubmit}>
@@ -775,32 +777,8 @@ const SlotComp = ({ selectedDates, slotDatefortest, categoryName, showModal, han
 
                                     </Form.Select>
                                 </Form.Group>
-
-
                             </Col>
 
-                            {/* <Col md={10}>
-                                <Form.Group controlId="trainingType">
-                                    <Form.Label>Trainer Name</Form.Label>
-                                    <Form.Select
-                                        name="category"
-                                        value={formData.trainer} // Use "category" as it matches initialFormData
-                                        onChange={(e) => handleChange("trainer", e.target.value)} // Call handleChange with "category"
-                                    >
-                                        <option value="">choose trainer</option>
-                                        {traniners.map((a) => {
-                                            return (
-                                                <option key={a.id} value={a.name}>
-                                                    {a.name}
-                                                </option>
-                                            );
-                                        })}
-
-                                    </Form.Select>
-                                </Form.Group>
-
-
-                            </Col> */}
                             <Col md={10}>
                                 <Form.Group controlId="trainingType">
                                     <Form.Label>Trainer Name</Form.Label>
@@ -818,37 +796,6 @@ const SlotComp = ({ selectedDates, slotDatefortest, categoryName, showModal, han
                                     </Form.Select>
                                 </Form.Group>
                             </Col>
-
-                            {/* <Col md={10}>
-                                <Form.Group controlId="time">
-                                    <Form.Label>Time</Form.Label>
-                                    <Form.Control
-                                        type="time"
-                                        name="time"
-                                        value={formData.time}
-                                        onChange={(e) => handleChange('time', e.target.value)}
-                                        required
-                                    />
-                                </Form.Group>
-                            </Col>
-
-                            <Col md={10}>
-                                <Form.Group controlId="deadlineTime">
-                                    <Form.Label>Deadline Time</Form.Label>
-                                    <Form.Control
-                                        type="time"
-                                        name="deadlineTime"
-                                        value={formData.deadlineTime}
-                                        onChange={(e) => handleChange('deadlineTime', e.target.value)}
-                                        required
-                                    />
-                                    {deadlineError && (
-                                        <Form.Text className="text-danger">
-                                            Deadline Time must be greater than Time.
-                                        </Form.Text>
-                                    )}
-                                </Form.Group>
-                            </Col> */}
 
                             <Col md={10}>
                                 <Form.Group controlId="timeSlot">
@@ -916,7 +863,7 @@ const SlotComp = ({ selectedDates, slotDatefortest, categoryName, showModal, han
 
             <Modal show={show2} onHide={handleClose2}>
                 <Modal.Header >
-                    <Modal.Title>Add Slot</Modal.Title>
+                    <Modal.Title>{editMode ? "Edit Slot" : "Add Slot"}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <Form onSubmit={handleSubmit2}>

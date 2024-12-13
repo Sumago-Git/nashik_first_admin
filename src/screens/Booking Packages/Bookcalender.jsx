@@ -210,7 +210,7 @@ const Bookcalender = ({ tabKey }) => {
                 combinedDoc.addFont("MyCustomFont.ttf", "MyCustomFont", "normal"); // Register the font
                 combinedDoc.setFont("MyCustomFont");
                 combinedDoc.setFontSize(95);
-                combinedDoc.setTextColor("#f48633");
+                combinedDoc.setTextColor("#000");
                 combinedDoc.text(nameText, xPositionName, yPositionName);
 
                 // Add certificate number (simple font)
@@ -402,7 +402,7 @@ const Bookcalender = ({ tabKey }) => {
 
     //             doc.setFont("MyCustomFont");
     //             doc.setFontSize(95);
-    //             doc.setTextColor("#f48633");
+    //             doc.setTextColor("#000");
 
     //             // Prepare user's name
     //             const nameText = `${selectedBooking.fname} ${selectedBooking.lname}`;
@@ -510,7 +510,7 @@ const Bookcalender = ({ tabKey }) => {
 
     //         doc.setFont("MyCustomFont");
     //         doc.setFontSize(95);
-    //         doc.setTextColor("#f48633");
+    //         doc.setTextColor("#000");
 
     //         const nameText = `${selectedBooking.fname} ${selectedBooking.lname}`;
     //         const nameWidth = doc.getTextWidth(nameText);
@@ -603,7 +603,7 @@ const Bookcalender = ({ tabKey }) => {
 
             doc.setFont("MyCustomFont");
             doc.setFontSize(95);
-            doc.setTextColor("#f48633");
+            doc.setTextColor("#000");
 
             const nameText = `${selectedBooking.fname} ${selectedBooking.lname}`;
             const nameWidth = doc.getTextWidth(nameText);
@@ -697,7 +697,7 @@ const Bookcalender = ({ tabKey }) => {
 
             doc.setFont("MyCustomFont");
             doc.setFontSize(95);
-            doc.setTextColor("#f48633");
+            doc.setTextColor("#000");
 
             const nameText = `${selectedBooking.fname} ${selectedBooking.lname}`;
             const nameWidth = doc.getTextWidth(nameText);
@@ -792,7 +792,7 @@ const Bookcalender = ({ tabKey }) => {
 
             doc.setFont("MyCustomFont");
             doc.setFontSize(95);
-            doc.setTextColor("#f48633");
+            doc.setTextColor("#000");
 
             const nameText = `${selectedBooking.fname} ${selectedBooking.lname}`;
             const nameWidth = doc.getTextWidth(nameText);
@@ -900,7 +900,7 @@ const Bookcalender = ({ tabKey }) => {
 
             doc.setFont("MyCustomFont");
             doc.setFontSize(95);
-            doc.setTextColor("#f48633");
+            doc.setTextColor("#000");
 
             const nameText = `${row.fname} ${row.lname}`;
             const nameWidth = doc.getTextWidth(nameText);
@@ -1091,7 +1091,7 @@ const Bookcalender = ({ tabKey }) => {
 
                     doc.setFont("MyCustomFont");
                     doc.setFontSize(95);
-                    doc.setTextColor("#f48633");
+                    doc.setTextColor("#000");
                     doc.setFontSize(95);
                     doc.setTextColor("#4e4e95");
 
