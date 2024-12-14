@@ -39,20 +39,7 @@ const Search = () => {
 
         })
     }
-    const EditSubmissionDate = (e) => {
-        let value = e.target.value
-        const date = new Date(value);
 
-        // Set the desired time (17:22:33.000)
-        date.setHours(17, 22, 33, 0);
-
-        // Convert to ISO string format
-        const isoString = date.toISOString();
-
-        setSelectedBooking({ ...selectedBooking, submission_date: isoString })
-
-
-    }
     const handleEdit = (row) => {
         console.log("row", row);
         setShow1(true)
@@ -72,13 +59,14 @@ const Search = () => {
             alert('Please select a booking date.'); // You can replace this with more user-friendly UI feedback
             return;
         }
-
-        let updatedBooking = { ...selectedBooking, slotdate: dateforslot};
+        let updatedBooking = { ...selectedBooking, slotdate: dateforslot };
         if (updatedBooking.submission_date) {
             const date = new Date(updatedBooking.submission_date); // `submission_date` from input (yyyy-MM-dd)
             updatedBooking.submission_date = date.toISOString();  // Convert to ISO format (yyyy-MM-ddTHH:mm:ss.sssZ)
         }
-        instance.put(`bookingform/bookingform/${updatedBooking.id}`, updatedBooking).then((resp) => {
+
+
+        instance.put(`bookingform/bookingform/${updatedBooking.id}`, selectedBooking).then((resp) => {
             setShow1(false)
             instance.post("bookingform/get-bookingentries-by-category", { category: selectedCategory }).then((result) => {
                 setUser(result.data.responseData)
@@ -88,10 +76,15 @@ const Search = () => {
                 console.log("err", err);
 
             })
+            setSelectedBooking(null)
+            setSelectedDate("")
         }).catch((err) => {
             console.log("err", err);
 
         })
+        setSelectedDate("")
+
+        setSelectedBooking(null)
     };
     function convertDateFormat(date) {
         // Split the input date by "/"
@@ -276,6 +269,8 @@ const Search = () => {
             month: '2-digit',
             day: '2-digit',
         });
+        selectedBooking.slotdate = formattedDate;
+        selectedBooking.tempdate = selectedDate;
 
         console.log("Formatted Selected Date:", formattedDate);
         const formattedDate2 = selectedDate.toLocaleDateString();
@@ -414,7 +409,8 @@ const Search = () => {
 
                                                     }
                                                 }}
-                                                disabled={selectedBooking.category === "School Students Training – Group" || selectedBooking.category === "College/Organization Training – Group"}
+
+                                                disabled
                                             />
                                         ) : (
                                             // If sessions array is not empty, you could handle it differently (maybe pre-selecting a date from session data)
@@ -428,14 +424,24 @@ const Search = () => {
                                                         setSelectedBooking({ ...selectedBooking, slotdate: dateforslot, tempdate: selectedDate });
                                                     }
                                                 }}
-                                                disabled={selectedBooking.category === "School Students Training – Group" || selectedBooking.category === "College/Organization Training – Group"}
+
+
+                                                disabled
                                             />
                                         )}
                                     </Form.Group>
-                                    <Button onClick={handleShow}>Open Calendar</Button>
+                                    {selectedBooking.category === "School Students Training – Group" || selectedBooking.category === "College/Organization Training – Group"
+                                        || selectedBooking.training_status === "Attended"
 
-                                    <Bookpackagesmodal showModal={showModal} handleClose={handleClose} savedCategory={selectedCategory} passSelectedDate={handleDateSelected} // Pass the function to handle date selection
-                                    />
+                                        ? <></>
+                                        : <>
+
+                                            <Button onClick={handleShow}>Open Calendar</Button>
+
+                                            <Bookpackagesmodal showModal={showModal} handleClose={handleClose} savedCategory={selectedCategory} passSelectedDate={handleDateSelected} // Pass the function to handle date selection
+                                            /></>
+                                    }
+
                                 </Col>
                                 <Col lg={6} md={6} sm={12} className="">
                                     <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
