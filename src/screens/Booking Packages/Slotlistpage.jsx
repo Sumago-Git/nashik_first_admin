@@ -5,12 +5,39 @@ import instance from "../../api/AxiosInstance";
 
 const Slotlistpage = () => {
     const [slotDate, setSlotDate] = useState("");
+    console.log(slotDate)
     const [category, setCategory] = useState("");
     const [sessions, setSessions] = useState([]);
     const [slotDatefortest, setslotDatefortest] = useState("")
     console.log(slotDatefortest)
     const location = useLocation();
     const navigate = useNavigate();
+    useEffect(() => {
+       
+
+        // Assume the format is "Wednesday 15/01/2025"
+        const parts = slotDate.split(" "); // Split by space
+        if (parts.length < 2) {
+            console.error("Invalid date format:", slotDate);
+            return;
+        }
+
+        const datePart = parts[1]; // Extract "15/01/2025"
+        const [day, month, year] = datePart.split("/"); // Split into day, month, and year
+
+        // Construct ISO format YYYY-MM-DD
+        const formattedDate = `${year}-${month}-${day}`;
+
+        // Validate by creating a Date object
+        const date = new Date(formattedDate);
+        if (isNaN(date.getTime())) {
+            console.error("Failed to parse date:", slotDate);
+            return;
+        }
+
+        setslotDatefortest(formattedDate);
+    }, [slotDate]);
+
 
     // Use useEffect to load location.state or saved values from localStorage
     useEffect(() => {
@@ -60,15 +87,7 @@ const Slotlistpage = () => {
                 });
         }
     }, [category, slotDate]);
-    useEffect(() => {
-        const date = new Date(slotDate);
-        const year = date.getFullYear();
-        const month = String(date.getMonth() + 1).padStart(2, '0'); // Month is 0-indexed
-        const day = String(date.getDate()).padStart(2, '0'); // Ensure two digits for day
 
-        const formattedDate2 = `${year}-${day}-${month}`;
-        setslotDatefortest(formattedDate2);
-    }, [slotDate])
     return (
         <Container>
             <h1 className='daydate mt-5'>{slotDate}</h1>

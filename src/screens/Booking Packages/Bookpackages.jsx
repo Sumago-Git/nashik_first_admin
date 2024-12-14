@@ -51,7 +51,7 @@ const Bookpackages = ({ tabKey }) => {
     const savedCategory = localStorage.getItem("category");
     const getdata_here = () => {
         instance.post('/Sessionslot/getAvailableslotslots', {
-            slotType: 'inhouse',
+           
             year: currentYear.toString(),
             month: (currentMonth + 1).toString(),
             category: savedCategory,

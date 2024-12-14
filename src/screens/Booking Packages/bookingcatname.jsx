@@ -37,11 +37,11 @@ const bookingcatname = ({ setCategoryName }) => {
       
       
         navigate("/bookpackg", {
-            state: {
-                selectedDate: slotDate,
-                selectedTime: `${formattedTime}-${session.title}`,
+            // state: {
+            //     selectedDate: slotDate,
+            //     selectedTime: `${formattedTime}-${session.title}`,
 
-            }
+            // }
         });
     };
 

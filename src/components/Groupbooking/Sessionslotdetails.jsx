@@ -244,11 +244,11 @@ const Sessionslotdetails = () => {
 
 
             <div className='text-center my-2'>
-              <Button type="submit">
+              <Button type="submit" disabled={isSubmitting}>
+                {isSubmitting ? "Submitting..." : "Submit"}
+              </Button>
+            </div>
 
-                Submit
-
-              </Button>                </div>
           </Row>
         </form>
 
