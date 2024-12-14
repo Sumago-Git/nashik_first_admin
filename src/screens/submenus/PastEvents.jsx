@@ -31,7 +31,7 @@ function PastEvenets() {
     const [editMode, setEditMode] = useState(false);
     const [editId, setEditId] = useState(null);
     const [activeStatus, setActiveStatus] = useState({}); // Track isActive status
-
+    const [rowsPerPage, setRowsPerPage] = useState(10);
     const [eventgallery_data, seteventgallery] = useState([]);
 
     const [key, setKey] = useState('home');
@@ -185,9 +185,11 @@ function PastEvenets() {
 
     //Event Gallery start
     const eventgallrydata = () => {
-        instance.get('EventGallary/find-EventGallary')
+        instance.get('EventGallary/get-EventGallary')
             .then((res) => {
                 seteventgallery(res.data.responseData)
+                console.log("res.data.responseData", res.data.responseData);
+                
             })
             .catch((err) => {
                 console.log(err);
