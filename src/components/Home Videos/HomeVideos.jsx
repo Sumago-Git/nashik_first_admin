@@ -210,7 +210,7 @@ function HomeVideos() {
                                         <Form.Label>Enter Title</Form.Label>
                                         <Form.Control
                                             type="text"
-                                            placeholder="Enter title"
+                                            placeholder="Enter Title"
                                             value={title}
                                             onChange={(e) => settitle(e.target.value)}
                                         />
@@ -222,7 +222,7 @@ function HomeVideos() {
                                         <Form.Label>Enter Media URL</Form.Label>
                                         <Form.Control
                                             type="text"
-                                            placeholder="Enter media link"
+                                            placeholder="Enter Media Link"
                                             value={mediaurl}
                                             onChange={(e) => setmediaurl(e.target.value)}
                                         />

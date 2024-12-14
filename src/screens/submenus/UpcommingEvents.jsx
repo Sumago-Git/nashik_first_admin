@@ -352,7 +352,7 @@ function UpcommingEvents() {
                                         <Form.Label>Select From Date</Form.Label>
                                         <Form.Control
                                             type="date"
-                                            placeholder="Enter date"
+                                            placeholder="Enter Date"
                                             value={fromdate}
                                             onChange={(e) => setfromdate(e.target.value)}
                                         />
@@ -398,7 +398,7 @@ function UpcommingEvents() {
                                         <Form.Label>Enter Area</Form.Label>
                                         <Form.Control
                                             type="text"
-                                            placeholder="Enter area"
+                                            placeholder="Enter Area"
                                             value={area}
                                             onChange={(e) => setarea(e.target.value)}
                                         />

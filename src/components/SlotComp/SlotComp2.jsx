@@ -676,7 +676,7 @@ const SlotComp2 = ({ selectedDates, slotDatefortest, categoryName, showModal, ha
 
             <Modal show={show1} onHide={handleClose1}>
                 <Modal.Header >
-                    <Modal.Title>Add Slot</Modal.Title>
+                    <Modal.Title>{editMode ? "Edit Slot" : "Add Slot"}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <Form onSubmit={handleSubmit}>
@@ -760,7 +760,7 @@ const SlotComp2 = ({ selectedDates, slotDatefortest, categoryName, showModal, ha
                             <Col md={10}>
                                 <NewResuableForm
                                     label="Title"
-                                    placeholder="Enter title"
+                                    placeholder="Enter Title"
                                     type="text"
                                     name="title"
                                     onChange={handleChange}
@@ -770,7 +770,7 @@ const SlotComp2 = ({ selectedDates, slotDatefortest, categoryName, showModal, ha
                             <Col md={10}>
                                 <NewResuableForm
                                     label="Capacity"
-                                    placeholder="Enter capacity"
+                                    placeholder="Enter Capacity"
                                     type="number"
                                     name="capacity"
                                     onChange={handleChange}
@@ -794,7 +794,7 @@ const SlotComp2 = ({ selectedDates, slotDatefortest, categoryName, showModal, ha
 
             <Modal show={show2} onHide={handleClose2}>
                 <Modal.Header >
-                    <Modal.Title>Add Slot</Modal.Title>
+                    <Modal.Title>{editMode ? "Edit Slot" : "Add Slot"}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <Form onSubmit={handleSubmit2}>

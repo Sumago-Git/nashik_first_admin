@@ -330,7 +330,7 @@ const Bookingpage2 = () => {
                   name='email'
                   value={formData.email}
                   onChange={handleChange}
-                  placeholder={"email"}
+                  placeholder={"Email"}
                   className='dateinput p-3 m-0 mt-0 ms-lg-3'
                 />
                 {errors.email && <p className='text-start ms-md-4 mt-1 text-danger'>{errors.email}</p>}
@@ -342,7 +342,7 @@ const Bookingpage2 = () => {
                   maxLength="10"
                   value={formData.phone}
                   onChange={handleChange}
-                  placeholder={"phone"}
+                  placeholder={"Phone"}
                   className='dateinput p-3 m-0 mt-0 ms-lg-3 ms-md-0'
                 />
                 {errors.phone && <p className='text-start ms-md-4 mt-1 text-danger'>{errors.phone}</p>}

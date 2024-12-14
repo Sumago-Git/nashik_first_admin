@@ -237,7 +237,7 @@ const Slots = () => {
                     <Col md={6}>
                       <NewResuableForm
                         label={"Phone 1"}
-                        placeholder={"Enter first phone number"}
+                        placeholder={"Enter First Phone Number"}
                         type={"text"}
                         name={"phone1"}
                         onChange={handleChange}
@@ -248,7 +248,7 @@ const Slots = () => {
                     <Col md={6}>
                       <NewResuableForm
                         label={"Phone 2"}
-                        placeholder={"Enter second phone number"}
+                        placeholder={"Enter Second Phone Number"}
                         type={"text"}
                         name={"phone2"}
                         onChange={handleChange}

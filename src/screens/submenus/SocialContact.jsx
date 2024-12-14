@@ -512,7 +512,7 @@ const SocialContact = () => {
                     </Col> <Col md={6}>
                       <NewResuableForm
                         label="Instagram"
-                        placeholder="Enter instagram Link"
+                        placeholder="Enter Instagram Link"
                         name="instagram"
                         type="text"
                         onChange={handleChange}
@@ -523,7 +523,7 @@ const SocialContact = () => {
                     <Col md={6}>
                       <NewResuableForm
                         label="Youtube"
-                        placeholder="Enter youtube link"
+                        placeholder="Enter Youtube Link"
                         name="youtube"
                         type="text"
                         onChange={handleChange}
@@ -534,7 +534,7 @@ const SocialContact = () => {
                     <Col md={6}>
                       <NewResuableForm
                         label="Twitter"
-                        placeholder="Enter twitter link"
+                        placeholder="Enter Twitter Link"
                         name="twitter"
                         type="text"
                         onChange={handleChange}
