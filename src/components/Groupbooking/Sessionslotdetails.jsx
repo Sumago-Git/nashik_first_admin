@@ -51,7 +51,38 @@ const Sessionslotdetails = () => {
 
 
 
+  const validateForm = (formData) => {
+    let errors = {};
+    let isValid = true;
 
+
+    // coordinator_mobile: formData.coordinator_mobile,
+    // coordinator_name: formData.coordinator_name,
+
+    if (!formData.institution_name) {
+      errors.institution_name = 'Institution Name is required';
+      isValid = false;
+    }
+    if (!formData.institution_email) {
+      errors.institution_email = 'Institution Email is required';
+      isValid = false;
+    }
+   
+    if (!formData.hm_principal_manager_name) {
+      errors.hm_principal_manager_name = 'Principal Manager Name is required';
+      isValid = false;
+    }
+    if (!formData.hm_principal_manager_mobile) {
+      errors.hm_principal_manager_mobile = 'Principal Manager Mobile is required';
+      isValid = false;
+    }
+    if (!formData.coordinator_name) {
+      errors.coordinator_name = 'Coordinator Name is required';
+      isValid = false;
+    }
+    setErrors(errors);
+    return isValid;
+  };
 
 
 
@@ -74,72 +105,73 @@ const Sessionslotdetails = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    setIsSubmitting(true); // Start loading
+   // Start loading
+    if (validateForm(formData)) {
+      setIsSubmitting(true); 
+      // Format the slotdate before sending it
+      let value = slotdate;
+      const parts = value.split(' '); // Split the string by space
+      const dateParts = parts[1].split('/'); // Split the date part (e.g., "27/11/2024") by "/"
 
-    // Format the slotdate before sending it
-    let value = slotdate;
-    const parts = value.split(' '); // Split the string by space
-    const dateParts = parts[1].split('/'); // Split the date part (e.g., "27/11/2024") by "/"
+      // Extract day, month, and year
+      const day = dateParts[0];
+      const month = dateParts[1];
+      const year = dateParts[2];
 
-    // Extract day, month, and year
-    const day = dateParts[0];
-    const month = dateParts[1];
-    const year = dateParts[2];
+      // Format to YYYY-MM-DD
+      const formattedDate = `${month}/${day}/${year}`;
 
-    // Format to YYYY-MM-DD
-    const formattedDate = `${month}/${day}/${year}`;
+      try {
+        const sessionSlotId = localStorage.getItem('slotsid');
 
-    try {
-      const sessionSlotId = localStorage.getItem('slotsid');
+        // Create the data object in JSON format
+        const data = {
 
-      // Create the data object in JSON format
-      const data = {
+          category: category,
+          slotsession: slotsession,
+          slotdate: formattedDate,
+          institution_name: formData.institution_name,
+          institution_email: formData.institution_email,
+          institution_phone: formData.institution_phone,
+          hm_principal_manager_name: formData.hm_principal_manager_name,
+          hm_principal_manager_mobile: formData.hm_principal_manager_mobile,
+          coordinator_mobile: formData.coordinator_mobile,
+          coordinator_name: formData.coordinator_name,
+          sessionSlotId: sessionSlotId,
+        };
 
-        category: category,
-        slotsession: slotsession,
-        slotdate: formattedDate,
-        institution_name: formData.institution_name,
-        institution_email: formData.institution_email,
-        institution_phone: formData.institution_phone,
-        hm_principal_manager_name: formData.hm_principal_manager_name,
-        hm_principal_manager_mobile: formData.hm_principal_manager_mobile,
-        coordinator_mobile: formData.coordinator_mobile,
-        coordinator_name: formData.coordinator_name,
-        sessionSlotId: sessionSlotId,
-      };
+        // Send a POST request with JSON data
+        const response = await instance.post('bookingform/registerSlotInfo', data, {
+          headers: {
+            'Content-Type': 'application/json', // Set content type to application/json
+          },
+        });
+        localStorage.setItem('slotsids', sessionSlotId),
+          // Redirect after successful submission
+          navigate('/bookingpage',
 
-      // Send a POST request with JSON data
-      const response = await instance.post('bookingform/registerSlotInfo', data, {
-        headers: {
-          'Content-Type': 'application/json', // Set content type to application/json
-        },
-      });
-      localStorage.setItem('slotsids', sessionSlotId),
-        // Redirect after successful submission
-        navigate('/bookingpage',
+            {
+              state: {
+                selectedDate: slotdate,
+                selectedTime: `${slotTime}`,
+                category: category,
+                temodate: slotDatefortest
 
-          {
-            state: {
-              selectedDate: slotdate,
-              selectedTime: `${slotTime}`,
-              category: category,
-              temodate: slotDatefortest
-
+              }
             }
-          }
-        );
-    } catch (error) {
-      console.error('Error submitting form:', error);
-      if (error.response) {
-        alert(`Error: ${error.response.data.message || 'Something went wrong!'}`);
-      } else {
-        alert('Error: No response from server.');
+          );
+      } catch (error) {
+        console.error('Error submitting form:', error);
+        if (error.response) {
+          alert(`Error: ${error.response.data.message || 'Something went wrong!'}`);
+        } else {
+          alert('Error: No response from server.');
+        }
+      } finally {
+        setIsSubmitting(false); // Stop loading
       }
-    } finally {
-      setIsSubmitting(false); // Stop loading
-    }
-  };
-
+    };
+  }
 
 
 

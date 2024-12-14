@@ -130,7 +130,35 @@ const Bookingpage2 = () => {
 
     }
   };
+  const validateForm = () => {
+    const newErrors = {};
 
+    if (!formData.learningNo || formData.learningNo === '_/__/__') {
+      newErrors.learningNo = "Learning License Number is required.";
+    }
+
+    if (!formData.fname) {
+      newErrors.fname = "First Name is required.";
+    }
+
+    if (!formData.lname) {
+      newErrors.lname = "Last Name is required.";
+    }
+
+    if (!formData.email) {
+      newErrors.email = "Email is required.";
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      newErrors.email = "Email format is invalid.";
+    }
+
+    if (!formData.phone) {
+      newErrors.phone = "Phone number is required.";
+    } else if (!/^\d{10}$/.test(formData.phone)) {
+      newErrors.phone = "Phone number must be 10 digits.";
+    }
+
+    return newErrors;
+  };
 
 
   const handleSubmit = async (e) => {
@@ -138,7 +166,11 @@ const Bookingpage2 = () => {
 
     e.preventDefault();
 
-
+    const errors = validateForm();
+    if (Object.keys(errors).length > 0) {
+      setErrors(errors);
+      return;
+    }
     setIsSubmitting(true); // Start loading
     let value = slotdate
     const parts = value.split(' '); // Split the string by space
@@ -350,7 +382,7 @@ const Bookingpage2 = () => {
 
 
               <div className='text-center mt-4'>
-                <Button type="submit "  className='' disabled={isSubmitting} onClick={() => setShowModal(true)}>
+                <Button type="submit " className='' disabled={isSubmitting} onClick={() => setShowModal(true)}>
                   {isSubmitting ? (
                     <span>
                       <span className="spinner-border returnbutton spinner-border-sm me-2"></span>

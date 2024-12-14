@@ -48,8 +48,7 @@ const SlotComp = ({ selectedDates, slotDatefortest, categoryName, showModal, han
         setFormData((prev) => ({ ...prev, tempdate: slotDatefortest }));
     }, [slotDatefortest]);
 
-    console.log(selectedDates)
-    console.log(slotDatefortest)
+
     const initialFormData = {
         tempdate: slotDatefortest,
         slotType: 'inhouse',
@@ -115,26 +114,26 @@ const SlotComp = ({ selectedDates, slotDatefortest, categoryName, showModal, han
         let isValid = true;
 
         // Check if the title is empty
-        // if (!formData.title.trim()) {
-        //     errors.title = 'Title is required';
-        //     isValid = false;
-        // }
+        if (!formData.title) {
+            errors.title = 'Title is required';
+            isValid = false;
+        }
 
-        // Convert capacity to a string before calling trim() and check if it's empty
-        // if (!String(formData.capacity).trim()) {
-        //     errors.capacity = 'Capacity is required';
-        //     isValid = false;
-        // }
+
 
         // Check if deadlineTime is empty
         if (!formData.deadlineTime.trim()) {
-            errors.deadlineTime = 'Deadline time is required';
+            errors.deadlineTime = ' Time is required';
             isValid = false;
         }
 
         // Check if category is empty
-        if (!formData.category.trim()) {
+        if (!formData.category) {
             errors.category = 'Category is required';
+            isValid = false;
+        }
+        if (!formData.capacity || formData.capacity <= 30) {
+            errors.capacity = 'capacity is required also Capacity should be more than 30';
             isValid = false;
         }
 
@@ -156,78 +155,7 @@ const SlotComp = ({ selectedDates, slotDatefortest, categoryName, showModal, han
     }, []);
 
 
-    const handleIsActive = async (id, isVisible) => {
 
-        confirmAlert({
-            title: "Confirm to change visibility",
-            customUI: ({ onClose }) => (
-                <div
-                    style={{
-                        textAlign: "left",
-                        padding: "20px",
-                        backgroundColor: "white",
-                        borderRadius: "8px",
-                        boxShadow: "0 4px 8px rgba(5, 5, 5, 0.2)",
-                        maxWidth: "400px",
-                        margin: "0 auto",
-                    }}
-                >
-                    <h2>Confirm to change visibility</h2>
-                    <p>
-                        Are you sure you want to {isVisible ? "hide" : "show"} this data?
-                    </p>
-                    <div
-                        style={{
-                            display: "flex",
-                            justifyContent: "flex-end",
-                            marginTop: "20px",
-                        }}
-                    >
-                        <button
-                            style={{ marginRight: "10px" }}
-                            className="btn btn-primary"
-                            onClick={async () => {
-                                setLoading(true);
-                                const accessToken = localStorage.getItem("accessToken");
-                                try {
-                                    await instance.put(
-                                        `Sessionslot/isactive-Sessionslot/${id}`,
-                                        { isVisible },
-                                        {
-                                            headers: {
-                                                Authorization: `Bearer ${accessToken}`,
-                                                "Content-Type": "application/json",
-                                            },
-                                        }
-                                    );
-                                    toast.success(
-                                        `Data ${isVisible ? "hidden" : "shown"} successfully`
-                                    );
-                                    setEyeVisibilityById((prev) => ({
-                                        ...prev,
-                                        [id]: isVisible,
-                                    }));
-                                    fetchTeam();
-                                } catch (error) {
-                                    console.error("Error updating visibility:", error);
-                                    toast.error("Error updating visibility");
-                                } finally {
-                                    setLoading(false); // Set loading to false
-                                }
-                                onClose(); handleShowModal()
-                                handleShowModal
-                            }}
-                        >
-                            Yes
-                        </button>
-                        <button className="btn btn-secondary" onClick={() => { onClose(); handleShowModal() }}>
-                            No
-                        </button>
-                    </div>
-                </div>
-            ),
-        });
-    };
     const handleDelete = async (id) => {
         confirmAlert({
             title: "Confirm to delete",
@@ -290,27 +218,25 @@ const SlotComp = ({ selectedDates, slotDatefortest, categoryName, showModal, han
         });
     };
     const toggleEdit = (id, row) => {
-        // const selectedMember = team.find((member) => member.id === id);
-        // console.log(selectedMember)
+   
         if (row) {
             setShow1(true)
             setEditingId(id);
             setFormData(row); // This should set existing data correctly
             setEditMode(true);
             setShowTable(false);
-            // Switch to form view when editing
+     
         }
     };
     const toggleEdit2 = (id, row) => {
-        // const selectedMember = team.find((member) => member.id === id);
-        // console.log(selectedMember)
+    
         if (row) {
             setShow2(true)
             setEditingId(id);
             setFormData(row); // This should set existing data correctly
             setEditMode(true);
             setShowTable(false);
-            // Switch to form view when editing
+     ting
         }
     };
 
@@ -318,21 +244,7 @@ const SlotComp = ({ selectedDates, slotDatefortest, categoryName, showModal, han
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const requiredFields = ["category", "time", "deadlineTime", "capacity"];
-        for (const field of requiredFields) {
-            if (!formData[field]) {
-                toast.error(`${field} is required`); // Show error for each missing required field
-                return; // Exit if any required field is empty
-            }
-        }
-        if (formData.capacity <= 30) {
-            toast.error("Capacity should be more than 30");
-            return; // Exit if capacity is not greater than 30
-        }
-        if (deadlineError) {
-            toast.error('Deadline Time should be greater than Time');
-            return;
-        }
+
 
         if (validateForm(formData)) {
             setLoading(true);
@@ -393,21 +305,7 @@ const SlotComp = ({ selectedDates, slotDatefortest, categoryName, showModal, han
 
     const handleSubmit2 = async (e) => {
         e.preventDefault();
-        const requiredFields = ["category", "time", "deadlineTime", "capacity"];
-        for (const field of requiredFields) {
-            if (!formData[field]) {
-                toast.error(`${field} is required`); // Show error for each missing required field
-                return; // Exit if any required field is empty
-            }
-        }
-        if (formData.capacity <= 30) {
-            toast.error("Capacity should be more than 30");
-            return; // Exit if capacity is not greater than 30
-        }
-        if (deadlineError) {
-            toast.error('Deadline Time should be greater than Time');
-            return;
-        }
+       
 
         if (validateForm(formData)) {
             setLoading(true);
@@ -767,6 +665,8 @@ const SlotComp = ({ selectedDates, slotDatefortest, categoryName, showModal, han
                                         value={formData.category} // Use "category" as it matches initialFormData
                                         disabled={editMode}
                                         onChange={(e) => handleChange("category", e.target.value)} // Call handleChange with "category"
+                                        required
+
                                     >
                                         <option >Select category</option>
                                         <option value="RTO – Learner Driving License Holder Training">RTO – Learner Driving License Holder Training</option>
@@ -777,6 +677,9 @@ const SlotComp = ({ selectedDates, slotDatefortest, categoryName, showModal, han
 
                                     </Form.Select>
                                 </Form.Group>
+                                {errors.category && (
+                                    <p className='text-start ms-md-4 mt-1 text-danger'>{errors.category}</p>
+                                )}
                             </Col>
 
                             <Col md={10}>
@@ -811,7 +714,6 @@ const SlotComp = ({ selectedDates, slotDatefortest, categoryName, showModal, han
                                                 deadlineTime: endTime,
                                             });
                                         }}
-                                        required
                                         disabled={editMode} // Disable in edit mode
 
                                     >
@@ -823,6 +725,9 @@ const SlotComp = ({ selectedDates, slotDatefortest, categoryName, showModal, han
                                         ))}
                                     </Form.Select>
                                 </Form.Group>
+                                {errors.deadlineTime && (
+                                    <p className='text-start ms-md-4 mt-1 text-danger'>{errors.deadlineTime}</p>
+                                )}
                             </Col>
 
                             <Col md={10}>
@@ -835,6 +740,9 @@ const SlotComp = ({ selectedDates, slotDatefortest, categoryName, showModal, han
                                     initialData={formData}
 
                                 />
+                                {errors.title && (
+                                    <p className='text-start ms-md-4 mt-1 text-danger'>{errors.title}</p>
+                                )}
                             </Col>
                             <Col md={10}>
                                 <NewResuableForm
@@ -845,6 +753,9 @@ const SlotComp = ({ selectedDates, slotDatefortest, categoryName, showModal, han
                                     onChange={handleChange}
                                     initialData={formData}
                                 />
+                                {errors.capacity && (
+                                    <p className='text-start ms-md-4 mt-1 text-danger'>{errors.capacity}</p>
+                                )}
                             </Col>
                             <Col xs={12} className="d-flex justify-content-end mt-3">
                                 <Button variant="primary" disabled={isSubmit} type="submit" className='mx-3'>
