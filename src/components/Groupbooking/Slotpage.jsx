@@ -193,7 +193,13 @@ const Slotpage = () => {
             ),
         });
     };
-
+    const formatTimeTo12Hour = (time) => {
+        const [hour, minute] = time.split(':');
+        const hours = parseInt(hour, 10);
+        const period = hours >= 12 ? 'PM' : 'AM';
+        const formattedHour = hours % 12 || 12; // Convert 0 to 12 for 12-hour format
+        return `${formattedHour}:${minute} ${period}`;
+    };
 
     return (
         <>
@@ -238,17 +244,20 @@ const Slotpage = () => {
 
 
                                         <Container className='session text-start p-lg-3 '>
-                                            {formattedTime} - {session.title}
+                                        <h4>
+                                                {session.slotType === 'inhouse' ? 'RTE' : 'OnSite'}
+                                            </h4>
+                                            
 
 
 
 
+                                          
 
                                             <strong>Trainer:</strong> {session.trainer} <br />
-                                            <strong>Category:</strong> {session.category} <br />
-                                            <strong>Date:</strong> {session.slotdate} <br />
-                                            <strong>Time:</strong> {session.time} <br />
-                                            <strong>Deadline:</strong> {session.deadlineTime} <br />
+                               
+                                            <strong>Time:</strong> {formatTimeTo12Hour(session.time)} <br />
+                                            <strong>Deadline:</strong>{formatTimeTo12Hour(session.deadlineTime)} <br />
                                             <strong>Capacity:</strong> {session.capacity} <br />
                                             <strong>Available Seats:</strong> {session.available_seats} <br />
                                             <div className=' d-flex justify-content-end'>
@@ -349,6 +358,7 @@ const Slotpage = () => {
                                                             <FaEdit />
                                                         </Button>
                                                     </div>
+
                                                     <strong>Name:</strong> {detail.institution_name} <br />
                                                     <strong>Email:</strong> {detail.institution_email} <br />
                                                     <strong>Phone:</strong> {detail.institution_phone} <br />

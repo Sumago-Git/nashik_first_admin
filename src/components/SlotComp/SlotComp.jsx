@@ -21,7 +21,7 @@ const SlotComp = ({ selectedDates, slotDatefortest, categoryName, showModal, han
     const [show, setShow] = useState(false);
     const [showTable, setShowTable] = useState(true)
     const [show1, setShow1] = useState(false);
-    const handleClose1 = () => setShow1(true);
+    const handleClose1 = () => { setShow1(true); setErrors({}) };
     const [show2, setShow2] = useState(false);
     const handleClose2 = () => setShow2(true);
     const handleShow1 = () => setShow1(true);
@@ -218,25 +218,25 @@ const SlotComp = ({ selectedDates, slotDatefortest, categoryName, showModal, han
         });
     };
     const toggleEdit = (id, row) => {
-   
+
         if (row) {
             setShow1(true)
             setEditingId(id);
             setFormData(row); // This should set existing data correctly
             setEditMode(true);
             setShowTable(false);
-     
+
         }
     };
     const toggleEdit2 = (id, row) => {
-    
+
         if (row) {
             setShow2(true)
             setEditingId(id);
             setFormData(row); // This should set existing data correctly
             setEditMode(true);
             setShowTable(false);
-     ting
+
         }
     };
 
@@ -305,7 +305,7 @@ const SlotComp = ({ selectedDates, slotDatefortest, categoryName, showModal, han
 
     const handleSubmit2 = async (e) => {
         e.preventDefault();
-       
+
 
         if (validateForm(formData)) {
             setLoading(true);
@@ -752,11 +752,17 @@ const SlotComp = ({ selectedDates, slotDatefortest, categoryName, showModal, han
                                     name="capacity"
                                     onChange={handleChange}
                                     initialData={formData}
+                                    disabled={editMode ||
+                                        formData.category === "School Students Training – Group" ||
+                                        formData.category === "College/Organization Training – Group"
+                                    }
                                 />
                                 {errors.capacity && (
                                     <p className='text-start ms-md-4 mt-1 text-danger'>{errors.capacity}</p>
                                 )}
                             </Col>
+
+
                             <Col xs={12} className="d-flex justify-content-end mt-3">
                                 <Button variant="primary" disabled={isSubmit} type="submit" className='mx-3'>
                                     Submit

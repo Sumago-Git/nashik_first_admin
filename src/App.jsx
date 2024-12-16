@@ -164,10 +164,10 @@ function App() {
           <Route
             path="/bookingpage2"
             element={<ProtectedRoutes Component={Bookingpage2} />}
-          />
+          />   
           <Route
             path="/Slotpage"
-            element={<ProtectedRoutes Component={Slotpage} />}
+            element={<ProtectedRoutes Component={Slotpage} />}    
           />
           <Route
             path="/annualreturn"
