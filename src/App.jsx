@@ -61,11 +61,7 @@ import Bycategoriesandinstitudename from "./components/Reports/Bycategoriesandin
 import ByTrainer from "./components/Reports/ByTrainer";
 
 function App() {
-  useEffect(() => {
-    window.addEventListener('popstate', (e) => {
-      window.history.go(1);
-    });
-  }, []);
+
   return (
     <>
       <ToastContainer autoClose={2000} />

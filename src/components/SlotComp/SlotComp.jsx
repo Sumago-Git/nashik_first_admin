@@ -114,10 +114,7 @@ const SlotComp = ({ selectedDates, slotDatefortest, categoryName, showModal, han
         let isValid = true;
 
         // Check if the title is empty
-        if (!formData.title) {
-            errors.title = 'Title is required';
-            isValid = false;
-        }
+   
 
 
 
