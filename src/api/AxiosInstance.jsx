@@ -3,9 +3,9 @@ import axios from "axios";
 import { toast } from "react-toastify";
 
 const instance = axios.create({
-  // baseURL: `https://nashikfirstbackend.sumagodemo.com/`,
+  baseURL: `https://nashikfirstbackend.sumagodemo.com/`,
   // baseURL: `http://127.0.0.1:8000/`,
-  baseURL: `api.nashikfirst.com/`
+  // baseURL: `api.nashikfirst.com/`
 });
 
 instance.interceptors.request.use(

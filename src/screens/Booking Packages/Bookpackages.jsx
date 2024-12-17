@@ -223,7 +223,7 @@ const Bookpackages = ({ tabKey }) => {
                                                         specialDates.length > 0 &&
                                                         dateStatuses[day] !== "Holiday" && // Check if the day is NOT a holiday
                                                         specialDates.find((date) => date.day === day) &&
-                                                        !isPastDate(day) && (
+                                                         (
                                                             <div>
                                                                 {specialDates.find((date) => date.day === day)?.slots?.length > 0 ? (
                                                                     specialDates

@@ -232,6 +232,20 @@ const Bookcalender = ({ tabKey }) => {
 
                 combinedDoc.setFont("helvetica", "normal"); // Use simple font
                 combinedDoc.text(dateText, xPositionDate, yPositionDate);
+
+                const formatTimeTo12Hour = (time) => {
+                    const [hour, minute] = time.split(':');
+                    const hours = parseInt(hour, 10);
+                    const period = hours >= 12 ? 'PM' : 'AM';
+                    const formattedHour = hours % 12 || 12; // Convert 0 to 12 for 12-hour format
+                    return `${formattedHour}:${minute} ${period}`;
+                };
+                const timeText = `${formatTimeTo12Hour(item.sessionSlotTime)}`;
+                const xPositionTime = (imgWidthMm - combinedDoc.getTextWidth(timeText)) / 1.053;
+                const yPositionTime = imgHeightMm * 0.17;
+
+                combinedDoc.setFont("helvetica", "normal"); // Use simple font
+                combinedDoc.text(timeText, xPositionTime, yPositionTime);
             }
 
             // Open the combined PDF in a new tab
@@ -752,7 +766,7 @@ const Bookcalender = ({ tabKey }) => {
     };
 
     const handleEmailCertificate = async () => {
-        
+
         // Dynamically select the image based on the booking category
         let image;
         if (selectedBooking.category === "RTO – Learner Driving License Holder Training") {
