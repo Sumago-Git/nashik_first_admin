@@ -51,7 +51,7 @@ const Bookpackages = ({ tabKey }) => {
     const savedCategory = localStorage.getItem("category");
     const getdata_here = () => {
         instance.post('/Sessionslot/getAvailableslotslots', {
-           
+
             year: currentYear.toString(),
             month: (currentMonth + 1).toString(),
             category: savedCategory,
@@ -95,15 +95,29 @@ const Bookpackages = ({ tabKey }) => {
         return specialDates.find((special) => special.day === day && special.month === month) || {};
     };
 
-    const changeMonth = (direction) => {
-        setCurrentDate(prevDate => {
+    const handleMonthChange = (month) => {
+        setCurrentDate((prevDate) => {
             const newDate = new Date(prevDate);
-            newDate.setMonth(newDate.getMonth() + (direction === 'prev' ? -1 : +1));
+            newDate.setMonth(month);
             return newDate;
-
         });
-        console.log(currentDate)
     };
+
+    const handleYearChange = (year) => {
+        setCurrentDate((prevDate) => {
+            const newDate = new Date(prevDate);
+            newDate.setFullYear(year);
+            return newDate;
+        });
+    };
+
+    const generateYearOptions = () => {
+        const currentYear = new Date().getFullYear();
+        const startYear = currentYear - 7;
+        const endYear = currentYear + 3;
+        return Array.from({ length: endYear - startYear + 1 }, (_, i) => startYear + i);
+    };
+
     useEffect(() => {
         getdata_here();
     }, [currentDate]);
@@ -150,7 +164,17 @@ const Bookpackages = ({ tabKey }) => {
     };
 
 
-
+    const changeMonth = (direction) => {
+        setCurrentDate((prevDate) => {
+            const newDate = new Date(prevDate);
+            if (direction === 'prev') {
+                newDate.setMonth(newDate.getMonth() - 1);
+            } else if (direction === 'next') {
+                newDate.setMonth(newDate.getMonth() + 1);
+            }
+            return newDate;
+        });
+    };
 
 
 
@@ -161,14 +185,47 @@ const Bookpackages = ({ tabKey }) => {
             <Container fluid className="slotbg mt-4">
 
                 <Container className="calender">
+
                     <Col lg={12} className="d-flex justify-content-center align-items-center bg-white">
-                        <button className="btn ms-1" onClick={() => { changeMonth('prev'); }}>
+                        <button
+                            className="btn ms-1"
+                            onClick={() => changeMonth('prev')}
+                        >
                             <img src={leftarrow} className="w-75 arrowimg" alt="Previous" />
                         </button>
-                        <h3 className="calenderheadline mx-4">
-                            {monthNames[currentDate.getMonth()]} {currentDate.getFullYear()}
-                        </h3>
-                        <button className="btn ms-1" onClick={() => { changeMonth('next'); }}>
+
+                        <div className="mx-4 d-flex align-items-center">
+                            <select
+                                value={currentMonth}
+                                onChange={(e) => handleMonthChange(Number(e.target.value))}
+                                className="form-select me-2"
+                                style={{ width: "150px" }}
+                            >
+                                {monthNames.map((month, index) => (
+                                    <option key={index} value={index}>
+                                        {month}
+                                    </option>
+                                ))}
+                            </select>
+
+                            <select
+                                value={currentYear}
+                                onChange={(e) => handleYearChange(Number(e.target.value))}
+                                className="form-select"
+                                style={{ width: "100px" }}
+                            >
+                                {generateYearOptions().map((year) => (
+                                    <option key={year} value={year}>
+                                        {year}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+
+                        <button
+                            className="btn ms-1"
+                            onClick={() => changeMonth('next')}
+                        >
                             <img src={rightarrow} className="w-75 arrowimg" alt="Next" />
                         </button>
                     </Col>
@@ -223,7 +280,7 @@ const Bookpackages = ({ tabKey }) => {
                                                         specialDates.length > 0 &&
                                                         dateStatuses[day] !== "Holiday" && // Check if the day is NOT a holiday
                                                         specialDates.find((date) => date.day === day) &&
-                                                         (
+                                                        (
                                                             <div>
                                                                 {specialDates.find((date) => date.day === day)?.slots?.length > 0 ? (
                                                                     specialDates

@@ -78,21 +78,39 @@ const CalenderComp = () => {
     const getSpecialDateDetails = (day, month) => {
         return specialDates.find((special) => special.day === day && special.month === month) || {};
     };
+
     const changeMonth = (direction) => {
         setCurrentDate((prevDate) => {
             const newDate = new Date(prevDate);
-            if (direction === "prev") {
-                // Check if the current date is in the current month and year
-                const isCurrentMonth = newDate.getMonth() === new Date().getMonth() && newDate.getFullYear() === new Date().getFullYear();
-                if (isCurrentMonth) {
-                    return prevDate; // Do nothing if it's the current month
-                }
+            if (direction === 'prev') {
                 newDate.setMonth(newDate.getMonth() - 1);
-            } else if (direction === "next") {
+            } else if (direction === 'next') {
                 newDate.setMonth(newDate.getMonth() + 1);
             }
             return newDate;
         });
+    };
+    const handleMonthChange = (month) => {
+        setCurrentDate((prevDate) => {
+            const newDate = new Date(prevDate);
+            newDate.setMonth(month);
+            return newDate;
+        });
+    };
+
+    const handleYearChange = (year) => {
+        setCurrentDate((prevDate) => {
+            const newDate = new Date(prevDate);
+            newDate.setFullYear(year);
+            return newDate;
+        });
+    };
+
+    const generateYearOptions = () => {
+        const currentYear = new Date().getFullYear();
+        const startYear = currentYear - 7;
+        const endYear = currentYear + 3;
+        return Array.from({ length: endYear - startYear + 1 }, (_, i) => startYear + i);
     };
 
 
@@ -273,6 +291,7 @@ const CalenderComp = () => {
             <Container fluid className="slotbg">
                 {/* <div><h2>{savedCategory}</h2></div> */}
                 <Container className="calender">
+
                     <Col lg={12} className="d-flex justify-content-center align-items-center bg-white">
                         <button
                             className="btn ms-1"
@@ -280,9 +299,35 @@ const CalenderComp = () => {
                         >
                             <img src={leftarrow} className="w-75 arrowimg" alt="Previous" />
                         </button>
-                        <h3 className="calenderheadline mx-4">
-                            {monthNames[currentMonth]} {currentYear}
-                        </h3>
+
+                        <div className="mx-4 d-flex align-items-center">
+                            <select
+                                value={currentMonth}
+                                onChange={(e) => handleMonthChange(Number(e.target.value))}
+                                className="form-select me-2"
+                                style={{ width: "150px" }}
+                            >
+                                {monthNames.map((month, index) => (
+                                    <option key={index} value={index}>
+                                        {month}
+                                    </option>
+                                ))}
+                            </select>
+
+                            <select
+                                value={currentYear}
+                                onChange={(e) => handleYearChange(Number(e.target.value))}
+                                className="form-select"
+                                style={{ width: "100px" }}
+                            >
+                                {generateYearOptions().map((year) => (
+                                    <option key={year} value={year}>
+                                        {year}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+
                         <button
                             className="btn ms-1"
                             onClick={() => changeMonth('next')}
@@ -290,6 +335,7 @@ const CalenderComp = () => {
                             <img src={rightarrow} className="w-75 arrowimg" alt="Next" />
                         </button>
                     </Col>
+
 
                     <Container className="mt-4 card py-4">
                         <Table
