@@ -2,39 +2,31 @@ import React, { useEffect, useState } from 'react';
 import Card from 'react-bootstrap/Card';
 import Form from 'react-bootstrap/Form';
 import Container from 'react-bootstrap/Container';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import Alert from 'react-bootstrap/Alert';
-import { FaEdit, FaEye, FaEyeSlash, FaRegEye } from 'react-icons/fa';
+import DataTable from 'react-data-table-component';
 import { MdDelete } from 'react-icons/md';
+import { confirmAlert } from 'react-confirm-alert';
+import 'react-confirm-alert/src/react-confirm-alert.css';
 import instance from '../../api/AxiosInstance';
-
-import { confirmAlert } from "react-confirm-alert";
-import "react-confirm-alert/src/react-confirm-alert.css";
-import { useSearchExport } from '../../context/SearchExportContext';
-import SearchInput from '../search/SearchInput';
-import DataTable from 'react-data-table-component';  // Import DataTable component
-
-import "../../assets/contactform.css";
+import '../../assets/contactform.css';
 
 function ContactForm() {
-    const [fullName, setFullName] = useState("");
-    const [email, setEmail] = useState("");
-    const [contact, setContact] = useState("");
-    const [age, setAge] = useState("");
-    const [subject, setSubject] = useState("");
-    const [profession, setProfession] = useState("");
-    const [suggestions, setSuggestions] = useState("");
+    const [fullName, setFullName] = useState('');
+    const [email, setEmail] = useState('');
+    const [contact, setContact] = useState('');
+    const [age, setAge] = useState('');
+    const [subject, setSubject] = useState('');
+    const [profession, setProfession] = useState('');
+    const [suggestions, setSuggestions] = useState('');
     const [errors, setErrors] = useState({});
     const [showAdd, setShowAdd] = useState(true);
     const [getAdminData, setAdminData] = useState([]);
     const [editMode, setEditMode] = useState(false);
     const [editId, setEditId] = useState(null);
+    const [currentPage, setCurrentPage] = useState(1);
     const [activeStatus, setActiveStatus] = useState({});
-
-    const { searchQuery, handleSearch, handleExport, setData, filteredData } = useSearchExport();
-
+    const [rowsPerPage, setRowsPerPage] = useState(10);
     const columns = [
         {
             name: 'Sr. No',
@@ -96,6 +88,60 @@ function ContactForm() {
         },
     ];
 
+    const getdata_admin = () => {
+        instance.get('contactform/get-contactforms')
+            .then((res) => {
+                const data = res.data.responseData || [];
+                setAdminData([...data].reverse()); // Set reversed data
+                const initialStatus = {};
+                data.forEach(item => {
+                    initialStatus[item.id] = item.isActive;
+                });
+                setActiveStatus(initialStatus);
+            })
+            .catch((err) => console.log(err));
+    };
+
+    useEffect(() => {
+        getdata_admin();
+    }, []);
+
+    const handleDelete = (id) => {
+        confirmAlert({
+            title: 'Confirm to delete',
+            message: 'Are you sure you want to delete this entry?',
+            buttons: [
+                {
+                    label: 'Yes',
+                    onClick: async () => {
+                        try {
+                            await instance.delete(`contactform/delete-contactform/${id}`);
+                            getdata_admin(); // Refresh data after deletion
+                        } catch (error) {
+                            console.error('Error deleting data:', error);
+                        }
+                    }
+                },
+                {
+                    label: 'No',
+                },
+            ],
+        });
+    };
+
+    const handleToggle = () => {
+        setShowAdd(!showAdd);
+        setEditMode(false);
+        setFullName('');
+        setEmail('');
+        setContact('');
+        setAge('');
+        setSubject('');
+        setProfession('');
+        setSuggestions('');
+        setErrors({});
+    };
+
     const validateForm = () => {
         let errors = {};
         let isValid = true;
@@ -133,59 +179,6 @@ function ContactForm() {
         return isValid;
     };
 
-    const handleToggle = () => {
-        setShowAdd(!showAdd);
-        setEditMode(false);
-        setFullName("");
-        setEmail("");
-        setContact("");
-        setAge("");
-        setSubject("");
-        setProfession("");
-        setSuggestions("");
-        setErrors({});
-    };
-
-    const getdata_admin = () => {
-        instance.get('contactform/get-contactforms')
-            .then((res) => {
-                setAdminData(res.data.responseData || []);
-                const initialStatus = {};
-                res.data.responseData.forEach(item => {
-                    initialStatus[item.id] = item.isActive;
-                });
-                setActiveStatus(initialStatus);
-            })
-            .catch((err) => console.log(err));
-    };
-
-    useEffect(() => {
-        getdata_admin();
-    }, []);
-
-    const handleDelete = (id) => {
-        confirmAlert({
-            title: 'Confirm to delete',
-            message: 'Are you sure you want to delete this entry?',
-            buttons: [
-                {
-                    label: 'Yes',
-                    onClick: async () => {
-                        try {
-                            await instance.delete(`contactform/delete-contactform/${id}`);
-                            getdata_admin(); // Refresh data after deletion
-                        } catch (error) {
-                            console.error("Error deleting data:", error);
-                        }
-                    }
-                },
-                {
-                    label: 'No'
-                }
-            ]
-        });
-    };
-
     return (
         <Container>
             <Card>
@@ -195,27 +188,23 @@ function ContactForm() {
                 <Card.Body>
                     {showAdd ? (
                         getAdminData.length > 0 ? (
-                            <>
-                                {/* <SearchInput value={searchQuery} onChange={handleSearch} /> */}
-                                <DataTable
-                                    columns={columns}
-                                    data={filteredData.length > 0 ? filteredData : getAdminData}
-                                    pagination
-                                    responsive
-                                    striped
-                                    noDataComponent="No Data Available"
-                                    onChangePage={(page) => setCurrentPage(page)}
-                                    onChangeRowsPerPage={(rowsPerPage) => setRowsPerPage(rowsPerPage)}
-                                />
-                            </>
+                            <DataTable
+                                columns={columns}
+                                data={getAdminData} // Already reversed during state update
+                                pagination
+                                responsive
+                                striped
+                                noDataComponent="No Data Available"
+                                onChangePage={(page) => setCurrentPage(page)}
+                            />
                         ) : (
                             <Alert variant="warning" className="text-center">
                                 No data found
                             </Alert>
                         )
                     ) : (
-                        <Form onSubmit={handleForm}>
-                            {/* Form Fields Here */}
+                        <Form>
+                            {/* Add Form Fields Here */}
                             <Button type="submit" variant="success">
                                 {editMode ? 'Update' : 'Submit'}
                             </Button>
