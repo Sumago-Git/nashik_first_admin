@@ -276,6 +276,20 @@ const SidebarMenu = [
       },
     ],
   },
+  {
+    menu: "Traning Table",
+    // menu: "Group registration",
+    url: "/slotsfromtoday",
+    mainIcon: <MdLocalOffer size={24} />,
+    subMenu: [
+      {
+        subMenus: "Traning Table",
+        url: "/slotsfromtoday",
+        icon: <AiOutlineAppstoreAdd style={{ color: "red" }} size={24} />,
+      },
+    ],
+  },
+ 
   // {
   //   menu: "Reports",
   //   url: "/report",

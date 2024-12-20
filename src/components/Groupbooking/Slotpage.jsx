@@ -239,23 +239,23 @@ const Slotpage = () => {
                                     border: "0px",
                                 };
                                 return (
-                                    <Col key={index} lg={4} sm={6} md={6} className={index === 0 ? 'pe-lg-5' : 'ps-lg-5'}>
+                                    <Container key={index} className=' d-flex session'>
 
 
+                                        <Container className=' text-start p-lg-3 '>
 
-                                        <Container className='session text-start p-lg-3 '>
-                                        <h4>
-                                                {session.slotType === 'inhouse' ? 'RTE' : 'OnSite'}
+                                            <h4>
+                                                {session.slotType === 'inhouse' ? 'TEP' : 'OnSite'}
                                             </h4>
-                                            
 
 
 
 
-                                          
+
+
 
                                             <strong>Trainer:</strong> {session.trainer} <br />
-                               
+
                                             <strong>Time:</strong> {formatTimeTo12Hour(session.time)} <br />
                                             <strong>Deadline:</strong>{formatTimeTo12Hour(session.deadlineTime)} <br />
                                             <strong>Capacity:</strong> {session.capacity} <br />
@@ -324,11 +324,19 @@ const Slotpage = () => {
 
                                         </Container>
 
-                                        <Container className='session'>
+                                        <Container>
                                             {session?.slotRegisterInfos?.map((detail, index) => (
                                                 <div key={index} style={{ marginTop: "10px" }}>
-                                                    <div className=' d-flex justify-content-end'>
-                                                        <Button onClick={() => handleDelete(detail.id)}><FaTrash /></Button>
+
+                                                    <strong>Name:</strong> {detail.institution_name} <br />
+                                                    <strong>Email:</strong> {detail.institution_email} <br />
+                                                    <strong>Phone:</strong> {detail.institution_phone} <br />
+                                                    <strong>Coordinator Name:</strong> {detail.coordinator_name} <br />
+                                                    <strong>Coordinator Mobile:</strong> {detail.coordinator_mobile} <br />
+                                                    <strong>Principal/Manager Name:</strong> {detail.hm_principal_manager_name} <br />
+                                                    <strong>Principal/Manager Mobile:</strong> {detail.hm_principal_manager_mobile} <br />
+                                                    <div className=' d-flex justify-content-end mb-3'>
+                                                        <Button onClick={() => handleDelete(detail.id)} className='me-4'><FaTrash /></Button>
                                                         <Button
                                                             onClick={() => {
                                                                 // if (isAvailable) {
@@ -359,14 +367,6 @@ const Slotpage = () => {
                                                         </Button>
                                                     </div>
 
-                                                    <strong>Name:</strong> {detail.institution_name} <br />
-                                                    <strong>Email:</strong> {detail.institution_email} <br />
-                                                    <strong>Phone:</strong> {detail.institution_phone} <br />
-                                                    <strong>Coordinator Name:</strong> {detail.coordinator_name} <br />
-                                                    <strong>Coordinator Mobile:</strong> {detail.coordinator_mobile} <br />
-                                                    <strong>Principal/Manager Name:</strong> {detail.hm_principal_manager_name} <br />
-                                                    <strong>Principal/Manager Mobile:</strong> {detail.hm_principal_manager_mobile} <br />
-
                                                 </div>
                                             ))}
 
@@ -374,7 +374,7 @@ const Slotpage = () => {
 
                                         </Container>
 
-                                    </Col>
+                                    </Container>
                                 );
                             })}
 

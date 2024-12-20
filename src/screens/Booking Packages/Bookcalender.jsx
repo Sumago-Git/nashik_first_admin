@@ -176,7 +176,7 @@ const Bookcalender = ({ tabKey }) => {
                 } else if (item.category === "RTO – Suspended Driving License Holders Training") {
                     image = (await import('../../assets/Holiday/suspended.jpg')).default;
                 } else if (item.category === "College/Organization Training – Group") {
-                    image = (await import('../../assets/Holiday/suspended.jpg')).default;
+                    image = (await import('../../assets/Holiday/Certificate_page-0001.jpg')).default;
                 }
 
                 const img = await loadImage(image);
@@ -1526,47 +1526,55 @@ const Bookcalender = ({ tabKey }) => {
                                         selectedBooking.training_status
                                     )}
                                 </Col>
-                                <hr></hr>
+
+                                <hr />
 
                                 <Col lg={6} md={6} sm={12} className="pb-4">
-                                    <b>Learining Licenses Number</b><br />
-                                    {selectedBooking.learningNo}
+                                    {isEditing && selectedBooking.category !== "School Students Training – Group" ? <>
+                                        <b>Learining Licenses Number</b>
+                                        <br />
+                                        {selectedBooking.learningNo}</>
+                                        : <><Form.Label><b>Learining Licenses Number</b></Form.Label> <br />
+                                            {selectedBooking.learningNo}</>}
+
                                 </Col>
                                 <Col lg={6} md={6} sm={12}>
                                     <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
                                         {/* <b>Email</b><br /> */}
-                                        <Form.Label><b>Email</b></Form.Label><br />
-                                        {isEditing ? (
+
+                                        {isEditing && selectedBooking.category !== "School Students Training – Group" ? (
                                             // <input
                                             //     type="text"
                                             //     defaultValue={selectedBooking.email}
                                             //     onChange={(e) => setSelectedBooking({ ...selectedBooking, email: e.target.value })}
                                             // />
 
+                                            <><Form.Label><b>Email</b></Form.Label><br />                                             <Form.Control type="text" defaultValue={selectedBooking.email} onChange={(e) => setSelectedBooking({ ...selectedBooking, email: e.target.value })} />
+                                            </>
 
-                                            <Form.Control type="text" defaultValue={selectedBooking.email} onChange={(e) => setSelectedBooking({ ...selectedBooking, email: e.target.value })} />
-
-                                        ) : (
-                                            selectedBooking.email
-                                        )}
-                                    </Form.Group>
-                                </Col>
-                                <hr></hr>
-
-                                <Col lg={6} md={6} sm={12} className="">
-                                    <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-                                        <Form.Label><b>Phone Number</b></Form.Label><br />
-
-
-                                        {isEditing ? (
-                                            <Form.Control type="text" defaultValue={selectedBooking.phone} onChange={(e) => setSelectedBooking({ ...selectedBooking, phone: e.target.value })} />
-                                        ) : (
-                                            selectedBooking.phone
-                                        )}
+                                        ) : <><Form.Label><b>Email</b></Form.Label> <br />
+                                            {selectedBooking.email}</>}
                                     </Form.Group>
                                 </Col>
 
                                 <hr />
+                                <Col lg={6} md={6} sm={12} className="">
+                                    <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+
+
+                                        {isEditing && selectedBooking.category !== "School Students Training – Group" ? (
+                                            <>                                         <Form.Label><b>Phone Number</b></Form.Label><br />
+
+                                                <Form.Control type="text" defaultValue={selectedBooking.phone} onChange={(e) => setSelectedBooking({ ...selectedBooking, phone: e.target.value })} />
+                                            </>) : (
+                                            <><Form.Label><b>Phone Number</b></Form.Label>
+                                                <br />
+                                                {selectedBooking.phone}</>
+
+                                        )}
+                                    </Form.Group>
+                                </Col>
+
 
                                 {category1 === "School Students Training – Group" ? <></> : (
                                     <>

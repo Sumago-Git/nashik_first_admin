@@ -59,6 +59,7 @@ import Sessionslotdetails2 from "./components/Groupbooking/Sessionslotdetails2";
 import Bycategories from "./components/Reports/Bycategories";
 import Bycategoriesandinstitudename from "./components/Reports/Bycategoriesandinstitudename";
 import ByTrainer from "./components/Reports/ByTrainer";
+import Slotsfromtoday from "./components/SlotComp/Slotsfromtoday";
 
 function App() {
 
@@ -160,10 +161,14 @@ function App() {
           <Route
             path="/bookingpage2"
             element={<ProtectedRoutes Component={Bookingpage2} />}
-          />   
+          />
+          <Route
+            path="/slotsfromtoday"
+            element={<ProtectedRoutes Component={Slotsfromtoday} />}
+          />
           <Route
             path="/Slotpage"
-            element={<ProtectedRoutes Component={Slotpage} />}    
+            element={<ProtectedRoutes Component={Slotpage} />}
           />
           <Route
             path="/annualreturn"
@@ -253,7 +258,7 @@ function App() {
             path="/bytrainer"
             element={<ProtectedRoutes Component={ByTrainer} />}
           />
-          
+
           <Route
             path="/Bycategoriesandinstitudename"
             element={<ProtectedRoutes Component={Bycategoriesandinstitudename} />}
