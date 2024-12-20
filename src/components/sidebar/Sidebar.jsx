@@ -270,7 +270,7 @@ const SidebarMenu = [
     mainIcon: <MdLocalOffer size={24} />,
     subMenu: [
       {
-        subMenus: "Booking Package",
+        subMenus: "Registration",
         url: "/groupbooking",
         icon: <AiOutlineAppstoreAdd style={{ color: "red" }} size={24} />,
       },

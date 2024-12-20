@@ -164,7 +164,7 @@ const AreaTop = ({ buttonValue, tableView }) => {
     } else if (window.location.pathname == "/annualreport") {
       setHeader("Annual Report");
     } else if (window.location.pathname == "/groupbooking") {
-      setHeader("Group Booking");
+      setHeader("");
     }
     else if (window.location.pathname == "/trainer") {
       setHeader("Trainer");

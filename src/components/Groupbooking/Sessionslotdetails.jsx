@@ -67,7 +67,7 @@ const Sessionslotdetails = () => {
       errors.institution_email = 'Institution Email is required';
       isValid = false;
     }
-   
+
     if (!formData.hm_principal_manager_name) {
       errors.hm_principal_manager_name = 'Principal Manager Name is required';
       isValid = false;
@@ -105,9 +105,9 @@ const Sessionslotdetails = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-   // Start loading
+    // Start loading
     if (validateForm(formData)) {
-      setIsSubmitting(true); 
+      setIsSubmitting(true);
       // Format the slotdate before sending it
       let value = slotdate;
       const parts = value.split(' '); // Split the string by space
@@ -202,6 +202,7 @@ const Sessionslotdetails = () => {
               />
               {errors.institution_name && <p className='text-start ms-md-4 mt-1 text-danger'>{errors.institution_name}</p>}
             </Col>
+            <Col lg={6}></Col>
             <Col lg={6}>
               <p className='bookingdate text-black text-start ms-lg-4 ms-sm-3 mt-3'>{"Institution Email*"}</p>
               <input
@@ -222,7 +223,7 @@ const Sessionslotdetails = () => {
                 placeholder={"Institution Landline No."}
                 className='dateinput p-3 m-0 mt-0 ms-lg-3'
               />
-              {errors.institution_phone && <p className='text-start ms-md-4 mt-1 text-danger'>{errors.institution_phone}</p>}
+              {/* {errors.institution_phone && <p className='text-start ms-md-4 mt-1 text-danger'>{errors.institution_phone}</p>} */}
             </Col>
             <Col lg={6}>
               <p className='bookingdate text-black text-start ms-lg-4 ms-sm-3 mt-3'>{"Principal/Manager Name*"}</p>

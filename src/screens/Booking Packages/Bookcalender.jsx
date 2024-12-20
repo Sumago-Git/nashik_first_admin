@@ -31,7 +31,10 @@ const Bookcalender = ({ tabKey }) => {
     const [lgShow, setLgShow] = useState(false);
     const location = useLocation();
     const { selectedDate, selectedTime, category, slotsession, slotDatefortest } = location.state || {};
-
+    const capitalizeFirstLetter = (text) => {
+        if (!text) return '';
+        return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
+    };
     useEffect(() => {
         if (!selectedDate || !selectedTime || !category || !slotDatefortest) {
             console.log("State values are missing:", { selectedDate, selectedTime, category, slotDatefortest });
@@ -202,7 +205,8 @@ const Bookcalender = ({ tabKey }) => {
                 // Skip adding the image but retain its dimensions for layout
 
                 // Add user details
-                const nameText = `${item.fname} ${item.lname}`;
+                const nameText = `${capitalizeFirstLetter(item.fname)} ${capitalizeFirstLetter(item.lname)}`;
+
                 const xPositionName = (imgWidthMm - combinedDoc.getTextWidth(nameText)) / 2.2;
                 const yPositionName = imgHeightMm * 0.52;
 
@@ -610,8 +614,7 @@ const Bookcalender = ({ tabKey }) => {
                 format: [imgWidthMm, imgHeightMm]
             });
 
-            // Add text to the PDF without including the image as a background
-
+            // Add text to the PDF
             doc.addFileToVFS("MyCustomFont.ttf", base64String);
             doc.addFont("MyCustomFont.ttf", "MyCustomFont", "normal");
 
@@ -619,7 +622,7 @@ const Bookcalender = ({ tabKey }) => {
             doc.setFontSize(95);
             doc.setTextColor("#000");
 
-            const nameText = `${selectedBooking.fname} ${selectedBooking.lname}`;
+            const nameText = `${capitalizeFirstLetter(selectedBooking.fname)} ${capitalizeFirstLetter(selectedBooking.lname)}`;
             const nameWidth = doc.getTextWidth(nameText);
             const xPositionName = (imgWidthMm - nameWidth) / 2;
             const yPositionName = imgHeightMm * 0.52;
@@ -654,26 +657,18 @@ const Bookcalender = ({ tabKey }) => {
             const yPositionSlotTime = 90;
             doc.text(slotTimeText, xPositionSlotTime, yPositionSlotTime);
 
-            // Generate the PDF as a data URI
-            const pdfDataUri = doc.output('datauri');
+            // Generate the PDF Blob
+            const pdfBlob = doc.output('blob');
 
-            // Open the PDF in a new window/tab for preview
-            const previewWindow = window.open('', '_blank');
-            if (previewWindow) {
-                previewWindow.document.write(`
-                <html>
-                    <head>
-                        <title>Print Preview</title>
-                    </head>
-                    <body style="text-align: center;">
-                        <embed src="${pdfDataUri}" type="application/pdf" width="100%" height="600px" />
-                    </body>
-                </html>
-            `);
-                previewWindow.document.close();
-            }
+            // Create a Blob URL and open it in a new tab
+            const pdfUrl = URL.createObjectURL(pdfBlob);
+            window.open(pdfUrl, '_blank');
+
+            // Revoke the URL after some time to release memory
+            setTimeout(() => URL.revokeObjectURL(pdfUrl), 10000);
         };
     };
+
 
     const handlePdfCertificate = async () => {
         let image;
@@ -713,7 +708,7 @@ const Bookcalender = ({ tabKey }) => {
             doc.setFontSize(95);
             doc.setTextColor("#000");
 
-            const nameText = `${selectedBooking.fname} ${selectedBooking.lname}`;
+            const nameText = `${capitalizeFirstLetter(selectedBooking.fname)} ${capitalizeFirstLetter(selectedBooking.lname)}`;
             const nameWidth = doc.getTextWidth(nameText);
             const xPositionName = (imgWidthMm - nameWidth) / 2;
             const yPositionName = imgHeightMm * 0.52;
@@ -916,7 +911,8 @@ const Bookcalender = ({ tabKey }) => {
             doc.setFontSize(95);
             doc.setTextColor("#000");
 
-            const nameText = `${row.fname} ${row.lname}`;
+            const nameText = `${capitalizeFirstLetter(row.fname)} ${capitalizeFirstLetter(row.lname)}`;
+
             const nameWidth = doc.getTextWidth(nameText);
             const xPositionName = (imgWidthMm - nameWidth) / 2;
             const yPositionName = imgHeightMm * 0.52;
@@ -1039,12 +1035,12 @@ const Bookcalender = ({ tabKey }) => {
             name: 'Training Status',
             cell: row => (
                 <Button
-                    variant={row.training_status !== "Confirmed" ? "success" : "secondary"}
+                    variant={row.training_status !== "Attended" ? "secondary" : "success"}
                     className="w-100"
                     onClick={() => { toggleStatus(row); handleEmailCertificatesingle(row); }}
                     disabled={row.training_status === "Attended"} // Disable the button if the status is "Attended"
                 >
-                    {row.training_status === "Confirmed" ? "Confirmed" : "Attended"}
+                    {row.training_status === "Attended" ? "Attended" : row.training_status}
                 </Button>
             ),
             sortable: true,
@@ -1110,7 +1106,7 @@ const Bookcalender = ({ tabKey }) => {
                     doc.setTextColor("#4e4e95");
 
                     // Prepare user's name
-                    const nameText = `${row?.fname} ${row?.lname}`;
+                    const nameText = `${capitalizeFirstLetter(row?.fname)} ${capitalizeFirstLetter(row?.lname)}`;
                     const nameWidth = doc.getTextWidth(nameText);
 
                     // Center the name horizontally
