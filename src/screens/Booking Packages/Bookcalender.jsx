@@ -594,7 +594,7 @@ const Bookcalender = ({ tabKey }) => {
         } else if (selectedBooking.category === "RTO – Suspended Driving License Holders Training") {
             image = await import('../../assets/Holiday/suspended.jpg');
         } else if (selectedBooking.category === "College/Organization Training – Group") {
-            image = await import('../../assets/Holiday/suspended.jpg');
+            image = await import('../../assets/Holiday/learner.JPG');
         }
         const imgData = image.default;
 
@@ -679,7 +679,7 @@ const Bookcalender = ({ tabKey }) => {
         } else if (selectedBooking.category === "RTO – Suspended Driving License Holders Training") {
             image = await import('../../assets/Holiday/suspended.jpg');
         } else if (selectedBooking.category === "College/Organization Training – Group") {
-            image = await import('../../assets/Holiday/suspended.jpg');
+            image = await import('../../assets/Holiday/learner.JPG');
         }
         const imgData = image.default;
 
@@ -771,7 +771,7 @@ const Bookcalender = ({ tabKey }) => {
         } else if (selectedBooking.category === "RTO – Suspended Driving License Holders Training") {
             image = await import('../../assets/Holiday/suspended.jpg');
         } else if (selectedBooking.category === "College/Organization Training – Group") {
-            image = await import('../../assets/Holiday/suspended.jpg');
+            image = await import('../../assets/Holiday/learner.JPG');
         }
         const imgData = image.default;
 
@@ -879,7 +879,7 @@ const Bookcalender = ({ tabKey }) => {
         } else if (row.category === "RTO – Suspended Driving License Holders Training") {
             image = await import('../../assets/Holiday/suspended.jpg');
         } else if (row.category === "College/Organization Training – Group") {
-            image = await import('../../assets/Holiday/suspended.jpg');
+            image = await import('../../assets/Holiday/learner.JPG');
         }
         const imgData = image.default;
 
@@ -1068,7 +1068,7 @@ const Bookcalender = ({ tabKey }) => {
             } else if (row.category === "RTO – Suspended Driving License Holders Training") {
                 image = await import('../../assets/Holiday/suspended.jpg');
             } else if (row.category === "College/Organization Training – Group") {
-                image = await import('../../assets/Holiday/suspended.jpg');
+                image = await import('../../assets/Holiday/learner.JPG');
             }
 
             const imgData = image.default; // Get the image data
