@@ -15,6 +15,7 @@ import instance from "../../api/AxiosInstance";
 import { useLocation, useNavigate } from "react-router-dom";
 import DataTable from "react-data-table-component";
 import { base64String } from "../../assets/base64font"
+import lernerCertificate from "../../assets/Holiday/learner.jpg"
 const Bookcalender = ({ tabKey }) => {
     const [show, setShow] = useState(false);
     const [slotInfo, setSlotInfo] = useState(null); // State to store slot data
@@ -147,6 +148,124 @@ const Bookcalender = ({ tabKey }) => {
     //     }
     // };
 
+    // const handlePrintAll = async () => {
+    //     const attendedRows = filteredData.filter((row) => row.training_status === "Attended");
+
+    //     if (attendedRows.length === 0) {
+    //         alert("No rows with 'Attended' status found.");
+    //         return;
+    //     }
+
+    //     const loadImage = (src) => {
+    //         return new Promise((resolve, reject) => {
+    //             const img = new Image();
+    //             img.src = src;
+    //             img.onload = () => resolve(img);
+    //             img.onerror = (err) => reject(err);
+    //         });
+    //     };
+
+    //     try {
+    //         let combinedDoc;
+
+    //         for (const [index, item] of attendedRows.entries()) {
+    //             let image;
+    //             if (item.category === "RTO – Learner Driving License Holder Training") {
+    //                 image = (await import('../../assets/Holiday/learner.JPG')).default;
+    //             } else if (item.category === "RTO – Training for School Bus Driver") {
+    //                 image = (await import('../../assets/Holiday/CERTIFICATE - BUS - Final.jpg')).default;
+    //             } else if (item.category === "RTO – Suspended Driving License Holders Training") {
+    //                 image = (await import('../../assets/Holiday/suspended.jpg')).default;
+    //             } else if (item.category === "College/Organization Training – Group") {
+    //                 image = (await import('../../assets/Holiday/Certificate_page-0001.jpg')).default;
+    //             }
+
+    //             const img = await loadImage(image);
+
+    //             const imgWidthPx = img.width;
+    //             const imgHeightPx = img.height;
+
+    //             const dpi = 96;
+    //             const imgWidthMm = (imgWidthPx / dpi) * 25.4;
+    //             const imgHeightMm = (imgHeightPx / dpi) * 25.4;
+
+    //             const orientation = imgWidthMm > imgHeightMm ? 'landscape' : 'portrait';
+
+    //             // Initialize the PDF document with correct dimensions and orientation for the first certificate
+    //             if (index === 0) {
+    //                 combinedDoc = new jsPDF({
+    //                     orientation,
+    //                     unit: 'mm',
+    //                     format: [imgWidthMm, imgHeightMm],
+    //                 });
+    //             } else {
+    //                 // Add a new page for subsequent certificates
+    //                 combinedDoc.addPage([imgWidthMm, imgHeightMm], orientation);
+    //             }
+
+    //             // Skip adding the image but retain its dimensions for layout
+
+    //             // Add user details
+    //             const nameText = `${capitalizeFirstLetter(item.fname)} ${capitalizeFirstLetter(item.lname)}`;
+
+    //             const xPositionName = (imgWidthMm - combinedDoc.getTextWidth(nameText)) / 2.2;
+    //             const yPositionName = imgHeightMm * 0.52;
+
+    //             combinedDoc.addFileToVFS("MyCustomFont.ttf", base64String); // Add the font
+    //             combinedDoc.addFont("MyCustomFont.ttf", "MyCustomFont", "normal"); // Register the font
+    //             combinedDoc.setFont("MyCustomFont");
+    //             combinedDoc.setFontSize(95);
+    //             combinedDoc.setTextColor("#000");
+    //             combinedDoc.text(nameText, xPositionName, yPositionName);
+
+    //             // Add certificate number (simple font)
+    //             const certNoText = `${item.certificate_no}`;
+    //             const xPositionCertNo = (imgWidthMm - combinedDoc.getTextWidth(certNoText)) / 1.09;
+    //             const yPositionCertNo = imgHeightMm * 0.072;
+
+    //             combinedDoc.setFont("helvetica", "normal"); // Use simple font
+    //             combinedDoc.setFontSize(40);
+    //             combinedDoc.setTextColor("#333333");
+    //             combinedDoc.text(certNoText, xPositionCertNo, yPositionCertNo);
+
+    //             // Add date (simple font)
+    //             const [month, day, year] = (item.slotdate).split("/");
+    //             const dateText = `${day}/${month}/${year}`;
+
+    //             const xPositionDate = (imgWidthMm - combinedDoc.getTextWidth(dateText)) / 1.03;
+    //             const yPositionDate = imgHeightMm * 0.135;
+
+    //             combinedDoc.setFont("helvetica", "normal"); // Use simple font
+    //             combinedDoc.text(dateText, xPositionDate, yPositionDate);
+
+    //             const formatTimeTo12Hour = (time) => {
+    //                 const [hour, minute] = time.split(':');
+    //                 const hours = parseInt(hour, 10);
+    //                 const period = hours >= 12 ? 'PM' : 'AM';
+    //                 const formattedHour = hours % 12 || 12; // Convert 0 to 12 for 12-hour format
+    //                 return `${formattedHour}:${minute} ${period}`;
+    //             };
+    //             const timeText = `${formatTimeTo12Hour(item.sessionSlotTime)}`;
+    //             const xPositionTime = (imgWidthMm - combinedDoc.getTextWidth(timeText)) / 1.053;
+    //             const yPositionTime = imgHeightMm * 0.17;
+
+    //             combinedDoc.setFont("helvetica", "normal"); // Use simple font
+    //             combinedDoc.text(timeText, xPositionTime, yPositionTime);
+    //         }
+
+    //         // Open the combined PDF in a new tab
+    //         const pdfBlob = combinedDoc.output("blob");
+    //         const pdfUrl = URL.createObjectURL(pdfBlob);
+
+    //         const newWindow = window.open(pdfUrl);
+    //         if (!newWindow) {
+    //             alert("Please allow pop-ups for this site to view the PDF.");
+    //         }
+    //     } catch (err) {
+    //         console.error("Error generating combined PDF:", err);
+    //     }
+    // };
+
     const handlePrintAll = async () => {
         const attendedRows = filteredData.filter((row) => row.training_status === "Attended");
 
@@ -164,22 +283,66 @@ const Bookcalender = ({ tabKey }) => {
             });
         };
 
+        // Configuration for different categories
+        const categoryConfig = {
+            "RTO – Learner Driving License Holder Training": {
+                fontSize: 95,
+                nameYFactor: 0.52,
+                certFontSize: 35,
+                certY: 45,
+                dateY: 85,
+                timeY: 100,
+                dateX: 80,
+                timeX: 78,
+                image: new URL('../../assets/Holiday/learner.jpg', import.meta.url).href,
+            },
+            "RTO – Training for School Bus Driver": {
+                fontSize: 50,
+                nameYFactor: 0.47,
+                certFontSize: 15,
+                certY: 18,
+                dateY: 33,
+                timeY: 40,
+                dateX: 40,
+                timeX: 40,
+                image: new URL('../../assets/Holiday/CERTIFICATE - BUS - Final.jpg', import.meta.url).href,
+            },
+            "RTO – Suspended Driving License Holders Training": {
+                fontSize: 45,
+                nameYFactor: 0.42,
+                certFontSize: 20,
+                certY: 66.2,
+                dateY: 86,
+                timeY: 100,
+                dateX: 60,
+                timeX: 62,
+                image: new URL('../../assets/Holiday/suspended.jpg', import.meta.url).href,
+            },
+            "College/Organization Training – Group": {
+                fontSize: 60,
+                nameYFactor: 0.35,
+                certFontSize: 20,
+                certY: 25,
+                dateY: 35,
+                timeY: 45,
+                dateX: 80,
+                timeX: 80,
+                image: new URL('../../assets/Holiday/Certificate_page-0001.jpg', import.meta.url).href,
+            },
+        };
+
         try {
             let combinedDoc;
 
             for (const [index, item] of attendedRows.entries()) {
-                let image;
-                if (item.category === "RTO – Learner Driving License Holder Training") {
-                    image = (await import('../../assets/Holiday/learner.JPG')).default;
-                } else if (item.category === "RTO – Training for School Bus Driver") {
-                    image = (await import('../../assets/Holiday/CERTIFICATE - BUS - Final.jpg')).default;
-                } else if (item.category === "RTO – Suspended Driving License Holders Training") {
-                    image = (await import('../../assets/Holiday/suspended.jpg')).default;
-                } else if (item.category === "College/Organization Training – Group") {
-                    image = (await import('../../assets/Holiday/Certificate_page-0001.jpg')).default;
+                const config = categoryConfig[item.category];
+                if (!config) {
+                    console.error(`No configuration found for category: ${item.category}`);
+                    continue;
                 }
 
-                const img = await loadImage(image);
+                // const image = (await import(config.image)).default;
+                const img = await loadImage(config.image);
 
                 const imgWidthPx = img.width;
                 const imgHeightPx = img.height;
@@ -190,7 +353,6 @@ const Bookcalender = ({ tabKey }) => {
 
                 const orientation = imgWidthMm > imgHeightMm ? 'landscape' : 'portrait';
 
-                // Initialize the PDF document with correct dimensions and orientation for the first certificate
                 if (index === 0) {
                     combinedDoc = new jsPDF({
                         orientation,
@@ -198,61 +360,41 @@ const Bookcalender = ({ tabKey }) => {
                         format: [imgWidthMm, imgHeightMm],
                     });
                 } else {
-                    // Add a new page for subsequent certificates
                     combinedDoc.addPage([imgWidthMm, imgHeightMm], orientation);
                 }
 
-                // Skip adding the image but retain its dimensions for layout
-
-                // Add user details
-                const nameText = `${capitalizeFirstLetter(item.fname)} ${capitalizeFirstLetter(item.lname)}`;
-
-                const xPositionName = (imgWidthMm - combinedDoc.getTextWidth(nameText)) / 2.2;
-                const yPositionName = imgHeightMm * 0.52;
-
-                combinedDoc.addFileToVFS("MyCustomFont.ttf", base64String); // Add the font
-                combinedDoc.addFont("MyCustomFont.ttf", "MyCustomFont", "normal"); // Register the font
+                combinedDoc.addFileToVFS("MyCustomFont.ttf", base64String);
+                combinedDoc.addFont("MyCustomFont.ttf", "MyCustomFont", "normal");
                 combinedDoc.setFont("MyCustomFont");
-                combinedDoc.setFontSize(95);
-                combinedDoc.setTextColor("#000");
-                combinedDoc.text(nameText, xPositionName, yPositionName);
+                combinedDoc.setFontSize(config.fontSize);
+                const nameText = `${capitalizeFirstLetter(item.fname)} ${capitalizeFirstLetter(item.lname)}`;
+                const nameX = (imgWidthMm - combinedDoc.getTextWidth(nameText)) / 2;
+                const nameY = imgHeightMm * config.nameYFactor;
+                combinedDoc.text(nameText, nameX, nameY);
 
-                // Add certificate number (simple font)
+                // Certificate number
+                combinedDoc.setFont("helvetica", "normal");
+                combinedDoc.setFontSize(config.certFontSize);
                 const certNoText = `${item.certificate_no}`;
-                const xPositionCertNo = (imgWidthMm - combinedDoc.getTextWidth(certNoText)) / 1.09;
-                const yPositionCertNo = imgHeightMm * 0.072;
+                combinedDoc.text(certNoText, imgWidthMm - config.dateX, config.certY);
 
-                combinedDoc.setFont("helvetica", "normal"); // Use simple font
-                combinedDoc.setFontSize(40);
-                combinedDoc.setTextColor("#333333");
-                combinedDoc.text(certNoText, xPositionCertNo, yPositionCertNo);
-
-                // Add date (simple font)
+                // Date
                 const [month, day, year] = (item.slotdate).split("/");
                 const dateText = `${day}/${month}/${year}`;
+                combinedDoc.text(dateText, imgWidthMm - config.dateX, config.dateY);
 
-                const xPositionDate = (imgWidthMm - combinedDoc.getTextWidth(dateText)) / 1.03;
-                const yPositionDate = imgHeightMm * 0.135;
-
-                combinedDoc.setFont("helvetica", "normal"); // Use simple font
-                combinedDoc.text(dateText, xPositionDate, yPositionDate);
-
+                // Time
                 const formatTimeTo12Hour = (time) => {
                     const [hour, minute] = time.split(':');
                     const hours = parseInt(hour, 10);
                     const period = hours >= 12 ? 'PM' : 'AM';
-                    const formattedHour = hours % 12 || 12; // Convert 0 to 12 for 12-hour format
+                    const formattedHour = hours % 12 || 12;
                     return `${formattedHour}:${minute} ${period}`;
                 };
                 const timeText = `${formatTimeTo12Hour(item.sessionSlotTime)}`;
-                const xPositionTime = (imgWidthMm - combinedDoc.getTextWidth(timeText)) / 1.053;
-                const yPositionTime = imgHeightMm * 0.17;
-
-                combinedDoc.setFont("helvetica", "normal"); // Use simple font
-                combinedDoc.text(timeText, xPositionTime, yPositionTime);
+                combinedDoc.text(timeText, imgWidthMm - config.timeX, config.timeY);
             }
 
-            // Open the combined PDF in a new tab
             const pdfBlob = combinedDoc.output("blob");
             const pdfUrl = URL.createObjectURL(pdfBlob);
 
@@ -265,7 +407,7 @@ const Bookcalender = ({ tabKey }) => {
         }
     };
 
-
+    
 
 
 
@@ -586,64 +728,110 @@ const Bookcalender = ({ tabKey }) => {
     // };
 
     const handlePrintCertificate = async () => {
-        let image;
-        if (selectedBooking.category === "RTO – Learner Driving License Holder Training") {
-            image = await import('../../assets/Holiday/learner.JPG');
-        } else if (selectedBooking.category === "RTO – Training for School Bus Driver") {
-            image = await import('../../assets/Holiday/CERTIFICATE - BUS - Final.jpg');
-        } else if (selectedBooking.category === "RTO – Suspended Driving License Holders Training") {
-            image = await import('../../assets/Holiday/suspended.jpg');
-        } else if (selectedBooking.category === "College/Organization Training – Group") {
-            image = await import('../../assets/Holiday/learner.JPG');
-        }
-        const imgData = image.default;
-
-        const img = new Image();
-        img.src = imgData;
-        img.onload = () => {
+        const loadImage = (src) => {
+            return new Promise((resolve, reject) => {
+                const img = new Image();
+                img.src = src;
+                img.onload = () => resolve(img);
+                img.onerror = (err) => reject(err);
+            });
+        };
+    
+        const categoryConfig = {
+            "RTO – Learner Driving License Holder Training": {
+                fontSize: 95,
+                nameYFactor: 0.52,
+                certFontSize: 35,
+                certY: 45,
+                dateY: 85,
+                timeY: 100,
+                dateX: 80,
+                timeX: 78,
+                image: new URL('../../assets/Holiday/learner.jpg', import.meta.url).href,
+            },
+            "RTO – Training for School Bus Driver": {
+                fontSize: 50,
+                nameYFactor: 0.47,
+                certFontSize: 15,
+                certY: 18,
+                dateY: 33,
+                timeY: 40,
+                dateX: 40,
+                timeX: 40,
+                image: new URL('../../assets/Holiday/CERTIFICATE - BUS - Final.jpg', import.meta.url).href,
+            },
+            "RTO – Suspended Driving License Holders Training": {
+                fontSize: 45,
+                nameYFactor: 0.42,
+                certFontSize: 20,
+                certY: 66.2,
+                dateY: 86,
+                timeY: 100,
+                dateX: 60,
+                timeX: 62,
+                image: new URL('../../assets/Holiday/suspended.jpg', import.meta.url).href,
+            },
+            "College/Organization Training – Group": {
+                fontSize: 60,
+                nameYFactor: 0.35,
+                certFontSize: 20,
+                certY: 25,
+                dateY: 35,
+                timeY: 45,
+                dateX: 80,
+                timeX: 80,
+                image: new URL('../../assets/Holiday/Certificate_page-0001.jpg', import.meta.url).href,
+            },
+        };
+    
+        try {
+            const config = categoryConfig[selectedBooking.category];
+            if (!config) {
+                console.error(`No configuration found for category: ${selectedBooking.category}`);
+                return;
+            }
+    
+            // const image = (await import(config.image)).default;
+            const img = await loadImage(config.image);
+    
             const imgWidthPx = img.width;
             const imgHeightPx = img.height;
-
+    
             const dpi = 96;
             const imgWidthMm = (imgWidthPx / dpi) * 25.4;
             const imgHeightMm = (imgHeightPx / dpi) * 25.4;
-
+    
+            const orientation = imgWidthMm > imgHeightMm ? 'landscape' : 'portrait';
+    
             const doc = new jsPDF({
-                orientation: imgWidthMm > imgHeightMm ? 'landscape' : 'portrait',
+                orientation,
                 unit: 'mm',
-                format: [imgWidthMm, imgHeightMm]
+                format: [imgWidthMm, imgHeightMm],
             });
-
-            // Add text to the PDF
+    
             doc.addFileToVFS("MyCustomFont.ttf", base64String);
             doc.addFont("MyCustomFont.ttf", "MyCustomFont", "normal");
-
             doc.setFont("MyCustomFont");
-            doc.setFontSize(95);
-            doc.setTextColor("#000");
-
+            doc.setFontSize(config.fontSize);
+    
+            // Add Name
             const nameText = `${capitalizeFirstLetter(selectedBooking.fname)} ${capitalizeFirstLetter(selectedBooking.lname)}`;
-            const nameWidth = doc.getTextWidth(nameText);
-            const xPositionName = (imgWidthMm - nameWidth) / 2;
-            const yPositionName = imgHeightMm * 0.52;
-
-            doc.text(nameText, xPositionName, yPositionName);
-
-            doc.setFont("Arial");
-            doc.setTextColor("#4e4e95");
-            doc.setFontSize(35);
-
-            const srText = `${selectedBooking.certificate_no}`;
-            const xPositionSr = imgWidthMm - 70;
-            const yPositionSr = 40;
-            doc.text(srText, xPositionSr, yPositionSr);
-
+            const nameX = (imgWidthMm - doc.getTextWidth(nameText)) / 2;
+            const nameY = imgHeightMm * config.nameYFactor;
+            doc.text(nameText, nameX, nameY);
+    
+            // Certificate number
+            doc.setFont("helvetica", "normal");
+            doc.setFontSize(config.certFontSize);
+            const certNoText = `${selectedBooking.certificate_no}`;
+            doc.text(certNoText, imgWidthMm - config.dateX, config.certY);
+    
+            // Date
             const [month, day, year] = (selectedBooking.slotdate).split("/");
-            const slotDateText = `${day}/${month}/${year}`;
-            const xPositionSlotDate = imgWidthMm - 70;
-            const yPositionSlotDate = 77;
-            doc.text(slotDateText, xPositionSlotDate, yPositionSlotDate);
-
+            const dateText = `${day}/${month}/${year}`;
+            doc.text(dateText, imgWidthMm - config.dateX, config.dateY);
+    
+            // Time
             const formatTimeTo12Hour = (time) => {
                 const [hour, minute] = time.split(':');
                 const hours = parseInt(hour, 10);
@@ -651,35 +839,75 @@ const Bookcalender = ({ tabKey }) => {
                 const formattedHour = hours % 12 || 12;
                 return `${formattedHour}:${minute} ${period}`;
             };
-
-            const slotTimeText = `${formatTimeTo12Hour(selectedBooking.sessionSlotTime)}`;
-            const xPositionSlotTime = imgWidthMm - 70;
-            const yPositionSlotTime = 90;
-            doc.text(slotTimeText, xPositionSlotTime, yPositionSlotTime);
-
-            // Generate the PDF Blob
-            const pdfBlob = doc.output('blob');
-
-            // Create a Blob URL and open it in a new tab
+            const timeText = `${formatTimeTo12Hour(selectedBooking.sessionSlotTime)}`;
+            doc.text(timeText, imgWidthMm - config.timeX, config.timeY);
+    
+            // Generate and open PDF
+            const pdfBlob = doc.output("blob");
             const pdfUrl = URL.createObjectURL(pdfBlob);
             window.open(pdfUrl, '_blank');
-
-            // Revoke the URL after some time to release memory
+    
             setTimeout(() => URL.revokeObjectURL(pdfUrl), 10000);
-        };
+        } catch (err) {
+            console.error("Error generating certificate PDF:", err);
+        }
     };
-
 
     const handlePdfCertificate = async () => {
         let image;
+        let fontSize;
+        let yaxis;
+        let certFontSize;
+        let certYAxis;
+        let certDate;
+        let certTime;
+        let certDateXaxis
+        let certTimeXaxis, certXpos
+
         if (selectedBooking.category === "RTO – Learner Driving License Holder Training") {
-            image = await import('../../assets/Holiday/learner.JPG');
+            image = await import('../../assets/Holiday/learner.jpg');
+            fontSize = 95
+            yaxis = 0.52
+            certFontSize = 35
+            certYAxis = 45
+            certDate = 85
+            certTime = 100
+            certDateXaxis = 80
+            certTimeXaxis = 78
+            certXpos = 80
         } else if (selectedBooking.category === "RTO – Training for School Bus Driver") {
             image = await import('../../assets/Holiday/CERTIFICATE - BUS - Final.jpg');
+            fontSize = 50
+            yaxis = 0.47
+            certFontSize = 15
+            certYAxis = 18
+            certDate = 33
+            certTime = 40
+            certDateXaxis = 40
+            certTimeXaxis = 41
+            certXpos = 30
         } else if (selectedBooking.category === "RTO – Suspended Driving License Holders Training") {
             image = await import('../../assets/Holiday/suspended.jpg');
+            fontSize = 45
+            yaxis = 0.42
+            certFontSize = 20
+            certYAxis = 66.2
+            certDate = 86
+            certTime = 100
+            certDateXaxis = 60
+            certTimeXaxis = 62
+            certXpos = 50
         } else if (selectedBooking.category === "College/Organization Training – Group") {
-            image = await import('../../assets/Holiday/learner.JPG');
+            image = await import('../../assets/Holiday/Certificate_page-0001.jpg');
+            fontSize = 60
+            yaxis = 0.35
+            certFontSize = 20
+            certYAxis = 25
+            certDate = 35
+            certTime = 45
+            certDateXaxis = 80
+            certTimeXaxis = 82
+            certXpos = 80
         }
         const imgData = image.default;
 
@@ -705,29 +933,30 @@ const Bookcalender = ({ tabKey }) => {
             doc.addFont("MyCustomFont.ttf", "MyCustomFont", "normal");
 
             doc.setFont("MyCustomFont");
-            doc.setFontSize(95);
+            // doc.setFontSize(95);
+            doc.setFontSize(fontSize);
             doc.setTextColor("#000");
 
             const nameText = `${capitalizeFirstLetter(selectedBooking.fname)} ${capitalizeFirstLetter(selectedBooking.lname)}`;
             const nameWidth = doc.getTextWidth(nameText);
             const xPositionName = (imgWidthMm - nameWidth) / 2;
-            const yPositionName = imgHeightMm * 0.52;
+            const yPositionName = imgHeightMm * yaxis;
 
             doc.text(nameText, xPositionName, yPositionName);
 
             doc.setFont("Arial");
-            doc.setTextColor("#4e4e95");
-            doc.setFontSize(35);
+            doc.setTextColor("#000");
+            doc.setFontSize(certFontSize);
 
             const srText = `${selectedBooking.certificate_no}`;
-            const xPositionSr = imgWidthMm - 80;
-            const yPositionSr = 45;
+            const xPositionSr = imgWidthMm - certXpos;
+            const yPositionSr = certYAxis;
             doc.text(srText, xPositionSr, yPositionSr);
 
             const [month, day, year] = (selectedBooking.slotdate).split("/");
             const slotDateText = `${day}/${month}/${year}`;
-            const xPositionSlotDate = imgWidthMm - 93;
-            const yPositionSlotDate = 85;
+            const xPositionSlotDate = imgWidthMm - certDateXaxis;
+            const yPositionSlotDate = certDate;
             doc.text(slotDateText, xPositionSlotDate, yPositionSlotDate);
 
             const formatTimeTo12Hour = (time) => {
@@ -739,8 +968,8 @@ const Bookcalender = ({ tabKey }) => {
             };
 
             const slotTimeText = ` ${formatTimeTo12Hour(selectedBooking.sessionSlotTime)}`;
-            const xPositionSlotTime = imgWidthMm - 93;
-            const yPositionSlotTime = 100;
+            const xPositionSlotTime = imgWidthMm - certTimeXaxis;
+            const yPositionSlotTime = certTime;
             doc.text(slotTimeText, xPositionSlotTime, yPositionSlotTime);
 
             const customFileName = `${selectedBooking.certificate_no}_${selectedBooking.fname}_${selectedBooking.lname}.pdf`;
@@ -760,30 +989,72 @@ const Bookcalender = ({ tabKey }) => {
         };
     };
 
+    
     const handleEmailCertificate = async () => {
-
-        // Dynamically select the image based on the booking category
         let image;
+        let fontSize;
+        let yaxis;
+        let certFontSize;
+        let certYAxis;
+        let certDate;
+        let certTime;
+        let certDateXaxis
+        let certTimeXaxis, certXpos
+
         if (selectedBooking.category === "RTO – Learner Driving License Holder Training") {
-            image = await import('../../assets/Holiday/learner.JPG');
+            image = await import('../../assets/Holiday/learner.jpg');
+            fontSize = 95
+            yaxis = 0.52
+            certFontSize = 35
+            certYAxis = 45
+            certDate = 85
+            certTime = 100
+            certDateXaxis = 80
+            certTimeXaxis = 78
+            certXpos = 80
         } else if (selectedBooking.category === "RTO – Training for School Bus Driver") {
             image = await import('../../assets/Holiday/CERTIFICATE - BUS - Final.jpg');
+            fontSize = 50
+            yaxis = 0.47
+            certFontSize = 15
+            certYAxis = 18
+            certDate = 33
+            certTime = 40
+            certDateXaxis = 40
+            certTimeXaxis = 41
+            certXpos = 30
         } else if (selectedBooking.category === "RTO – Suspended Driving License Holders Training") {
             image = await import('../../assets/Holiday/suspended.jpg');
+            fontSize = 45
+            yaxis = 0.42
+            certFontSize = 20
+            certYAxis = 66.2
+            certDate = 86
+            certTime = 100
+            certDateXaxis = 60
+            certTimeXaxis = 62
+            certXpos = 50
         } else if (selectedBooking.category === "College/Organization Training – Group") {
-            image = await import('../../assets/Holiday/learner.JPG');
+            image = await import('../../assets/Holiday/Certificate_page-0001.jpg');
+            fontSize = 60
+            yaxis = 0.35
+            certFontSize = 20
+            certYAxis = 25
+            certDate = 35
+            certTime = 45
+            certDateXaxis = 80
+            certTimeXaxis = 82
+            certXpos = 80
         }
         const imgData = image.default;
 
-        // Load the image to get its original dimensions
         const img = new Image();
         img.src = imgData;
-
-        img.onload = async () => {
+        img.onload = () => {
             const imgWidthPx = img.width;
             const imgHeightPx = img.height;
 
-            const dpi = 96; // DPI for web images
+            const dpi = 96;
             const imgWidthMm = (imgWidthPx / dpi) * 25.4;
             const imgHeightMm = (imgHeightPx / dpi) * 25.4;
 
@@ -793,49 +1064,49 @@ const Bookcalender = ({ tabKey }) => {
                 format: [imgWidthMm, imgHeightMm]
             });
 
-            // Add image to PDF
             doc.addImage(img, 'PNG', 0, 0, imgWidthMm, imgHeightMm);
 
-            doc.addFileToVFS("MyCustomFont.ttf", base64String);  // Add the font
-            doc.addFont("MyCustomFont.ttf", "MyCustomFont", "normal"); // Register the font
+            doc.addFileToVFS("MyCustomFont.ttf", base64String);
+            doc.addFont("MyCustomFont.ttf", "MyCustomFont", "normal");
 
             doc.setFont("MyCustomFont");
-            doc.setFontSize(95);
+            // doc.setFontSize(95);
+            doc.setFontSize(fontSize);
             doc.setTextColor("#000");
 
-            const nameText = `${selectedBooking.fname} ${selectedBooking.lname}`;
+            const nameText = `${capitalizeFirstLetter(selectedBooking.fname)} ${capitalizeFirstLetter(selectedBooking.lname)}`;
             const nameWidth = doc.getTextWidth(nameText);
             const xPositionName = (imgWidthMm - nameWidth) / 2;
-            const yPositionName = imgHeightMm * 0.52;
+            const yPositionName = imgHeightMm * yaxis;
+
             doc.text(nameText, xPositionName, yPositionName);
 
             doc.setFont("Arial");
-            doc.setTextColor("#4e4e95");
-            doc.setFontSize(35);
+            doc.setTextColor("#000");
+            doc.setFontSize(certFontSize);
 
             const srText = `${selectedBooking.certificate_no}`;
-            const xPositionSr = imgWidthMm - 80;
-            const yPositionSr = 45;
+            const xPositionSr = imgWidthMm - certXpos;
+            const yPositionSr = certYAxis;
             doc.text(srText, xPositionSr, yPositionSr);
 
             const [month, day, year] = (selectedBooking.slotdate).split("/");
             const slotDateText = `${day}/${month}/${year}`;
-            const xPositionSlotDate = imgWidthMm - 93;
-            const yPositionSlotDate = 85;
+            const xPositionSlotDate = imgWidthMm - certDateXaxis;
+            const yPositionSlotDate = certDate;
             doc.text(slotDateText, xPositionSlotDate, yPositionSlotDate);
 
-            doc.setTextColor("#4e4e95");
-            doc.setFontSize(35);
             const formatTimeTo12Hour = (time) => {
                 const [hour, minute] = time.split(':');
                 const hours = parseInt(hour, 10);
                 const period = hours >= 12 ? 'PM' : 'AM';
-                const formattedHour = hours % 12 || 12; // Convert 0 to 12 for 12-hour format
+                const formattedHour = hours % 12 || 12;
                 return `${formattedHour}:${minute} ${period}`;
             };
+
             const slotTimeText = ` ${formatTimeTo12Hour(selectedBooking.sessionSlotTime)}`;
-            const xPositionSlotTime = imgWidthMm - 93; // Adjust x-position for slotdate
-            const yPositionSlotTime = 100; // Adjust y-position for slotdate
+            const xPositionSlotTime = imgWidthMm - certTimeXaxis;
+            const yPositionSlotTime = certTime;
             doc.text(slotTimeText, xPositionSlotTime, yPositionSlotTime);
 
 
@@ -849,7 +1120,7 @@ const Bookcalender = ({ tabKey }) => {
 
             // Send the PDF and email to the backend API
             try {
-                const response = await instance.post('/certificate/upload-certificate', formData, {
+                const response = instance.post('/certificate/upload-certificate', formData, {
                     headers: {
                         'Content-Type': 'multipart/form-data',
                     },
@@ -872,14 +1143,22 @@ const Bookcalender = ({ tabKey }) => {
     const handleEmailCertificatesingle = async (row) => {
         // Dynamically select the image based on the booking category
         let image;
+        let fontSize;
+        let yaxis;
+        let certFontSize;
+        let certYAxis;
+        let certDate;
+        let certTime;
+        let certDateXaxis
+        let certTimeXaxis
         if (row.category === "RTO – Learner Driving License Holder Training") {
-            image = await import('../../assets/Holiday/learner.JPG');
+            image = await import('../../assets/Holiday/learner.jpg');
         } else if (row.category === "RTO – Training for School Bus Driver") {
             image = await import('../../assets/Holiday/CERTIFICATE - BUS - Final.jpg');
         } else if (row.category === "RTO – Suspended Driving License Holders Training") {
             image = await import('../../assets/Holiday/suspended.jpg');
         } else if (row.category === "College/Organization Training – Group") {
-            image = await import('../../assets/Holiday/learner.JPG');
+            image = await import('../../assets/Holiday/Certificate_page-0001.jpg');
         }
         const imgData = image.default;
 
@@ -908,28 +1187,28 @@ const Bookcalender = ({ tabKey }) => {
             doc.addFont("MyCustomFont.ttf", "MyCustomFont", "normal"); // Register the font
 
             doc.setFont("MyCustomFont");
-            doc.setFontSize(95);
+            doc.setFontSize(fontSize);
             doc.setTextColor("#000");
 
             const nameText = `${capitalizeFirstLetter(row.fname)} ${capitalizeFirstLetter(row.lname)}`;
 
             const nameWidth = doc.getTextWidth(nameText);
             const xPositionName = (imgWidthMm - nameWidth) / 2;
-            const yPositionName = imgHeightMm * 0.52;
+            const yPositionName = imgHeightMm * yaxis;
             doc.text(nameText, xPositionName, yPositionName);
 
             doc.setFont("Arial");
             doc.setTextColor("#4e4e95");
-            doc.setFontSize(35);
+            doc.setFontSize(certFontSize);
 
             const srText = `${selectedBooking.certificate_no}`;
             const xPositionSr = imgWidthMm - 80;
-            const yPositionSr = 45;
+            const yPositionSr = certYAxis;
             doc.text(srText, xPositionSr, yPositionSr);
             const [month, day, year] = (row.slotdate).split("/");
             const slotDateText = `${day}/${month}/${year}`;
-            const xPositionSlotDate = imgWidthMm - 93;
-            const yPositionSlotDate = 85;
+            const xPositionSlotDate = imgWidthMm - certDateXaxis;
+            const yPositionSlotDate = certDate;
             doc.text(slotDateText, xPositionSlotDate, yPositionSlotDate);
 
             doc.setTextColor("#4e4e95");
@@ -942,8 +1221,8 @@ const Bookcalender = ({ tabKey }) => {
                 return `${formattedHour}:${minute} ${period}`;
             };
             const slotTimeText = ` ${formatTimeTo12Hour(selectedBooking.sessionSlotTime)}`;
-            const xPositionSlotTime = imgWidthMm - 93; // Adjust x-position for slotdate
-            const yPositionSlotTime = 100; // Adjust y-position for slotdate
+            const xPositionSlotTime = imgWidthMm - certTimeXaxis;
+            const yPositionSlotTime = certTime; // Adjust y-position for slotdate
             doc.text(slotTimeText, xPositionSlotTime, yPositionSlotTime);
 
 
@@ -1059,16 +1338,24 @@ const Bookcalender = ({ tabKey }) => {
     const printPreview = async () => {
         const pdfPromises = printData.map(async (row) => {
             let image;
+            let fontSize;
+            let yaxis;
+            let certFontSize;
+            let certYAxis;
+            let certDate;
+            let certTime;
+            let certDateXaxis
+            let certTimeXaxis
 
             // Determine which image to use based on the category of the booking
             if (row.category === "RTO – Learner Driving License Holder Training") {
-                image = await import('../../assets/Holiday/learner.JPG');
+                image = await import('../../assets/Holiday/learner.jpg');
             } else if (row.category === "RTO – Training for School Bus Driver") {
                 image = await import('../../assets/Holiday/CERTIFICATE - BUS - Final.jpg');
             } else if (row.category === "RTO – Suspended Driving License Holders Training") {
                 image = await import('../../assets/Holiday/suspended.jpg');
             } else if (row.category === "College/Organization Training – Group") {
-                image = await import('../../assets/Holiday/learner.JPG');
+                image = await import('../../assets/Holiday/Certificate_page-0001.jpg');
             }
 
             const imgData = image.default; // Get the image data
@@ -1100,10 +1387,8 @@ const Bookcalender = ({ tabKey }) => {
                     doc.addFont("MyCustomFont.ttf", "MyCustomFont", "normal"); // Register the font
 
                     doc.setFont("MyCustomFont");
-                    doc.setFontSize(95);
+                    doc.setFontSize(fontSize);
                     doc.setTextColor("#000");
-                    doc.setFontSize(95);
-                    doc.setTextColor("#4e4e95");
 
                     // Prepare user's name
                     const nameText = `${capitalizeFirstLetter(row?.fname)} ${capitalizeFirstLetter(row?.lname)}`;
@@ -1111,7 +1396,7 @@ const Bookcalender = ({ tabKey }) => {
 
                     // Center the name horizontally
                     const xPositionName = (imgWidthMm - nameWidth) / 2;
-                    const yPositionName = imgHeightMm * 0.52; // Adjust as needed for vertical positioning
+                    const yPositionName = imgHeightMm * yaxis; // Adjust as needed for vertical positioning
 
                     // Draw the user's name
                     doc.text(nameText, xPositionName, yPositionName);
@@ -1121,10 +1406,10 @@ const Bookcalender = ({ tabKey }) => {
 
                     // Set color and position for Sr (ID)
                     doc.setTextColor("#4e4e95");
-                    doc.setFontSize(35);
+                    doc.setFontSize(certFontSize);
                     const srText = `${row?.certificate_no}`;
                     const xPositionSr = imgWidthMm - 80; // Adjust x-position for Sr
-                    const yPositionSr = 45; // Adjust y-position for Sr
+                    const yPositionSr = certYAxis; // Adjust y-position for Sr
                     doc.text(srText, xPositionSr, yPositionSr);
 
                     // Set color and position for slotdate
@@ -1133,8 +1418,8 @@ const Bookcalender = ({ tabKey }) => {
                     const [month, day, year] = (row?.slotdate).split("/");
                     const slotDateText = `${day}/${month}/${year}`;
                     // const slotDateText = row?.slotdate ? `: ${new Date(row?.slotdate).toLocaleDateString('en-GB')}` : '';
-                    const xPositionSlotDate = imgWidthMm - 93; // Adjust x-position for slotdate
-                    const yPositionSlotDate = 85; // Adjust y-position for slotdate
+                    const xPositionSlotDate = imgWidthMm - certDateXaxis;
+                    const yPositionSlotDate = certDate; // Adjust y-position for slotdate
                     doc.text(slotDateText, xPositionSlotDate, yPositionSlotDate);
                     doc.setTextColor("#4e4e95");
                     doc.setFontSize(35);
@@ -1146,8 +1431,8 @@ const Bookcalender = ({ tabKey }) => {
                         return `${formattedHour}:${minute} ${period}`;
                     };
                     const slotTimeText = ` ${formatTimeTo12Hour(row.sessionSlotTime)}`;
-                    const xPositionSlotTime = imgWidthMm - 93; // Adjust x-position for slotdate
-                    const yPositionSlotTime = 100; // Adjust y-position for slotdate
+                    const xPositionSlotTime = imgWidthMm - certTimeXaxis;
+                    const yPositionSlotTime = certTime; // Adjust y-position for slotdate
                     doc.text(slotTimeText, xPositionSlotTime, yPositionSlotTime);
 
                     // Resolve the generated PDF document

@@ -133,8 +133,13 @@ const Bookingpage2 = () => {
   const validateForm = () => {
     const newErrors = {};
 
-    if (!formData.learningNo || formData.learningNo === '_/__/__') {
-      newErrors.learningNo = "Learning License Number is required.";
+    if (!formData.learningNo) {
+      newErrors.learningNo = "This field is required.";
+    } else if (
+      (category !== "RTO – Suspended Driving License Holders Training" && !/^[A-Z]{2}[0-9]{2}\/[0-9]{7}\/[0-9]{4}$/.test(formData.learningNo)) ||
+      (category === "RTO – Suspended Driving License Holders Training" && !/^[A-Z]{2}[0-9]{2} [0-9]{11}$/.test(formData.learningNo))
+    ) {
+      newErrors.learningNo = "License Number must be in the correct format.";
     }
 
     if (!formData.fname) {
