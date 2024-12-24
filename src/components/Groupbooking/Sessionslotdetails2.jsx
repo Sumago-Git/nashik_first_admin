@@ -104,6 +104,8 @@ const Sessionslotdetails2 = () => {
               name='institution_name'
               value={formData.institution_name}
               onChange={handleChange}
+              onInput={(e) => e.target.value = e.target.value.replace(/[^a-zA-Z]/g, '')} // Allow only alphabets
+
               placeholder={"Institution Name"}
               className='dateinput p-3 m-0 mt-0 ms-lg-3'
             />
@@ -136,6 +138,8 @@ const Sessionslotdetails2 = () => {
             <input
               name='hm_principal_manager_name'
               value={formData.hm_principal_manager_name}
+              onInput={(e) => e.target.value = e.target.value.replace(/[^a-zA-Z]/g, '')} // Allow only alphabets
+
               onChange={handleChange}
               placeholder={"Principal/Manager Name"}
               className='dateinput p-3 m-0 mt-0 ms-lg-3'
@@ -159,6 +163,8 @@ const Sessionslotdetails2 = () => {
             <input
               name='coordinator_name'
               value={formData.coordinator_name}
+              onInput={(e) => e.target.value = e.target.value.replace(/[^a-zA-Z]/g, '')} // Allow only alphabets
+
               onChange={handleChange}
               placeholder={"Cordinator Name"}
               className='dateinput p-3 m-0 mt-0 ms-lg-3'

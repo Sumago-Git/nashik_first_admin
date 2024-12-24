@@ -334,6 +334,8 @@ const Bookingpage2 = () => {
                   name='fname'
                   value={formData.fname}
                   onChange={handleChange}
+                  onInput={(e) => e.target.value = e.target.value.replace(/[^a-zA-Z]/g, '')} // Allow only alphabets
+
                   placeholder={"First Name"}
                   className='dateinput p-3 m-0 mt-0 ms-lg-3'
                 />
@@ -344,6 +346,8 @@ const Bookingpage2 = () => {
                 <input
                   name='mname'
                   value={formData.mname}
+                  onInput={(e) => e.target.value = e.target.value.replace(/[^a-zA-Z]/g, '')} // Allow only alphabets
+
                   onChange={handleChange}
                   placeholder={"Middle Name"}
                   className='dateinput p-3 m-0 mt-0 ms-lg-3'
@@ -355,6 +359,8 @@ const Bookingpage2 = () => {
                 <input
                   name='lname'
                   value={formData.lname}
+                  onInput={(e) => e.target.value = e.target.value.replace(/[^a-zA-Z]/g, '')} // Allow only alphabets
+
                   onChange={handleChange}
                   placeholder={"Last Name"}
                   className='dateinput p-3 m-0 mt-0 ms-lg-3'
@@ -379,6 +385,8 @@ const Bookingpage2 = () => {
                   maxLength="10"
                   value={formData.phone}
                   onChange={handleChange}
+                  onInput={(e) => e.target.value = e.target.value.replace(/[^0-9]/g, '')} // Restrict to numbers only
+
                   placeholder={"Phone"}
                   className='dateinput p-3 m-0 mt-0 ms-lg-3 ms-md-0'
                 />
