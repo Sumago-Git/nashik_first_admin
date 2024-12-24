@@ -407,7 +407,7 @@ const Bookcalender = ({ tabKey }) => {
         }
     };
 
-    
+
 
 
 
@@ -736,7 +736,7 @@ const Bookcalender = ({ tabKey }) => {
                 img.onerror = (err) => reject(err);
             });
         };
-    
+
         const categoryConfig = {
             "RTO – Learner Driving License Holder Training": {
                 fontSize: 95,
@@ -783,54 +783,54 @@ const Bookcalender = ({ tabKey }) => {
                 image: new URL('../../assets/Holiday/Certificate_page-0001.jpg', import.meta.url).href,
             },
         };
-    
+
         try {
             const config = categoryConfig[selectedBooking.category];
             if (!config) {
                 console.error(`No configuration found for category: ${selectedBooking.category}`);
                 return;
             }
-    
+
             // const image = (await import(config.image)).default;
             const img = await loadImage(config.image);
-    
+
             const imgWidthPx = img.width;
             const imgHeightPx = img.height;
-    
+
             const dpi = 96;
             const imgWidthMm = (imgWidthPx / dpi) * 25.4;
             const imgHeightMm = (imgHeightPx / dpi) * 25.4;
-    
+
             const orientation = imgWidthMm > imgHeightMm ? 'landscape' : 'portrait';
-    
+
             const doc = new jsPDF({
                 orientation,
                 unit: 'mm',
                 format: [imgWidthMm, imgHeightMm],
             });
-    
+
             doc.addFileToVFS("MyCustomFont.ttf", base64String);
             doc.addFont("MyCustomFont.ttf", "MyCustomFont", "normal");
             doc.setFont("MyCustomFont");
             doc.setFontSize(config.fontSize);
-    
+
             // Add Name
             const nameText = `${capitalizeFirstLetter(selectedBooking.fname)} ${capitalizeFirstLetter(selectedBooking.lname)}`;
             const nameX = (imgWidthMm - doc.getTextWidth(nameText)) / 2;
             const nameY = imgHeightMm * config.nameYFactor;
             doc.text(nameText, nameX, nameY);
-    
+
             // Certificate number
             doc.setFont("helvetica", "normal");
             doc.setFontSize(config.certFontSize);
             const certNoText = `${selectedBooking.certificate_no}`;
             doc.text(certNoText, imgWidthMm - config.dateX, config.certY);
-    
+
             // Date
             const [month, day, year] = (selectedBooking.slotdate).split("/");
             const dateText = `${day}/${month}/${year}`;
             doc.text(dateText, imgWidthMm - config.dateX, config.dateY);
-    
+
             // Time
             const formatTimeTo12Hour = (time) => {
                 const [hour, minute] = time.split(':');
@@ -841,12 +841,12 @@ const Bookcalender = ({ tabKey }) => {
             };
             const timeText = `${formatTimeTo12Hour(selectedBooking.sessionSlotTime)}`;
             doc.text(timeText, imgWidthMm - config.timeX, config.timeY);
-    
+
             // Generate and open PDF
             const pdfBlob = doc.output("blob");
             const pdfUrl = URL.createObjectURL(pdfBlob);
             window.open(pdfUrl, '_blank');
-    
+
             setTimeout(() => URL.revokeObjectURL(pdfUrl), 10000);
         } catch (err) {
             console.error("Error generating certificate PDF:", err);
@@ -989,7 +989,7 @@ const Bookcalender = ({ tabKey }) => {
         };
     };
 
-    
+
     const handleEmailCertificate = async () => {
         let image;
         let fontSize;
@@ -1495,6 +1495,14 @@ const Bookcalender = ({ tabKey }) => {
         "RTO – Suspended Driving License Holders Training",
         "RTO – Learner Driving License Holder Training"
     ];
+    const today = new Date();
+    const currentMonth = currentDate.getMonth();
+    const currentYear = currentDate.getFullYear();
+    const isPastDate = (dateStr) => {
+        const [day, month, year] = dateStr.split('/').map(Number); // Parse date string
+        const selectedDate = new Date(year, month - 1, day); // Convert to Date object
+        return selectedDate < new Date().setHours(0, 0, 0, 0); // Compare with today's date
+    };
     return (
         <>
             <div className=" text-center pb-2 d-flex justify-content-between">
@@ -1502,7 +1510,7 @@ const Bookcalender = ({ tabKey }) => {
                     <h5>{category1}-{selectedDate}</h5>
                 </div>
                 <div className="d-flex justify-content-end ">
-                    {bookingPage2Categories.includes(category1) ? <><Button
+                    {bookingPage2Categories.includes(category1) && !isPastDate(selectedDate) ? <><Button
 
                         onClick={() => {
                             localStorage.setItem('slotsids', sessionSlotId)

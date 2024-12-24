@@ -330,8 +330,16 @@ const Training = () => {
                                           fontSize: "12px",
                                           width: "50%",
                                           marginTop: "2px",
-                                          color: a.availableSeats === 0 ? "red" : "green",
-                                          backgroundColor: a.availableSeats === 0 ? "#ffd4d4" : "#d4ffd4", // Dynamically set background color
+                                          color: isPastDate(day)
+                                            ? "red" // Red for past dates
+                                            : a.availableSeats === 0
+                                              ? "red" // Red if no available seats
+                                              : "green", // Green if seats are available
+                                          backgroundColor: isPastDate(day)
+                                            ? "#ffd4d4" // Red for past dates
+                                            : a.availableSeats === 0
+                                              ? "#ffd4d4" // Background color for no seats
+                                              : "#d4ffd4", // Background color for available seats
                                           padding: "3px 8px",
                                           borderRadius: "15px",
                                           display: "grid",
