@@ -13,7 +13,7 @@ const Slotlistpage = () => {
     const location = useLocation();
     const navigate = useNavigate();
     useEffect(() => {
-       
+
 
         // Assume the format is "Wednesday 15/01/2025"
         const parts = slotDate.split(" "); // Split by space
@@ -111,7 +111,7 @@ const Slotlistpage = () => {
                             //     opacity: isAvailable ? 1 : 0.5,
                             // };
                             return (
-                                <Col key={index} lg={6} sm={6} md={6} className={index === 0 ? 'pe-lg-5' : 'ps-lg-5'}>
+                                <Col key={index} lg={6} sm={6} md={6} className={index % 2 === 0 ? 'pe-lg-5 pt-2' : 'ps-lg-5 pt-2'}>
                                     <Card
                                         className='p-3 my-3 text-center border-0 shadow'
                                         onClick={() => {
