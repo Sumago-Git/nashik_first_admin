@@ -277,13 +277,13 @@ const SidebarMenu = [
     ],
   },
   {
-    menu: "Traning Table",
+    menu: "Training Table",
     // menu: "Group registration",
     url: "/slotsfromtoday",
     mainIcon: <MdLocalOffer size={24} />,
     subMenu: [
       {
-        subMenus: "Traning Table",
+        subMenus: "Training Table",
         url: "/slotsfromtoday",
         icon: <AiOutlineAppstoreAdd style={{ color: "red" }} size={24} />,
       },
