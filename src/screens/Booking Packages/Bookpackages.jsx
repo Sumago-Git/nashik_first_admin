@@ -292,8 +292,8 @@ const Bookpackages = ({ tabKey }) => {
                                                                                     fontSize: "12px",
                                                                                     width: "50%",
                                                                                     marginTop: "2px",
-                                                                                    color: a.availableSeats === 0 ? "red" : "green",
-                                                                                    backgroundColor: a.availableSeats === 0 ? "#ffd4d4" : "#d4ffd4", // Dynamically set background color
+                                                                                    color: a.availableSeats <= 0 ? "red" : "green",
+                                                                                    backgroundColor: a.availableSeats <= 0 ? "#ffd4d4" : "#d4ffd4", // Dynamically set background color
                                                                                     padding: "3px 8px",
                                                                                     borderRadius: "15px",
                                                                                     display: "grid",
