@@ -263,6 +263,9 @@ const AreaTop = ({ buttonValue, tableView }) => {
     else if (window.location.pathname == "/Bycategories") {
       setHeader("Filter By Category");
     }
+    else if (window.location.pathname == "/ByTrainingTypeWise") {
+      setHeader("Filter By Training Type");
+    }
 
   }, [window.location.pathname]);
   return (

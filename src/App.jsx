@@ -60,6 +60,13 @@ import Bycategories from "./components/Reports/Bycategories";
 import Bycategoriesandinstitudename from "./components/Reports/Bycategoriesandinstitudename";
 import ByTrainer from "./components/Reports/ByTrainer";
 import Slotsfromtoday from "./components/SlotComp/Slotsfromtoday";
+import R4 from "./components/Reports/R4";
+import R5 from "./components/Reports/R5";
+import R6 from "./components/Reports/R6";
+import R7 from "./components/Reports/R7";
+import R8 from "./components/Reports/R8";
+import R9 from "./components/Reports/R9";
+import ByTrainingTypeWise from "./components/Reports/ByTrainingTypeWise";
 
 function App() {
 
@@ -257,6 +264,34 @@ function App() {
           <Route
             path="/bytrainer"
             element={<ProtectedRoutes Component={ByTrainer} />}
+          />
+          <Route
+            path="/ByTrainingTypeWise"
+            element={<ProtectedRoutes Component={ByTrainingTypeWise} />}
+          />
+          <Route
+            path="/R4"
+            element={<ProtectedRoutes Component={R4} />}
+          />
+          <Route
+            path="/R5"
+            element={<ProtectedRoutes Component={R5} />}
+          />
+          <Route
+            path="/R6"
+            element={<ProtectedRoutes Component={R6} />}
+          />
+          <Route
+            path="/R7"
+            element={<ProtectedRoutes Component={R7} />}
+          />
+          <Route
+            path="/R8"
+            element={<ProtectedRoutes Component={R8} />}
+          />
+          <Route
+            path="/R9"
+            element={<ProtectedRoutes Component={R9} />}
           />
 
           <Route

@@ -43,6 +43,7 @@
     "react-toastify": "^10.0.5",
     "recharts": "^2.10.3",
     "sass": "^1.69.7",
+    "vite-plugin-css": "^1.0.4",
     "xlsx": "^0.18.5"
   },
   "devDependencies": {
@@ -53,6 +54,6 @@
     "eslint-plugin-react": "^7.33.2",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.5",
-    "vite": "^5.0.8"
+    "vite": "^6.0.7"
   }
 }
