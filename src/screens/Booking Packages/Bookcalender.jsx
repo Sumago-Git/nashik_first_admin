@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { Container, Table, Col, Row, Form, Alert } from "react-bootstrap";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import './bookingpckg.css';
+import * as XLSX from "xlsx";
+
 import leftarrow from "../../assets/Holiday/leftarrow.png";
 import rightarrow from "../../assets/Holiday/rightarrow.png";
 import { confirmAlert } from "react-confirm-alert";
@@ -1278,6 +1280,7 @@ const Bookcalender = ({ tabKey }) => {
             item.fname.toLowerCase().includes(query) ||
             item.lname.toLowerCase().includes(query) ||
             item.email.toLowerCase().includes(query) ||
+            item.learningNo.toLowerCase().includes(query) ||
             item.phone.includes(query)
         );
         setFilteredData(filtered);
@@ -1503,6 +1506,40 @@ const Bookcalender = ({ tabKey }) => {
         const selectedDate = new Date(year, month - 1, day); // Convert to Date object
         return selectedDate < new Date().setHours(0, 0, 0, 0); // Compare with today's date
     };
+
+    const downloadExcel = () => {
+        if (dataByDateAndCategory.length === 0) {
+            alert("No data to download");
+            return;
+        }
+
+        // Ensure the data includes all required fields
+        const formattedData = dataByDateAndCategory.map((entry) => ({
+            id: entry.id,
+            learningNo: entry.learningNo,
+            sessionSlotId: entry.sessionSlotId,
+            fname: entry.fname,
+            mname: entry.mname,
+            lname: entry.lname,
+            email: entry.email,
+            phone: entry.phone,
+            slotdate: entry.slotdate,
+
+            slotsession: entry.slotsession,
+            category: entry.category,
+        }));
+
+        // Convert formatted data to a worksheet
+        const worksheet = XLSX.utils.json_to_sheet(formattedData);
+
+        // Create a workbook and add the worksheet
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Data");
+
+        // Generate Excel file and trigger download
+        XLSX.writeFile(workbook, "DataByCategoryAndDate.xlsx");
+    };
+
     return (
         <>
             <div className=" text-center pb-2 d-flex justify-content-between">
@@ -1548,7 +1585,7 @@ const Bookcalender = ({ tabKey }) => {
 
 
             <div className="mb-3 d-flex justify-content-end">
-                {sessionSlotDetailsCategories.includes(category1) ?
+                <div>   {sessionSlotDetailsCategories.includes(category1) ?
                     <>
                         {slotInfo ? (
                             <>
@@ -1589,11 +1626,12 @@ const Bookcalender = ({ tabKey }) => {
                         )}
                     </> :
                     <></>
-                }
-
+                }</div>
+                <div>   <Button variant="primary" onClick={downloadExcel} className="mb-3 ms-5">
+                    Download Excel
+                </Button></div>
 
             </div>
-
 
 
             {
@@ -1616,6 +1654,7 @@ const Bookcalender = ({ tabKey }) => {
                     <></>
                 )
             }
+
 
 
 
