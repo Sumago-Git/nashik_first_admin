@@ -369,7 +369,7 @@ const Bookcalender = ({ tabKey }) => {
                 combinedDoc.addFont("MyCustomFont.ttf", "MyCustomFont", "normal");
                 combinedDoc.setFont("MyCustomFont");
                 combinedDoc.setFontSize(config.fontSize);
-                const nameText = `${capitalizeFirstLetter(item.fname)} ${capitalizeFirstLetter(item.lname)}`;
+                const nameText = `${capitalizeFirstLetter(item.fname)} ${capitalizeFirstLetter(item?.mname)} ${capitalizeFirstLetter(item.lname)}`;
                 const nameX = (imgWidthMm - combinedDoc.getTextWidth(nameText)) / 2;
                 const nameY = imgHeightMm * config.nameYFactor;
                 combinedDoc.text(nameText, nameX, nameY);
@@ -817,7 +817,7 @@ const Bookcalender = ({ tabKey }) => {
             doc.setFontSize(config.fontSize);
 
             // Add Name
-            const nameText = `${capitalizeFirstLetter(selectedBooking.fname)} ${capitalizeFirstLetter(selectedBooking.lname)}`;
+            const nameText = `${capitalizeFirstLetter(selectedBooking.fname)} ${capitalizeFirstLetter(selectedBooking?.mname)} ${capitalizeFirstLetter(selectedBooking.lname)}`;
             const nameX = (imgWidthMm - doc.getTextWidth(nameText)) / 2;
             const nameY = imgHeightMm * config.nameYFactor;
             doc.text(nameText, nameX, nameY);
@@ -939,7 +939,7 @@ const Bookcalender = ({ tabKey }) => {
             doc.setFontSize(fontSize);
             doc.setTextColor("#000");
 
-            const nameText = `${capitalizeFirstLetter(selectedBooking.fname)} ${capitalizeFirstLetter(selectedBooking.lname)}`;
+            const nameText = `${capitalizeFirstLetter(selectedBooking.fname)} ${capitalizeFirstLetter(selectedBooking?.mname)} ${capitalizeFirstLetter(selectedBooking.lname)}`;
             const nameWidth = doc.getTextWidth(nameText);
             const xPositionName = (imgWidthMm - nameWidth) / 2;
             const yPositionName = imgHeightMm * yaxis;
@@ -1076,7 +1076,7 @@ const Bookcalender = ({ tabKey }) => {
             doc.setFontSize(fontSize);
             doc.setTextColor("#000");
 
-            const nameText = `${capitalizeFirstLetter(selectedBooking.fname)} ${capitalizeFirstLetter(selectedBooking.lname)}`;
+            const nameText = `${capitalizeFirstLetter(selectedBooking.fname)} ${capitalizeFirstLetter(selectedBooking?.mname)} ${capitalizeFirstLetter(selectedBooking.lname)}`;
             const nameWidth = doc.getTextWidth(nameText);
             const xPositionName = (imgWidthMm - nameWidth) / 2;
             const yPositionName = imgHeightMm * yaxis;
@@ -1192,7 +1192,7 @@ const Bookcalender = ({ tabKey }) => {
             doc.setFontSize(fontSize);
             doc.setTextColor("#000");
 
-            const nameText = `${capitalizeFirstLetter(row.fname)} ${capitalizeFirstLetter(row.lname)}`;
+            const nameText = `${capitalizeFirstLetter(row.fname)} ${capitalizeFirstLetter(row?.mname)} ${capitalizeFirstLetter(row.lname)}`;
 
             const nameWidth = doc.getTextWidth(nameText);
             const xPositionName = (imgWidthMm - nameWidth) / 2;
@@ -1293,7 +1293,7 @@ const Bookcalender = ({ tabKey }) => {
         },
         {
             name: 'Full Name',
-            selector: row => `${row.fname}   ${row.lname}`,
+            selector: row => `${row.fname} ${row?.mname} ${row.lname}`,
             sortable: true,
         },
 
@@ -1394,7 +1394,7 @@ const Bookcalender = ({ tabKey }) => {
                     doc.setTextColor("#000");
 
                     // Prepare user's name
-                    const nameText = `${capitalizeFirstLetter(row?.fname)} ${capitalizeFirstLetter(row?.lname)}`;
+                    const nameText = `${capitalizeFirstLetter(row?.fname)} ${capitalizeFirstLetter(row?.mname)} ${capitalizeFirstLetter(row?.lname)}`;
                     const nameWidth = doc.getTextWidth(nameText);
 
                     // Center the name horizontally
