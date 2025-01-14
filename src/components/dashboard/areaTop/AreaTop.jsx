@@ -266,6 +266,18 @@ const AreaTop = ({ buttonValue, tableView }) => {
     else if (window.location.pathname == "/ByTrainingTypeWise") {
       setHeader("Filter By Training Type");
     }
+    else if (window.location.pathname == "/ByTrainingbyadult") {
+      setHeader("Filter By Training Type Adult");
+    }
+    else if (window.location.pathname == "/ByTrainingbyschool") {
+      setHeader("Filter By Training Type School");
+    }
+    else if (window.location.pathname == "/ByTrainingbyrto") {
+      setHeader("Filter By Training Type RTO");
+    }
+    else if (window.location.pathname == "/ByYearWiseCount") {
+      setHeader("Filter By Year Wise Count");
+    }
 
   }, [window.location.pathname]);
   return (

@@ -409,23 +409,23 @@ const SidebarMenu = [
         icon: <AiOutlineAppstoreAdd style={{ color: "red" }} size={24} />,
       },
       {
-        subMenus: "R4",
-        url: "/R4",
+        subMenus: "Training Type Adult",
+        url: "/ByTrainingbyadult",
         icon: <AiOutlineAppstoreAdd style={{ color: "red" }} size={24} />,
       },
       {
-        subMenus: "R5",
-        url: "/R5",
+        subMenus: "Training Type School",
+        url: "/ByTrainingbyschool",
         icon: <AiOutlineAppstoreAdd style={{ color: "red" }} size={24} />,
       },
       {
-        subMenus: "R6",
-        url: "/R6",
+        subMenus: "Training Type RTO",
+        url: "/ByTrainingbyrto",
         icon: <AiOutlineAppstoreAdd style={{ color: "red" }} size={24} />,
       },
       {
-        subMenus: "R7",
-        url: "/R7",
+        subMenus: "ByYearWiseCount",
+        url: "/ByYearWiseCount",
         icon: <AiOutlineAppstoreAdd style={{ color: "red" }} size={24} />,
       },
       {
