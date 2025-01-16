@@ -42,10 +42,10 @@ const Bookcalender = ({ tabKey }) => {
         if (!selectedDate || !selectedTime || !category || !slotDatefortest) {
             console.log("State values are missing:", { selectedDate, selectedTime, category, slotDatefortest });
         } else {
-            console.log("Selected Date:", selectedDate);
-            console.log("Selected Time:", selectedTime);
-            console.log("Category:", category);
-            console.log("slotDatefortest", slotDatefortest)
+            // console.log("Selected Date:", selectedDate);
+            // console.log("Selected Time:", selectedTime);
+            // console.log("Category:", category);
+            // console.log("slotDatefortest", slotDatefortest)
         }
     }, [selectedDate, selectedTime, category, slotDatefortest]);
 
@@ -763,12 +763,12 @@ const Bookcalender = ({ tabKey }) => {
                 image: new URL('../../assets/Holiday/CERTIFICATE - BUS - Final.jpg', import.meta.url).href,
             },
             "RTO – Suspended Driving License Holders Training": {
-                fontSize: 45,
+                fontSize: 35,
                 nameYFactor: 0.42,
                 certFontSize: 20,
-                certY: 66.2,
-                dateY: 86,
-                timeY: 100,
+                certY: 71.2,
+                dateY: 101,
+                timeY: 115,
                 dateX: 60,
                 timeX: 62,
                 image: new URL('../../assets/Holiday/suspended.jpg', import.meta.url).href,
@@ -818,7 +818,9 @@ const Bookcalender = ({ tabKey }) => {
 
             // Add Name
             const nameText = `${capitalizeFirstLetter(selectedBooking.fname)} ${capitalizeFirstLetter(selectedBooking?.mname)} ${capitalizeFirstLetter(selectedBooking.lname)}`;
-            const nameX = (imgWidthMm - doc.getTextWidth(nameText)) / 2;
+            const nameX = selectedBooking.category === "RTO – Suspended Driving License Holders Training"
+                ? (imgWidthMm - doc.getTextWidth(nameText)) / 1.5
+                : (imgWidthMm - doc.getTextWidth(nameText)) / 2;
             const nameY = imgHeightMm * config.nameYFactor;
             doc.text(nameText, nameX, nameY);
 
