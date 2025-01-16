@@ -257,8 +257,8 @@ const AreaTop = ({ buttonValue, tableView }) => {
     else if (window.location.pathname == "/search") {
       setHeader("Search");
     }
-    else if (window.location.pathname == "/bytrainer") {
-      setHeader("Filter By Trainer");
+    else if (window.location.pathname == "/TotalSessionWise") {
+      setHeader("Total Conducted Sessions");
     }
     else if (window.location.pathname == "/Bycategories") {
       setHeader("Filter By Category");
@@ -277,6 +277,12 @@ const AreaTop = ({ buttonValue, tableView }) => {
     }
     else if (window.location.pathname == "/ByYearWiseCount") {
       setHeader("Filter By Year Wise Count");
+    }
+    else if (window.location.pathname == "/ByTrainerWise") {
+      setHeader("Filter By Trainer Wise ");
+    }
+    else if (window.location.pathname == "/BySchoolWise") {
+      setHeader("Filter By School Wise ");
     }
 
   }, [window.location.pathname]);

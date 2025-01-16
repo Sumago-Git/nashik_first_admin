@@ -58,16 +58,18 @@ import Bookingpage2 from "./components/Groupbooking/Bookingpage2";
 import Sessionslotdetails2 from "./components/Groupbooking/Sessionslotdetails2";
 import Bycategories from "./components/Reports/Bycategories";
 import Bycategoriesandinstitudename from "./components/Reports/Bycategoriesandinstitudename";
-import ByTrainer from "./components/Reports/ByTrainer";
+
 import Slotsfromtoday from "./components/SlotComp/Slotsfromtoday";
 
-import R8 from "./components/Reports/R8";
-import R9 from "./components/Reports/R9";
+
 import ByTrainingTypeWise from "./components/Reports/ByTrainingTypeWise";
 import ByTrainingbyadult from "./components/Reports/ByTrainingbyadult";
 import ByTrainingbyschool from "./components/Reports/ByTrainingbyschool";
 import ByTrainingbyrto from "./components/Reports/ByTrainingbyrto";
 import ByYearWiseCount from "./components/Reports/ByYearWiseCount";
+import ByTrainerWise from "./components/Reports/ByTrainerWise";
+import BySchoolWise from "./components/Reports/BySchoolWise";
+import TotalSessionWise from "./components/Reports/TotalSessionWise";
 
 function App() {
 
@@ -263,8 +265,8 @@ function App() {
             element={<ProtectedRoutes Component={Bycategories} />}
           />
           <Route
-            path="/bytrainer"
-            element={<ProtectedRoutes Component={ByTrainer} />}
+            path="/TotalSessionWise"
+            element={<ProtectedRoutes Component={TotalSessionWise} />}
           />
           <Route
             path="/ByTrainingTypeWise"
@@ -287,12 +289,12 @@ function App() {
             element={<ProtectedRoutes Component={ByYearWiseCount} />}
           />
           <Route
-            path="/R8"
-            element={<ProtectedRoutes Component={R8} />}
+            path="/ByTrainerWise"
+            element={<ProtectedRoutes Component={ByTrainerWise} />}
           />
           <Route
-            path="/R9"
-            element={<ProtectedRoutes Component={R9} />}
+            path="/BySchoolWise"
+            element={<ProtectedRoutes Component={BySchoolWise} />}
           />
 
           <Route
