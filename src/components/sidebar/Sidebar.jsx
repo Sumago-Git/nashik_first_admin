@@ -393,11 +393,11 @@ const SidebarMenu = [
 
     mainIcon: <MdSchool size={24} />,
     subMenu: [
-      {
-        subMenus: "Bycategories",
-        url: "/Bycategories",
-        icon: <AiOutlineAppstoreAdd style={{ color: "red" }} size={24} />,
-      },
+      // {
+      //   subMenus: "Bycategories",
+      //   url: "/Bycategories",
+      //   icon: <AiOutlineAppstoreAdd style={{ color: "red" }} size={24} />,
+      // },
       {
         subMenus: "Total Session Conducted",
         url: "/TotalSessionWise",

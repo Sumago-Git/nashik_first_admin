@@ -191,6 +191,11 @@ const BySchoolWise = () => {
     },
     {
       name: 'Total Sessions',
+      selector: (row) => row.totalSessions,
+      sortable: true,
+    },
+    {
+      name: 'No. Students',
       selector: (row) => row.sessionCount,
       sortable: true,
     }
@@ -432,9 +437,14 @@ const BySchoolWise = () => {
               },
               {
                 name: 'Session Count',
+                selector: (row) => row.totalSessions,
+                sortable: true
+              },
+              {
+                name: 'No. of Students',
                 selector: (row) => row.sessionCount,
                 sortable: true
-              }
+              },
             ]}
             data={schoolItem.years}
             expandableRows
@@ -449,9 +459,14 @@ const BySchoolWise = () => {
                   },
                   {
                     name: 'Session Count',
+                    selector: (row) => row.totalSessions,
+                    sortable: true
+                  },
+                  {
+                    name: 'No. of Students',
                     selector: (row) => row.sessionCount,
                     sortable: true
-                  }
+                  },
                 ]}
                 data={yearItem.months}
                 expandableRows
@@ -466,9 +481,14 @@ const BySchoolWise = () => {
                       },
                       {
                         name: 'Session Count',
+                        selector: (row) => row.totalSessions,
+                        sortable: true
+                      },
+                      {
+                        name: 'No. of Students',
                         selector: (row) => row.sessionCount,
                         sortable: true
-                      }
+                      },
                     ]}
                     data={monthItem.weeks}
                     pagination={false}

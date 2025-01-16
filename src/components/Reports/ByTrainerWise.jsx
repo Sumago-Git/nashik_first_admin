@@ -213,6 +213,11 @@ const ByTrainerWise = () => {
     },
     {
       name: 'Total Sessions',
+      selector: (row) => row.totalSessions,
+      sortable: true,
+    },
+    {
+      name: 'No. Students',
       selector: (row) => row.sessionCount,
       sortable: true,
     }
@@ -475,9 +480,14 @@ const ByTrainerWise = () => {
               },
               {
                 name: 'Session Count',
+                selector: (row) => row.totalSessions,
+                sortable: true
+              },
+              {
+                name: 'No. of Students',
                 selector: (row) => row.sessionCount,
                 sortable: true
-              }
+              },
             ]}
             data={trainerItem.years}
             expandableRows
@@ -492,9 +502,14 @@ const ByTrainerWise = () => {
                   },
                   {
                     name: 'Session Count',
+                    selector: (row) => row.totalSessions,
+                    sortable: true
+                  },
+                  {
+                    name: 'No. of Students',
                     selector: (row) => row.sessionCount,
                     sortable: true
-                  }
+                  },
                 ]}
                 data={yearItem.months}
                 expandableRows
@@ -509,6 +524,11 @@ const ByTrainerWise = () => {
                       },
                       {
                         name: 'Session Count',
+                        selector: (row) => row.totalSessions,
+                        sortable: true
+                      },
+                      {
+                        name: 'No. of Students',
                         selector: (row) => row.sessionCount,
                         sortable: true
                       },
