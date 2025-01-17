@@ -201,22 +201,93 @@ const ByTrainingbyschool = () => {
  
   // Export to Excel
   const exportToExcel = () => {
-    const worksheetData = filteredData.flatMap(yearItem =>
-      yearItem.months.flatMap(month =>
-        month.weeks.map(week => ({
-          Year: yearItem.year,
-          Month: month.MonthName,
-          Week: week.WeekNumber,
-          Sessions: week.NoOfSessions,
-          PeopleAttended: week.TotalPeopleAttended
-        }))
-      )
-    );
-
-    const worksheet = XLSX.utils.json_to_sheet(worksheetData);
     const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Training Data");
-    XLSX.writeFile(workbook, "training_summary.xlsx");
+  
+    // Comprehensive data extraction
+    const comprehensiveData = filteredData.flatMap(yearItem => {
+      // Yearly Stats Rows
+      const yearStatsRows = yearItem.stats.map(stat => ({
+        'Year': yearItem.year,
+        'Training Type': stat.TrainingType,
+        'Total Sessions': stat.NoOfSessions,
+        'Total People Attended': stat.TotalPeopleAttended,
+        'Average Attendance': stat.NoOfSessions > 0 
+          ? (stat.TotalPeopleAttended / stat.NoOfSessions).toFixed(2) 
+          : 'N/A',
+        'Data Type': 'Yearly Stats'
+      }));
+  
+      // Monthly and Weekly Details
+      const monthWeekRows = yearItem.months.flatMap(month => 
+        month.weeks.map(week => ({
+          'Year': yearItem.year,
+          'Month': month.MonthName,
+          'Month Number': month.MonthNumber,
+          'Training Type': month.TrainingType,
+          'Total Month Sessions': month.NoOfSessions,
+          'Total Month People Attended': month.TotalPeopleAttended,
+          'Week Number': week.WeekNumber,
+          'Week Sessions': week.NoOfSessions,
+          'Week People Attended': week.TotalPeopleAttended,
+          'Week Average Attendance': week.NoOfSessions > 0 
+            ? (week.TotalPeopleAttended / week.NoOfSessions).toFixed(2) 
+            : 'N/A',
+          'Data Type': 'Weekly Breakdown'
+        }))
+      );
+  
+      return [...yearStatsRows, ...monthWeekRows];
+    });
+  
+    // Create worksheets
+    const comprehensiveWorksheet = XLSX.utils.json_to_sheet(comprehensiveData);
+  
+    // Customize column widths
+    comprehensiveWorksheet['!cols'] = [
+      { wch: 10 },   // Year
+      { wch: 20 },   // Training Type
+      { wch: 15 },   // Total Sessions
+      { wch: 20 },   // Total People Attended
+      { wch: 20 },   // Average Attendance
+      { wch: 15 },   // Data Type
+      { wch: 15 },   // Month
+      { wch: 15 },   // Month Number
+      { wch: 15 },   // Total Month Sessions
+      { wch: 20 },   // Total Month People Attended
+      { wch: 15 },   // Week Number
+      { wch: 15 },   // Week Sessions
+      { wch: 20 }    // Week People Attended
+    ];
+  
+    // Summary Worksheet
+    const summaryData = filteredData.map(yearItem => {
+      const yearStats = yearItem.stats[0] || {};
+      return {
+        'Year': yearItem.year,
+        'Training Type': yearStats.TrainingType || 'N/A',
+        'Total Yearly Sessions': yearStats.NoOfSessions || 0,
+        'Total Yearly People Attended': yearStats.TotalPeopleAttended || 0,
+        'Months Covered': yearItem.months.map(m => m.MonthName).join(', '),
+        'Total Months': yearItem.months.length
+      };
+    });
+  
+    const summaryWorksheet = XLSX.utils.json_to_sheet(summaryData);
+    summaryWorksheet['!cols'] = [
+      { wch: 10 },   // Year
+      { wch: 20 },   // Training Type
+      { wch: 20 },   // Total Yearly Sessions
+      { wch: 25 },   // Total Yearly People Attended
+      { wch: 30 },   // Months Covered
+      { wch: 15 }    // Total Months
+    ];
+  
+    // Add worksheets to workbook
+    XLSX.utils.book_append_sheet(workbook, comprehensiveWorksheet, "Detailed Training Report");
+    XLSX.utils.book_append_sheet(workbook, summaryWorksheet, "Yearly Summary");
+  
+    // Generate and save the file with current date
+    XLSX.writeFile(workbook, `Training_Report_${new Date().toISOString().split('T')[0]}.xlsx`);
   };
 
   return (

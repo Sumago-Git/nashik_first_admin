@@ -201,38 +201,117 @@ const ByTrainingbyrto = () => {
 
   // Export to Excel
   const exportToExcel = () => {
-    const worksheetData = filteredData.flatMap(yearItem =>
-      yearItem.months.flatMap(month =>
-        month.weeks.map(week => ({
-          Year: yearItem.year,
-          Month: month.MonthName,
-          Week: week.WeekNumber,
-          Sessions: week.NoOfSessions,
-          PeopleAttended: week.TotalPeopleAttended
-        }))
-      )
-    );
-
-    const worksheet = XLSX.utils.json_to_sheet(worksheetData);
     const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Training Data");
-    XLSX.writeFile(workbook, "training_summary.xlsx");
+  
+    // Comprehensive data extraction
+    const comprehensiveData = filteredData.flatMap(yearItem => {
+      // Yearly Stats Rows
+      const yearStatsRows = yearItem.stats.map(stat => ({
+        'Year': yearItem.year,
+        'Training Category': stat.TrainingCategory,
+        'Total Sessions': stat.NoOfSessions,
+        'Total People Attended': stat.TotalPeopleAttended,
+        'Average Attendance': stat.NoOfSessions > 0 
+          ? (stat.TotalPeopleAttended / stat.NoOfSessions).toFixed(2) 
+          : 'N/A',
+        'Data Type': 'Yearly Stats',
+        'Total Sessions in Year': yearItem.totalSessionsInYear,
+        'Total Attendees in Year': yearItem.totalAttendeesInYear
+      }));
+  
+      // Monthly and Weekly Details
+      const monthWeekRows = yearItem.months.flatMap(month => 
+        month.weeks.map(week => ({
+          'Year': yearItem.year,
+          'Month': month.MonthName,
+          'Month Number': month.MonthNumber,
+          'Training Category': month.TrainingCategory,
+          'Total Month Sessions': month.NoOfSessions,
+          'Total Month People Attended': month.TotalPeopleAttended,
+          'Week Number': week.WeekNumber,
+          'Week Sessions': week.NoOfSessions,
+          'Week People Attended': week.TotalPeopleAttended,
+          'Week Average Attendance': week.NoOfSessions > 0 
+            ? (week.TotalPeopleAttended / week.NoOfSessions).toFixed(2) 
+            : 'N/A',
+          'Data Type': 'Weekly Breakdown'
+        }))
+      );
+  
+      // Consolidated Stats Rows
+      const consolidatedStatsRows = [{
+        'Year': yearItem.year,
+        'Consolidated Total Sessions': yearItem.consolidatedStats?.totalSessions,
+        'Consolidated Total Attendees': yearItem.consolidatedStats?.totalAttendees,
+        'Overall Total Sessions': yearItem.overallStats?.totalSessions,
+        'Overall Total Attendees': yearItem.overallStats?.totalAttendees,
+        'Data Type': 'Consolidated Stats'
+      }];
+  
+      return [...yearStatsRows, ...monthWeekRows, ...consolidatedStatsRows];
+    });
+  
+    // Create worksheets
+    const comprehensiveWorksheet = XLSX.utils.json_to_sheet(comprehensiveData);
+  
+    // Customize column widths
+    comprehensiveWorksheet['!cols'] = [
+      { wch: 10 },   // Year
+      { wch: 30 },   // Training Category
+      { wch: 15 },   // Total Sessions
+      { wch: 20 },   // Total People Attended
+      { wch: 20 },   // Average Attendance
+      { wch: 20 },   // Data Type
+      { wch: 20 },   // Total Sessions in Year
+      { wch: 20 },   // Total Attendees in Year
+      { wch: 15 },   // Month
+      { wch: 15 },   // Month Number
+      { wch: 20 },   // Total Month Sessions
+      { wch: 25 },   // Total Month People Attended
+      { wch: 15 },   // Week Number
+      { wch: 15 },   // Week Sessions
+      { wch: 20 },   // Week People Attended
+      { wch: 25 },   // Consolidated Total Sessions
+      { wch: 25 }    // Consolidated Total Attendees
+    ];
+  
+    // Summary Worksheet
+    const summaryData = filteredData.map(yearItem => {
+      const yearStats = yearItem.stats[0] || {};
+      return {
+        'Year': yearItem.year,
+        'Training Category': yearStats.TrainingCategory || 'N/A',
+        'Total Yearly Sessions': yearItem.totalSessionsInYear || 0,
+        'Total Yearly People Attended': yearItem.totalAttendeesInYear || 0,
+        'Months Covered': yearItem.months.map(m => m.MonthName).join(', '),
+        'Total Months': yearItem.months.length,
+        'Consolidated Total Sessions': yearItem.consolidatedStats?.totalSessions || 0,
+        'Consolidated Total Attendees': yearItem.consolidatedStats?.totalAttendees || 0
+      };
+    });
+  
+    const summaryWorksheet = XLSX.utils.json_to_sheet(summaryData);
+    summaryWorksheet['!cols'] = [
+      { wch: 10 },   // Year
+      { wch: 30 },   // Training Category
+      { wch: 20 },   // Total Yearly Sessions
+      { wch: 25 },   // Total Yearly People Attended
+      { wch: 30 },   // Months Covered
+      { wch: 15 },   // Total Months
+      { wch: 25 },   // Consolidated Total Sessions
+      { wch: 25 }    // Consolidated Total Attendees
+    ];
+  
+    // Add worksheets to workbook
+    XLSX.utils.book_append_sheet(workbook, comprehensiveWorksheet, "Detailed Training Report");
+    XLSX.utils.book_append_sheet(workbook, summaryWorksheet, "Yearly Summary");
+  
+    // Generate and save the file with current date
+    XLSX.writeFile(workbook, `Training_Report_${new Date().toISOString().split('T')[0]}.xlsx`);
   };
 
   return (
-    <div className="p-4 bg-light">{
-      loading ?  // Check loading state
-        <div className="d-flex justify-content-center align-items-center" style={{ height: '100px' }}>
-          <ThreeDots
-            height="80"
-            width="80"
-            radius="9"
-            color="#000"
-            ariaLabel="three-dots-loading"
-
-            visible={true}
-          />
-        </div> : null}
+    <div className="p-4 bg-light">
       <h2 className="text-primary mb-4">Training Data Summary</h2>
 
       {/* Filters */}
@@ -346,6 +425,19 @@ const ByTrainingbyrto = () => {
           rows: { style: { fontSize: "14px" } },
         }}
       />
+      {
+        loading ?  // Check loading state
+          <div className="d-flex justify-content-center align-items-center" style={{ height: '100px' }}>
+            <ThreeDots
+              height="80"
+              width="80"
+              radius="9"
+              color="#000"
+              ariaLabel="three-dots-loading"
+  
+              visible={true}
+            />
+          </div> : null}
     </div>
   );
 }

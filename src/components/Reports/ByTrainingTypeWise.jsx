@@ -590,24 +590,49 @@ const ByTrainingTypeWise = () => {
   };
 
   // Export to Excel
-  const exportToExcel = () => {
-    const worksheetData = filteredData.flatMap(yearItem =>
-      yearItem.months.flatMap(month =>
-        month.weeks.map(week => ({
+    const exportToExcel = () => {
+      const worksheetData = filteredData.flatMap(yearItem => {
+        // Flatten yearly stats
+        const statsRows = yearItem.stats.map(stat => ({
           Year: yearItem.year,
-          Month: month.MonthName,
-          Week: week.WeekNumber,
-          Sessions: week.NoOfSessions,
-          PeopleAttended: week.TotalPeopleAttended
-        }))
-      )
-    );
-
-    const worksheet = XLSX.utils.json_to_sheet(worksheetData);
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Training Data");
-    XLSX.writeFile(workbook, "training_summary.xlsx");
-  };
+          TrainingType: stat.TrainingType,
+          NoOfSessions: stat.NoOfSessions,
+          TotalPeopleAttended: stat.TotalPeopleAttended
+        }));
+    
+        // Flatten months
+        const monthRows = yearItem.months.flatMap(month => {
+          // Month level data
+          const monthLevelRows = [{
+            Year: yearItem.year,
+            MonthNumber: month.MonthNumber,
+            MonthName: month.MonthName,
+            TrainingType: month.TrainingType,
+            NoOfSessions: month.NoOfSessions,
+            TotalPeopleAttended: month.TotalPeopleAttended
+          }];
+    
+          // Week level data
+          const weekRows = month.weeks.map(week => ({
+            Year: yearItem.year,
+            MonthNumber: month.MonthNumber,
+            MonthName: month.MonthName,
+            WeekNumber: week.WeekNumber,
+            NoOfSessions: week.NoOfSessions,
+            TotalPeopleAttended: week.TotalPeopleAttended
+          }));
+    
+          return [...monthLevelRows, ...weekRows];
+        });
+    
+        return [...statsRows, ...monthRows];
+      });
+    
+      const worksheet = XLSX.utils.json_to_sheet(worksheetData);
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, "Training Type Report");
+      XLSX.writeFile(workbook, "training_type_report.xlsx");
+    };
 
   return (
     <div className="p-4 bg-light">

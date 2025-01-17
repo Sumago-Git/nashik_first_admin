@@ -260,10 +260,7 @@ function App() {
             path="/search"
             element={<ProtectedRoutes Component={Search} />}
           />
-          <Route
-            path="/Bycategories"
-            element={<ProtectedRoutes Component={Bycategories} />}
-          />
+  
           <Route
             path="/TotalSessionWise"
             element={<ProtectedRoutes Component={TotalSessionWise} />}
