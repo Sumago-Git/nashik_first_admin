@@ -247,7 +247,7 @@ const Bookingpage2 = () => {
         // vehicletype: [],
       });
       setErrors({}); // Clear errors
-      navigate('/Bookcalender')
+      navigate('/bookseats')
     } catch (error) {
       console.error('Error submitting form:', error);
       // Handle error
