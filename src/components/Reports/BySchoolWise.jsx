@@ -361,7 +361,7 @@
 //               isClearable
 //             />
 //           </div>
-    
+
 //           {/* Week Filter */}
 //           <div style={{ minWidth: "200px" }}>
 //             <Select
@@ -619,7 +619,7 @@ const BySchoolWise = () => {
           month: monthFilter?.value || '',
           week: weekFilter?.value || '',
           date: date ? formatDate(date) : '',
-          institutionName: selectInstitude,
+          schoolName: selectInstitude,
           trainingType: selectedCategory,
           rtoFilter: selectedRTO,
           day: dayFilter?.value,
@@ -638,14 +638,14 @@ const BySchoolWise = () => {
       // Check if response has data and data array is not empty
       if (response?.data) {
         setSchoolData(response.data.data);
-        
+
         // Update pagination states
         if (response.data.pagination) {
           setCurrentPage(response.data.pagination.currentPage);
           setTotalPages(response.data.pagination.totalPages);
           setTotalRecords(response.data.pagination.totalRecords);
         }
-        
+
         console.log('Fetched school data:', response.data.data);
       } else {
         setSchoolData([]);
@@ -753,7 +753,7 @@ const BySchoolWise = () => {
 
   return (
     <div className="p-4 bg-light">
-     
+
 
       <h2 className="text-primary mb-4">School-wise Sessions</h2>
 
@@ -790,6 +790,7 @@ const BySchoolWise = () => {
           </Dropdown.Menu>
         </Dropdown>
         {/* RTO Dropdown */}
+        {/*
         <Dropdown>
           <Dropdown.Toggle variant="primary" id="category-dropdown" className="text-white">
             {selectedRTO ? "RTO" : "Filter by RTO"}
@@ -801,7 +802,9 @@ const BySchoolWise = () => {
             </Dropdown.Item>
           </Dropdown.Menu>
         </Dropdown>
+*/}
         {/*  Sub Category Dropdown */}
+        {/*
         <Dropdown>
           <Dropdown.Toggle variant="primary" id="category-dropdown" className="text-white">
             {selectedSubCategory || "Select  Sub Category"}
@@ -819,6 +822,7 @@ const BySchoolWise = () => {
             </Dropdown.Item>
           </Dropdown.Menu>
         </Dropdown>
+        */}
         {/* Institution Dropdown */}
         <Dropdown>
           <Dropdown.Toggle variant="primary" id="institution-dropdown" className="text-white">
@@ -899,7 +903,7 @@ const BySchoolWise = () => {
               isClearable
             />
           </div>
-    
+
           {/* Week Filter */}
           <div style={{ minWidth: "200px" }}>
             <Select
@@ -910,16 +914,16 @@ const BySchoolWise = () => {
               isClearable
             />
           </div>
-                {/* day Filter */}
-                <div style={{ minWidth: "200px" }}>
-                <Select
-                  options={dayOptions}
-                  value={dayFilter}
-                  onChange={setDayFilter}
-                  placeholder="Select Day"
-                  isClearable
-                />
-              </div>
+          {/* day Filter */}
+          <div style={{ minWidth: "200px" }}>
+            <Select
+              options={dayOptions}
+              value={dayFilter}
+              onChange={setDayFilter}
+              placeholder="Select Day"
+              isClearable
+            />
+          </div>
         </div>
         }
 
@@ -974,8 +978,8 @@ const BySchoolWise = () => {
           <div className="d-flex justify-content-between align-items-center p-2 w-100">
             <div className="d-flex align-items-center">
               <span className="mr-2">Show</span>
-              <select 
-                value={pageSize} 
+              <select
+                value={pageSize}
                 onChange={(e) => handlePageSizeChange(Number(e.target.value))}
                 className="form-control form-control-sm"
                 style={{ width: '80px' }}
@@ -994,17 +998,17 @@ const BySchoolWise = () => {
                 {Math.min(currentPage * pageSize, totalRecords)} of {totalRecords} entries
               </span>
               <div>
-                <Button 
-                  variant="outline-primary" 
-                  onClick={() => handlePageChange(currentPage - 1)} 
+                <Button
+                  variant="outline-primary"
+                  onClick={() => handlePageChange(currentPage - 1)}
                   disabled={currentPage === 1}
                   className="mr-2"
                 >
                   Previous
                 </Button>
-                <Button 
-                  variant="outline-primary" 
-                  onClick={() => handlePageChange(currentPage + 1)} 
+                <Button
+                  variant="outline-primary"
+                  onClick={() => handlePageChange(currentPage + 1)}
                   disabled={currentPage === totalPages}
                 >
                   Next
@@ -1080,12 +1084,30 @@ const BySchoolWise = () => {
                     ]}
                     data={monthItem.weeks}
                     pagination={false}
+                    customStyles={{
+                      header: {
+                        style: { backgroundColor: "#f8d7da", color: "#721c24" },
+                      },
+                      rows: { style: { fontSize: "14px", color: "#721c24" } },
+                    }}
                   />
                 )}
                 pagination={false}
+                customStyles={{
+                  header: {
+                    style: { backgroundColor: "#d1ecf1", color: "#0c5460" },
+                  },
+                  rows: { style: { fontSize: "14px", color: "#0c5460" } },
+                }}
               />
             )}
             pagination={false}
+            customStyles={{
+              header: {
+                style: { backgroundColor: "#d4edda", color: "#155724" },
+              },
+              rows: { style: { fontSize: "14px", color: "#155724" } },
+            }}
           />
         )}
         customStyles={{

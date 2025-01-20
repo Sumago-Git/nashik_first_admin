@@ -472,7 +472,7 @@ import Calendar from "react-calendar";
 import 'react-calendar/dist/Calendar.css';
 import instance from "../../api/AxiosInstance";
 
-const ByTrainingTypeWise = () => {
+const ByYearWiseCount = () => {
   // State for filters
   const [date, setDate] = useState(null);
   const [yearFilter, setYearFilter] = useState(null);
@@ -545,7 +545,7 @@ const ByTrainingTypeWise = () => {
 
   // Fetch training type data
   const fetchTrainingTypeData = async () => {
-    const apiUrl = 'http://localhost:8000/report/trainingYearWiseCount';
+    const apiUrl = 'http://localhost:8000/report/yearWiseFinalSessionCount';
     setLoading(true);
 
     try {
@@ -673,7 +673,7 @@ const ByTrainingTypeWise = () => {
     <div className="p-4 bg-light">
      
 
-      <h2 className="text-primary mb-4">Training Type Wise Report</h2>
+      <h2 className="text-primary mb-4">Year Wise Report</h2>
 
       {/* Filters Container */}
       <div className="mb-4 d-flex justify-content-end gap-3 flex-wrap align-items-center">
@@ -846,7 +846,7 @@ const ByTrainingTypeWise = () => {
         columns={[
           {
             name: 'Institute Name',
-            selector: (row) => row.instituteName,
+            selector: (row) => row.rowLabel,
             sortable: true
           },
           {
@@ -856,7 +856,7 @@ const ByTrainingTypeWise = () => {
           },
           {
             name: 'Total Sessions',
-            selector: (row) => row.totalSessions,
+            selector: (row) => row.totalNoOfStudent,
             sortable: true
           }
         ]}
@@ -914,7 +914,7 @@ const ByTrainingTypeWise = () => {
         expandableRows
         expandableRowsComponent={({ data: instituteItem }) => (
           <DataTable
-            title={`Years for ${instituteItem.instituteName}`}
+            title={`Years for ${instituteItem.rowLabel}`}
             columns={[
               {
                 name: 'Year',
@@ -923,12 +923,12 @@ const ByTrainingTypeWise = () => {
               },
               {
                 name: 'Session Count',
-                selector: (row) => row.sessionCount,
+                selector: (row) => row.totalNoOfStudent,
                 sortable: true
               },
               {
                 name: 'Total Sessions',
-                selector: (row) => row.totalSessions,
+                selector: (row) => row.totalNoSessions,
                 sortable: true
               }
             ]}
@@ -940,17 +940,17 @@ const ByTrainingTypeWise = () => {
                 columns={[
                   {
                     name: 'Month',
-                    selector: (row) => row.monthName,
+                    selector: (row) => row.month,
                     sortable: true
                   },
                   {
                     name: 'Session Count',
-                    selector: (row) => row.sessionCount,
+                    selector: (row) => row.totalNoOfStudent,
                     sortable: true
                   },
                   {
                     name: 'Total Sessions',
-                    selector: (row) => row.totalSessions,
+                    selector: (row) => row.totalNoSessions,
                     sortable: true
                   }
                 ]}
@@ -958,7 +958,7 @@ const ByTrainingTypeWise = () => {
                 expandableRows
                 expandableRowsComponent={({ data: monthItem }) => (
                   <DataTable
-                    title={`Weeks for ${monthItem.monthName}`}
+                    title={`Weeks for ${monthItem.month}`}
                     columns={[
                       {
                         name: 'Week',
@@ -966,49 +966,42 @@ const ByTrainingTypeWise = () => {
                         sortable: true
                       },
                       {
-                        name: 'Categories',
-                        selector: (row) => row.categories.map(cat => cat.category).join(', '),
+                        name: 'Session Count',
+                        selector: (row) => row.totalNoOfStudent,
                         sortable: true
                       },
                       {
-                        name: 'Session Count',
-                        selector: (row) => row.categories.reduce((sum, cat) => sum + cat.sessionCount, 0),
+                        name: 'Total Sessions',
+                        selector: (row) => row.totalNoSessions,
                         sortable: true
                       }
                     ]}
                     data={monthItem.weeks}
-                    pagination={false}
-                    expandableRows
-                    expandableRowsComponent={({ data: weekItem }) => (
-                      <DataTable
-                        title={`Categories for Week ${weekItem.week}`}
-                        columns={[
-                          {
-                            name: 'Category',
-                            selector: (row) => row.category,
-                            sortable: true
-                          },
-                          {
-                            name: 'Session Count',
-                            selector: (row) => row.sessionCount,
-                            sortable: true
-                          },
-                          {
-                            name: 'Total Sessions',
-                            selector: (row) => row.totalSessions,
-                            sortable: true
-                          }
-                        ]}
-                        data={weekItem.categories}
-                        pagination={false}
-                      />
-                    )}
+                    pagination={false}    
+                    customStyles={{
+                      header: {
+                        style: { backgroundColor: "#f8d7da", color: "#721c24" },
+                      },
+                      rows: { style: { fontSize: "14px", color: "#721c24" } },
+                    }}               
                   />
                 )}
                 pagination={false}
+                customStyles={{
+                  header: {
+                    style: { backgroundColor: "#d1ecf1", color: "#0c5460" },
+                  },
+                  rows: { style: { fontSize: "14px", color: "#0c5460" } },
+                }}
               />
             )}
             pagination={false}
+            customStyles={{
+              header: {
+                style: { backgroundColor: "#d4edda", color: "#155724" },
+              },
+              rows: { style: { fontSize: "14px", color: "#155724" } },
+            }}
           />
         )}
         customStyles={{
@@ -1032,4 +1025,4 @@ const ByTrainingTypeWise = () => {
   );
 }
 
-export default ByTrainingTypeWise;
+export default ByYearWiseCount;

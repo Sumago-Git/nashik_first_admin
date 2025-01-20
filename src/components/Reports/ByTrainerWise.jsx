@@ -1173,12 +1173,30 @@ const ByTrainerWise = () => {
                     ]}
                     data={monthItem.weeks}
                     pagination={false}
+                    customStyles={{
+                      header: {
+                        style: { backgroundColor: "#f8d7da", color: "#721c24" },
+                      },
+                      rows: { style: { fontSize: "14px", color: "#721c24" } },
+                    }}
                   />
                 )}
                 pagination={false}
+                customStyles={{
+                  header: {
+                    style: { backgroundColor: "#d1ecf1", color: "#0c5460" },
+                  },
+                  rows: { style: { fontSize: "14px", color: "#0c5460" } },
+                }}
               />
             )}
             pagination={false}
+            customStyles={{
+              header: {
+                style: { backgroundColor: "#d4edda", color: "#155724" },
+              },
+              rows: { style: { fontSize: "14px", color: "#155724" } },
+            }}
           />
         )}
         customStyles={{

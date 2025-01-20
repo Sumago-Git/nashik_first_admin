@@ -252,6 +252,7 @@ const TotalSessionWise = () => {
       name: 'Time',
       selector: (row) => row.slotTimeInfo,
       sortable: true,
+      width: '150px',
     },
     {
       name: 'No of Students ',
@@ -262,26 +263,31 @@ const TotalSessionWise = () => {
       name: 'School/Institution',
       selector: (row) => row.institution_name || 'N/A',
       sortable: true,
+      width: '350px',
     },
     {
       name: 'Principal/Manager',
       selector: (row) => row.hm_principal_manager_name || 'N/A',
       sortable: true,
+      width: '200px',
     },
     {
       name: 'Coordinator Name',
       selector: (row) => row.coordinator_name || 'N/A',
       sortable: true,
+      width: '200px',
     },
     {
       name: 'Coordinator Mobile',
       selector: (row) => row.coordinator_mobile || 'N/A',
       sortable: true,
+      width: '150px',
     },
     {
       name: 'Trainer',
       selector: (row) => row.trainer,
       sortable: true,
+      width: '150px',
     },
     {
       name: 'Training Type',

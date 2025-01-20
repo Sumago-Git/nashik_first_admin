@@ -325,6 +325,7 @@ const ByTrainingbyrto = () => {
             value={yearFilter ? { label: yearFilter, value: yearFilter } : null}
             onChange={(selectedOption) => setYearFilter(selectedOption ? selectedOption.value : null)}
             placeholder={yearFilter || "Select Year"}
+            isClearable
           />
         </div>
 
@@ -341,6 +342,7 @@ const ByTrainingbyrto = () => {
             placeholder={monthFilter
               ? uniqueMonths.find(m => m.id === monthFilter)?.name || monthFilter
               : "Select Month"}
+              isClearable
           />
         </div>
 
@@ -351,6 +353,7 @@ const ByTrainingbyrto = () => {
             value={weekFilter ? { label: `Week ${weekFilter}`, value: weekFilter } : null}
             onChange={(selectedOption) => setWeekFilter(selectedOption ? selectedOption.value : null)}
             placeholder={weekFilter ? `Week ${weekFilter}` : "Select Week"}
+            isClearable
           />
         </div>
 
@@ -414,9 +417,21 @@ const ByTrainingbyrto = () => {
                 columns={weekColumns}
                 data={monthData.weeks}
                 pagination={false}
+                customStyles={{
+                  header: {
+                    style: { backgroundColor: "#d1ecf1", color: "#0c5460" },
+                  },
+                  rows: { style: { fontSize: "14px", color: "#0c5460" } },
+                }}
               />
             )}
             pagination={false}
+            customStyles={{
+              header: {
+                style: { backgroundColor: "#d4edda", color: "#155724" },
+              },
+              rows: { style: { fontSize: "14px", color: "#155724" } },
+            }}
           />
         )}
         pagination
