@@ -121,7 +121,7 @@ const TotalSessionWise = () => {
           month: monthFilter?.value || '',
           week: weekFilter?.value || '',
           date: date ? formatDate(date) : '',
-          institutionName: selectInstitude,
+          schoolName: selectInstitude,
           trainingType: selectedCategory,
           trainer: selectedTrainer,
           day: dayFilter?.value,
@@ -261,7 +261,7 @@ const TotalSessionWise = () => {
     },
     {
       name: 'School/Institution',
-      selector: (row) => row.institution_name || 'N/A',
+      selector: (row) => row.institutionOrCategory || 'N/A',
       sortable: true,
       width: '350px',
     },
@@ -331,6 +331,9 @@ const TotalSessionWise = () => {
           <Dropdown.Item onClick={() => setSelectedCategory("Adult")}>
             Adult
           </Dropdown.Item>
+          <Dropdown.Item onClick={() => setSelectedCategory(null)}>
+      Clear
+    </Dropdown.Item>
         </Dropdown.Menu>
       </Dropdown>
 
@@ -347,6 +350,9 @@ const TotalSessionWise = () => {
           <Dropdown.Item onClick={() => setSelectedSlot("inhouse")}>
             In House
           </Dropdown.Item>
+          <Dropdown.Item onClick={() => setSelectedSlot(null)}>
+      Clear
+    </Dropdown.Item>
         </Dropdown.Menu>
       </Dropdown>
 
@@ -360,6 +366,9 @@ const TotalSessionWise = () => {
           <Dropdown.Item onClick={() => setSelectedRTO(true)}>
             RTO
           </Dropdown.Item>
+          <Dropdown.Item onClick={() => setSelectedRTO(null)}>
+      Clear
+    </Dropdown.Item>
         </Dropdown.Menu>
       </Dropdown>
 
@@ -379,6 +388,9 @@ const TotalSessionWise = () => {
           <Dropdown.Item onClick={() => setSelectedSubCategory("RTO – Training for School Bus Driver")}>
           RTO – Training for School Bus Driver
           </Dropdown.Item>
+          <Dropdown.Item onClick={() => setSelectedSubCategory(null)}>
+      Clear
+    </Dropdown.Item>
         </Dropdown.Menu>
       </Dropdown>
 
@@ -397,10 +409,14 @@ const TotalSessionWise = () => {
               >
                 {category.institution_name}
               </Dropdown.Item>
+              
             ))
           ) : (
             <Dropdown.Item disabled>No Institutions Available</Dropdown.Item>
           )}
+          <Dropdown.Item onClick={() => setselectInstitude(null)}>
+      Clear
+    </Dropdown.Item>
         </Dropdown.Menu>
       </Dropdown>
 
@@ -416,6 +432,9 @@ const TotalSessionWise = () => {
               {item.name}
             </Dropdown.Item>
           ))}
+          <Dropdown.Item onClick={() => setSelectedTrainer(null)}>
+      Clear
+    </Dropdown.Item>
         </Dropdown.Menu>
       </Dropdown>
 

@@ -262,7 +262,7 @@
 //            <Dropdown.Toggle variant="primary" id="category-dropdown" className="text-white">
 //            {selectedSlot ? (selectedSlot === "inhouse" ? "In House" : "On Site") : "Select Slot"}
 //            </Dropdown.Toggle>
- 
+
 //            <Dropdown.Menu>
 //              <Dropdown.Item onClick={() => setSelectedSlot("onsite")}>
 //              On Site
@@ -402,7 +402,7 @@
 //             />
 //           </div>
 
-        
+
 //           {/* Week Filter */}
 //           <div style={{ minWidth: "200px" }}>
 //             <Select
@@ -589,7 +589,7 @@ const ByTrainerWise = () => {
   const [selectedRTO, setSelectedRTO] = useState(false);
   const [loading, setLoading] = useState(false);
   const [showCalendar, setShowCalendar] = useState(false);
-  const [selectedTrainer, setSelectedTrainer] = useState(""); 
+  const [selectedTrainer, setSelectedTrainer] = useState("");
   const [getadmin_data, setadmin_data] = useState([]);
   const [selectedSubCategory, setSelectedSubCategory] = useState("");
 
@@ -703,14 +703,14 @@ const ByTrainerWise = () => {
       // Check if response has data and data array is not empty
       if (response?.data) {
         setTrainerData(response.data.data);
-        
+
         // Update pagination states
         if (response.data.pagination) {
           setCurrentPage(response.data.pagination.currentPage);
           setTotalPages(response.data.pagination.totalPages);
           setTotalRecords(response.data.pagination.totalRecords);
         }
-        
+
         console.log('Fetched trainer data:', response.data.data);
       } else {
         setTrainerData([]);
@@ -821,7 +821,7 @@ const ByTrainerWise = () => {
 
   return (
     <div className="p-4 bg-light">
-      
+
 
       <h2 className="text-primary mb-4">Trainer-wise Sessions</h2>
 
@@ -840,6 +840,9 @@ const ByTrainerWise = () => {
             <Dropdown.Item onClick={() => setSelectedCategory("Adult")}>
               Adult
             </Dropdown.Item>
+            <Dropdown.Item onClick={() => setSelectedCategory(null)}>
+      Clear
+    </Dropdown.Item>
           </Dropdown.Menu>
         </Dropdown>
         {/* Slot Type Dropdown */}
@@ -855,9 +858,12 @@ const ByTrainerWise = () => {
             <Dropdown.Item onClick={() => setSelectedSlot("inhouse")}>
               In House
             </Dropdown.Item>
+            <Dropdown.Item onClick={() => setSelectedSlot(null)}>
+      Clear
+    </Dropdown.Item>
           </Dropdown.Menu>
         </Dropdown>
-        {/* RTO Dropdown */} 
+        {/* RTO Dropdown */}
         <Dropdown>
           <Dropdown.Toggle variant="primary" id="category-dropdown" className="text-white">
             {selectedRTO ? "RTO" : "Filter by RTO"}
@@ -867,6 +873,9 @@ const ByTrainerWise = () => {
             <Dropdown.Item onClick={() => setSelectedRTO(true)}>
               RTO
             </Dropdown.Item>
+            <Dropdown.Item onClick={() => setSelectedRTO(null)}>
+      Clear
+    </Dropdown.Item>
           </Dropdown.Menu>
         </Dropdown>
         {/*  Sub Category Dropdown */}
@@ -885,6 +894,9 @@ const ByTrainerWise = () => {
             <Dropdown.Item onClick={() => setSelectedSubCategory("RTO – Training for School Bus Driver")}>
               RTO – Training for School Bus Driver
             </Dropdown.Item>
+            <Dropdown.Item onClick={() => setSelectedSubCategory(null)}>
+      Clear
+    </Dropdown.Item>
           </Dropdown.Menu>
         </Dropdown>
         {/* Institution Dropdown */}
@@ -906,7 +918,11 @@ const ByTrainerWise = () => {
             ) : (
               <Dropdown.Item disabled>No Institutions Available</Dropdown.Item>
             )}
+            <Dropdown.Item onClick={() => setselectInstitude(null)}>
+      Clear
+    </Dropdown.Item>
           </Dropdown.Menu>
+
         </Dropdown>
 
         <Dropdown>
@@ -924,6 +940,9 @@ const ByTrainerWise = () => {
                 )
               })
             }
+            <Dropdown.Item onClick={() => setSelectedTrainer(null)}>
+              Clear
+            </Dropdown.Item>
           </Dropdown.Menu>
         </Dropdown>
 
@@ -939,7 +958,7 @@ const ByTrainerWise = () => {
 
           {showCalendar && (
             <div
-              className="position-absolute mt-2 z-3 bg-white shadow"
+              className="position-absolute mt-2 z-3 bg-white shadow p-3"
               style={{
                 zIndex: 1000,
                 right: 0,
@@ -958,9 +977,24 @@ const ByTrainerWise = () => {
                 }}
                 maxDate={new Date()}
               />
+              <div className="mt-2 text-center">
+                <Button
+                  variant="secondary"
+                  onClick={() => {
+                    setDate(null);
+                    setShowCalendar(false);
+                    setYearFilter(null);
+                    setMonthFilter(null);
+                    setWeekFilter(null);
+                  }}
+                >
+                  Clear
+                </Button>
+              </div>
             </div>
           )}
         </div>
+
       </div>
       <div className="mb-4 d-flex justify-content-end gap-3 flex-wrap align-items-center">
         {date ? null : <div className="d-flex gap-3  ">
@@ -985,7 +1019,7 @@ const ByTrainerWise = () => {
               isClearable
             />
           </div>
-        
+
           {/* Week Filter */}
           <div style={{ minWidth: "200px" }}>
             <Select
@@ -1062,8 +1096,8 @@ const ByTrainerWise = () => {
           <div className="d-flex justify-content-between align-items-center p-2 w-100">
             <div className="d-flex align-items-center">
               <span className="mr-2">Show</span>
-              <select 
-                value={pageSize} 
+              <select
+                value={pageSize}
                 onChange={(e) => handlePageSizeChange(Number(e.target.value))}
                 className="form-control form-control-sm"
                 style={{ width: '80px' }}
@@ -1082,17 +1116,17 @@ const ByTrainerWise = () => {
                 {Math.min(currentPage * pageSize, totalRecords)} of {totalRecords} entries
               </span>
               <div>
-                <Button 
-                  variant="outline-primary" 
-                  onClick={() => handlePageChange(currentPage - 1)} 
+                <Button
+                  variant="outline-primary"
+                  onClick={() => handlePageChange(currentPage - 1)}
                   disabled={currentPage === 1}
                   className="mr-2"
                 >
                   Previous
                 </Button>
-                <Button 
-                  variant="outline-primary" 
-                  onClick={() => handlePageChange(currentPage + 1)} 
+                <Button
+                  variant="outline-primary"
+                  onClick={() => handlePageChange(currentPage + 1)}
                   disabled={currentPage === totalPages}
                 >
                   Next

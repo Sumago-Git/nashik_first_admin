@@ -772,6 +772,9 @@ const BySchoolWise = () => {
             <Dropdown.Item onClick={() => setSelectedCategory("Adult")}>
               Adult
             </Dropdown.Item>
+            <Dropdown.Item onClick={() => setSelectedCategory(null)}>
+      Clear
+    </Dropdown.Item>
           </Dropdown.Menu>
         </Dropdown>
         {/* Slot Type Dropdown */}
@@ -787,6 +790,9 @@ const BySchoolWise = () => {
             <Dropdown.Item onClick={() => setSelectedSlot("inhouse")}>
               In House
             </Dropdown.Item>
+            <Dropdown.Item onClick={() => setSelectedSlot(null)}>
+            Clear
+          </Dropdown.Item>
           </Dropdown.Menu>
         </Dropdown>
         {/* RTO Dropdown */}
@@ -842,43 +848,61 @@ const BySchoolWise = () => {
             ) : (
               <Dropdown.Item disabled>No Institutions Available</Dropdown.Item>
             )}
+            <Dropdown.Item onClick={() => setselectInstitude(null)}>
+            Clear
+          </Dropdown.Item>
           </Dropdown.Menu>
         </Dropdown>
 
         {/* Date Selection */}
         <div className="position-relative">
-          <Button
-            variant="primary"
-            onClick={() => setShowCalendar(!showCalendar)}
-            className="text-white"
-          >
-            {date ? formatDate(date) : "Select Date"}
-          </Button>
+        <Button
+          variant="primary"
+          onClick={() => setShowCalendar(!showCalendar)}
+          className="text-white"
+        >
+          {date ? formatDate(date) : "Select Date"}
+        </Button>
 
-          {showCalendar && (
-            <div
-              className="position-absolute mt-2 z-3 bg-white shadow"
-              style={{
-                zIndex: 1000,
-                right: 0,
-                top: '100%'
+        {showCalendar && (
+          <div
+            className="position-absolute mt-2 z-3 bg-white shadow p-3"
+            style={{
+              zIndex: 1000,
+              right: 0,
+              top: '100%'
+            }}
+          >
+            <Calendar
+              value={date}
+              onChange={(selectedDate) => {
+                setDate(selectedDate);
+                setShowCalendar(false);
+                setYearFilter(null);
+                setMonthFilter(null);
+                setWeekFilter(null);
+                setDayFilter(null);
               }}
-            >
-              <Calendar
-                value={date}
-                onChange={(selectedDate) => {
-                  setDate(selectedDate);
+              maxDate={new Date()}
+            />
+            <div className="mt-2 text-center">
+              <Button
+                variant="secondary"
+                onClick={() => {
+                  setDate(null);
                   setShowCalendar(false);
                   setYearFilter(null);
                   setMonthFilter(null);
                   setWeekFilter(null);
-                  setDayFilter(null);
                 }}
-                maxDate={new Date()}
-              />
+              >
+                Clear
+              </Button>
             </div>
-          )}
-        </div>
+          </div>
+        )}
+      </div>
+
       </div>
       <div className="mb-4 d-flex justify-content-end gap-3 flex-wrap align-items-center">
         {date ? null : <div className="d-flex gap-3  ">

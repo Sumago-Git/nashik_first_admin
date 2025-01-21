@@ -400,8 +400,6 @@ import { ThreeDots } from 'react-loader-spinner';
 const ByTrainingTypeWise = () => {
   // Hardcoded data from the provided array
 
-
- 
   const [yearFilter, setYearFilter] = useState('');
   const [monthFilter, setMonthFilter] = useState('');
   const [weekFilter, setWeekFilter] = useState('');
@@ -414,7 +412,6 @@ const ByTrainingTypeWise = () => {
   useEffect(() => {
     fetchReportData();
     generateYears()
-
     return () => {
       // Cleanup logic if needed (currently empty)
     };
@@ -542,7 +539,6 @@ const ByTrainingTypeWise = () => {
   ];
 
   // Handle search/filter
-
   const fetchReportData = async () => {
     const apiUrl = 'http://localhost:8000/report/trainingTypeWiseCountByYearAll'; // API endpoint
     setLoading(true);
@@ -559,7 +555,6 @@ const ByTrainingTypeWise = () => {
       const response = await axios.post(
         apiUrl,
         {
-
           year: yearFilter,
           month: monthFilter,
           week: weekFilter,

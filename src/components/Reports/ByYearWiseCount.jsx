@@ -336,7 +336,7 @@
 //           }}>
 //             Download Excel
 //           </Button>
-       
+
 //       </div>
 
 //       {/* Rest of the component remains the same */}
@@ -578,14 +578,14 @@ const ByYearWiseCount = () => {
       if (response?.data) {
         setTrainingTypeData(response.data.data);
         setTotalSessionsConducted(response.data.totalSessionsConducted || 0);
-        
+
         // Update pagination states
         if (response.data.pagination) {
           setCurrentPage(response.data.pagination.currentPage);
           setTotalPages(response.data.pagination.totalPages);
           setTotalRecords(response.data.pagination.totalRecords);
         }
-        
+
         console.log('Fetched training type data:', response.data.data);
       } else {
         setTrainingTypeData([]);
@@ -671,7 +671,7 @@ const ByYearWiseCount = () => {
 
   return (
     <div className="p-4 bg-light">
-     
+
 
       <h2 className="text-primary mb-4">Year Wise Report</h2>
 
@@ -689,6 +689,9 @@ const ByYearWiseCount = () => {
             </Dropdown.Item>
             <Dropdown.Item onClick={() => setSelectedCategory("Adult")}>
               Adult
+            </Dropdown.Item>
+            <Dropdown.Item onClick={() => setSelectedCategory(null)}>
+              Clear
             </Dropdown.Item>
           </Dropdown.Menu>
         </Dropdown>
@@ -712,6 +715,9 @@ const ByYearWiseCount = () => {
             ) : (
               <Dropdown.Item disabled>No Institutions Available</Dropdown.Item>
             )}
+            <Dropdown.Item onClick={() => setselectInstitude(null)}>
+              Clear
+            </Dropdown.Item>
           </Dropdown.Menu>
         </Dropdown>
 
@@ -726,28 +732,57 @@ const ByYearWiseCount = () => {
           </Button>
 
           {showCalendar && (
-            <div
-              className="position-absolute mt-2 z-3 bg-white shadow"
-              style={{
-                zIndex: 1000,
-                right: 0,
-                top: '100%'
-              }}
+            <div className="position-relative">
+            <Button
+              variant="primary"
+              onClick={() => setShowCalendar(!showCalendar)}
+              className="text-white"
             >
-              <Calendar
-                value={date}
-                onChange={(selectedDate) => {
-                  setDate(selectedDate);
-                  setShowCalendar(false);
-                  setYearFilter(null);
-                  setMonthFilter(null);
-                  setWeekFilter(null);
+              {date ? formatDate(date) : "Select Date"}
+            </Button>
+  
+            {showCalendar && (
+              <div
+                className="position-absolute mt-2 z-3 bg-white shadow p-3"
+                style={{
+                  zIndex: 1000,
+                  right: 0,
+                  top: '100%'
                 }}
-                maxDate={new Date()}
-              />
-            </div>
+              >
+                <Calendar
+                  value={date}
+                  onChange={(selectedDate) => {
+                    setDate(selectedDate);
+                    setShowCalendar(false);
+                    setYearFilter(null);
+                    setMonthFilter(null);
+                    setWeekFilter(null);
+                    setDayFilter(null);
+                  }}
+                  maxDate={new Date()}
+                />
+                <div className="mt-2 text-center">
+                  <Button
+                    variant="secondary"
+                    onClick={() => {
+                      setDate(null);
+                      setShowCalendar(false);
+                      setYearFilter(null);
+                      setMonthFilter(null);
+                      setWeekFilter(null);
+                    }}
+                  >
+                    Clear
+                  </Button>
+                </div>
+              </div>
+            )}
+          </div>
+  
           )}
         </div>
+
       </div>
       <div className="mb-4 d-flex justify-content-end gap-3 flex-wrap align-items-center">
         {date ? null : (
@@ -796,10 +831,10 @@ const ByYearWiseCount = () => {
         </Button>
         <Button variant="success" onClick={() => {
           // Excel export logic can be added here
-          const worksheetData = trainingTypeData.flatMap(instituteItem => 
-            instituteItem.years.flatMap(yearItem => 
-              yearItem.months.flatMap(monthItem => 
-                monthItem.weeks.flatMap(weekItem => 
+          const worksheetData = trainingTypeData.flatMap(instituteItem =>
+            instituteItem.years.flatMap(yearItem =>
+              yearItem.months.flatMap(monthItem =>
+                monthItem.weeks.flatMap(weekItem =>
                   weekItem.categories.map(categoryItem => ({
                     InstituteName: instituteItem.instituteName,
                     Year: yearItem.year,
@@ -872,8 +907,8 @@ const ByYearWiseCount = () => {
           <div className="d-flex justify-content-between align-items-center p-2 w-100">
             <div className="d-flex align-items-center">
               <span className="mr-2">Show</span>
-              <select 
-                value={pageSize} 
+              <select
+                value={pageSize}
                 onChange={(e) => handlePageSizeChange(Number(e.target.value))}
                 className="form-control form-control-sm"
                 style={{ width: '80px' }}
@@ -892,17 +927,17 @@ const ByYearWiseCount = () => {
                 {Math.min(currentPage * pageSize, totalRecords)} of {totalRecords} entries
               </span>
               <div>
-                <Button 
-                  variant="outline-primary" 
-                  onClick={() => handlePageChange(currentPage - 1)} 
+                <Button
+                  variant="outline-primary"
+                  onClick={() => handlePageChange(currentPage - 1)}
                   disabled={currentPage === 1}
                   className="mr-2"
                 >
                   Previous
                 </Button>
-                <Button 
-                  variant="outline-primary" 
-                  onClick={() => handlePageChange(currentPage + 1)} 
+                <Button
+                  variant="outline-primary"
+                  onClick={() => handlePageChange(currentPage + 1)}
                   disabled={currentPage === totalPages}
                 >
                   Next
@@ -977,13 +1012,13 @@ const ByYearWiseCount = () => {
                       }
                     ]}
                     data={monthItem.weeks}
-                    pagination={false}    
+                    pagination={false}
                     customStyles={{
                       header: {
                         style: { backgroundColor: "#f8d7da", color: "#721c24" },
                       },
                       rows: { style: { fontSize: "14px", color: "#721c24" } },
-                    }}               
+                    }}
                   />
                 )}
                 pagination={false}
