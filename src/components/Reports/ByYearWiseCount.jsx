@@ -492,7 +492,7 @@ const ByYearWiseCount = () => {
 
   // Data state
   const [trainingTypeData, setTrainingTypeData] = useState([]);
-  const [totalSessionsConducted, setTotalSessionsConducted] = useState(0);
+  const [totalSessionsConducted, setTotalSessionsConducted] = useState({});
 
   // Format date to DD-MM-YYYY
   const formatDate = (dateObj) => {
@@ -577,7 +577,7 @@ const ByYearWiseCount = () => {
       // Check if response has data and data array is not empty
       if (response?.data) {
         setTrainingTypeData(response.data.data);
-        setTotalSessionsConducted(response.data.totalSessionsConducted || 0);
+        setTotalSessionsConducted(response.data.totalSessionConducted || 0);
 
         // Update pagination states
         if (response.data.pagination) {
@@ -862,12 +862,22 @@ const ByYearWiseCount = () => {
       <div className="mb-4">
         <h4 className="text-secondary mb-3">Overall Statistics</h4>
         <div className="row g-3">
-          <div className="col-md-12">
+          <div className="col-md-6">
             <div className="card shadow-sm border-0">
               <div className="card-body text-center">
                 <h5 className="card-title text-primary">Total Sessions Conducted</h5>
                 <p className="card-text fs-4 fw-bold">
-                  {totalSessionsConducted}
+                  {totalSessionsConducted.totalNoSessions}
+                </p>
+              </div>
+            </div>
+          </div>
+          <div className="col-md-6">
+            <div className="card shadow-sm border-0">
+              <div className="card-body text-center">
+                <h5 className="card-title text-primary">Total Students</h5>
+                <p className="card-text fs-4 fw-bold">
+                  {totalSessionsConducted.totalNoOfStudent}
                 </p>
               </div>
             </div>
