@@ -46,10 +46,10 @@ const Bookcalender = ({ tabKey }) => {
         if (!selectedDate || !selectedTime || !category || !slotDatefortest) {
             console.log("State values are missing:", { selectedDate, selectedTime, category, slotDatefortest });
         } else {
-            console.log("Selected Date:", selectedDate);
-            console.log("Selected Time:", selectedTime);
-            console.log("Category:", category);
-            console.log("slotDatefortest", slotDatefortest)
+            // console.log("Selected Date:", selectedDate);
+            // console.log("Selected Time:", selectedTime);
+            // console.log("Category:", category);
+            // console.log("slotDatefortest", slotDatefortest)
         }
     }, [selectedDate, selectedTime, category, slotDatefortest]);
 
@@ -298,8 +298,8 @@ const Bookcalender = ({ tabKey }) => {
                 certY: 45,
                 dateY: 85,
                 timeY: 100,
-                dateX: 80,
-                timeX: 78,
+                dateX: 90,
+                timeX: 90,
                 image: new URL('../../assets/Holiday/learner.jpg', import.meta.url).href,
             },
             "RTO – Training for School Bus Driver": {
@@ -314,14 +314,14 @@ const Bookcalender = ({ tabKey }) => {
                 image: new URL('../../assets/Holiday/CERTIFICATE - BUS - Final.jpg', import.meta.url).href,
             },
             "RTO – Suspended Driving License Holders Training": {
-                fontSize: 45,
-                nameYFactor: 0.42,
-                certFontSize: 20,
-                certY: 66.2,
-                dateY: 86,
-                timeY: 100,
-                dateX: 60,
-                timeX: 62,
+                fontSize: 32,
+                nameYFactor: 0.44,
+                certFontSize: 12,
+                certY: 85,
+                dateY: 101,
+                timeY: 108,
+                dateX: 30,
+                timeX: 30,
                 image: new URL('../../assets/Holiday/suspended.jpg', import.meta.url).href,
             },
             "College/Organization Training – Group": {
@@ -373,7 +373,7 @@ const Bookcalender = ({ tabKey }) => {
                 combinedDoc.addFont("MyCustomFont.ttf", "MyCustomFont", "normal");
                 combinedDoc.setFont("MyCustomFont");
                 combinedDoc.setFontSize(config.fontSize);
-                const nameText = `${capitalizeFirstLetter(item.fname)} ${capitalizeFirstLetter(item.lname)}`;
+                const nameText = `${capitalizeFirstLetter(item.fname)} ${capitalizeFirstLetter(item?.mname)} ${capitalizeFirstLetter(item.lname)}`;
                 const nameX = (imgWidthMm - combinedDoc.getTextWidth(nameText)) / 2;
                 const nameY = imgHeightMm * config.nameYFactor;
                 combinedDoc.text(nameText, nameX, nameY);
@@ -751,30 +751,30 @@ const Bookcalender = ({ tabKey }) => {
                 certY: 45,
                 dateY: 85,
                 timeY: 100,
-                dateX: 80,
-                timeX: 78,
+                dateX: 90,
+                timeX: 90,
                 image: new URL('../../assets/Holiday/learner.jpg', import.meta.url).href,
             },
             "RTO – Training for School Bus Driver": {
                 fontSize: 50,
                 nameYFactor: 0.47,
                 certFontSize: 15,
-                certY: 18,
-                dateY: 33,
-                timeY: 40,
-                dateX: 40,
-                timeX: 40,
+                certY: 23,
+                dateY: 38,
+                timeY: 45,
+                dateX: 45,
+                timeX: 45,
                 image: new URL('../../assets/Holiday/CERTIFICATE - BUS - Final.jpg', import.meta.url).href,
             },
             "RTO – Suspended Driving License Holders Training": {
-                fontSize: 45,
-                nameYFactor: 0.42,
-                certFontSize: 20,
-                certY: 66.2,
-                dateY: 86,
-                timeY: 100,
-                dateX: 60,
-                timeX: 62,
+                fontSize: 32,
+                nameYFactor: 0.44,
+                certFontSize: 12,
+                certY: 85,
+                dateY: 101,
+                timeY: 108,
+                dateX: 30,
+                timeX: 30,
                 image: new URL('../../assets/Holiday/suspended.jpg', import.meta.url).href,
             },
             "College/Organization Training – Group": {
@@ -784,8 +784,8 @@ const Bookcalender = ({ tabKey }) => {
                 certY: 25,
                 dateY: 35,
                 timeY: 45,
-                dateX: 80,
-                timeX: 80,
+                dateX: 90,
+                timeX: 90,
                 image: new URL('../../assets/Holiday/Certificate_page-0001.jpg', import.meta.url).href,
             },
         };
@@ -821,8 +821,10 @@ const Bookcalender = ({ tabKey }) => {
             doc.setFontSize(config.fontSize);
 
             // Add Name
-            const nameText = `${capitalizeFirstLetter(selectedBooking.fname)} ${capitalizeFirstLetter(selectedBooking.lname)}`;
-            const nameX = (imgWidthMm - doc.getTextWidth(nameText)) / 2;
+            const nameText = `${capitalizeFirstLetter(selectedBooking.fname)} ${capitalizeFirstLetter(selectedBooking?.mname)} ${capitalizeFirstLetter(selectedBooking.lname)}`;
+            const nameX = selectedBooking.category === "RTO – Suspended Driving License Holders Training"
+                ? (imgWidthMm - doc.getTextWidth(nameText)) / 1.5
+                : (imgWidthMm - doc.getTextWidth(nameText)) / 2;
             const nameY = imgHeightMm * config.nameYFactor;
             doc.text(nameText, nameX, nameY);
 
@@ -943,7 +945,7 @@ const Bookcalender = ({ tabKey }) => {
             doc.setFontSize(fontSize);
             doc.setTextColor("#000");
 
-            const nameText = `${capitalizeFirstLetter(selectedBooking.fname)} ${capitalizeFirstLetter(selectedBooking.lname)}`;
+            const nameText = `${capitalizeFirstLetter(selectedBooking.fname)} ${capitalizeFirstLetter(selectedBooking?.mname)} ${capitalizeFirstLetter(selectedBooking.lname)}`;
             const nameWidth = doc.getTextWidth(nameText);
             const xPositionName = (imgWidthMm - nameWidth) / 2;
             const yPositionName = imgHeightMm * yaxis;
@@ -1080,7 +1082,7 @@ const Bookcalender = ({ tabKey }) => {
             doc.setFontSize(fontSize);
             doc.setTextColor("#000");
 
-            const nameText = `${capitalizeFirstLetter(selectedBooking.fname)} ${capitalizeFirstLetter(selectedBooking.lname)}`;
+            const nameText = `${capitalizeFirstLetter(selectedBooking.fname)} ${capitalizeFirstLetter(selectedBooking?.mname)} ${capitalizeFirstLetter(selectedBooking.lname)}`;
             const nameWidth = doc.getTextWidth(nameText);
             const xPositionName = (imgWidthMm - nameWidth) / 2;
             const yPositionName = imgHeightMm * yaxis;
@@ -1196,7 +1198,7 @@ const Bookcalender = ({ tabKey }) => {
             doc.setFontSize(fontSize);
             doc.setTextColor("#000");
 
-            const nameText = `${capitalizeFirstLetter(row.fname)} ${capitalizeFirstLetter(row.lname)}`;
+            const nameText = `${capitalizeFirstLetter(row.fname)} ${capitalizeFirstLetter(row?.mname)} ${capitalizeFirstLetter(row.lname)}`;
 
             const nameWidth = doc.getTextWidth(nameText);
             const xPositionName = (imgWidthMm - nameWidth) / 2;
@@ -1297,7 +1299,7 @@ const Bookcalender = ({ tabKey }) => {
         },
         {
             name: 'Full Name',
-            selector: row => `${row.fname}   ${row.lname}`,
+            selector: row => `${row.fname} ${row?.mname} ${row.lname}`,
             sortable: true,
         },
 
@@ -1398,7 +1400,7 @@ const Bookcalender = ({ tabKey }) => {
                     doc.setTextColor("#000");
 
                     // Prepare user's name
-                    const nameText = `${capitalizeFirstLetter(row?.fname)} ${capitalizeFirstLetter(row?.lname)}`;
+                    const nameText = `${capitalizeFirstLetter(row?.fname)} ${capitalizeFirstLetter(row?.mname)} ${capitalizeFirstLetter(row?.lname)}`;
                     const nameWidth = doc.getTextWidth(nameText);
 
                     // Center the name horizontally
