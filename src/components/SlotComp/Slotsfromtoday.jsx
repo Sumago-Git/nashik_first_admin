@@ -15,8 +15,19 @@ const Slotsfromtoday = () => {
         setLoading(true);
         try {
             const response = await instance.get("Sessionslot/fetchSlots");
-            const allData = response.data.data?.reverse(); // Reverse data if needed
+            let allData = response.data.data || [];
+
+            // Combine date and time into a single Date object for sorting
+            allData = allData.map(item => ({
+                ...item,
+                combinedDateTime: new Date(`${item.slotdate} ${item.time}`) // Adjust if date format is different
+            }));
+
+            // Sort data by the combined Date object in descending order
+            allData.sort((a, b) => b.combinedDateTime - a.combinedDateTime);
+
             setTotalRows(allData.length); // Set total rows
+
             // Paginate data for the current page
             const start = (currentPage - 1) * rowsPerPage;
             const end = start + rowsPerPage;
@@ -28,6 +39,7 @@ const Slotsfromtoday = () => {
             setLoading(false);
         }
     };
+
 
     useEffect(() => {
         fetchTeam();
@@ -57,7 +69,7 @@ const Slotsfromtoday = () => {
             name: <CustomHeader name="Sr. No." />,
             selector: (row, index) => (currentPage - 1) * rowsPerPage + index + 1,
         },
-        
+
         {
             name: <CustomHeader name="Slot Date" />,
             cell: (row) => <span>{convertDateFormat(row.slotdate)}</span>,
@@ -97,7 +109,7 @@ const Slotsfromtoday = () => {
                     : <span>--</span>
             ),
         },
-       
+
         {
             name: <CustomHeader name="Coordinator Name" />,
             cell: (row) => (
@@ -126,7 +138,7 @@ const Slotsfromtoday = () => {
 
     return (
         <>
-        <h5>Traning Type Table</h5>
+            <h5>Traning Type Table</h5>
             <DataTable
                 columns={tableColumns}
                 data={data}

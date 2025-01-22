@@ -18,10 +18,14 @@ import { useLocation, useNavigate } from "react-router-dom";
 import DataTable from "react-data-table-component";
 import { base64String } from "../../assets/base64font"
 import lernerCertificate from "../../assets/Holiday/learner.jpg"
+import Backbtn from "../../components/Calender Component/Backbtn";
 const Bookcalender = ({ tabKey }) => {
     const [show, setShow] = useState(false);
     const [slotInfo, setSlotInfo] = useState(null); // State to store slot data
     const navigate = useNavigate();
+    const handleBack = () => {
+        navigate(-1); // Go back to the previous page
+    };
     // const [selectedDate, setSelectedDate] = useState("");
     const [selectedDay, setSelectedDay] = useState("");
     const [dataByDateAndCategory, setDataByDateAndCategory] = useState([]);
@@ -1542,6 +1546,8 @@ const Bookcalender = ({ tabKey }) => {
 
     return (
         <>
+         
+            <Backbtn/>
             <div className=" text-center pb-2 d-flex justify-content-between">
                 <div>
                     <h5>{category1}-{selectedDate}</h5>
