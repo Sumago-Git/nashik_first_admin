@@ -6,7 +6,8 @@ import * as XLSX from "xlsx";
 import instance from "../../api/AxiosInstance";
 import axios from "axios";
 import { ThreeDots } from 'react-loader-spinner';
-
+import Calendar from "react-calendar";
+import 'react-calendar/dist/Calendar.css';
 const ByTrainingbyschool = () => {
   // Hardcoded data from the provided array
 
@@ -20,6 +21,10 @@ const ByTrainingbyschool = () => {
   const [expandedRows, setExpandedRows] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("");
   const [loading, setLoading] = useState(false);
+  const [fromDate, setFromDate] = useState(null);
+  const [toDate, setToDate] = useState(null);
+  const [showFromCalendar, setShowFromCalendar] = useState(false);
+  const [showToCalendar, setShowToCalendar] = useState(false);
 
   useEffect(() => {
     fetchReportData();
@@ -39,6 +44,15 @@ const ByTrainingbyschool = () => {
     }
 
     return years;
+  };
+  const formatDate = (dateObj) => {
+    if (!dateObj) return '';
+    const d = new Date(dateObj);
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+
+    return `${year}-${month}-${day}`;
   };
   // Get unique years, months, and weeks
   const uniqueYears = generateYears();;
@@ -156,7 +170,7 @@ const ByTrainingbyschool = () => {
   const fetchReportData = async () => {
     const apiUrl = 'http://localhost:8000/report/trainingTypeWiseCountByYearAllSchool'; // API endpoint
     setLoading(true);
-    setFilteredData([])
+    
     try {
       // Retrieve the token from AsyncStorage
       const token = localStorage.getItem('accessToken');
@@ -164,7 +178,11 @@ const ByTrainingbyschool = () => {
         Alert.alert('Error', 'No access token found. Please log in again.');
         return;
       }
-
+    if (fromDate && !toDate) {
+        alert("'To Date' is required when 'From Date' is selected.");
+        return; // Stop execution if "To Date" is not provided
+      }  
+      setFilteredData([])
       // Make the API POST request
       const response = await axios.post(
         apiUrl,
@@ -173,6 +191,8 @@ const ByTrainingbyschool = () => {
           year: yearFilter,
           month: monthFilter,
           week: weekFilter,
+          fromDate: formatDate(fromDate),
+          toDate: formatDate(toDate),
         }, // Add payload here if required
         {
           headers: {
@@ -293,62 +313,158 @@ const ByTrainingbyschool = () => {
   return (
     <div className="p-4 bg-light">
       <h2 className="text-primary mb-4">Training Data Summary</h2>
+      <div className="mb-4 d-flex flex-wrap gap-3 align-items-center justify-content-end">
+      {/* Date Range Selection */}
 
-      {/* Filters */}
-      <div className="mb-4 d-flex justify-content-end gap-3 flex-wrap">
-
-        {/* Year Filter */}
-        <div style={{ minWidth: "200px" }}>
-
-          <Select
-            options={yearOptions}
-            value={yearFilter ? { label: yearFilter, value: yearFilter } : null}
-            onChange={(selectedOption) => setYearFilter(selectedOption ? selectedOption.value : null)}
-            placeholder={yearFilter || "Select Year"}
-            isClearable
-          />
-        </div>
-
-        {/* Month Filter */}
-        <div style={{ minWidth: "200px" }}>
-          <Select
-            options={monthOptions}
-            value={monthFilter ?
-              {
-                label: uniqueMonths.find(m => m.id === monthFilter)?.name || monthFilter,
-                value: monthFilter
-              } : null}
-            onChange={(selectedOption) => setMonthFilter(selectedOption ? selectedOption.value : null)}
-            placeholder={monthFilter
-              ? uniqueMonths.find(m => m.id === monthFilter)?.name || monthFilter
-              : "Select Month"}
-              isClearable
-          />
-        </div>
-
-        {/* Week Filter */}
-        <div style={{ minWidth: "200px" }}>
-          <Select
-            options={weekOptions}
-            value={weekFilter ? { label: `Week ${weekFilter}`, value: weekFilter } : null}
-            onChange={(selectedOption) => setWeekFilter(selectedOption ? selectedOption.value : null)}
-            placeholder={weekFilter ? `Week ${weekFilter}` : "Select Week"}
-            isClearable
-          />
-        </div>
-
-        {/* Buttons */}
-        <Button variant="primary" onClick={() => fetchReportData()}>
-          Search
+      {/* From Date */}
+      <div className="position-relative">
+        <Button
+          variant="primary"
+          onClick={() => setShowFromCalendar(!showFromCalendar)}
+          className="text-white"
+        >
+          {fromDate ? `From: ${formatDate(fromDate)}` : "Select From Date"}
         </Button>
-        <Button variant="danger" onClick={() => { fetchReportData(), setYearFilter(''), setMonthFilter(''), setWeekFilter('') }}>
-          Clear
-        </Button>
-        <Button variant="success" onClick={exportToExcel}>
-          Download Excel
-        </Button>
+        {showFromCalendar && (
+          <div
+            className="position-absolute mt-2 z-3 bg-white shadow p-3"
+            style={{ zIndex: 1000, right: 0, top: "100%" }}
+          >
+            <Calendar
+              value={fromDate}
+              onChange={(selectedDate) => {
+                setShowFromCalendar(false);
+                setFromDate(selectedDate);
+                setYearFilter(null);
+                setMonthFilter(null);
+                setWeekFilter(null);
+                setDayFilter(null);
+
+                if (toDate && selectedDate > toDate) {
+                  setToDate(null);
+                }
+              }}
+              maxDate={toDate || new Date()}
+            />
+            <div className="mt-2 text-center">
+              <Button
+                variant="secondary"
+                onClick={() => {
+                  setFromDate(null);
+                  setShowFromCalendar(false);
+                }}
+              >
+                Clear
+              </Button>
+            </div>
+          </div>
+        )}
       </div>
 
+      {/* To Date */}
+      <div className="position-relative">
+        <Button
+          variant="primary"
+          onClick={() => setShowToCalendar(!showToCalendar)}
+          className="text-white"
+          disabled={!fromDate}
+        >
+          {toDate ? `To: ${formatDate(toDate)}` : "Select To Date"}
+        </Button>
+        {showToCalendar && (
+          <div
+            className="position-absolute mt-2 z-3 bg-white shadow p-3"
+            style={{ zIndex: 1000, right: 0, top: "100%" }}
+          >
+            <Calendar
+              value={toDate}
+              onChange={(selectedDate) => {
+                setToDate(selectedDate);
+                setShowToCalendar(false);
+              }}
+              minDate={fromDate}
+              maxDate={new Date()}
+              tileDisabled={({ date }) =>
+                fromDate && date.getMonth() === fromDate.getMonth() && date.getDate() < fromDate.getDate()
+              }
+            />
+            <div className="mt-2 text-center">
+              <Button
+                variant="secondary"
+                onClick={() => {
+                  setToDate(null);
+                  setShowToCalendar(false);
+                }}
+              >
+                Clear
+              </Button>
+            </div>
+          </div>
+        )}
+      </div>
+
+    </div>
+      {/* Filters */}
+      <div className="mb-4 d-flex justify-content-end gap-3 flex-wrap">
+      {
+        fromDate ? null : (
+          <div className="d-flex gap-3">
+            {/* Year Filter */}
+            <div style={{ minWidth: "200px" }}>
+
+              <Select
+                options={yearOptions}
+                value={yearFilter ? { label: yearFilter, value: yearFilter } : null}
+                onChange={(selectedOption) => setYearFilter(selectedOption ? selectedOption.value : null)}
+                placeholder={yearFilter || "Select Year"}
+                isClearable
+              />
+            </div>
+
+            {/* Month Filter */}
+            <div style={{ minWidth: "200px" }}>
+              <Select
+                options={monthOptions}
+                value={monthFilter ?
+                  {
+                    label: uniqueMonths.find(m => m.id === monthFilter)?.name || monthFilter,
+                    value: monthFilter
+                  } : null}
+                onChange={(selectedOption) => setMonthFilter(selectedOption ? selectedOption.value : null)}
+                placeholder={monthFilter
+                  ? uniqueMonths.find(m => m.id === monthFilter)?.name || monthFilter
+                  : "Select Month"}
+                isClearable
+              />
+            </div>
+
+            {/* Week Filter */}
+            <div style={{ minWidth: "200px" }}>
+              <Select
+                options={weekOptions}
+                value={weekFilter ? { label: `Week ${weekFilter}`, value: weekFilter } : null}
+                onChange={(selectedOption) => setWeekFilter(selectedOption ? selectedOption.value : null)}
+                placeholder={weekFilter ? `Week ${weekFilter}` : "Select Week"}
+                isClearable
+              />
+            </div>
+          </div>
+        )
+      }
+
+
+      {/* Buttons */}
+      <Button variant="primary" onClick={() => fetchReportData()}>
+        Search
+      </Button>
+      <Button variant="danger" onClick={() => { fetchReportData(), setYearFilter(''), setMonthFilter(''), setWeekFilter(''),setToDate(null),
+        setFromDate(null) }}>
+        Clear
+      </Button>
+      <Button variant="success" onClick={exportToExcel}>
+        Download Excel
+      </Button>
+    </div>
       {/* Overall Statistics */}
       <div className="mb-4">
         <h4 className="text-secondary mb-3">Overall Statistics</h4>

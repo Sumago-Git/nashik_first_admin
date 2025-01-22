@@ -6,7 +6,8 @@ import * as XLSX from "xlsx";
 import instance from "../../api/AxiosInstance";
 import axios from "axios";
 import { ThreeDots } from 'react-loader-spinner';
-
+import Calendar from "react-calendar";
+import 'react-calendar/dist/Calendar.css';
 const ByTrainingbyadult = () => {
   // Hardcoded data from the provided array
 
@@ -20,6 +21,10 @@ const ByTrainingbyadult = () => {
   const [expandedRows, setExpandedRows] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("");
   const [loading, setLoading] = useState(false);
+  const [fromDate, setFromDate] = useState(null);
+  const [toDate, setToDate] = useState(null);
+  const [showFromCalendar, setShowFromCalendar] = useState(false);
+  const [showToCalendar, setShowToCalendar] = useState(false);
 
   useEffect(() => {
     fetchReportData();
@@ -67,7 +72,15 @@ const ByTrainingbyadult = () => {
     "51", "52"
   ]
     ; // Based on the current data
+  const formatDate = (dateObj) => {
+    if (!dateObj) return '';
+    const d = new Date(dateObj);
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
 
+    return `${year}-${month}-${day}`;
+  };
   // Convert to options for react-select
   const yearOptions = uniqueYears.map((year) => ({
     label: year,
@@ -156,7 +169,6 @@ const ByTrainingbyadult = () => {
   const fetchReportData = async () => {
     const apiUrl = 'http://localhost:8000/report/trainingTypeWiseCountByYearAllAdult'; // API endpoint
     setLoading(true);
-    setFilteredData([])
     try {
       // Retrieve the token from AsyncStorage
       const token = localStorage.getItem('accessToken');
@@ -164,6 +176,11 @@ const ByTrainingbyadult = () => {
         Alert.alert('Error', 'No access token found. Please log in again.');
         return;
       }
+      if (fromDate && !toDate) {
+        alert("'To Date' is required when 'From Date' is selected.");
+        return; // Stop execution if "To Date" is not provided
+      }
+      setFilteredData([])
 
       // Make the API POST request
       const response = await axios.post(
@@ -173,6 +190,8 @@ const ByTrainingbyadult = () => {
           year: yearFilter,
           month: monthFilter,
           week: weekFilter,
+          fromDate: formatDate(fromDate),
+          toDate: formatDate(toDate),
         }, // Add payload here if required
         {
           headers: {
@@ -202,7 +221,7 @@ const ByTrainingbyadult = () => {
   // Export to Excel
   const exportToExcel = () => {
     const workbook = XLSX.utils.book_new();
-  
+
     // Comprehensive Worksheet
     const comprehensiveData = filteredData.flatMap(yearItem => {
       // Yearly Stats
@@ -211,13 +230,13 @@ const ByTrainingbyadult = () => {
         'Training Type': stat.TrainingType,
         'Total Sessions': stat.NoOfSessions,
         'Total People Attended': stat.TotalPeopleAttended,
-        'Average Attendance': stat.NoOfSessions > 0 
-          ? (stat.TotalPeopleAttended / stat.NoOfSessions).toFixed(2) 
+        'Average Attendance': stat.NoOfSessions > 0
+          ? (stat.TotalPeopleAttended / stat.NoOfSessions).toFixed(2)
           : 'N/A'
       }));
-  
+
       // Monthly and Weekly Details
-      const monthWeekRows = yearItem.months.flatMap(month => 
+      const monthWeekRows = yearItem.months.flatMap(month =>
         month.weeks.map(week => ({
           'Year': yearItem.year,
           'Month': month.MonthName,
@@ -226,18 +245,18 @@ const ByTrainingbyadult = () => {
           'Week Number': week.WeekNumber,
           'Sessions': week.NoOfSessions,
           'People Attended': week.TotalPeopleAttended,
-          'Average Attendance per Session': week.NoOfSessions > 0 
-            ? (week.TotalPeopleAttended / week.NoOfSessions).toFixed(2) 
+          'Average Attendance per Session': week.NoOfSessions > 0
+            ? (week.TotalPeopleAttended / week.NoOfSessions).toFixed(2)
             : 'N/A'
         }))
       );
-  
+
       return [...yearStatsRows, ...monthWeekRows];
     });
-  
+
     // Create worksheets
     const comprehensiveWorksheet = XLSX.utils.json_to_sheet(comprehensiveData);
-  
+
     // Customize column widths
     comprehensiveWorksheet['!cols'] = [
       { wch: 10 },  // Year
@@ -251,7 +270,7 @@ const ByTrainingbyadult = () => {
       { wch: 15 },  // Sessions
       { wch: 20 }   // People Attended
     ];
-  
+
     // Summary Worksheet
     const summaryData = filteredData.map(yearItem => {
       const yearStats = yearItem.stats[0] || {};
@@ -263,7 +282,7 @@ const ByTrainingbyadult = () => {
         'Months Covered': yearItem.months.map(m => m.MonthName).join(', ')
       };
     });
-  
+
     const summaryWorksheet = XLSX.utils.json_to_sheet(summaryData);
     summaryWorksheet['!cols'] = [
       { wch: 10 },  // Year
@@ -272,66 +291,165 @@ const ByTrainingbyadult = () => {
       { wch: 20 },  // Total People Attended
       { wch: 30 }   // Months Covered
     ];
-  
+
     // Add worksheets to workbook
     XLSX.utils.book_append_sheet(workbook, comprehensiveWorksheet, "Detailed Training Report");
     XLSX.utils.book_append_sheet(workbook, summaryWorksheet, "Yearly Summary");
-  
+
     // Generate and save the file with current date
     XLSX.writeFile(workbook, `Training_Report_${new Date().toISOString().split('T')[0]}.xlsx`);
   };
   return (
     <div className="p-4 bg-light">
       <h2 className="text-primary mb-4">Training Data Summary</h2>
+      <div className="mb-4 d-flex flex-wrap gap-3 align-items-center justify-content-end">
+        {/* Date Range Selection */}
 
+        {/* From Date */}
+        <div className="position-relative">
+          <Button
+            variant="primary"
+            onClick={() => setShowFromCalendar(!showFromCalendar)}
+            className="text-white"
+          >
+            {fromDate ? `From: ${formatDate(fromDate)}` : "Select From Date"}
+          </Button>
+          {showFromCalendar && (
+            <div
+              className="position-absolute mt-2 z-3 bg-white shadow p-3"
+              style={{ zIndex: 1000, right: 0, top: "100%" }}
+            >
+              <Calendar
+                value={fromDate}
+                onChange={(selectedDate) => {
+                  setShowFromCalendar(false);
+                  setFromDate(selectedDate);
+                  setYearFilter(null);
+                  setMonthFilter(null);
+                  setWeekFilter(null);
+                  setDayFilter(null);
+
+                  if (toDate && selectedDate > toDate) {
+                    setToDate(null);
+                  }
+                }}
+                maxDate={toDate || new Date()}
+              />
+              <div className="mt-2 text-center">
+                <Button
+                  variant="secondary"
+                  onClick={() => {
+                    setFromDate(null);
+                    setShowFromCalendar(false);
+                  }}
+                >
+                  Clear
+                </Button>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* To Date */}
+        <div className="position-relative">
+          <Button
+            variant="primary"
+            onClick={() => setShowToCalendar(!showToCalendar)}
+            className="text-white"
+            disabled={!fromDate}
+          >
+            {toDate ? `To: ${formatDate(toDate)}` : "Select To Date"}
+          </Button>
+          {showToCalendar && (
+            <div
+              className="position-absolute mt-2 z-3 bg-white shadow p-3"
+              style={{ zIndex: 1000, right: 0, top: "100%" }}
+            >
+              <Calendar
+                value={toDate}
+                onChange={(selectedDate) => {
+                  setToDate(selectedDate);
+                  setShowToCalendar(false);
+                }}
+                minDate={fromDate}
+                maxDate={new Date()}
+                tileDisabled={({ date }) =>
+                  fromDate && date.getMonth() === fromDate.getMonth() && date.getDate() < fromDate.getDate()
+                }
+              />
+              <div className="mt-2 text-center">
+                <Button
+                  variant="secondary"
+                  onClick={() => {
+                    setToDate(null);
+                    setShowToCalendar(false);
+                  }}
+                >
+                  Clear
+                </Button>
+              </div>
+            </div>
+          )}
+        </div>
+
+      </div>
       {/* Filters */}
       <div className="mb-4 d-flex justify-content-end gap-3 flex-wrap">
+        {
+          fromDate ? null : (
+            <div className="d-flex gap-3">
+              {/* Year Filter */}
+              <div style={{ minWidth: "200px" }}>
 
-        {/* Year Filter */}
-        <div style={{ minWidth: "200px" }}>
+                <Select
+                  options={yearOptions}
+                  value={yearFilter ? { label: yearFilter, value: yearFilter } : null}
+                  onChange={(selectedOption) => setYearFilter(selectedOption ? selectedOption.value : null)}
+                  placeholder={yearFilter || "Select Year"}
+                  isClearable
+                />
+              </div>
 
-          <Select
-            options={yearOptions}
-            value={yearFilter ? { label: yearFilter, value: yearFilter } : null}
-            onChange={(selectedOption) => setYearFilter(selectedOption ? selectedOption.value : null)}
-            placeholder={yearFilter || "Select Year"}
-            isClearable
-          />
-        </div>
+              {/* Month Filter */}
+              <div style={{ minWidth: "200px" }}>
+                <Select
+                  options={monthOptions}
+                  value={monthFilter ?
+                    {
+                      label: uniqueMonths.find(m => m.id === monthFilter)?.name || monthFilter,
+                      value: monthFilter
+                    } : null}
+                  onChange={(selectedOption) => setMonthFilter(selectedOption ? selectedOption.value : null)}
+                  placeholder={monthFilter
+                    ? uniqueMonths.find(m => m.id === monthFilter)?.name || monthFilter
+                    : "Select Month"}
+                  isClearable
+                />
+              </div>
 
-        {/* Month Filter */}
-        <div style={{ minWidth: "200px" }}>
-          <Select
-            options={monthOptions}
-            value={monthFilter ?
-              {
-                label: uniqueMonths.find(m => m.id === monthFilter)?.name || monthFilter,
-                value: monthFilter
-              } : null}
-            onChange={(selectedOption) => setMonthFilter(selectedOption ? selectedOption.value : null)}
-            placeholder={monthFilter
-              ? uniqueMonths.find(m => m.id === monthFilter)?.name || monthFilter
-              : "Select Month"}
-              isClearable
-          />
-        </div>
+              {/* Week Filter */}
+              <div style={{ minWidth: "200px" }}>
+                <Select
+                  options={weekOptions}
+                  value={weekFilter ? { label: `Week ${weekFilter}`, value: weekFilter } : null}
+                  onChange={(selectedOption) => setWeekFilter(selectedOption ? selectedOption.value : null)}
+                  placeholder={weekFilter ? `Week ${weekFilter}` : "Select Week"}
+                  isClearable
+                />
+              </div>
+            </div>
+          )
+        }
 
-        {/* Week Filter */}
-        <div style={{ minWidth: "200px" }}>
-          <Select
-            options={weekOptions}
-            value={weekFilter ? { label: `Week ${weekFilter}`, value: weekFilter } : null}
-            onChange={(selectedOption) => setWeekFilter(selectedOption ? selectedOption.value : null)}
-            placeholder={weekFilter ? `Week ${weekFilter}` : "Select Week"}
-            isClearable
-          />
-        </div>
 
         {/* Buttons */}
         <Button variant="primary" onClick={() => fetchReportData()}>
           Search
         </Button>
-        <Button variant="danger" onClick={() => { fetchReportData(), setYearFilter(''), setMonthFilter(''), setWeekFilter('') }}>
+        <Button variant="danger" onClick={() => {
+          fetchReportData(), setYearFilter(''), setMonthFilter(''), setWeekFilter(''), setToDate(null),
+          setFromDate(null)
+        }}>
           Clear
         </Button>
         <Button variant="success" onClick={exportToExcel}>
@@ -396,7 +514,7 @@ const ByTrainingbyadult = () => {
               />
             )}
             pagination={false}
-             customStyles={{
+            customStyles={{
               header: {
                 style: { backgroundColor: "#d4edda", color: "#155724" },
               },
@@ -419,7 +537,7 @@ const ByTrainingbyadult = () => {
               radius="9"
               color="#000"
               ariaLabel="three-dots-loading"
-  
+
               visible={true}
             />
           </div> : null}

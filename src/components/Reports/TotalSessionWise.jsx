@@ -29,7 +29,11 @@ const TotalSessionWise = () => {
   const [showCalendar, setShowCalendar] = useState(false);
   const [selectedTrainer, setSelectedTrainer] = useState("");
   const [getadmin_data, setadmin_data] = useState([]);
-
+  const [fromDate, setFromDate] = useState(null);
+  const [toDate, setToDate] = useState(null);
+  const [download, setdownload] = useState(false);
+  const [showFromCalendar, setShowFromCalendar] = useState(false);
+  const [showToCalendar, setShowToCalendar] = useState(false);
   // Pagination states
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
@@ -106,7 +110,8 @@ const TotalSessionWise = () => {
   const fetchTotalSessionData = async () => {
     const apiUrl = 'http://localhost:8000/report/totalSessionsConducted';
     setLoading(true);
-    setTotalSessionData([]);
+
+
     try {
       const token = localStorage.getItem('accessToken');
       if (!token) {
@@ -114,6 +119,12 @@ const TotalSessionWise = () => {
         return;
       }
 
+      // Ensure "To Date" is mandatory if "From Date" is selected
+      if (fromDate && !toDate) {
+        alert("'To Date' is required when 'From Date' is selected.");
+        return; // Stop execution if "To Date" is not provided
+      }
+      setTotalSessionData([]);
       const response = await axios.post(
         apiUrl,
         {
@@ -129,7 +140,10 @@ const TotalSessionWise = () => {
           slotType: selectedSlot,
           rtoSubCategory: selectedSubCategory,
           page: currentPage,
-          pageSize: pageSize
+          pageSize: pageSize,
+          fromDate: formatDate(fromDate),
+          toDate: formatDate(toDate),
+          download:download
         },
         {
           headers: {
@@ -138,11 +152,9 @@ const TotalSessionWise = () => {
         }
       );
 
-      // Check if response has data and data array is not empty
       if (response?.data) {
         setTotalSessionData(response.data.data);
 
-        // Update pagination states
         if (response.data.pagination) {
           setCurrentPage(response.data.pagination.currentPage);
           setTotalPages(response.data.pagination.totalPages);
@@ -201,6 +213,8 @@ const TotalSessionWise = () => {
     setMonthFilter(null);
     setWeekFilter(null);
     setDayFilter(null);
+    setToDate(null);
+    setFromDate(null);
     setSelectedCategory("");
     setSelectedSubCategory("");
     setSelectedSlot("");
@@ -318,23 +332,16 @@ const TotalSessionWise = () => {
       <h2 className="text-primary mb-4">Total Sessions</h2>
 
       {/* Filters Container */}
-      <div className="mb-4 d-flex justify-content-end gap-3 flex-wrap align-items-center">
+      <div className="mb-4 d-flex flex-wrap gap-3 align-items-center justify-content-end">
         {/* Category Dropdown */}
         <Dropdown>
           <Dropdown.Toggle variant="primary" id="category-dropdown" className="text-white">
             {selectedCategory || "Select Category"}
           </Dropdown.Toggle>
-
           <Dropdown.Menu>
-            <Dropdown.Item onClick={() => setSelectedCategory("School")}>
-              School
-            </Dropdown.Item>
-            <Dropdown.Item onClick={() => setSelectedCategory("Adult")}>
-              Adult
-            </Dropdown.Item>
-            <Dropdown.Item onClick={() => setSelectedCategory(null)}>
-              Clear
-            </Dropdown.Item>
+            <Dropdown.Item onClick={() => setSelectedCategory("School")}>School</Dropdown.Item>
+            <Dropdown.Item onClick={() => setSelectedCategory("Adult")}>Adult</Dropdown.Item>
+            <Dropdown.Item onClick={() => setSelectedCategory(null)}>Clear</Dropdown.Item>
           </Dropdown.Menu>
         </Dropdown>
 
@@ -343,17 +350,10 @@ const TotalSessionWise = () => {
           <Dropdown.Toggle variant="primary" id="slot-dropdown" className="text-white">
             {selectedSlot ? (selectedSlot === "inhouse" ? "In House" : "On Site") : "Select Slot"}
           </Dropdown.Toggle>
-
           <Dropdown.Menu>
-            <Dropdown.Item onClick={() => setSelectedSlot("onsite")}>
-              On Site
-            </Dropdown.Item>
-            <Dropdown.Item onClick={() => setSelectedSlot("inhouse")}>
-              In House
-            </Dropdown.Item>
-            <Dropdown.Item onClick={() => setSelectedSlot(null)}>
-              Clear
-            </Dropdown.Item>
+            <Dropdown.Item onClick={() => setSelectedSlot("onsite")}>On Site</Dropdown.Item>
+            <Dropdown.Item onClick={() => setSelectedSlot("inhouse")}>In House</Dropdown.Item>
+            <Dropdown.Item onClick={() => setSelectedSlot(null)}>Clear</Dropdown.Item>
           </Dropdown.Menu>
         </Dropdown>
 
@@ -362,23 +362,17 @@ const TotalSessionWise = () => {
           <Dropdown.Toggle variant="primary" id="rto-dropdown" className="text-white">
             {selectedRTO ? "RTO" : "Filter by RTO"}
           </Dropdown.Toggle>
-
           <Dropdown.Menu>
-            <Dropdown.Item onClick={() => setSelectedRTO(true)}>
-              RTO
-            </Dropdown.Item>
-            <Dropdown.Item onClick={() => setSelectedRTO(null)}>
-              Clear
-            </Dropdown.Item>
+            <Dropdown.Item onClick={() => setSelectedRTO(true)}>RTO</Dropdown.Item>
+            <Dropdown.Item onClick={() => setSelectedRTO(null)}>Clear</Dropdown.Item>
           </Dropdown.Menu>
         </Dropdown>
 
-        {/*  Sub Category Dropdown */}
+        {/* Sub Category Dropdown */}
         <Dropdown>
           <Dropdown.Toggle variant="primary" id="subcategory-dropdown" className="text-white">
             {selectedSubCategory || "Select Sub Category"}
           </Dropdown.Toggle>
-
           <Dropdown.Menu>
             <Dropdown.Item onClick={() => setSelectedSubCategory("RTO – Learner Driving License Holder Training")}>
               RTO – Learner Driving License Holder Training
@@ -389,9 +383,7 @@ const TotalSessionWise = () => {
             <Dropdown.Item onClick={() => setSelectedSubCategory("RTO – Training for School Bus Driver")}>
               RTO – Training for School Bus Driver
             </Dropdown.Item>
-            <Dropdown.Item onClick={() => setSelectedSubCategory(null)}>
-              Clear
-            </Dropdown.Item>
+            <Dropdown.Item onClick={() => setSelectedSubCategory(null)}>Clear</Dropdown.Item>
           </Dropdown.Menu>
         </Dropdown>
 
@@ -400,24 +392,17 @@ const TotalSessionWise = () => {
           <Dropdown.Toggle variant="primary" id="institution-dropdown" className="text-white">
             {selectInstitude || "Select Institution"}
           </Dropdown.Toggle>
-
           <Dropdown.Menu>
             {institude.length > 0 ? (
               institude.map((category, index) => (
-                <Dropdown.Item
-                  key={index}
-                  onClick={() => setselectInstitude(category.institution_name)}
-                >
+                <Dropdown.Item key={index} onClick={() => setselectInstitude(category.institution_name)}>
                   {category.institution_name}
                 </Dropdown.Item>
-
               ))
             ) : (
               <Dropdown.Item disabled>No Institutions Available</Dropdown.Item>
             )}
-            <Dropdown.Item onClick={() => setselectInstitude(null)}>
-              Clear
-            </Dropdown.Item>
+            <Dropdown.Item onClick={() => setselectInstitude(null)}>Clear</Dropdown.Item>
           </Dropdown.Menu>
         </Dropdown>
 
@@ -426,84 +411,108 @@ const TotalSessionWise = () => {
           <Dropdown.Toggle variant="primary" id="trainer-dropdown" className="text-white">
             {selectedTrainer || "Select Trainer"}
           </Dropdown.Toggle>
-
           <Dropdown.Menu>
             {getadmin_data.map((item, id) => (
               <Dropdown.Item key={id} onClick={() => setSelectedTrainer(item.name)}>
                 {item.name}
               </Dropdown.Item>
             ))}
-            <Dropdown.Item onClick={() => setSelectedTrainer(null)}>
-              Clear
-            </Dropdown.Item>
+            <Dropdown.Item onClick={() => setSelectedTrainer(null)}>Clear</Dropdown.Item>
           </Dropdown.Menu>
         </Dropdown>
 
-        {/* Date Selection */}
+        {/* Date Range Selection */}
+
+        {/* From Date */}
         <div className="position-relative">
           <Button
             variant="primary"
-            onClick={() => setShowCalendar(!showCalendar)}
+            onClick={() => setShowFromCalendar(!showFromCalendar)}
             className="text-white"
           >
-            {date ? formatDate(date) : "Select Date"}
+            {fromDate ? `From: ${formatDate(fromDate)}` : "Select From Date"}
           </Button>
-
-          {showCalendar && (
-            <div className="position-relative">
-              <Button
-                variant="primary"
-                onClick={() => setShowCalendar(!showCalendar)}
-                className="text-white"
-              >
-                {date ? formatDate(date) : "Select Date"}
-              </Button>
-
-              {showCalendar && (
-                <div
-                  className="position-absolute mt-2 z-3 bg-white shadow p-3"
-                  style={{
-                    zIndex: 1000,
-                    right: 0,
-                    top: '100%'
+          {showFromCalendar && (
+            <div
+              className="position-absolute mt-2 z-3 bg-white shadow p-3"
+              style={{ zIndex: 1000, right: 0, top: "100%" }}
+            >
+              <Calendar
+                value={fromDate}
+                onChange={(selectedDate) => {
+                  setFromDate(selectedDate);
+                  setYearFilter(null);
+                  setMonthFilter(null);
+                  setWeekFilter(null);
+                  setDayFilter(null);
+                  setShowFromCalendar(false);
+                  if (toDate && selectedDate > toDate) {
+                    setToDate(null);
+                  }
+                }}
+                maxDate={toDate || new Date()}
+              />
+              <div className="mt-2 text-center">
+                <Button
+                  variant="secondary"
+                  onClick={() => {
+                    setFromDate(null);
+                    setShowFromCalendar(false);
                   }}
                 >
-                  <Calendar
-                    value={date}
-                    onChange={(selectedDate) => {
-                      setDate(selectedDate);
-                      setShowCalendar(false);
-                      setYearFilter(null);
-                      setMonthFilter(null);
-                      setWeekFilter(null);
-                      setDayFilter(null);
-                    }}
-                    maxDate={new Date()}
-                  />
-                  <div className="mt-2 text-center">
-                    <Button
-                      variant="secondary"
-                      onClick={() => {
-                        setDate(null);
-                        setShowCalendar(false);
-                        setYearFilter(null);
-                        setMonthFilter(null);
-                        setWeekFilter(null);
-                      }}
-                    >
-                      Clear
-                    </Button>
-                  </div>
-                </div>
-              )}
+                  Clear
+                </Button>
+              </div>
             </div>
-
           )}
         </div>
+
+        {/* To Date */}
+        <div className="position-relative">
+          <Button
+            variant="primary"
+            onClick={() => setShowToCalendar(!showToCalendar)}
+            className="text-white"
+            disabled={!fromDate}
+          >
+            {toDate ? `To: ${formatDate(toDate)}` : "Select To Date"}
+          </Button>
+          {showToCalendar && (
+            <div
+              className="position-absolute mt-2 z-3 bg-white shadow p-3"
+              style={{ zIndex: 1000, right: 0, top: "100%" }}
+            >
+              <Calendar
+                value={toDate}
+                onChange={(selectedDate) => {
+                  setToDate(selectedDate);
+                  setShowToCalendar(false);
+                }}
+                minDate={fromDate}
+                maxDate={new Date()}
+                tileDisabled={({ date }) =>
+                  fromDate && date.getMonth() === fromDate.getMonth() && date.getDate() < fromDate.getDate()
+                }
+              />
+              <div className="mt-2 text-center">
+                <Button
+                  variant="secondary"
+                  onClick={() => {
+                    setToDate(null);
+                    setShowToCalendar(false);
+                  }}
+                >
+                  Clear
+                </Button>
+              </div>
+            </div>
+          )}
+        </div>
+
       </div>
 
       <div className="mb-4 d-flex justify-content-end gap-3 flex-wrap align-items-center">
-        {date ? null : (
+        {fromDate ? null : (
           <div className="d-flex gap-3">
             {/* Year Filter */}
             <div style={{ minWidth: "200px" }}>
@@ -559,7 +568,10 @@ const TotalSessionWise = () => {
         <Button variant="danger" onClick={resetFilters}>
           Clear
         </Button>
-        <Button variant="success" onClick={() => {
+         {/*  <Button variant="danger" onClick={()=>{setdownload(true),fetchTotalSessionData()}}>
+          Download 
+        </Button> */}
+       <Button variant="success" onClick={() => {
           // Flatten the data for Excel export
           const worksheetData = totalSessionData.map(session => ({
             Date: new Date(session.tempDate).toLocaleDateString(),
@@ -581,6 +593,7 @@ const TotalSessionWise = () => {
         }}>
           Download Excel
         </Button>
+
       </div>
       {/* Total Sessions Data Table */}
       <DataTable
