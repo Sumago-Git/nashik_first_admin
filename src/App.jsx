@@ -58,8 +58,18 @@ import Bookingpage2 from "./components/Groupbooking/Bookingpage2";
 import Sessionslotdetails2 from "./components/Groupbooking/Sessionslotdetails2";
 import Bycategories from "./components/Reports/Bycategories";
 import Bycategoriesandinstitudename from "./components/Reports/Bycategoriesandinstitudename";
-import ByTrainer from "./components/Reports/ByTrainer";
+
 import Slotsfromtoday from "./components/SlotComp/Slotsfromtoday";
+
+
+import ByTrainingTypeWise from "./components/Reports/ByTrainingTypeWise";
+import ByTrainingbyadult from "./components/Reports/ByTrainingbyadult";
+import ByTrainingbyschool from "./components/Reports/ByTrainingbyschool";
+import ByTrainingbyrto from "./components/Reports/ByTrainingbyrto";
+import ByYearWiseCount from "./components/Reports/ByYearWiseCount";
+import ByTrainerWise from "./components/Reports/ByTrainerWise";
+import BySchoolWise from "./components/Reports/BySchoolWise";
+import TotalSessionWise from "./components/Reports/TotalSessionWise";
 
 function App() {
 
@@ -250,13 +260,38 @@ function App() {
             path="/search"
             element={<ProtectedRoutes Component={Search} />}
           />
+  
           <Route
-            path="/Bycategories"
-            element={<ProtectedRoutes Component={Bycategories} />}
+            path="/TotalSessionWise"
+            element={<ProtectedRoutes Component={TotalSessionWise} />}
           />
           <Route
-            path="/bytrainer"
-            element={<ProtectedRoutes Component={ByTrainer} />}
+            path="/ByTrainingTypeWise"
+            element={<ProtectedRoutes Component={ByTrainingTypeWise} />}
+          />
+          <Route
+            path="/ByTrainingbyadult"
+            element={<ProtectedRoutes Component={ByTrainingbyadult} />}
+          />
+          <Route
+            path="/ByTrainingbyschool"
+            element={<ProtectedRoutes Component={ByTrainingbyschool} />}
+          />
+          <Route
+            path="/ByTrainingbyrto"
+            element={<ProtectedRoutes Component={ByTrainingbyrto} />}
+          />
+          <Route
+            path="/ByYearWiseCount"
+            element={<ProtectedRoutes Component={ByYearWiseCount} />}
+          />
+          <Route
+            path="/ByTrainerWise"
+            element={<ProtectedRoutes Component={ByTrainerWise} />}
+          />
+          <Route
+            path="/BySchoolWise"
+            element={<ProtectedRoutes Component={BySchoolWise} />}
           />
 
           <Route

@@ -393,14 +393,49 @@ const SidebarMenu = [
 
     mainIcon: <MdSchool size={24} />,
     subMenu: [
+      // {
+      //   subMenus: "Bycategories",
+      //   url: "/Bycategories",
+      //   icon: <AiOutlineAppstoreAdd style={{ color: "red" }} size={24} />,
+      // },
       {
-        subMenus: "Bycategories",
-        url: "/Bycategories",
+        subMenus: "Total Session Conducted",
+        url: "/TotalSessionWise",
         icon: <AiOutlineAppstoreAdd style={{ color: "red" }} size={24} />,
       },
       {
-        subMenus: "ByTrainer",
-        url: "/bytrainer",
+        subMenus: "ByTrainingtype",
+        url: "/ByTrainingTypeWise",
+        icon: <AiOutlineAppstoreAdd style={{ color: "red" }} size={24} />,
+      },
+      {
+        subMenus: "Training Type Adult",
+        url: "/ByTrainingbyadult",
+        icon: <AiOutlineAppstoreAdd style={{ color: "red" }} size={24} />,
+      },
+      {
+        subMenus: "Training Type School",
+        url: "/ByTrainingbyschool",
+        icon: <AiOutlineAppstoreAdd style={{ color: "red" }} size={24} />,
+      },
+      {
+        subMenus: "Training Type RTO",
+        url: "/ByTrainingbyrto",
+        icon: <AiOutlineAppstoreAdd style={{ color: "red" }} size={24} />,
+      },
+      {
+        subMenus: "ByYearWiseCount",
+        url: "/ByYearWiseCount",
+        icon: <AiOutlineAppstoreAdd style={{ color: "red" }} size={24} />,
+      },
+      {
+        subMenus: "ByTrainerWise",
+        url: "/ByTrainerWise",
+        icon: <AiOutlineAppstoreAdd style={{ color: "red" }} size={24} />,
+      },
+      {
+        subMenus: "BySchoolWise",
+        url: "/BySchoolWise",
         icon: <AiOutlineAppstoreAdd style={{ color: "red" }} size={24} />,
       },
     ],
