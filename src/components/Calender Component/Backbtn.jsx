@@ -10,7 +10,7 @@ const Backbtn = () => {
     };
 
     return (
-        <Button variant="primary" onClick={handleBack} style={{ margin: '10px' }}>
+        <Button variant="primary"   onClick={handleBack} style={{ margin: '10px',position:"absolute"}}>
             Back
         </Button>
     );
