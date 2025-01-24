@@ -141,7 +141,7 @@ function Trainer() {
                         }
                     }
                 },
-                { label: 'No', onClick: () => {} }
+                { label: 'No', onClick: () => { } }
             ]
         });
     };
@@ -205,79 +205,81 @@ function Trainer() {
     ];
 
     return (
-        <Container>
-            <Card>
-                <Card.Header className="d-flex justify-content-end">
-                    <Button variant={editMode ? "primary" : "success"} onClick={handleToggle}>
-                        {showAdd ? 'Add' : 'View'}
-                    </Button>
-                </Card.Header>
-                <Card.Body>
-                    {showAdd ? (
-                        getadmin_data.length > 0 ? (
-                            <DataTable
-                                columns={columns}
-                                data={filteredData.length > 0 ? filteredData : getadmin_data}
-                                pagination
-                                responsive
-                                striped
-                                noDataComponent="No Data Available"
-                                onChangePage={(page) => setCurrentPage(page)}
-                                onChangeRowsPerPage={(rowsPerPage) => setRowsPerPage(rowsPerPage)}
-                            />
+        <>
+            <Container>
+                <Card>
+                    <Card.Header className="d-flex justify-content-end">
+                        <Button variant={editMode ? "primary" : "success"} onClick={handleToggle}>
+                            {showAdd ? 'Add' : 'View'}
+                        </Button>
+                    </Card.Header>
+                    <Card.Body>
+                        {showAdd ? (
+                            getadmin_data.length > 0 ? (
+                                <DataTable
+                                    columns={columns}
+                                    data={filteredData.length > 0 ? filteredData : getadmin_data}
+                                    pagination
+                                    responsive
+                                    striped
+                                    noDataComponent="No Data Available"
+                                    onChangePage={(page) => setCurrentPage(page)}
+                                    onChangeRowsPerPage={(rowsPerPage) => setRowsPerPage(rowsPerPage)}
+                                />
+                            ) : (
+                                <Alert variant="warning" className="text-center">
+                                    No data found
+                                </Alert>
+                            )
                         ) : (
-                            <Alert variant="warning" className="text-center">
-                                No data found
-                            </Alert>
-                        )
-                    ) : (
-                        <Form onSubmit={handleForm}>
-                            <Row>
-                                <Col lg={6} md={6} sm={12}>
-                                    <Form.Group className="mb-3" controlId="formBasicName">
-                                        <Form.Label>Enter Name</Form.Label>
-                                        <Form.Control
-                                            type="text"
-                                            placeholder="Enter Name"
-                                            value={name}
-                                            onChange={(e) => setName(e.target.value)}
-                                        />
-                                        {errors.name && <span className="error text-danger">{errors.name}</span>}
-                                    </Form.Group>
-                                </Col>
-                                <Col lg={6} md={6} sm={12}>
-                                    <Form.Group className="mb-3" controlId="formBasicEmail">
-                                        <Form.Label>Enter Email</Form.Label>
-                                        <Form.Control
-                                            type="email"
-                                            placeholder="Enter Email"
-                                            value={email}
-                                            onChange={(e) => setEmail(e.target.value)}
-                                        />
-                                        {errors.email && <span className="error text-danger">{errors.email}</span>}
-                                    </Form.Group>
-                                </Col>
-                                <Col lg={6} md={6} sm={12}>
-                                    <Form.Group className="mb-3" controlId="formBasicMobile">
-                                        <Form.Label>Enter Mobile</Form.Label>
-                                        <Form.Control
-                                            type="text"
-                                            placeholder="Enter Mobile Number"
-                                            value={mobile}
-                                            onChange={(e) => setMobile(e.target.value)}
-                                        />
-                                        {errors.mobile && <span className="error text-danger">{errors.mobile}</span>}
-                                    </Form.Group>
-                                </Col>
-                            </Row>
-                            <Button variant="primary" type="submit">
-                                {editMode ? 'Update' : 'Add'}
-                            </Button>
-                        </Form>
-                    )}
-                </Card.Body>
-            </Card>
-        </Container>
+                            <Form onSubmit={handleForm}>
+                                <Row>
+                                    <Col lg={6} md={6} sm={12}>
+                                        <Form.Group className="mb-3" controlId="formBasicName">
+                                            <Form.Label>Enter Name</Form.Label>
+                                            <Form.Control
+                                                type="text"
+                                                placeholder="Enter Name"
+                                                value={name}
+                                                onChange={(e) => setName(e.target.value)}
+                                            />
+                                            {errors.name && <span className="error text-danger">{errors.name}</span>}
+                                        </Form.Group>
+                                    </Col>
+                                    <Col lg={6} md={6} sm={12}>
+                                        <Form.Group className="mb-3" controlId="formBasicEmail">
+                                            <Form.Label>Enter Email</Form.Label>
+                                            <Form.Control
+                                                type="email"
+                                                placeholder="Enter Email"
+                                                value={email}
+                                                onChange={(e) => setEmail(e.target.value)}
+                                            />
+                                            {errors.email && <span className="error text-danger">{errors.email}</span>}
+                                        </Form.Group>
+                                    </Col>
+                                    <Col lg={6} md={6} sm={12}>
+                                        <Form.Group className="mb-3" controlId="formBasicMobile">
+                                            <Form.Label>Enter Mobile</Form.Label>
+                                            <Form.Control
+                                                type="text"
+                                                placeholder="Enter Mobile Number"
+                                                value={mobile}
+                                                onChange={(e) => setMobile(e.target.value)}
+                                            />
+                                            {errors.mobile && <span className="error text-danger">{errors.mobile}</span>}
+                                        </Form.Group>
+                                    </Col>
+                                </Row>
+                                <Button variant="primary" type="submit">
+                                    {editMode ? 'Update' : 'Add'}
+                                </Button>
+                            </Form>
+                        )}
+                    </Card.Body>
+                </Card>
+            </Container>
+        </>
     );
 }
 

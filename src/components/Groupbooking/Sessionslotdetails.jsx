@@ -6,6 +6,7 @@ import Form from 'react-bootstrap/Form';
 import * as XLSX from 'xlsx';
 
 import instance from '../../api/AxiosInstance';
+import Backbtn from '../Calender Component/Backbtn';
 
 const Sessionslotdetails = () => {
   const [formData, setFormData] = useState({
@@ -186,7 +187,7 @@ const Sessionslotdetails = () => {
 
 
 
-
+      <Backbtn/>
       <Container className='bookingdetails mt-5 pt-4 pb-3 '>
         <h1 className='bookingheadline mt-3 mx-auto'>Please fill in your details</h1>
         <form onSubmit={handleSubmit}>

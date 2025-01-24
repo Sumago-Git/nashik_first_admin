@@ -286,6 +286,7 @@ const Training = () => {
                           style={{
                             height: "100px",
                             textAlign: "end",
+                             cursor: "pointer",
                             verticalAlign: "middle",
                             borderRight: "1px solid #ddd",
                             backgroundColor: day

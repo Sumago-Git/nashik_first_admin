@@ -3,6 +3,7 @@ import { Container, Row, Col, Button } from 'react-bootstrap';
 import { useNavigate, useLocation, useParams } from 'react-router-dom';
 import Form from 'react-bootstrap/Form';
 import instance from '../../api/AxiosInstance';
+import Backbtn from '../Calender Component/Backbtn';
 
 const Sessionslotdetails2 = () => {
   const { id } = useParams(); // Get the slot ID from the URL
@@ -94,112 +95,115 @@ const Sessionslotdetails2 = () => {
   };
 
   return (
-    <Container className='bookingdetails mt-5 pt-4 pb-3 '>
-      <h1 className='bookingheadline mt-3 mx-auto'>Please fill in your details</h1>
-      <form onSubmit={handleSubmit}>
-        <Row className=''>
-          <Col lg={6} md={7} sm={12}>
-            <p className='bookingdate text-black text-start ms-lg-4 ms-sm-3 mt-3'>{"Institution Name*"}</p>
-            <input
-              name='institution_name'
-              value={formData.institution_name}
-              onChange={handleChange}
-              onInput={(e) => e.target.value = e.target.value.replace(/[^a-zA-Z]/g, '')} // Allow only alphabets
+    <>
+      <Backbtn />
+      <Container className='bookingdetails mt-5 pt-4 pb-3 '>
 
-              placeholder={"Institution Name"}
-              className='dateinput p-3 m-0 mt-0 ms-lg-3'
-            />
-            {errors.institution_name && <p className='text-start ms-md-4 mt-1 text-danger'>{errors.institution_name}</p>}
-          </Col>
-          <Col lg={6}>
-            <p className='bookingdate text-black text-start ms-lg-4 ms-sm-3 mt-3'>{"Institution Email*"}</p>
-            <input
-              name='institution_email'
-              value={formData.institution_email}
-              onChange={handleChange}
-              placeholder={"Institution Email"}
-              className='dateinput p-3 m-0 mt-0 ms-lg-3'
-            />
-            {errors.institution_email && <p className='text-start ms-md-4 mt-1 text-danger'>{errors.institution_email}</p>}
-          </Col>
-          <Col lg={6}>
-            <p className='bookingdate text-black text-start ms-lg-4 ms-sm-3 mt-3'>{"Institution Landline No."}</p>
-            <input
-              name='institution_phone'
-              value={formData.institution_phone}
-              onChange={handleChange}
-              placeholder={"Institution Landline No."}
-              className='dateinput p-3 m-0 mt-0 ms-lg-3'
-            />
-            {errors.institution_phone && <p className='text-start ms-md-4 mt-1 text-danger'>{errors.institution_phone}</p>}
-          </Col>
-          <Col lg={6}>
-            <p className='bookingdate text-black text-start ms-lg-4 ms-sm-3 mt-3'>{"Principal/Manager Name*"}</p>
-            <input
-              name='hm_principal_manager_name'
-              value={formData.hm_principal_manager_name}
-              onInput={(e) => e.target.value = e.target.value.replace(/[^a-zA-Z]/g, '')} // Allow only alphabets
+        <h1 className='bookingheadline mt-3 mx-auto'>Please fill in your details</h1>
+        <form onSubmit={handleSubmit}>
+          <Row className=''>
+            <Col lg={6} md={7} sm={12}>
+              <p className='bookingdate text-black text-start ms-lg-4 ms-sm-3 mt-3'>{"Institution Name*"}</p>
+              <input
+                name='institution_name'
+                value={formData.institution_name}
+                onChange={handleChange}
+                onInput={(e) => e.target.value = e.target.value.replace(/[^a-zA-Z]/g, '')} // Allow only alphabets
 
-              onChange={handleChange}
-              placeholder={"Principal/Manager Name"}
-              className='dateinput p-3 m-0 mt-0 ms-lg-3'
-            />
-            {errors.hm_principal_manager_name && <p className='text-start ms-md-4 mt-1 text-danger'>{errors.hm_principal_manager_name}</p>}
-          </Col>
-          <Col lg={6}>
-            <p className='bookingdate text-black text-start ms-lg-4 ms-sm-3 mt-3'>{"Principal/Manager Mobile*"}</p>
-            <input
-              name='hm_principal_manager_mobile'
-              maxLength="10"
-              value={formData.hm_principal_manager_mobile}
-              onChange={handleChange}
-              placeholder={"Principal/Manager Mobile"}
-              className='dateinput p-3 m-0 mt-0 ms-lg-3'
-            />
-            {errors.hm_principal_manager_mobile && <p className='text-start ms-md-4 mt-1 text-danger'>{errors.hm_principal_manager_mobile}</p>}
-          </Col>
-          <Col lg={6}>
-            <p className='bookingdate text-black text-start ms-lg-4 ms-sm-3 mt-3'>{"Coordinator Name*"}</p>
-            <input
-              name='coordinator_name'
-              value={formData.coordinator_name}
-              onInput={(e) => e.target.value = e.target.value.replace(/[^a-zA-Z]/g, '')} // Allow only alphabets
+                placeholder={"Institution Name"}
+                className='dateinput p-3 m-0 mt-0 ms-lg-3'
+              />
+              {errors.institution_name && <p className='text-start ms-md-4 mt-1 text-danger'>{errors.institution_name}</p>}
+            </Col>
+            <Col lg={6}>
+              <p className='bookingdate text-black text-start ms-lg-4 ms-sm-3 mt-3'>{"Institution Email*"}</p>
+              <input
+                name='institution_email'
+                value={formData.institution_email}
+                onChange={handleChange}
+                placeholder={"Institution Email"}
+                className='dateinput p-3 m-0 mt-0 ms-lg-3'
+              />
+              {errors.institution_email && <p className='text-start ms-md-4 mt-1 text-danger'>{errors.institution_email}</p>}
+            </Col>
+            <Col lg={6}>
+              <p className='bookingdate text-black text-start ms-lg-4 ms-sm-3 mt-3'>{"Institution Landline No."}</p>
+              <input
+                name='institution_phone'
+                value={formData.institution_phone}
+                onChange={handleChange}
+                placeholder={"Institution Landline No."}
+                className='dateinput p-3 m-0 mt-0 ms-lg-3'
+              />
+              {errors.institution_phone && <p className='text-start ms-md-4 mt-1 text-danger'>{errors.institution_phone}</p>}
+            </Col>
+            <Col lg={6}>
+              <p className='bookingdate text-black text-start ms-lg-4 ms-sm-3 mt-3'>{"Principal/Manager Name*"}</p>
+              <input
+                name='hm_principal_manager_name'
+                value={formData.hm_principal_manager_name}
+                onInput={(e) => e.target.value = e.target.value.replace(/[^a-zA-Z]/g, '')} // Allow only alphabets
 
-              onChange={handleChange}
-              placeholder={"Cordinator Name"}
-              className='dateinput p-3 m-0 mt-0 ms-lg-3'
-            />
-            {errors.coordinator_name && <p className='text-start ms-md-4 mt-1 text-danger'>{errors.coordinator_name}</p>}
-          </Col>
-          <Col lg={6} >
-            <p className='bookingdate text-black text-start ms-lg-4 ms-sm-3 mt-3'>{"Cordinator Mobile*"}</p>
+                onChange={handleChange}
+                placeholder={"Principal/Manager Name"}
+                className='dateinput p-3 m-0 mt-0 ms-lg-3'
+              />
+              {errors.hm_principal_manager_name && <p className='text-start ms-md-4 mt-1 text-danger'>{errors.hm_principal_manager_name}</p>}
+            </Col>
+            <Col lg={6}>
+              <p className='bookingdate text-black text-start ms-lg-4 ms-sm-3 mt-3'>{"Principal/Manager Mobile*"}</p>
+              <input
+                name='hm_principal_manager_mobile'
+                maxLength="10"
+                value={formData.hm_principal_manager_mobile}
+                onChange={handleChange}
+                placeholder={"Principal/Manager Mobile"}
+                className='dateinput p-3 m-0 mt-0 ms-lg-3'
+              />
+              {errors.hm_principal_manager_mobile && <p className='text-start ms-md-4 mt-1 text-danger'>{errors.hm_principal_manager_mobile}</p>}
+            </Col>
+            <Col lg={6}>
+              <p className='bookingdate text-black text-start ms-lg-4 ms-sm-3 mt-3'>{"Coordinator Name*"}</p>
+              <input
+                name='coordinator_name'
+                value={formData.coordinator_name}
+                onInput={(e) => e.target.value = e.target.value.replace(/[^a-zA-Z]/g, '')} // Allow only alphabets
 
-            <input
-              name='coordinator_mobile'
-              maxLength="10"
-              value={formData.coordinator_mobile}
-              onChange={handleChange}
-              placeholder={"Cordinator Mobile"}
-              className='dateinput p-3 m-0 mt-0 ms-lg-3'
-            />
-            {errors.coordinator_mobile && <p className='text-start ms-md-4 mt-1 text-danger'>{errors.coordinator_mobile}</p>}
-          </Col>
+                onChange={handleChange}
+                placeholder={"Cordinator Name"}
+                className='dateinput p-3 m-0 mt-0 ms-lg-3'
+              />
+              {errors.coordinator_name && <p className='text-start ms-md-4 mt-1 text-danger'>{errors.coordinator_name}</p>}
+            </Col>
+            <Col lg={6} >
+              <p className='bookingdate text-black text-start ms-lg-4 ms-sm-3 mt-3'>{"Cordinator Mobile*"}</p>
 
-
-
-
-          <div className='text-center my-2'>
-            <Button type="submit">
-              Update
-            </Button>                </div>
-        </Row>
-      </form>
+              <input
+                name='coordinator_mobile'
+                maxLength="10"
+                value={formData.coordinator_mobile}
+                onChange={handleChange}
+                placeholder={"Cordinator Mobile"}
+                className='dateinput p-3 m-0 mt-0 ms-lg-3'
+              />
+              {errors.coordinator_mobile && <p className='text-start ms-md-4 mt-1 text-danger'>{errors.coordinator_mobile}</p>}
+            </Col>
 
 
 
 
+            <div className='text-center my-2'>
+              <Button type="submit">
+                Update
+              </Button>                </div>
+          </Row>
+        </form>
 
-    </Container>
+
+
+
+
+      </Container></>
   );
 };
 

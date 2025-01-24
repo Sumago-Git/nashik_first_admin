@@ -7,6 +7,7 @@ import { FaEdit, FaTrash, FaEye, FaEyeSlash } from "react-icons/fa";
 import { confirmAlert } from "react-confirm-alert";
 import { Link, useLocation } from 'react-router-dom';
 import { useNavigate } from "react-router-dom"; // Import useNavigate from react-router-dom
+import Backbtn from '../Calender Component/Backbtn';
 
 
 const Slotpage = () => {
@@ -203,6 +204,7 @@ const Slotpage = () => {
 
     return (
         <>
+        <Backbtn/>
 
 
             <h1 className='daydate mt-5'>{slotDate} - {category}</h1>
