@@ -108,7 +108,7 @@ const TotalSessionWise = () => {
 
   // Fetch total sessions data
   const fetchTotalSessionData = async () => {
-    const apiUrl = 'http://localhost:8000/report/totalSessionsConducted';
+    const apiUrl = '/report/totalSessionsConducted';
     setLoading(true);
 
 
@@ -125,7 +125,7 @@ const TotalSessionWise = () => {
         return; // Stop execution if "To Date" is not provided
       }
       setTotalSessionData([]);
-      const response = await axios.post(
+      const response = await instance.post(
         apiUrl,
         {
           financialYear: yearFilter?.value || '',
@@ -176,7 +176,7 @@ const TotalSessionWise = () => {
 
   // Fetch institution list
   const fetchInstitutionList = async () => {
-    const apiUrl = 'http://localhost:8000/report/getInstitudeNCategoryList';
+    const apiUrl = '/report/getInstitudeNCategoryList';
 
     try {
       const token = localStorage.getItem('accessToken');
@@ -185,7 +185,7 @@ const TotalSessionWise = () => {
         return;
       }
 
-      const response = await axios.post(
+      const response = await instance.post(
         apiUrl,
         {},
         {

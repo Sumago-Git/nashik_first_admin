@@ -167,7 +167,7 @@ const ByTrainingTypeWise = () => {
   };
   // Handle search/filter
   const fetchReportData = async () => {
-    const apiUrl = 'http://localhost:8000/report/trainingTypeWiseCountByYearAll'; // API endpoint
+    const apiUrl = '/report/trainingTypeWiseCountByYearAll'; // API endpoint
     setLoading(true);
     try {
       // Retrieve the token from AsyncStorage
@@ -183,7 +183,7 @@ const ByTrainingTypeWise = () => {
     setFilteredData([])
 
       // Make the API POST request
-      const response = await axios.post(
+      const response = await instance.post(
         apiUrl,
         {
           year: yearFilter,

@@ -8,6 +8,7 @@ import axios from "axios";
 import { ThreeDots } from 'react-loader-spinner';
 import Calendar from "react-calendar";
 import 'react-calendar/dist/Calendar.css';
+import instance from "../../api/AxiosInstance";
 
 const BySchoolWise = () => {
   // State for filters
@@ -94,7 +95,7 @@ const BySchoolWise = () => {
 
   // Fetch school-wise session data
   const fetchSchoolData = async () => {
-    const apiUrl = 'http://localhost:8000/report/schoolWiseSessionsConducted';
+    const apiUrl = '/report/schoolWiseSessionsConducted';
     setLoading(true);
     try {
       const token = localStorage.getItem('accessToken');
@@ -108,7 +109,7 @@ const BySchoolWise = () => {
       }
     setSchoolData([]);
 
-      const response = await axios.post(
+      const response = await instance.post(
         apiUrl,
         {
           financialYear: yearFilter?.value || '',
@@ -159,7 +160,7 @@ const BySchoolWise = () => {
 
   // Fetch institution list
   const fetchInstitutionList = async () => {
-    const apiUrl = 'http://localhost:8000/report/getInstitudeNCategoryList';
+    const apiUrl = '/report/getInstitudeNCategoryList';
 
     try {
       const token = localStorage.getItem('accessToken');
@@ -168,7 +169,7 @@ const BySchoolWise = () => {
         return;
       }
 
-      const response = await axios.post(
+      const response = await instance.post(
         apiUrl,
         {},
         {

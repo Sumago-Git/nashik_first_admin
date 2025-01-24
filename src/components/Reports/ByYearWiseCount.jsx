@@ -87,7 +87,7 @@ const ByYearWiseCount = () => {
 
   // Fetch training type data
   const fetchTrainingTypeData = async () => {
-    const apiUrl = 'http://localhost:8000/report/yearWiseFinalSessionCount';
+    const apiUrl = '/report/yearWiseFinalSessionCount';
     setLoading(true);
 
     try {
@@ -102,7 +102,7 @@ const ByYearWiseCount = () => {
         return; // Stop execution if "To Date" is not provided
       }
      
-      const response = await axios.post(
+      const response = await instance.post(
         apiUrl,
         {
           financialYear: yearFilter?.value || '',
@@ -152,7 +152,7 @@ const ByYearWiseCount = () => {
 
   // Fetch institution list
   const fetchInstitutionList = async () => {
-    const apiUrl = 'http://localhost:8000/report/getInstitudeNCategoryList';
+    const apiUrl = '/report/getInstitudeNCategoryList';
 
     try {
       const token = localStorage.getItem('accessToken');
@@ -161,7 +161,7 @@ const ByYearWiseCount = () => {
         return;
       }
 
-      const response = await axios.post(
+      const response = await instance.post(
         apiUrl,
         {},
         {

@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 
 const instance = axios.create({
   baseURL: `https://nashikfirstbackend.sumagodemo.com/`,
-  // baseURL: `http://localhost:8000/`,
+  // baseURL: `http://localhost:8000`,
   // baseURL: `http://127.0.0.1:8000/`,
   // baseURL: `https://api.nashikfirst.com/`
 });

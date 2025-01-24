@@ -109,7 +109,7 @@ const ByTrainerWise = () => {
 
   // Fetch trainer-wise session data
   const fetchTrainerData = async () => {
-    const apiUrl = 'http://localhost:8000/report/trainerWiseSessionsConducted';
+    const apiUrl = '/report/trainerWiseSessionsConducted';
     setLoading(true);
     try {
       const token = localStorage.getItem('accessToken');
@@ -122,7 +122,7 @@ const ByTrainerWise = () => {
         return; // Stop execution if "To Date" is not provided
       }
     setTrainerData([]);
-      const response = await axios.post(
+      const response = await instance.post(
         apiUrl,
         {
           financialYear: yearFilter?.value || '',
@@ -199,7 +199,7 @@ const ByTrainerWise = () => {
 
   // Fetch institution list
   const fetchInstitutionList = async () => {
-    const apiUrl = 'http://localhost:8000/report/getInstitudeNCategoryList';
+    const apiUrl = '/report/getInstitudeNCategoryList';
 
     try {
       const token = localStorage.getItem('accessToken');
@@ -208,7 +208,7 @@ const ByTrainerWise = () => {
         return;
       }
 
-      const response = await axios.post(
+      const response = await instance.post(
         apiUrl,
         {},
         {

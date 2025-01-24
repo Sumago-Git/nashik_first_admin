@@ -168,7 +168,7 @@ const ByTrainingbyschool = () => {
   // Handle search/filter
 
   const fetchReportData = async () => {
-    const apiUrl = 'http://localhost:8000/report/trainingTypeWiseCountByYearAllSchool'; // API endpoint
+    const apiUrl = '/report/trainingTypeWiseCountByYearAllSchool'; // API endpoint
     setLoading(true);
     
     try {
@@ -184,7 +184,7 @@ const ByTrainingbyschool = () => {
       }  
       setFilteredData([])
       // Make the API POST request
-      const response = await axios.post(
+      const response = await instance.post(
         apiUrl,
         {
 
