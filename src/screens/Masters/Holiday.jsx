@@ -74,7 +74,7 @@ const Holiday = () => {
         });
     };
 
-    const alertBox = (selectedDate) => {
+    const alertBox = (selectedDate,clickedDate2) => {
         confirmAlert({
             title: "Confirm to delete",
             message: `Are you sure you want to mark ${selectedDate} as Holiday?`,
@@ -86,7 +86,7 @@ const Holiday = () => {
                         className="btn btn-primary"
                         onClick={async () => {
                             setLoading(true);
-                            const newData = { holiday_date: selectedDate };
+                            const newData = { holiday_date: selectedDate,tempdate:clickedDate2 };
                             const accessToken = localStorage.getItem("accessToken");
                             try {
                                 await instance.post("holiday/create-holiday", newData, {
@@ -95,6 +95,7 @@ const Holiday = () => {
                                         "Content-Type": "application/json",
                                     },
                                 });
+                                console.log(newData)
                                 toast.success("Date added successfully");
                                 fetchHolidays();
                                 onClose();
@@ -121,6 +122,13 @@ const Holiday = () => {
         if (!day || isPastDate(day)) return; // Prevent interaction with past dates
 
         const clickedDate = new Date(currentYear, currentMonth, day);
+        const year = clickedDate.getFullYear();
+        const month = String(clickedDate.getMonth() + 1).padStart(2, '0'); // Month is 0-indexed
+        const day2 = String(clickedDate.getDate()).padStart(2, '0'); // Ensure two digits for day
+
+        const formattedDate2 = `${year}-${month}-${day2}`;
+     
+        const clickedDate2 = formattedDate2
         const formattedDate = clickedDate.toLocaleDateString("en-US");
 
         if (isHoliday(day)) {
@@ -138,7 +146,7 @@ const Holiday = () => {
                     toast.error("Error removing holiday");
                 });
         } else {
-            alertBox(clickedDate.toLocaleDateString());
+            alertBox(clickedDate.toLocaleDateString(),clickedDate2);
         }
     };
 

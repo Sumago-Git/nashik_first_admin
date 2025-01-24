@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Container, Row, Col, Card } from 'react-bootstrap';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import instance from "../../api/AxiosInstance";
+import Backbtn from '../../components/Calender Component/Backbtn';
 
 const Slotlistpage = () => {
     const [slotDate, setSlotDate] = useState("");
@@ -90,6 +91,7 @@ const Slotlistpage = () => {
 
     return (
         <Container>
+            <Backbtn/>
             <h1 className='daydate mt-5'>{slotDate}</h1>
             <Container className='mt-md-5'>
                 <Row>

@@ -60,6 +60,7 @@ import Bycategories from "./components/Reports/Bycategories";
 import Bycategoriesandinstitudename from "./components/Reports/Bycategoriesandinstitudename";
 
 import Slotsfromtoday from "./components/SlotComp/Slotsfromtoday";
+import Backbtn from "./components/Calender Component/Backbtn";
 
 
 import ByTrainingTypeWise from "./components/Reports/ByTrainingTypeWise";
