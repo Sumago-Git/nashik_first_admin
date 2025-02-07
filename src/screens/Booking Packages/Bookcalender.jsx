@@ -1548,11 +1548,11 @@ const Bookcalender = ({ tabKey }) => {
 
     return (
         <>
-         
-            <Backbtn/>
+
+            <Backbtn />
             <div className=" text-center pb-2 d-flex justify-content-between">
                 <div>
-                    <h5>{category1}-{selectedDate}</h5>
+                    <h5>{category1}-{selectedDate}-{selectedTime}</h5>
                 </div>
                 <div className="d-flex justify-content-end ">
                     {bookingPage2Categories.includes(category1) && !isPastDate(selectedDate) ? <><Button
@@ -1592,29 +1592,33 @@ const Bookcalender = ({ tabKey }) => {
             </div>
 
 
-            <div className="mb-3 d-flex justify-content-end">
-                <div>   {sessionSlotDetailsCategories.includes(category1) ?
+            <div className=" container mb-3 d-flex">
+                <div className="row">   {sessionSlotDetailsCategories.includes(category1) ?
                     <>
                         {slotInfo ? (
                             <>
-                                <div className="col">
-                                    <div><strong>Institution Name:</strong> {slotInfo.institution_name}</div>
-                                    <div><strong>Institution Email:</strong> {slotInfo.institution_email}</div>
-                                    <div><strong>Institution Phone:</strong> {slotInfo.institution_phone}</div>
-
-                                </div>
-                                <div className="col">
-                                    <div><strong>Coordinator Name:</strong> {slotInfo.coordinator_name}</div>
-                                    <div><strong>Coordinator Mobile:</strong> {slotInfo.coordinator_mobile}</div>
+                                <Container>
+                                    <Row>
+                                        <div className="col-6">
+                                            <div><strong>Institution Name:</strong> {slotInfo.institution_name}</div>
+                                            <div><strong>Institution Email:</strong> {slotInfo.institution_email}</div>
+                                            <div><strong>Institution Phone:</strong> {slotInfo.institution_phone}</div>
+                                            <div><strong>Bus Facitity:</strong> {slotInfo.bus}</div>
 
 
-                                </div>
-                                <div className="col">
 
-                                    <div><strong>Principal Name:</strong> {slotInfo.hm_principal_manager_name}</div>
-                                    <div><strong>Principal Mobile:</strong> {slotInfo.hm_principal_manager_mobile}</div>
 
-                                </div>
+
+                                        </div>
+                                        <div className="col-6">
+                                            <div><strong>Coordinator Name:</strong> {slotInfo.coordinator_name}</div>
+                                            <div><strong>Coordinator Mobile:</strong> {slotInfo.coordinator_mobile}</div>
+                                            <div><strong>Principal Name:</strong> {slotInfo.hm_principal_manager_name}</div>
+                                            <div><strong>Principal Mobile:</strong> {slotInfo.hm_principal_manager_mobile}</div>
+
+                                        </div>
+                                    </Row>
+                                </Container>
                             </>
                         ) : (
                             <Button onClick={() => {
@@ -1635,9 +1639,11 @@ const Bookcalender = ({ tabKey }) => {
                     </> :
                     <></>
                 }</div>
-                <div>   <Button variant="primary" onClick={downloadExcel} className="mb-3 ms-5">
-                    Download Excel
-                </Button></div>
+                <div>
+                    <Button variant="primary" onClick={downloadExcel} className="mb-3 ms-5">
+                        Excel Upload
+                    </Button>
+                </div>
 
             </div>
 

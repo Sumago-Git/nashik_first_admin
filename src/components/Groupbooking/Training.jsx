@@ -259,7 +259,7 @@ const Training = () => {
           </Col>
 
           <Container className="mt-4">
-            <Table responsive style={{ tableLayout: 'fixed', borderCollapse: 'collapse' }}>
+            <Table responsive style={{ tableLayout: 'auto', borderCollapse: 'collapse' }}>
               <thead>
                 <tr className="text-start">
                   {daysOfWeek.map((day) => (
@@ -279,39 +279,45 @@ const Training = () => {
 
                       return (
                         <td
-                          key={dayIndex}
-                          onMouseEnter={() => day && !isDisabled && setHoveredDay(day)}
-                          onMouseLeave={() => day && !isDisabled && setHoveredDay(null)}
-                          onClick={() => !isDisabled && handleDateClick(day)}
-                          style={{
+                        key={dayIndex}
+                        onMouseEnter={() => day && !isDisabled && setHoveredDay(day)}
+                        onMouseLeave={() => day && !isDisabled && setHoveredDay(null)}
+                        onClick={() => {
+                            const specialDate = specialDates.find((date) => date.day === day);
+                            if (specialDate && specialDate.slots && specialDate.slots.length > 0) {
+                                handleDateClick(day);
+                            }
+                        }}
+                        style={{
                             height: "100px",
                             textAlign: "end",
                             verticalAlign: "middle",
                             borderRight: "1px solid #ddd",
                             backgroundColor: day
-                              ? day.isNextMonth
-                                ? "#f0f0f0" // Next month's dates (light gray)
-                                : isDisabled
-                                  ? "#f9f9f9" // Disabled (past dates or holidays)
-                                  : dateStatuses[day] === "available"
-                                    ? "#d4ffd" // Green for available
-                                    : dateStatuses[day] === "Holiday"
-                                      ? "#ea7777" // Light blue for holiday
-                                      : "#ffd4d4" // Red for closed or other statuses
-                              : "white",
+                                ? dateStatuses[day] === "Holiday"
+                                    ? "#ea7777"
+                                    : "white"
+                                : "white",
                             color: day
-                              ? day.isNextMonth
-                                ? "#ccc" // Light color for next month's dates
-                                : isDisabled || dateStatuses[day] === "Holiday"
-                                  ? "#999" // Gray for disabled or holiday
-                                  : "black"
-                              : "black", color: day && (day.isNextMonth ? "#ccc" : isDisabled || isHoliday ? "#999" : "black"),
-                            pointerEvents: day && (isHoliday ? "none" : "auto"),
-                            transition: 'color 0.3s',
+                                ? day.isNextMonth
+                                    ? "#ccc"
+                                    : isDisabled || dateStatuses[day] === "Holiday"
+                                        ? "black"
+                                        : "black"
+                                : "black",
+                                cursor:
+                                day && dateStatuses[day] === "Holiday"
+                                    ? "pointer"
+                                    : specialDates.find((date) => date.day === day)?.slots?.length > 0
+                                        ? "pointer"
+                                        : "pointer", // Disable pointer events if no slots
+                            transition: "color 0.3s",
                             fontFamily: "Poppins",
                             fontWeight: "600",
-                          }}
-                        >
+                           
+                        }}
+                    >
+
                           {day && (day.isNextMonth ? day.day : day || "")}
                           <br />
                           {specialDates &&
@@ -328,7 +334,7 @@ const Training = () => {
                                         key={a.time} // Ensure unique keys for React elements
                                         style={{
                                           fontSize: "12px",
-                                          width: "50%",
+                                          width: "70%",
                                           marginTop: "2px",
                                           color: isPastDate(day)
                                             ? "red" // Red for past dates

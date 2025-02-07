@@ -6,6 +6,7 @@ import Form from 'react-bootstrap/Form';
 import * as XLSX from 'xlsx';
 
 import instance from '../../api/AxiosInstance';
+import Backbtn from '../Calender Component/Backbtn';
 
 const Sessionslotdetails = () => {
   const [formData, setFormData] = useState({
@@ -23,7 +24,7 @@ const Sessionslotdetails = () => {
     hm_principal_manager_name: "",
     hm_principal_manager_mobile: "",
     coordinator_mobile: "",
-    coordinator_name: ""
+    coordinator_name: "", bus: ""
   });
   const navigate = useNavigate();
   const [errors, setErrors] = useState({});
@@ -78,6 +79,10 @@ const Sessionslotdetails = () => {
     }
     if (!formData.coordinator_name) {
       errors.coordinator_name = 'Coordinator Name is required';
+      isValid = false;
+    }
+    if (!formData.bus) {
+      errors.bus = 'do you want transport facilities staus is required';
       isValid = false;
     }
     setErrors(errors);
@@ -138,6 +143,7 @@ const Sessionslotdetails = () => {
           coordinator_mobile: formData.coordinator_mobile,
           coordinator_name: formData.coordinator_name,
           sessionSlotId: sessionSlotId,
+          bus: formData.bus
         };
 
         // Send a POST request with JSON data
@@ -185,7 +191,7 @@ const Sessionslotdetails = () => {
 
 
 
-
+      <Backbtn />
 
       <Container className='bookingdetails mt-5 pt-4 pb-3 '>
         <h1 className='bookingheadline mt-3 mx-auto'>Please fill in your details</h1>
@@ -202,7 +208,17 @@ const Sessionslotdetails = () => {
               />
               {errors.institution_name && <p className='text-start ms-md-4 mt-1 text-danger'>{errors.institution_name}</p>}
             </Col>
-            <Col lg={6}></Col>
+            <Col lg={6}>
+              <p className='bookingdate text-black text-start ms-lg-4 ms-sm-3 mt-3'>{"Transport Facility*"}</p>
+
+              <Form.Select name='bus' value={formData.bus} onChange={handleChange} style={{ width: "416px" }} className='dateinput py-3 m-0 mt-0 ms-lg-3 border border-dark border-2'>
+                <option value=''>Select Transport Facility</option>
+                <option value='Yes'>Yes</option>
+                <option value='No'>No</option>
+              </Form.Select>
+              {errors.bus && <p className='text-danger'>{errors.bus}</p>}
+            </Col>
+
             <Col lg={6}>
               <p className='bookingdate text-black text-start ms-lg-4 ms-sm-3 mt-3'>{"Institution Email*"}</p>
               <input

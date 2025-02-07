@@ -119,13 +119,14 @@ const Slotsfromtoday = () => {
             ),
         },
         {
-            name: <CustomHeader name="Principal Manager" />,
+            name: <CustomHeader name="Coordinator Phone" />,
             cell: (row) => (
                 row.slotRegisterInfos.length > 0
-                    ? <span>{row.slotRegisterInfos[0].hm_principal_manager_mobil}</span>
+                    ? <span>{row.slotRegisterInfos[0].coordinator_mobile}</span>
                     : <span>--</span>
             ),
         },
+        
         {
             name: <CustomHeader name="Principal Manager" />,
             cell: (row) => (

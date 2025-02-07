@@ -219,12 +219,12 @@ const CalenderComp = () => {
             });
             const filteredData = response.data.responseData?.reverse()
             setTeam(filteredData);
-
+            console.log('dsfgefg',filteredData)
 
         } catch (error) {
             console.error(
-                "Error fetching team:",
-                error.response || error.message || error
+                "Error fetching team:", 
+                error.response || error.message || error 
             );
         } finally {
             setLoading(false);

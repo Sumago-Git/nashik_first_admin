@@ -199,7 +199,7 @@ const Bookpackagesmodal = ({ tabKey, showModal, handleClose, savedCategory, pass
                                                                                 key={a.time}
                                                                                 style={{
                                                                                     fontSize: "12px",
-                                                                                    width: "50%",
+                                                                                    width: "70%",
                                                                                     marginTop: "2px",
                                                                                     color: a.availableSeats === 0 ? "red" : "green",
                                                                                     backgroundColor: a.availableSeats === 0 ? "#ffd4d4" : "#d4ffd4",
