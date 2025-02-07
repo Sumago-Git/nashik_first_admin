@@ -257,11 +257,32 @@ const AreaTop = ({ buttonValue, tableView }) => {
     else if (window.location.pathname == "/search") {
       setHeader("Search");
     }
-    else if (window.location.pathname == "/bytrainer") {
-      setHeader("Filter By Trainer");
+    else if (window.location.pathname == "/TotalSessionWise") {
+      setHeader("Total Conducted Sessions");
     }
     else if (window.location.pathname == "/Bycategories") {
       setHeader("Filter By Category");
+    }
+    else if (window.location.pathname == "/ByTrainingTypeWise") {
+      setHeader("Filter By Training Type");
+    }
+    else if (window.location.pathname == "/ByTrainingbyadult") {
+      setHeader("Filter By Training Type Adult");
+    }
+    else if (window.location.pathname == "/ByTrainingbyschool") {
+      setHeader("Filter By Training Type School");
+    }
+    else if (window.location.pathname == "/ByTrainingbyrto") {
+      setHeader("Filter By Training Type RTO");
+    }
+    else if (window.location.pathname == "/ByYearWiseCount") {
+      setHeader("Filter By Year Wise Count");
+    }
+    else if (window.location.pathname == "/ByTrainerWise") {
+      setHeader("Filter By Trainer Wise ");
+    }
+    else if (window.location.pathname == "/BySchoolWise") {
+      setHeader("Filter By School Wise ");
     }
 
   }, [window.location.pathname]);
