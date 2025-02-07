@@ -8,6 +8,7 @@ import { confirmAlert } from "react-confirm-alert";
 import { Link, useLocation } from 'react-router-dom';
 import { useNavigate } from "react-router-dom"; // Import useNavigate from react-router-dom
 import Backbtn from '../Calender Component/Backbtn';
+import Backbtn from '../Calender Component/Backbtn';
 
 
 const Slotpage = () => {

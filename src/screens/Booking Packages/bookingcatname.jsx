@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Card, Col, Nav, Row } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
+import Backbtn from '../../components/Calender Component/Backbtn';
 
 const bookingcatname = ({ setCategoryName }) => {
     const training_categories = [
@@ -47,6 +48,7 @@ const bookingcatname = ({ setCategoryName }) => {
 
     return (
         <div>
+            <Backbtn/>
             <Row className='justify-content-center'>
                 {training_categories.map((item, id) => (
                     <Col md={5} key={id}>

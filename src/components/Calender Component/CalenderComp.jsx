@@ -7,6 +7,7 @@ import instance from "../../api/AxiosInstance";
 import { toast } from "react-toastify";
 import SlotComp from "../SlotComp/SlotComp";
 import { useLocation } from 'react-router-dom';
+import Backbtn from "./Backbtn";
 
 const CalenderComp = () => {
     const location = useLocation();
@@ -288,6 +289,7 @@ const CalenderComp = () => {
     const selectedDateIsPast = isPastDate(new Date(selectedDates).getDate());
     return (
         <>
+            <Backbtn/>
             <Container fluid className="slotbg">
                 {/* <div><h2>{savedCategory}</h2></div> */}
                 <Container className="calender">

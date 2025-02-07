@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Card, Col, Nav, Row } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
 import CalenderComp from '../../../components/Calender Component/CalenderComp';
+import Backbtn from '../../../components/Calender Component/Backbtn';
 
 const Calender2 = () => {
     const [show, setShow] = useState(true);
@@ -30,6 +31,7 @@ const Calender2 = () => {
 
     return (
         <div>
+            <Backbtn/>
             {
                 show ?
                     <Row className='justify-content-center'>
