@@ -192,7 +192,7 @@ const Bookingpage = () => {
         let requiredColumns;
   
         if (category === "College/Organization Training – Group") {
-          requiredColumns = ["fname", "mname", "lname", "email", "phone"];
+          requiredColumns = ["fname", "mname", "lname"];
         } else if (category === "School Students Training – Group") {
           requiredColumns = ["fname", "mname", "lname"];
         }
