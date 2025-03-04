@@ -206,7 +206,8 @@ const Slotpage = () => {
         <>
     <Backbtn/>
 
-            <h1 className='daydate mt-5'>{slotDate} - {category}</h1>
+            <h1 className='daydate mt-5'>{slotDate} -                                {category === "College/Organization Training – Group" ? "Institution Training" : category}
+            </h1>
 
             <Container className='mt-md-5'>
                 <Row>

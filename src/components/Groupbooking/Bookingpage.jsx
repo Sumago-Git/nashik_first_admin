@@ -169,66 +169,66 @@ const Bookingpage = () => {
 
   const handleChange = (e) => {
     const { name, files } = e.target;
-  
+
     if (name === 'excel') {
       const file = files[0];
-  
+
       const allowedExtensions = /(\.xls|\.xlsx)$/i;
       if (file && !allowedExtensions.exec(file.name)) {
         alert("Please upload a valid Excel file (.xls or .xlsx)");
         return;
       }
-  
+
       const reader = new FileReader();
       reader.onload = (event) => {
         const data = new Uint8Array(event.target.result);
         const workbook = XLSX.read(data, { type: 'array' });
-  
+
         const sheetName = workbook.SheetNames[0];
         const sheet = workbook.Sheets[sheetName];
-  
+
         // Get headers and validate columns
         const headers = XLSX.utils.sheet_to_json(sheet, { header: 1 })[0];
         let requiredColumns;
-  
+
         if (category === "College/Organization Training – Group") {
           requiredColumns = ["fname", "mname", "lname"];
         } else if (category === "School Students Training – Group") {
           requiredColumns = ["fname", "mname", "lname"];
         }
-  
+
         const isValidColumns = requiredColumns.every(column => headers.includes(column));
-  
+
         // Check for additional required columns when category is School Students Training – Group
         if (category === "School Students Training – Group" && headers.includes("email") && headers.includes("phone")) {
           alert("The uploaded Excel file should not contain 'email' and 'phone' columns for School Students Training – Group.");
           e.target.value = "";
           return;
         }
-  
+
         if (!isValidColumns) {
           alert("The uploaded Excel file does not match the required structure. Please check the column names.");
           e.target.value = "";
           return;
         }
-  
+
         // Count rows and validate the number of entries
         const rows = XLSX.utils.sheet_to_json(sheet);
         const rowCount = rows.length;
-  
+
         if (rowCount <= 30 || rowCount >= 70) {
           alert("The number of entries in the Excel file should be greater than 30 and less than 70.");
           e.target.value = "";
           return;
         }
-  
+
         // If both column structure and row count are valid, set the file in formData
         setFormData((prevData) => ({
           ...prevData,
           [name]: file,
         }));
       };
-  
+
       reader.readAsArrayBuffer(file);
     } else {
       // Handle other fields
@@ -238,7 +238,7 @@ const Bookingpage = () => {
       }));
     }
   };
-  
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -291,16 +291,19 @@ const Bookingpage = () => {
 
       alert('Booking successfully created!');
       const records = response.data.data;
-      for (const record of records) {
-        try {
-          const updateResponse = await instance.put('bookingform/updateTrainingStatus', {
-            trainingStatus: 'Attended',
-            bookingId: record.id,
-            certificate_no: Math.floor(100000 + Math.random() * 900000), // Generate a random 6-digit certificate number
-          });
+      if (category != "School Students Training – Group") {
 
-        } catch (updateError) {
-          console.error(`Error updating record ${record.id}:`, updateError);
+        for (const record of records) {
+          try {
+            const updateResponse = await instance.put('bookingform/updateTrainingStatus', {
+              trainingStatus: 'Attended',
+              bookingId: record.id,
+              certificate_no: Math.floor(100000 + Math.random() * 900000), // Generate a random 6-digit certificate number
+            });
+
+          } catch (updateError) {
+            console.error(`Error updating record ${record.id}:`, updateError);
+          }
         }
       }
 

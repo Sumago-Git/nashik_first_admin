@@ -91,7 +91,10 @@ const Slotsfromtoday = () => {
         },
         {
             name: <CustomHeader name="Category" />,
-            cell: (row) => <span>{row.category}</span>,
+            cell: (row) => <span>
+            
+            {row.category === "College/Organization Training – Group" ? "Institution Training" : row.category}
+            </span>,
         },
         {
             name: <CustomHeader name="Institution Name" />,
@@ -126,12 +129,21 @@ const Slotsfromtoday = () => {
                     : <span>--</span>
             ),
         },
-        
+
         {
             name: <CustomHeader name="Principal Manager" />,
             cell: (row) => (
                 row.slotRegisterInfos.length > 0
                     ? <span>{row.slotRegisterInfos[0].hm_principal_manager_name}</span>
+                    : <span>--</span>
+            ),
+        },
+        ,
+        {
+            name: <CustomHeader name="Bus Facility" />,
+            cell: (row) => (
+                row.slotRegisterInfos.length > 0
+                    ? <span>{row.slotRegisterInfos[0].bus}</span>
                     : <span>--</span>
             ),
         },

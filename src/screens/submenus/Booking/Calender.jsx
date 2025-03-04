@@ -40,7 +40,8 @@ const Calender = () => {
                                 <Col md={5} key={id}>
                                     <Card onClick={() => CategoryClick(item)} className='p-3 my-3 text-center border-0 shadow'>
                                         <Link className='text-decoration-none text-black fw-bold' to="#">
-                                            {item.category}
+                                         
+                                            {item.category === "College/Organization Training – Group" ? "Institution Training" : item.category}
                                         </Link>
                                     </Card>
                                 </Col>

@@ -211,7 +211,7 @@ const Bycategories = () => {
                   Bus Driver
                 </Dropdown.Item>
                 <Dropdown.Item onClick={() => setSelectedCategory("College/Organization Training – Group")}>
-                  College/Organization
+                 Instituion Training
                 </Dropdown.Item>
               </Dropdown.Menu>
             </Dropdown.Menu>

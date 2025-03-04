@@ -1552,7 +1552,7 @@ const Bookcalender = ({ tabKey }) => {
             <Backbtn />
             <div className=" text-center pb-2 d-flex justify-content-between">
                 <div>
-                    <h5>{category1}-{selectedDate}-{selectedTime}</h5>
+                    <h5> {category1 === "College/Organization Training – Group" ? "Institution Training" : category1}-{selectedDate}-{selectedTime}</h5>
                 </div>
                 <div className="d-flex justify-content-end ">
                     {bookingPage2Categories.includes(category1) && !isPastDate(selectedDate) ? <><Button
@@ -1586,13 +1586,13 @@ const Bookcalender = ({ tabKey }) => {
                             });
                         }}
 
-                    >Add Group Slot Info</Button ></> : <></>}
+                    >Upload Excel</Button ></> : <></>}
 
                 </div>
             </div>
 
 
-            <div className=" container mb-3 d-flex">
+            <div className=" container-fluid mb-3 px-0 d-flex justify-content-end">
                 <div className="row">   {sessionSlotDetailsCategories.includes(category1) ?
                     <>
                         {slotInfo ? (
@@ -1603,7 +1603,7 @@ const Bookcalender = ({ tabKey }) => {
                                             <div><strong>Institution Name:</strong> {slotInfo.institution_name}</div>
                                             <div><strong>Institution Email:</strong> {slotInfo.institution_email}</div>
                                             <div><strong>Institution Phone:</strong> {slotInfo.institution_phone}</div>
-                                            <div><strong>Bus Facitity:</strong> {slotInfo.bus}</div>
+                                            <div><strong>Bus Facility:</strong> {slotInfo.bus}</div>
 
 
 
@@ -1641,7 +1641,7 @@ const Bookcalender = ({ tabKey }) => {
                 }</div>
                 <div>
                     <Button variant="primary" onClick={downloadExcel} className="mb-3 ms-5">
-                        Excel Upload
+                      Download Excel
                     </Button>
                 </div>
 

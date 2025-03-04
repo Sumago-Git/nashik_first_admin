@@ -183,7 +183,10 @@ const Bookpackages = ({ tabKey }) => {
 
     return (
         <>
-        <Backbtn/>
+            <Backbtn />
+            <h3>
+                {savedCategory === "College/Organization Training – Group" ? "Institution Training" : savedCategory}</h3>
+
             <Container fluid className="slotbg mt-4">
 
                 <Container className="calender">
@@ -246,6 +249,9 @@ const Bookpackages = ({ tabKey }) => {
                                             const isDisabled = day && isPastDate(day);
                                             const { label: dateLabel, color: textColor, bgColor, isHoliday } = getSpecialDateDetails(day, currentMonth);
                                             const isAvailable = dateStatuses[day] === "available"; // Check status from state
+                                            const clickedDate = day ? new Date(currentYear, currentMonth, day) : null;
+                                            const dayOfWeek = clickedDate ? clickedDate.getDay() : null; // Get the day of the week (0 = Sunday, 6 = Saturday)
+                                            const isWeekend = dayOfWeek === 0 || dayOfWeek === 7; // Check if it's Saturday or Sunday
 
                                             return (
                                                 <td
@@ -275,7 +281,7 @@ const Bookpackages = ({ tabKey }) => {
                                                                     ? "black"
                                                                     : "black"
                                                             : "black",
-                                                            cursor:
+                                                        cursor:
                                                             day && dateStatuses[day] === "Holiday"
                                                                 ? "pointer"
                                                                 : specialDates.find((date) => date.day === day)?.slots?.length > 0
@@ -284,12 +290,11 @@ const Bookpackages = ({ tabKey }) => {
                                                         transition: "color 0.3s",
                                                         fontFamily: "Poppins",
                                                         fontWeight: "600",
-                                                       
-                                                    }}
-                                                >
 
-                                                    {day && (day.isNextMonth ? day.day : day || "")}
-                                                    <br />
+                                                    }}
+                                                >  {day && (day.isNextMonth ? day.day : day.day || "")}
+                                                {day && (isWeekend ? "Week Off" : day.day)}
+                                                
                                                     {specialDates &&
                                                         specialDates.length > 0 &&
                                                         dateStatuses[day] !== "Holiday" && // Check if the day is NOT a holiday

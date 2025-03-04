@@ -56,7 +56,7 @@ const SlotComp = ({ selectedDates, slotDatefortest, categoryName, showModal, han
         time: '',
         deadlineTime: '',
         title: '',
-        capacity: '50',
+        capacity: '80',
         trainer: '',
         slotdate: selectedDates
     };
@@ -114,7 +114,7 @@ const SlotComp = ({ selectedDates, slotDatefortest, categoryName, showModal, han
         let isValid = true;
 
         // Check if the title is empty
-   
+
 
 
 
@@ -251,7 +251,7 @@ const SlotComp = ({ selectedDates, slotDatefortest, categoryName, showModal, han
             for (const key in formData) {
                 // Check if the key is "capacity" and set default to 50 if not provided
                 if (key === "capacity" && (formData[key] === null || formData[key] === undefined)) {
-                    data.append(key, 50);
+                    data.append(key, 80);
                 } else if (formData[key] instanceof File || typeof formData[key] === "string") {
                     data.append(key, formData[key]);
                 }
@@ -437,7 +437,7 @@ const SlotComp = ({ selectedDates, slotDatefortest, categoryName, showModal, han
         },
         {
             name: <CustomHeader name="Category" />,
-            cell: (row) => <span>{row.category}</span>,
+            cell: (row) => <span>{row.category === "College/Organization Training – Group" ? "Institution Training" : row.category}</span>,
         },
         {
             name: <CustomHeader name="Actions" />,
@@ -670,7 +670,8 @@ const SlotComp = ({ selectedDates, slotDatefortest, categoryName, showModal, han
                                         <option value="RTO – Suspended Driving License Holders Training">RTO – Suspended Driving License Holders Training</option>
                                         <option value="RTO – Training for School Bus Driver">RTO – Training for School Bus Driver</option>
                                         <option value="School Students Training – Group">School Students Training – Group</option>
-                                        <option value="College/Organization Training – Group">College/Organization Training – Group</option>
+                                        <option value="College/Organization Training – Group">                 Instituion Training
+                                        </option>
 
                                     </Form.Select>
                                 </Form.Group>

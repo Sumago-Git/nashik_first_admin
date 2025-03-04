@@ -295,11 +295,11 @@ const CalenderComp2 = () => {
     }, [selectedDates]);
     const selectedDateIsPast = isPastDate(new Date(selectedDates).getDate());
     return (
-        <> 
-        <Backbtn/>
+        <>
+            <Backbtn />
             <Container fluid className="slotbg">
-                <div><h2>{savedCategory}</h2></div>
-                <Container className="calender">
+                <div><h2>
+                {savedCategory === "College/Organization Training – Group" ? "Institution Training" : savedCategory} </h2></div>       <Container className="calender">
                     <Col lg={12} className="d-flex justify-content-center align-items-center bg-white">
                         <button
                             className="btn ms-1"
@@ -408,7 +408,7 @@ const CalenderComp2 = () => {
                                                 >
                                                     {day && (
                                                         isWeekend
-                                                            ? "" // Show "Weekly Off" for weekends
+                                                            ? "week off" // Show "Weekly Off" for weekends
                                                             : day // Show the day number for other days
                                                     )}
                                                     <br />

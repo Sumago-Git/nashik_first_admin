@@ -199,7 +199,9 @@ const Training = () => {
 
                         aria-label={tab.label}
                       >
-                        <span className="glyphicon glyphicon-download-alt"></span> {tab.label}
+                        <span className="glyphicon glyphicon-download-alt"></span>
+                        {tab.label === "College/Organization Training – Group" ? "Institution Training" : tab.label}
+
                       </button>
                     </Nav.Link>
                   </Nav.Item>
@@ -276,50 +278,56 @@ const Training = () => {
                       const isDisabled = day && isPastDate(day);
                       const { label: dateLabel, color: textColor, bgColor, isHoliday } = getSpecialDateDetails(day, currentMonth);
                       const isAvailable = dateStatuses[day] === "available"; // Check status from state
+                      const clickedDate = day ? new Date(currentYear, currentMonth, day) : null;
+                      const dayOfWeek = clickedDate ? clickedDate.getDay() : null; // Get the day of the week (0 = Sunday, 6 = Saturday)
+                      const isWeekend = dayOfWeek === 0 || dayOfWeek === 7; // Check if it's Saturday or Sunday
 
                       return (
                         <td
-                        key={dayIndex}
-                        onMouseEnter={() => day && !isDisabled && setHoveredDay(day)}
-                        onMouseLeave={() => day && !isDisabled && setHoveredDay(null)}
-                        onClick={() => {
+                          key={dayIndex}
+                          onMouseEnter={() => day && !isDisabled && setHoveredDay(day)}
+                          onMouseLeave={() => day && !isDisabled && setHoveredDay(null)}
+                          onClick={() => {
                             const specialDate = specialDates.find((date) => date.day === day);
                             if (specialDate && specialDate.slots && specialDate.slots.length > 0) {
-                                handleDateClick(day);
+                              handleDateClick(day);
                             }
-                        }}
-                        style={{
+                          }}
+                          style={{
                             height: "100px",
                             textAlign: "end",
-                             cursor: "pointer",
+                            cursor: "pointer",
                             verticalAlign: "middle",
                             borderRight: "1px solid #ddd",
                             backgroundColor: day
-                                ? dateStatuses[day] === "Holiday"
-                                    ? "#ea7777"
-                                    : "white"
-                                : "white",
+                              ? dateStatuses[day] === "Holiday"
+                                ? "#ea7777"
+                                : "white"
+                              : "white",
                             color: day
-                                ? day.isNextMonth
-                                    ? "#ccc"
-                                    : isDisabled || dateStatuses[day] === "Holiday"
-                                        ? "black"
-                                        : "black"
-                                : "black",
-                                cursor:
-                                day && dateStatuses[day] === "Holiday"
-                                    ? "pointer"
-                                    : specialDates.find((date) => date.day === day)?.slots?.length > 0
-                                        ? "pointer"
-                                        : "pointer", // Disable pointer events if no slots
+                              ? day.isNextMonth
+                                ? "#ccc"
+                                : isDisabled || dateStatuses[day] === "Holiday"
+                                  ? "black"
+                                  : "black"
+                              : "black",
+                            cursor:
+                              day && dateStatuses[day] === "Holiday"
+                                ? "pointer"
+                                : specialDates.find((date) => date.day === day)?.slots?.length > 0
+                                  ? "pointer"
+                                  : "pointer", // Disable pointer events if no slots
                             transition: "color 0.3s",
                             fontFamily: "Poppins",
                             fontWeight: "600",
-                           
-                        }}
-                    >
+
+                          }}
+                        >
 
                           {day && (day.isNextMonth ? day.day : day || "")}
+                    
+                          <p style={{color:"gray"}}>{day && (isWeekend ? "Week Off" : day.day)}</p>
+
                           <br />
                           {specialDates &&
                             specialDates.length > 0 &&

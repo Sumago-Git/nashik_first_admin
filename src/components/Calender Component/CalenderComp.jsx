@@ -220,12 +220,12 @@ const CalenderComp = () => {
             });
             const filteredData = response.data.responseData?.reverse()
             setTeam(filteredData);
-            console.log('dsfgefg',filteredData)
+            console.log('dsfgefg', filteredData)
 
         } catch (error) {
             console.error(
-                "Error fetching team:", 
-                error.response || error.message || error 
+                "Error fetching team:",
+                error.response || error.message || error
             );
         } finally {
             setLoading(false);
@@ -289,7 +289,7 @@ const CalenderComp = () => {
     const selectedDateIsPast = isPastDate(new Date(selectedDates).getDate());
     return (
         <>
-            <Backbtn/>
+            <Backbtn />
             <Container fluid className="slotbg">
                 {/* <div><h2>{savedCategory}</h2></div> */}
                 <Container className="calender">
@@ -359,18 +359,27 @@ const CalenderComp = () => {
                                 {weeks.map((week, weekIndex) => (
                                     <tr key={weekIndex} style={{ cursor: 'default' }}>
                                         {week.map((day, dayIndex) => {
-                                            const isDisabled = day && isPastDate(day);
                                             const { label: dateLabel, color: textColor, bgColor, isHoliday } = getSpecialDateDetails(day, currentMonth);
                                             const isAvailable = dateStatuses[day] === "available"; // Check status from state
                                             const weekday = day !== null ? daysOfWeek[new Date(currentYear, currentMonth, day).getDay()] : ""; // Calculate weekday
+                                            const clickedDate = day ? new Date(currentYear, currentMonth, day) : null;
+                                            const dayOfWeek = clickedDate ? clickedDate.getDay() : null; // Get the day of the week (0 = Sunday, 6 = Saturday)
+                                            const isWeekend = dayOfWeek === 0 || dayOfWeek === 7; // 0 = Sunday, 6 = Saturday
+                                            const isDisabled = (day && isPastDate(day)) || isWeekend; // Disable if it's a weekend or a past date
+                                            
 
                                             return (
                                                 <td
                                                     key={dayIndex}
                                                     onMouseEnter={() => day && !isDisabled && setHoveredDay(day)}
                                                     onMouseLeave={() => day && !isDisabled && setHoveredDay(null)}
-                                                    onClick={() => day && dateStatuses[day] !== "Holiday" && handleDayClick(day, weekday)} // Pass weekday here
-                                                    style={{
+                                                    onClick={() => 
+                                                        day && 
+                                                        dateStatuses[day] !== "Holiday" && 
+                                                        !isWeekend &&  // Prevent clicking on weekends
+                                                        handleDayClick(day, weekday)
+                                                      }
+                                                                                                          style={{
                                                         height: "100px",
                                                         textAlign: "end",
                                                         cursor: "pointer",
@@ -381,24 +390,23 @@ const CalenderComp = () => {
                                                                 ? "#f9f9f9" // Disabled (past dates or holidays)
                                                                 : dateStatuses[day] === "available"
                                                                     ? "#d4ffd4" // Green for available
-                                                                    : dateStatuses[day] === "Holiday"
+                                                                    : dateStatuses[day] === "Holiday" || isWeekend
                                                                         ? "#ea7777" // Light blue for holiday
                                                                         : "#d4ffd4" // Red for closed or other statuses
                                                             : "white",
                                                         color: day
                                                             ? isDisabled || dateStatuses[day] === "Holiday"
-                                                                ? "#999" // Gray for disabled or holiday
+                                                                ? "black" // Gray for disabled or holiday
                                                                 : "black"
                                                             : "black",
                                                         fontFamily: "Poppins",
                                                         fontWeight: "600",
                                                     }}
                                                 >
-                                                    {day && (
-                                                        <>
-
-                                                            <div>{day}</div>
-                                                        </>
+                                                   {day && (
+                                                        isWeekend
+                                                            ? "week off" // Show "Weekly Off" for weekends
+                                                            : day // Show the day number for other days
                                                     )}
                                                     <br />
                                                     {specialDates &&

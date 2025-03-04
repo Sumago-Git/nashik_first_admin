@@ -334,7 +334,7 @@ const Search = () => {
                                         <option value="RTO – Suspended Driving License Holders Training">RTO – Suspended Driving License Holders Training</option>
                                         <option value="RTO – Training for School Bus Driver">RTO – Training for School Bus Driver</option>
                                         <option value="School Students Training – Group">School Students Training – Group</option>
-                                        <option value="College/Organization Training – Group">College/Organization Training – Group</option>
+                                        <option value="College/Organization Training – Group">Institution Training</option>
                                     </Form.Select>
 
                                     {/* Search input */}

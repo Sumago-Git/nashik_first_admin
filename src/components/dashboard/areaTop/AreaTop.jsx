@@ -200,9 +200,7 @@ const AreaTop = ({ buttonValue, tableView }) => {
     else if (window.location.pathname == "/pastevents") {
       setHeader("Past Events");
     }
-    else if (window.location.pathname == "/Slotpage") {
-      setHeader("Slot Booking");
-    }
+   
     else if (window.location.pathname == "/upcommingevents") {
       setHeader("Upcomming Events");
     }

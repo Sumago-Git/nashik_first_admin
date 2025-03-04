@@ -56,7 +56,7 @@ const SlotComp2 = ({ selectedDates, slotDatefortest, categoryName, showModal, ha
         time: '',
         deadlineTime: '',
         title: '',
-        capacity: '50',
+        capacity: '80',
         trainer: '',
         slotdate: selectedDates
     };
@@ -697,7 +697,8 @@ const SlotComp2 = ({ selectedDates, slotDatefortest, categoryName, showModal, ha
                                         <option value="RTO – Suspended Driving License Holders Training">RTO – Suspended Driving License Holders Training</option>
                                         <option value="RTO – Training for School Bus Driver">RTO – Training for School Bus Driver</option> */}
                                         <option value="School Students Training – Group">School Students Training – Group</option>
-                                        <option value="College/Organization Training – Group">College/Organization Training – Group</option>
+                                        <option value="College/Organization Training – Group">                 Instituion Training
+                                        </option>
 
                                     </Form.Select>
                                 </Form.Group>
