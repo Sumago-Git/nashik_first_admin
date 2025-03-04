@@ -71,6 +71,7 @@ import ByYearWiseCount from "./components/Reports/ByYearWiseCount";
 import ByTrainerWise from "./components/Reports/ByTrainerWise";
 import BySchoolWise from "./components/Reports/BySchoolWise";
 import TotalSessionWise from "./components/Reports/TotalSessionWise";
+import Notification from "./components/Notification/Notification";
 
 function App() {
 
@@ -156,6 +157,10 @@ function App() {
           <Route
             path="/trainer"
             element={<ProtectedRoutes Component={Trainer} />}
+          />
+          <Route
+            path="/notification"
+            element={<ProtectedRoutes Component={Notification} />}
           />
           <Route
             path="/Sessionslotdetails2/:id"

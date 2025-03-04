@@ -389,6 +389,12 @@ const SidebarMenu = [
     ],
   },
   {
+    menu: "Notification",
+    url: "/notification",
+    mainIcon: <MdLocalOffer size={24} />,
+    subMenu: [],
+  },
+  {
     menu: "Reports",
 
     mainIcon: <MdSchool size={24} />,
