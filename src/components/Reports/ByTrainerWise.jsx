@@ -264,7 +264,7 @@ const ByTrainerWise = () => {
     },
     {
       name: 'No. Students',
-      selector: (row) => row.sessionCount,
+      selector: (row) => row.totalSessionCount,
       sortable: true,
     }
   ];
@@ -641,7 +641,7 @@ const ByTrainerWise = () => {
               },
               {
                 name: 'No. of Students',
-                selector: (row) => row.sessionCount,
+                selector: (row) => row.totalSessionCount,
                 sortable: true
               },
             ]}
