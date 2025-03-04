@@ -365,22 +365,23 @@ const Training = () => {
                                       </div>
                                     ))
                                 ) : (
-                                  <div
-                                    style={{
-                                      fontSize: "12px",
-                                      width: "100%",
-                                      marginTop: "2px",
-                                      color: "gray",
-                                      backgroundColor: "#f0f0f0",
-                                      padding: "3px 8px",
-                                      borderRadius: "15px",
-                                      textAlign: "center",
-                                      fontWeight: "bold",
-                                    }}
-                                  >
-                                    No slot available
-                                  </div>
-                                )}
+                                  !isWeekend && ( // Do not show "No slot available" if it's a weekend
+                                    <div
+                                      style={{
+                                        fontSize: "12px",
+                                        width: "100%",
+                                        marginTop: "2px",
+                                        color: "gray",
+                                        backgroundColor: "#f0f0f0",
+                                        padding: "3px 8px",
+                                        borderRadius: "15px",
+                                        textAlign: "center",
+                                        fontWeight: "bold",
+                                      }}
+                                    >
+                                      No slot available
+                                    </div>
+                    ))}
                               </div>
                             )}
                         </td>

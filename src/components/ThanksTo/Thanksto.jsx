@@ -79,18 +79,45 @@ function Thanksto() {
         }
     };
 
+    // const handleImageChange = (e) => {
+    //     const file = e.target.files[0];
+    //     if (file && file.type.startsWith("image/")) {
+    //         setImage(file);
+    //         setPreview(URL.createObjectURL(file));
+    //         setErrors({});
+    //     } else {
+    //         setErrors({ img: "Only image files are allowed." });
+    //         setImage(null);
+    //         setPreview(null);
+    //     }
+    // };
+
     const handleImageChange = (e) => {
         const file = e.target.files[0];
+    
         if (file && file.type.startsWith("image/")) {
-            setImage(file);
-            setPreview(URL.createObjectURL(file));
-            setErrors({});
+            const img = new Image();
+            img.src = URL.createObjectURL(file);
+    
+            img.onload = () => {
+                if (img.width === 367 && img.height === 185) {
+                    setImage(file);
+                    setPreview(img.src);
+                    setErrors({});
+                } else {
+                    setErrors({ img: "Image must be exactly 367x185 pixels." });
+                    setImage(null);
+                    setPreview(null);
+                    e.target.value = "";
+                }
+            };
         } else {
             setErrors({ img: "Only image files are allowed." });
             setImage(null);
             setPreview(null);
         }
     };
+    
 
     const handleToggle = () => {
         setShowAdd(!showAdd);

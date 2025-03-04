@@ -84,35 +84,85 @@ function Homebanner() {
     }
   };
 
+  // const handleImageChange = (e, type) => {
+  //   const file = e.target.files[0];
+  //   if (file && file.type.startsWith("image/")) {
+  //     const img = new Image();
+  //     img.src = URL.createObjectURL(file);
+  //     img.onload = () => {
+  //       if (type === "mobile" && img.width <= 1360 && img.height <= 1055) {
+  //         setImage1(file);
+  //         setPreviewMobile(URL.createObjectURL(file));
+  //         setErrors((prevErrors) => ({ ...prevErrors, img1: '' }));
+  //       } else if (type === "desktop") {
+  //         setImage(file);
+  //         setErrors((prevErrors) => ({ ...prevErrors, img2: '' }));
+  //       } else {
+  //         setErrors((prevErrors) => ({ ...prevErrors, img1: "Only mobile dimension images are allowed (e.g., max 1360x1055)." }));
+  //         setImage1(null);
+  //         setPreviewMobile(null);
+  //       }
+  //     }
+  //   } else {
+  //     setErrors((prevErrors) => ({ ...prevErrors, [type === "mobile" ? "img1" : "img2"]: "Only image files are allowed." }));
+  //     if (type === "mobile") {
+  //       setImage1(null);
+  //       setPreviewMobile(null);
+  //     } else {
+  //       setImage(null);
+  //     }
+  //   }
+  // };
+
   const handleImageChange = (e, type) => {
     const file = e.target.files[0];
+
     if (file && file.type.startsWith("image/")) {
-      const img = new Image();
-      img.src = URL.createObjectURL(file);
-      img.onload = () => {
-        if (type === "mobile" && img.width <= 1360 && img.height <= 1055) {
-          setImage1(file);
-          setPreviewMobile(URL.createObjectURL(file));
-          setErrors((prevErrors) => ({ ...prevErrors, img1: '' }));
-        } else if (type === "desktop") {
-          setImage(file);
-          setErrors((prevErrors) => ({ ...prevErrors, img2: '' }));
-        } else {
-          setErrors((prevErrors) => ({ ...prevErrors, img1: "Only mobile dimension images are allowed (e.g., max 1360x1055)." }));
-          setImage1(null);
-          setPreviewMobile(null);
-        }
-      }
+        const img = new Image();
+        img.src = URL.createObjectURL(file);
+
+        img.onload = () => {
+            if (type === "mobile") {
+                if (img.width === 1360 && img.height === 1055) {
+                    setImage1(file);
+                    setPreviewMobile(URL.createObjectURL(file));
+                    setErrors((prevErrors) => ({ ...prevErrors, img1: '' }));
+                } else {
+                    const errorMsg = "Image must be exactly 1360x1055 for mobile view).";
+                    setErrors((prevErrors) => ({ ...prevErrors, img1: errorMsg }));
+                    console.error(errorMsg);
+                    setImage1(null);
+                    setPreviewMobile(null);
+                    e.target.value = ""; // Clear input field
+                }
+            } else if (type === "desktop") {
+                if (img.width === 1942 && img.height === 604) {
+                    setImage(file);
+                    setErrors((prevErrors) => ({ ...prevErrors, img2: '' }));
+                } else {
+                    const errorMsg = "Image must be exactly 1942x604 for desktop view).";
+                    setErrors((prevErrors) => ({ ...prevErrors, img2: errorMsg }));
+                    console.error(errorMsg);
+                    setImage(null);
+                    e.target.value = ""; // Clear input field
+                }
+            }
+        };
     } else {
-      setErrors((prevErrors) => ({ ...prevErrors, [type === "mobile" ? "img1" : "img2"]: "Only image files are allowed." }));
-      if (type === "mobile") {
-        setImage1(null);
-        setPreviewMobile(null);
-      } else {
-        setImage(null);
-      }
+        const errorMsg = "Only image files are allowed.";
+        setErrors((prevErrors) => ({ ...prevErrors, [type === "mobile" ? "img1" : "img2"]: errorMsg }));
+        console.error(errorMsg);
+        
+        if (type === "mobile") {
+            setImage1(null);
+            setPreviewMobile(null);
+        } else {
+            setImage(null);
+        }
+        e.target.value = ""; // Clear input field
     }
-  };
+};
+
 
   const handleToggle = () => {
     setShowAdd(!showAdd);

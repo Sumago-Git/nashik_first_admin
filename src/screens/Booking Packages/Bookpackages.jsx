@@ -326,6 +326,8 @@ const Bookpackages = ({ tabKey }) => {
                                                                             </div>
                                                                         ))
                                                                 ) : (
+                                                                    !isWeekend && ( // Do not show "No slot available" if it's a weekend
+
                                                                     <div
                                                                         style={{
                                                                             fontSize: "12px",
@@ -341,7 +343,7 @@ const Bookpackages = ({ tabKey }) => {
                                                                     >
                                                                         No slot available
                                                                     </div>
-                                                                )}
+                                          )  )}
                                                             </div>
                                                         )}
 
