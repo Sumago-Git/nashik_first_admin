@@ -92,7 +92,7 @@ const Slotlistpage = () => {
     return (
         <Container>
             <Backbtn/>
-            <h3 className='daydate mt-5'>{slotDate}--{savedCategory === "College/Organization Training – Group" ? "Institution Training" : savedCategory}</h3>
+            <h3 className='daydate mt-5'>{slotDate}-{savedCategory === "College/Organization Training – Group" ? "Institution Training" : savedCategory}</h3>
             <Container className='mt-md-5'>
                 <Row>
                     {sessions.length === 0 ? "No Slots Available" :

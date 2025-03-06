@@ -364,8 +364,12 @@ const CalenderComp = () => {
                                             const weekday = day !== null ? daysOfWeek[new Date(currentYear, currentMonth, day).getDay()] : ""; // Calculate weekday
                                             const clickedDate = day ? new Date(currentYear, currentMonth, day) : null;
                                             const dayOfWeek = clickedDate ? clickedDate.getDay() : null; // Get the day of the week (0 = Sunday, 6 = Saturday)
-                                            const isWeekend = dayOfWeek === 0 || dayOfWeek === 7; // 0 = Sunday, 6 = Saturday
-                                            const isDisabled = (day && isPastDate(day)) || isWeekend; // Disable if it's a weekend or a past date
+                                            
+                                            // Define March 1, 2025
+                                            const weekendStartDate = new Date(2025, 2, 1); // March 1, 2025 (Month is zero-based, so 2 = March)
+                                            
+                                            // Apply weekend rule only after March 1, 2025
+                                            const isWeekend = clickedDate && clickedDate >= weekendStartDate && (dayOfWeek === 0 || dayOfWeek === 7);            const isDisabled = (day && isPastDate(day)) || isWeekend; // Disable if it's a weekend or a past date
                                             
 
                                             return (
