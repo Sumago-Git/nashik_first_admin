@@ -251,8 +251,12 @@ const Bookpackages = ({ tabKey }) => {
                                             const isAvailable = dateStatuses[day] === "available"; // Check status from state
                                             const clickedDate = day ? new Date(currentYear, currentMonth, day) : null;
                                             const dayOfWeek = clickedDate ? clickedDate.getDay() : null; // Get the day of the week (0 = Sunday, 6 = Saturday)
-                                            const isWeekend = dayOfWeek === 0 || dayOfWeek === 7; // Check if it's Saturday or Sunday
-
+                                            
+                                            // Define March 1, 2025
+                                            const weekendStartDate = new Date(2025, 2, 1); // March 1, 2025 (Month is zero-based, so 2 = March)
+                                            
+                                            // Apply weekend rule only after March 1, 2025
+                                            const isWeekend = clickedDate && clickedDate >= weekendStartDate && (dayOfWeek === 0 || dayOfWeek === 7);
                                             return (
                                                 <td
                                                     key={dayIndex}
@@ -270,14 +274,14 @@ const Bookpackages = ({ tabKey }) => {
                                                         verticalAlign: "middle",
                                                         borderRight: "1px solid #ddd",
                                                         backgroundColor: day
-                                                            ? dateStatuses[day] === "Holiday"
+                                                            ? dateStatuses[day] === "Holiday" ||isWeekend
                                                                 ? "#ea7777"
                                                                 : "white"
                                                             : "white",
                                                         color: day
                                                             ? day.isNextMonth
                                                                 ? "#ccc"
-                                                                : isDisabled || dateStatuses[day] === "Holiday"
+                                                                : isDisabled || dateStatuses[day] === "Holiday" ||isWeekend
                                                                     ? "black"
                                                                     : "black"
                                                             : "black",
