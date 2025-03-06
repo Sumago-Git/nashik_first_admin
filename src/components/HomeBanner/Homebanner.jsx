@@ -118,50 +118,50 @@ function Homebanner() {
     const file = e.target.files[0];
 
     if (file && file.type.startsWith("image/")) {
-        const img = new Image();
-        img.src = URL.createObjectURL(file);
+      const img = new Image();
+      img.src = URL.createObjectURL(file);
 
-        img.onload = () => {
-            if (type === "mobile") {
-                if (img.width === 1360 && img.height === 1055) {
-                    setImage1(file);
-                    setPreviewMobile(URL.createObjectURL(file));
-                    setErrors((prevErrors) => ({ ...prevErrors, img1: '' }));
-                } else {
-                    const errorMsg = "Image must be exactly 1360x1055 for mobile view).";
-                    setErrors((prevErrors) => ({ ...prevErrors, img1: errorMsg }));
-                    console.error(errorMsg);
-                    setImage1(null);
-                    setPreviewMobile(null);
-                    e.target.value = ""; // Clear input field
-                }
-            } else if (type === "desktop") {
-                if (img.width === 1942 && img.height === 604) {
-                    setImage(file);
-                    setErrors((prevErrors) => ({ ...prevErrors, img2: '' }));
-                } else {
-                    const errorMsg = "Image must be exactly 1942x604 for desktop view).";
-                    setErrors((prevErrors) => ({ ...prevErrors, img2: errorMsg }));
-                    console.error(errorMsg);
-                    setImage(null);
-                    e.target.value = ""; // Clear input field
-                }
-            }
-        };
-    } else {
-        const errorMsg = "Only image files are allowed.";
-        setErrors((prevErrors) => ({ ...prevErrors, [type === "mobile" ? "img1" : "img2"]: errorMsg }));
-        console.error(errorMsg);
-        
+      img.onload = () => {
         if (type === "mobile") {
+          if (img.width === 1360 && img.height === 1055) {
+            setImage1(file);
+            setPreviewMobile(URL.createObjectURL(file));
+            setErrors((prevErrors) => ({ ...prevErrors, img1: '' }));
+          } else {
+            const errorMsg = "Image must be exactly 1360x1055 for mobile view).";
+            setErrors((prevErrors) => ({ ...prevErrors, img1: errorMsg }));
+            console.error(errorMsg);
             setImage1(null);
             setPreviewMobile(null);
-        } else {
+            e.target.value = ""; // Clear input field
+          }
+        } else if (type === "desktop") {
+          if (img.width === 1942 && img.height === 604) {
+            setImage(file);
+            setErrors((prevErrors) => ({ ...prevErrors, img2: '' }));
+          } else {
+            const errorMsg = "Image must be exactly 1942x604 for desktop view).";
+            setErrors((prevErrors) => ({ ...prevErrors, img2: errorMsg }));
+            console.error(errorMsg);
             setImage(null);
+            e.target.value = ""; // Clear input field
+          }
         }
-        e.target.value = ""; // Clear input field
+      };
+    } else {
+      const errorMsg = "Only image files are allowed.";
+      setErrors((prevErrors) => ({ ...prevErrors, [type === "mobile" ? "img1" : "img2"]: errorMsg }));
+      console.error(errorMsg);
+
+      if (type === "mobile") {
+        setImage1(null);
+        setPreviewMobile(null);
+      } else {
+        setImage(null);
+      }
+      e.target.value = ""; // Clear input field
     }
-};
+  };
 
 
   const handleToggle = () => {
@@ -301,7 +301,8 @@ function Homebanner() {
               <Row>
                 <Col lg={6} md={6} sm={12}>
                   <Form.Group className="mb-3" controlId="formBasicImage">
-                    <Form.Label>Upload Image Desktop</Form.Label>
+                    <Form.Label>Upload Image Desktop </Form.Label>
+                    <span className="text-danger"> (Image Size : 1942px X 604px)</span>
                     <Form.Control
                       type="file"
                       accept="image/*"
@@ -313,6 +314,7 @@ function Homebanner() {
                 <Col lg={6} md={6} sm={12}>
                   <Form.Group className="mb-3" controlId="formBasicImage1">
                     <Form.Label>Upload Image Mobile</Form.Label>
+                    <span className="text-danger"> (Image Size : 1360px X 1055px)</span>
                     <Form.Control
                       type="file"
                       accept="image/*"
@@ -323,7 +325,7 @@ function Homebanner() {
                 </Col>
               </Row>
               <div className="d-flex ">
-                <Button variant={editMode ? "primary" : "success"}  type="submit">
+                <Button variant={editMode ? "primary" : "success"} type="submit">
                   {editMode ? 'Update' : 'Submit'}
                 </Button>
               </div>
