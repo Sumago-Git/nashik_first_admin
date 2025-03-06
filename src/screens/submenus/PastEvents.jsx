@@ -476,6 +476,7 @@ function PastEvenets() {
                                         <Col lg={6} md={6} sm={12}>
                                             <Form.Group className="mb-3" controlId="formBasicImage">
                                                 <Form.Label>Upload Image</Form.Label>
+                                                <span className="text-danger"> (Image Size : 629px X 629px)</span>
                                                 <Form.Control
                                                     type="file"
                                                     accept="image/*"
@@ -544,6 +545,7 @@ function PastEvenets() {
                                             <Col lg={6} md={6} sm={12}>
                                                 <Form.Group className="mb-3" controlId="formBasicImage">
                                                     <Form.Label>Upload Image</Form.Label>
+                                                <span className="text-danger"> (Image Size : 629px X 629px)</span>
                                                     <Form.Control
                                                         type="file"
                                                         accept="image/*"
