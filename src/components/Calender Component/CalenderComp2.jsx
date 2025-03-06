@@ -408,7 +408,7 @@ const CalenderComp2 = () => {
                                                 >
                                                     {day && (
                                                         isWeekend
-                                                            ? "week off" // Show "Weekly Off" for weekends
+                                                            ? "Weekly Off" // Show "Weekly Off" for weekends
                                                             : day // Show the day number for other days
                                                     )}
                                                     <br />

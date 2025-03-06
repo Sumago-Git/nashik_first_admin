@@ -297,7 +297,7 @@ const Bookpackages = ({ tabKey }) => {
 
                                                     }}
                                                 >  {day && (day.isNextMonth ? day.day : day.day || "")}
-                                                {day && (isWeekend ? "Week Off" : day.day)}
+                                                {day && (isWeekend ? "Weekly Off" : day.day)}
                                                 
                                                     {specialDates &&
                                                         specialDates.length > 0 &&

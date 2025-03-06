@@ -331,7 +331,7 @@ const Training = () => {
 
                           {day && (day.isNextMonth ? day.day : day || "")}
                     
-                          <p style={{color:"gray"}}>{day && (isWeekend ? "Week Off" : day.day)}</p>
+                          <p style={{color:"gray"}}>{day && (isWeekend ? "Weekly Off" : day.day)}</p>
 
                           <br />
                           {specialDates &&
