@@ -112,12 +112,12 @@ function PastEvenets() {
             img.src = URL.createObjectURL(file);
     
             img.onload = () => {
-                if (img.width === 629 && img.height === 629) {
+                if (img.width === 4649 && img.height === 3264) {
                     setImage(file);
                     setPreview(img.src);
                     setErrors({});
                 } else {
-                    setErrors({ img: "Image must be exactly 629x629 pixels." });
+                    setErrors({ img: "Image must be exactly 4649x3264 pixels." });
                     setImage(null);
                     setPreview(null);
                     e.target.value = "";
@@ -476,7 +476,7 @@ function PastEvenets() {
                                         <Col lg={6} md={6} sm={12}>
                                             <Form.Group className="mb-3" controlId="formBasicImage">
                                                 <Form.Label>Upload Image</Form.Label>
-                                                <span className="text-danger"> (Image Size : 629px X 629px)</span>
+                                                <span className="text-danger"> (Image Size : 4649px X 3264px)</span>
                                                 <Form.Control
                                                     type="file"
                                                     accept="image/*"
@@ -545,7 +545,7 @@ function PastEvenets() {
                                             <Col lg={6} md={6} sm={12}>
                                                 <Form.Group className="mb-3" controlId="formBasicImage">
                                                     <Form.Label>Upload Image</Form.Label>
-                                                <span className="text-danger"> (Image Size : 629px X 629px)</span>
+                                                <span className="text-danger"> (Image Size : 4649px X 3264px)</span>
                                                     <Form.Control
                                                         type="file"
                                                         accept="image/*"
