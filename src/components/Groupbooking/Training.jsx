@@ -311,7 +311,7 @@ const Training = () => {
                               : "white",
                             color: day
                               ? day.isNextMonth
-                                ? "#ccc"
+                                ? "white"
                                 : isDisabled || dateStatuses[day] === "Holiday"
                                   ? "black"
                                   : "black"
@@ -331,7 +331,7 @@ const Training = () => {
 
                           {day && (day.isNextMonth ? day.day : day || "")}
                     
-                          <p style={{color:"gray"}}>{day && (isWeekend ? "Weekly Off" : day.day)}</p>
+                          <p >{day && (isWeekend ? "Weekly Off" : day.day)}</p>
 
                           <br />
                           {specialDates &&

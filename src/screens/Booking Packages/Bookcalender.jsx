@@ -417,7 +417,8 @@ const Bookcalender = ({ tabKey }) => {
 
 
 
-
+    const [currentPage, setCurrentPage] = useState(1);
+    const paginationPerPage = 10;
 
 
 
@@ -1294,7 +1295,7 @@ const Bookcalender = ({ tabKey }) => {
     const columns = [
         {
             name: 'Sr No.',
-            selector: (row, id) => id + 1,
+            selector: (row, index) => index + 1 + (currentPage - 1) * paginationPerPage,
             sortable: true,
         },
         {
@@ -1682,8 +1683,8 @@ const Bookcalender = ({ tabKey }) => {
                         responsive
                         striped
                         noDataComponent="No Data Available"
-                        onRowClicked={handleRowClick}
-                    />
+                        onChangePage={(page) => setCurrentPage(page)} // Update the current page
+                        />
                 ) : (
                     <Alert variant="warning" className="text-center">
                         No Data Found

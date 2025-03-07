@@ -280,7 +280,7 @@ const Bookpackages = ({ tabKey }) => {
                                                             : "white",
                                                         color: day
                                                             ? day.isNextMonth
-                                                                ? "#ccc"
+                                                                ? "white"
                                                                 : isDisabled || dateStatuses[day] === "Holiday" ||isWeekend
                                                                     ? "black"
                                                                     : "black"
@@ -296,9 +296,11 @@ const Bookpackages = ({ tabKey }) => {
                                                         fontWeight: "600",
 
                                                     }}
-                                                >  {day && (day.isNextMonth ? day.day : day.day || "")}
-                                                {day && (isWeekend ? "Weekly Off" : day.day)}
-                                                
+                                                >   
+                                                  {day && (day.isNextMonth ? day.day : day || "")}
+                    
+                                                <p >{day && (isWeekend ? "Weekly Off" : day.day || "")}</p>
+                      
                                                     {specialDates &&
                                                         specialDates.length > 0 &&
                                                         dateStatuses[day] !== "Holiday" && // Check if the day is NOT a holiday
