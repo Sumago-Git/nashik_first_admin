@@ -369,7 +369,7 @@ const CalenderComp = () => {
                                             const weekendStartDate = new Date(2025, 2, 1); // March 1, 2025 (Month is zero-based, so 2 = March)
                                             
                                             // Apply weekend rule only after March 1, 2025
-                                            const isWeekend = clickedDate && clickedDate >= weekendStartDate && (dayOfWeek === 0 || dayOfWeek === 6);
+                                            const isWeekend = clickedDate && clickedDate >= weekendStartDate && (dayOfWeek === 0 || dayOfWeek === 7);
                                             const isDisabled = (day && isPastDate(day)) || isWeekend; // Disable if it's a weekend or a past date
                                             
 
@@ -391,14 +391,19 @@ const CalenderComp = () => {
                                                         verticalAlign: "middle",
                                                         borderRight: "1px solid #ddd",
                                                         backgroundColor: day
-                                                            ? isDisabled
-                                                                ? "#f9f9f9" // Disabled (past dates or holidays)
-                                                                : dateStatuses[day] === "available"
-                                                                    ? "#d4ffd4" // Green for available
-                                                                    : dateStatuses[day] === "Holiday" || isWeekend
-                                                                        ? "#ea7777" // Light blue for holiday
-                                                                        : "#d4ffd4" // Red for closed or other statuses
-                                                            : "white",
+                                                        ? day.isNextMonth
+                                                            ? "#f0f0f0" // Light gray for next month's dates
+                                                            : dayOfWeek === 0 && isWeekend
+                                                                ? "#ea7777" // Red only for Sundays
+                                                                : isDisabled
+                                                                    ? "#f9f9f9" // Gray for disabled days (past dates or holidays)
+                                                                    : dateStatuses[day] === "available"
+                                                                        ? "#d4ffd4" // Green for available days
+                                                                        : dateStatuses[day] === "Holiday"
+                                                                            ? "#ea7777" // Red for holidays
+                                                                            : "#d4ffd4" // Default background color
+                                                        : "white",
+                                                    
                                                         color: day
                                                             ? isDisabled || dateStatuses[day] === "Holiday"
                                                                 ? "black" // Gray for disabled or holiday
@@ -410,7 +415,7 @@ const CalenderComp = () => {
                                                 >
                                                    {day && (
                                                         isWeekend
-                                                            ? "Weekly Off" // Show "Weekly Off" for weekends
+                                                            ? <>  {day}<br /> Weekly Off </>// Show "Weekly Off" for weekends
                                                             : day // Show the day number for other days
                                                     )}
                                                     <br />

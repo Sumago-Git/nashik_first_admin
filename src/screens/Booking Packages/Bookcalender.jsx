@@ -3,6 +3,7 @@ import { Container, Table, Col, Row, Form, Alert } from "react-bootstrap";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import './bookingpckg.css';
 import * as XLSX from "xlsx";
+import { FaEdit, FaEyeSlash, FaRegEye } from 'react-icons/fa';
 
 import leftarrow from "../../assets/Holiday/leftarrow.png";
 import rightarrow from "../../assets/Holiday/rightarrow.png";
@@ -1262,22 +1263,24 @@ const Bookcalender = ({ tabKey }) => {
             }
         };
     };
+    const [loadingId, setLoadingId] = useState(null);
 
     const toggleStatus = (row) => {
+        setLoadingId(row.id); // Disable the button temporarily
+
         const newStatus = row.training_status === "Confirmed" ? "Attended" : "Confirmed";
 
-        // Update backend
         instance.put(`bookingform/updateTrainingStatus`, { trainingStatus: newStatus, bookingId: row.id })
             .then(() => {
-                // Update row status locally for immediate UI feedback
                 setFilteredData(prevData =>
                     prevData.map(item =>
                         item.id === row.id ? { ...item, training_status: newStatus } : item
                     )
                 );
-                getUserDataByCategoryAndDate()
+                getUserDataByCategoryAndDate();
             })
-            .catch((error) => console.error("Error updating status:", error));
+            .catch((error) => console.error("Error updating status:", error))
+            .finally(() => setLoadingId(null)); // Re-enable the button after request completion
     };
 
     const handleSearch = (e) => {
@@ -1327,10 +1330,21 @@ const Bookcalender = ({ tabKey }) => {
                     variant={row.training_status !== "Attended" ? "secondary" : "success"}
                     className="w-100"
                     onClick={() => { toggleStatus(row); handleEmailCertificatesingle(row); }}
-                    disabled={row.training_status === "Attended"} // Disable the button if the status is "Attended"
+                    disabled={row.training_status === "Attended" || loadingId === row.id} // Disable while updating
                 >
-                    {row.training_status === "Attended" ? "Attended" : row.training_status}
+                    {loadingId === row.id ? "Processing..." : row.training_status === "Attended" ? "Attended" : row.training_status}
                 </Button>
+            ),
+            sortable: true,
+        },
+        {
+            name: 'edit',
+            cell: row => (
+                <Button
+
+                    onClick={() => { handleRowClick(row) }}
+                >
+                    <FaEdit />                </Button>
             ),
             sortable: true,
         },
@@ -1642,7 +1656,7 @@ const Bookcalender = ({ tabKey }) => {
                 }</div>
                 <div>
                     <Button variant="primary" onClick={downloadExcel} className="mb-3 ms-5">
-                      Download Excel
+                        Download Excel
                     </Button>
                 </div>
 
@@ -1684,7 +1698,7 @@ const Bookcalender = ({ tabKey }) => {
                         striped
                         noDataComponent="No Data Available"
                         onChangePage={(page) => setCurrentPage(page)} // Update the current page
-                        />
+                    />
                 ) : (
                     <Alert variant="warning" className="text-center">
                         No Data Found
@@ -1856,23 +1870,22 @@ const Bookcalender = ({ tabKey }) => {
                                     {selectedBooking.certificate_no}
                                 </Col> */}
                                 <Col lg={6} md={6} sm={12}>
-                                    <b>Tranning Status</b><br />
-                                    {isEditing ? (
-                                        // <select
-                                        //     defaultValue={selectedBooking.training_status}
-                                        //     onChange={(e) => setSelectedBooking({ ...selectedBooking, training_status: e.target.value })}
-                                        // >
-                                        <Form.Select aria-label="Default select example" defaultValue={selectedBooking.training_status} onChange={(e) => setSelectedBooking({ ...selectedBooking, training_status: e.target.value })}>
-
+                                    <b>Training Status</b><br />
+                                    {isEditing && selectedBooking.training_status !== "Attended" ? (
+                                        <Form.Select
+                                            aria-label="Default select example"
+                                            defaultValue={selectedBooking.training_status}
+                                            onChange={(e) => setSelectedBooking({ ...selectedBooking, training_status: e.target.value })}
+                                        >
                                             <option value="Attended">Attended</option>
                                             <option value="Confirmed">Confirmed</option>
-
                                             {/* Add other options as needed */}
                                         </Form.Select>
                                     ) : (
                                         selectedBooking.training_status
                                     )}
                                 </Col>
+
 
                                 <hr />
 

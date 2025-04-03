@@ -299,7 +299,7 @@ const CalenderComp2 = () => {
             <Backbtn />
             <Container fluid className="slotbg">
                 <div><h2>
-                {savedCategory === "College/Organization Training – Group" ? "Institution Training" : savedCategory} </h2></div>       <Container className="calender">
+                    {savedCategory === "College/Organization Training – Group" ? "Institution Training" : savedCategory} </h2></div>       <Container className="calender">
                     <Col lg={12} className="d-flex justify-content-center align-items-center bg-white">
                         <button
                             className="btn ms-1"
@@ -367,7 +367,7 @@ const CalenderComp2 = () => {
                                         {week.map((day, dayIndex) => {
                                             const clickedDate = day ? new Date(currentYear, currentMonth, day) : null;
                                             const dayOfWeek = clickedDate ? clickedDate.getDay() : null; // Get the day of the week (0 = Sunday, 6 = Saturday)
-                                            const isWeekend = dayOfWeek === 0 || dayOfWeek === 6; // Check if it's Saturday or Sunday
+                                            const isWeekend = dayOfWeek === 0 || dayOfWeek === 6; // 0 = Sunday, 6 = Saturday
                                             const isDisabled = day && (isPastDate(day) || isWeekend); // Include weekend days in disabled condition
                                             const { label: dateLabel, color: textColor, bgColor, isHoliday } = getSpecialDateDetails(day, currentMonth);
                                             const isAvailable = dateStatuses[day] === "available"; // Check status from state
@@ -384,16 +384,20 @@ const CalenderComp2 = () => {
                                                         verticalAlign: "middle",
                                                         borderRight: "1px solid #ddd",
                                                         backgroundColor: day
-                                                            ? day.isNextMonth
-                                                                ? "#f0f0f0" // Next month's dates (light gray)
+                                                        ? day.isNextMonth
+                                                            ? "#f0f0f0" // Light gray for next month's dates
+                                                            : dayOfWeek === 0
+                                                                ? "#ea7777" // Red only for Sundays
                                                                 : isDisabled
-                                                                    ? "#f9f9f9" // Disabled (past dates or holidays or weekends)
+                                                                    ? "#f9f9f9" // Gray for disabled days (past dates or holidays)
                                                                     : dateStatuses[day] === "available"
-                                                                        ? "#d4ffd4" // Green for available
+                                                                        ? "#d4ffd4" // Green for available days
                                                                         : dateStatuses[day] === "Holiday"
-                                                                            ? "#ea7777" // Red for holiday
-                                                                            : "#d4ffd4" // Default for other statuses
-                                                            : "white",
+                                                                            ? "#ea7777" // Red for holidays
+                                                                            : "#d4ffd4" // Default background color
+                                                        : "white",
+                                                    
+
                                                         color: day
                                                             ? day.isNextMonth
                                                                 ? "#ccc" // Light color for next month's dates
@@ -405,12 +409,12 @@ const CalenderComp2 = () => {
                                                         fontFamily: "Poppins",
                                                         fontWeight: "600",
                                                     }}
-                                                >
-                                                    {day && (
-                                                        isWeekend
-                                                            ? "Weekly Off" // Show "Weekly Off" for weekends
-                                                            : day // Show the day number for other days
-                                                    )}
+                                                >   {day && (
+                                                    isWeekend
+                                                        ? <p className="text-dark"> {day}<br /> {dayOfWeek === 6 ? "" : "Weekly Off"} </p>
+                                                        : day
+                                                )}
+                                                
                                                     <br />
                                                     {specialDates &&
                                                         specialDates.length > 0 &&
