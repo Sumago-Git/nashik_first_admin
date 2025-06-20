@@ -327,13 +327,13 @@ const Bookcalender = ({ tabKey }) => {
             },
             "College/Organization Training – Group": {
                 fontSize: 60,
-                nameYFactor: 0.35,
+                nameYFactor: 0.50,
                 certFontSize: 20,
                 certY: 25,
                 dateY: 35,
                 timeY: 45,
-                dateX: 80,
-                timeX: 80,
+                dateX: 70,
+                timeX: 70,
                 image: new URL('../../assets/Holiday/Certificate_page-0001.jpg', import.meta.url).href,
             },
         };
@@ -781,13 +781,13 @@ const Bookcalender = ({ tabKey }) => {
             },
             "College/Organization Training – Group": {
                 fontSize: 60,
-                nameYFactor: 0.35,
+                nameYFactor: 0.50,
                 certFontSize: 20,
                 certY: 25,
                 dateY: 35,
                 timeY: 45,
-                dateX: 90,
-                timeX: 90,
+                dateX: 70,
+                timeX: 70,
                 image: new URL('../../assets/Holiday/Certificate_page-0001.jpg', import.meta.url).href,
             },
         };
