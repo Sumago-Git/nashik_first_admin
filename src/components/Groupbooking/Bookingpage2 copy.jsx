@@ -287,7 +287,7 @@ const Bookingpage2 = () => {
                 </p>
                 {category === "RTO – Suspended Driving License Holders Training" ?
                   <InputMask
-                    mask="**** ***********"
+                    mask="****/*******/****"
                     value={formData.learningNo || ""} // Ensure controlled value
                     onChange={(e) => {
                       // Get the input value and convert it to uppercase
@@ -299,7 +299,7 @@ const Bookingpage2 = () => {
                         learningNo: inputValue,
                       }));
                     }}
-                    placeholder="____ ___________"
+                    placeholder="____/_______/____"
                     className="dateinput p-3 m-0 mt-0 ms-lg-3 custom-placeholder"
                   >
                     {(inputProps) => <input {...inputProps} />}
